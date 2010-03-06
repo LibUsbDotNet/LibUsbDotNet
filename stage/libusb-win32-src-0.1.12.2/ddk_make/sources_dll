@@ -1,0 +1,21 @@
+TARGETNAME = libusb0
+
+TARGETPATH = output
+TARGETTYPE = DYNLINK
+USE_MSVCRT = 1
+386_STDCALL = 0
+USER_C_FLAGS = /Gd /O2
+C_DEFINES = /DVERSION_MAJOR=0 /DVERSION_MINOR=1 /DVERSION_MICRO=12 \
+            /DVERSION_NANO=2 /DRC_VERSION=0,1,12,2 \
+            /DRC_VERSION_STR="\"0.1.12.2\""
+
+
+
+TARGETLIBS = $(SDK_LIB_PATH)\setupapi.lib \
+             $(SDK_LIB_PATH)\kernel32.lib \
+             $(SDK_LIB_PATH)\advapi32.lib \
+             $(SDK_LIB_PATH)\user32.lib
+
+
+SOURCES = windows.c usb.c error.c install.c descriptors.c registry.c \
+          resource.rc

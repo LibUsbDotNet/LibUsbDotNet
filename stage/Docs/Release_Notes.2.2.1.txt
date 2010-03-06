@@ -1,0 +1,23 @@
+﻿v2.2.1 (01/13/2010)
+
+
+* Fixed Bug ID: 2930836 - [OSX PPC] GetDescriptor request fails.
+
+  On big-endian platforms, the descriptor type and index bytes are
+  reversed.
+
+* Fixed Bug ID: 2927179 - Wrong versioning. LibUsbDotNet 2.2.0 all
+  AssemblyInfo.cs contains [assembly:AssemblyVersion("2.1.0.13")]
+* Updated Benchmark application: Removed all calls to Control.Invoke.
+
+  The benchmark application now uses a timer control to periodically
+  update the display instead of "Invoking" an update everytime data is
+  transferred. This provides a more accurate benchmark reading as well as
+  a work-a-round for Mono .NET runtimes on platforms that do not properly
+  implement the Control.Invoke method.
+
+* Removed LINUX compiler option.
+
+  The LINUX compiler option is no longer used. LibUsbDotNet (v2.2.1 and
+  above) is fully platform independent.
+

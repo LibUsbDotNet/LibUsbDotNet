@@ -1,0 +1,68 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<topic id="8c7cc7dc-5b65-4fab-b2a2-54cf0b727a19" revisionNumber="1">
+  <developerHowToDocument xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5" xmlns:xlink="http://www.w3.org/1999/xlink">
+    <!-- ><summary><para>Optional summary abstract</para></summary> -->
+    <introduction>
+      <para>
+      </para>
+    </introduction>
+    <!-- Optional procedures followed by optional code example but must have
+   at least one procedure or code example -->
+    <procedure>
+      <title>System-level Device Notification: Console Application Description</title>
+      <steps class="ordered">
+        <step>
+          <content>
+            <para>
+    	Creates a <CREF>T:LibUsbDotNet.DeviceNotify.DeviceNotifier</CREF> instance 
+    	for monitoring system-level device events.
+    	</para>
+          </content>
+        </step>
+        <step>
+          <content>
+            <para>
+ 	    Displays device events in console ouput until a key is pressed. 
+    	</para>
+          </content>
+        </step>
+      </steps>
+    </procedure>
+    <codeExample>
+      <code source="..\Examples\Device.Notification\DeviceNotification.cs" lang="cs" />
+    </codeExample>
+    <codeExample>
+      <code source="..\Examples\Device.Notification\DeviceNotification.vb" lang="vb" />
+    </codeExample>    
+    <buildInstructions>
+      <list class="ordered">
+        <listItem>
+          <para>
+		Create a new console application in your 
+		<externalLink target="SharpDevelop_Project_Page"><linkText>favorite designer</linkText><linkAlternateText>SharpDevelop .NET IDE</linkAlternateText><linkUri>http://www.icsharpcode.net/OpenSource/SD</linkUri></externalLink>.
+	</para>
+        </listItem>
+        <listItem>
+          <para>
+	Verify your project references:
+		<list class="bullet"><listItem><para>System.dll</para></listItem><listItem><para>LibUsbDotNet.dll</para></listItem></list></para>
+        </listItem>
+        <listItem>
+          <para>
+	Add/edit the main class.  Copy/Paste code from one of the examples above.
+	</para>
+        </listItem>
+      </list>
+    </buildInstructions>
+    <!-- <codeExample>Optional code example</codeExample> -->
+    <!-- <buildInstructions>Optional instructions for building a
+       code example.</buildInstructions> -->
+    <!-- 
+	<robustProgramming>
+	</robustProgramming>
+-->
+    <!-- <security>Optional discussion of security issues.</security> -->
+    <relatedTopics>
+    </relatedTopics>
+  </developerHowToDocument>
+</topic>

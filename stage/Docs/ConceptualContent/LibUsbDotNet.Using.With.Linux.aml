@@ -1,0 +1,166 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<topic id="0c99e44e-ac77-4177-805a-5c9366b5253f" revisionNumber="1">
+  <developerWalkthroughDocument xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5" xmlns:xlink="http://www.w3.org/1999/xlink">
+    <!--
+  <summary>
+    <para>Optional summary abstract</para>
+  </summary>
+  -->
+    <introduction>
+      <!-- Uncomment this to generate an outline of the section and sub-section
+         titles.  Specify a numeric value as the inner text to limit it to
+         a specific number of sub-topics when creating the outline.  Specify
+         zero (0) to limit it to top-level sections only.  -->
+      <!-- <autoOutline /> -->
+      <para>
+        LibUsbDotNet is compatible with linux/unix-like operating systems that support mono.net 2.0 and libusb v1.x.
+      </para>
+    </introduction>
+    <prerequisites>
+      <alert class="note">
+        <para>
+          The user must have appropriate access permissions to the usb device before it can
+          be used with linux. This is true for most unix-like OSes.
+        </para>
+      </alert>
+
+      <list class="ordered">
+
+        <listItem>
+          <para>
+            If your platform has its own package manager (Aptitude, Synaptic, etc),
+            use it to download and install the required software packages below.
+          </para>
+        </listItem>
+
+        <listItem>
+          <para>
+            Download and install the
+            <externalLink>
+              <linkText>libusb-1.0 package.</linkText>
+              <linkAlternateText>libusb download page at SourceForge.Net</linkAlternateText>
+              <linkUri>http://sourceforge.net/projects/libusb/files/libusb-1.0/</linkUri>
+            </externalLink>
+          </para>
+          <para>
+            If libusb-1.0 binaries do not exists for your platform, you must build them from source.
+            Building libusb-1.0 from source is very straightforward. See the INSTALL documentation file
+            in the libusb-1.0 source package for more details.
+          </para>
+        </listItem>
+
+        <listItem>
+          <para>
+            Download and install the
+            <externalLink>
+              <linkText>Mono.Net 2.x package.</linkText>
+              <linkAlternateText>Mono.Net download page at SourceForge.Net</linkAlternateText>
+              <linkUri>http://www.go-mono.com/mono-downloads/download.html</linkUri>
+            </externalLink>
+          </para>
+          <para>
+            The pre-compiled Mono.Net runtime binaries are available for nearly all platforms.
+            However, for information on bulding the mono.net runtime from source see
+            <externalLink>
+              <linkText>Compiling_Mono.</linkText>
+              <linkAlternateText>Compiling_Mono page at mono-project.com</linkAlternateText>
+              <linkUri>http://www.mono-project.com/Compiling_Mono</linkUri>
+            </externalLink>
+          </para>
+
+        </listItem>
+
+
+      </list>
+
+    </prerequisites>
+
+    <!-- One or more procedure or section with procedure -->
+    <procedure>
+      <title>Using the pre-built LibUsbDotNet Binary package.</title>
+      <steps class="ordered">
+        <step>
+          <para>
+            Download the
+            <externalLink>
+              <linkText>LibUsbDotNet_Bin package</linkText>
+              <linkAlternateText>LibUsbDotNet download page at SourceForge.Net</linkAlternateText>
+              <linkUri>http://sourceforge.net/projects/libusbdotnet/files/</linkUri>
+            </externalLink>
+            and unzip it to a new sub-directory (LibUsbDotNet_Bin).
+          </para>
+        </step>
+        <step>
+          <para>
+            Open a terminal window and navigate to the new LibUsbDotNet_Bin directory.
+          </para>
+        </step>
+        <step>
+          <para>
+            Run the <application>Test_Info</application> application by typing:
+            <command>
+              mono <replaceable>Test_Info.exe</replaceable>
+            </command>
+          </para>
+          <para>
+            <application>Test_Info</application> should find all USB devices the user has access to
+            and provides a device count in the status bar.  If no devices are found, verify the
+            user has sufficient access permissions, or try running as the root user.
+          </para>
+        </step>
+
+      </steps>
+    </procedure>
+
+
+    <procedure>
+      <title>Building LibUsbDotNet From Source</title>
+      <steps class="ordered">
+        <step>
+          <para>
+            Download the
+            <externalLink>
+              <linkText>LibUsbDotNet_Src package</linkText>
+              <linkAlternateText>LibUsbDotNet download page at SourceForge.Net</linkAlternateText>
+              <linkUri>http://sourceforge.net/projects/libusbdotnet/files/</linkUri>
+            </externalLink>
+            and unzip it to a new sub-directory (LibUsbDotNet_Src).
+          </para>
+        </step>
+        <step>
+          <para>
+            Open a terminal window and navigate to the new LibUsbDotNet_Src directory.
+          </para>
+        </step>
+        <step>
+          <content>
+            <para>
+              The <replaceable>LibUsbDotNet.sln</replaceable> can be built with the <application>xbuild</application> tool:
+              <para>
+                <command>
+                  xbuild <replaceable>LibUsbDotNet.sln</replaceable>
+                </command>
+              </para>
+            </para>
+          </content>
+        </step>
+      </steps>
+    </procedure>
+
+    <nextSteps>
+      All LibUsbDotNet example application, with the exception of the InfWizard, are compatible with linux.
+    </nextSteps>
+    <alert class="warning">
+      <list class="bullet">
+        <listItem>
+          All example and test applications other than Test_Info have
+          special requirements of the usb device (generally a loopback on Ep1).
+        </listItem>
+        <listItem>The InfWizard is incompatible with Linux.</listItem>
+      </list>
+    </alert>
+    <relatedTopics>
+
+    </relatedTopics>
+  </developerWalkthroughDocument>
+</topic>

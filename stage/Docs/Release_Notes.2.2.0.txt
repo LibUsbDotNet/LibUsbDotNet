@@ -1,0 +1,27 @@
+﻿v2.2.0 (12/29/2009)
+
+
+* Added Linux support.
+
+  LibUsbDotNet supports linux via the linux libusb v1.x driver.
+
+* Updated UsbDevice.OpenEndpointReader and UsbDevice.OpenEndpointWriter
+  members to first lookup the endpoint descriptor for the current
+  configuration.
+
+  If an attempt is made to open an endpoint on a unconfigured device
+  (GetConfiguration = 0) an exception is thrown.
+
+  If an attempt is made to open a non-existent or invalid endpoint an
+  exception is thrown.
+
+* Added endpoint descriptor information to UsbEndpointBase class.
+
+  A New property, 'EndpointInfo' is available from the UsbEndpointBase
+  class.
+
+* Depricated UsbGlobals class.
+
+  The UsbGlobals class has been rendered obsolete and will be removed in
+  future release. Update your code you use the UsbDevice class instead.
+

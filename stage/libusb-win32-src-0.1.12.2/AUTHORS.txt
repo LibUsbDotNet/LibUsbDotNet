@@ -1,0 +1,12 @@
+
+Library, Test Programs:
+
+Stephan Meyer, <ste_meyer@web.de>
+Johannes Erdfelt, <johannes@erdfelt.com>
+Thomas Sailer, <sailer@ife.ee.ethz.ch>
+
+
+Drivers, Installer:
+
+Stephan Meyer, <ste_meyer@web.de>
+

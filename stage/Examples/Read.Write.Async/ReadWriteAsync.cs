@@ -1,0 +1,137 @@
+﻿using System;
+using System.Collections.Generic;
+using System.Text;
+using System.Text.RegularExpressions;
+using System.Threading;
+using LibUsbDotNet;
+using LibUsbDotNet.Internal;
+using LibUsbDotNet.Main;
+using LibUsbDotNet.MonoLibUsb;
+
+namespace Examples
+{
+    internal class ReadWriteAsync
+    {
+        public static UsbDevice MyUsbDevice;
+
+        #region SET YOUR USB Vendor and Product ID!
+
+        public static UsbDeviceFinder MyUsbFinder = new UsbDeviceFinder(0x04d8, 0x0053);
+
+        #endregion
+
+        public static void Main(string[] args)
+        {
+            ErrorCode ec = ErrorCode.None;
+            try
+            {
+                // Find and open the usb device.
+                //MyUsbDevice = UsbDevice.OpenUsbDevice(MyUsbFinder);
+                MyUsbDevice = MonoUsbDevice.MonoUsbDeviceList.Find(MyUsbFinder.Check);
+                // If the device is open and ready
+                if (MyUsbDevice == null) throw new Exception("Device Not Found.");
+                if (!MyUsbDevice.Open()) throw new Exception("Open Device Failed.");
+
+                // If this is a "whole" usb device (libusb-win32, linux libusb)
+                // it will have an IUsbDevice interface. If not (WinUSB) the 
+                // variable will be null indicating this is an interface of a 
+                // device.
+                IUsbDevice wholeUsbDevice = MyUsbDevice as IUsbDevice;
+                if (!ReferenceEquals(wholeUsbDevice, null))
+                {
+                    // This is a "whole" USB device. Before it can be used, 
+                    // the desired configuration and interface must be selected.
+
+                    // Select config #1
+                    wholeUsbDevice.SetConfiguration(1);
+
+                    // Claim interface #0.
+                    wholeUsbDevice.ClaimInterface(0);
+                }
+
+                // open read endpoint 1.
+                UsbEndpointReader reader = MyUsbDevice.OpenEndpointReader(ReadEndpointID.Ep01);
+
+                // open write endpoint 1.
+                UsbEndpointWriter writer = MyUsbDevice.OpenEndpointWriter(WriteEndpointID.Ep01);
+
+                // Remove the exepath/startup filename text from the begining of the CommandLine.
+                string cmdLine = Regex.Replace(
+                    Environment.CommandLine, "^\".+?\"^.*? |^.*? ", "", RegexOptions.Singleline);
+
+                if (!String.IsNullOrEmpty(cmdLine)) cmdLine = "ABCDEFGH";
+                cmdLine = "ABCDEFGH";
+                ErrorCode ecWrite;
+                ErrorCode ecRead;
+                int transferredOut;
+                int transferredIn;
+                UsbTransfer usbWriteTransfer;
+                UsbTransfer usbReadTransfer;
+                byte[] bytesToSend = Encoding.Default.GetBytes(cmdLine);
+                byte[] readBuffer = new byte[1024];
+                int testCount = 0;
+                do
+                {
+                    ecRead = reader.AsyncTransfer(readBuffer, 0, readBuffer.Length, 100, out usbReadTransfer);
+                    if (ecRead != ErrorCode.None) throw new Exception("Submit Async Read Failed.");
+
+                    ecWrite = writer.AsyncTransfer(bytesToSend, 0, bytesToSend.Length, 100, out usbWriteTransfer);
+                    if (ecWrite != ErrorCode.None)
+                    {
+                        usbReadTransfer.Dispose();
+                        throw new Exception("Submit Async Write Failed.");
+                    }
+
+                    WaitHandle.WaitAll(new WaitHandle[] { usbWriteTransfer.AsyncWaitHandle, usbReadTransfer.AsyncWaitHandle },200,false);
+                    if (!usbWriteTransfer.IsCompleted) usbWriteTransfer.Cancel();
+                    if (!usbReadTransfer.IsCompleted) usbReadTransfer.Cancel();
+
+                    ecWrite = usbWriteTransfer.Wait(out transferredOut);
+                    ecRead = usbReadTransfer.Wait(out transferredIn);
+
+                    usbWriteTransfer.Dispose();
+                    usbReadTransfer.Dispose();
+
+                    Console.WriteLine("Read  :{0} ErrorCode:{1}", transferredIn, ecRead);
+                    Console.WriteLine("Write :{0} ErrorCode:{1}", transferredOut, ecWrite);
+                    Console.WriteLine("Data  :" + Encoding.Default.GetString(readBuffer, 0, transferredIn));
+                    testCount++;
+                } while (testCount < 5);
+                Console.WriteLine("\r\nDone!\r\n");
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine();
+                Console.WriteLine((ec != ErrorCode.None ? ec + ":" : String.Empty) + ex.Message);
+            }
+            finally
+            {
+                if (MyUsbDevice != null)
+                {
+                    if (MyUsbDevice.IsOpen)
+                    {
+                        // If this is a "whole" usb device (libusb-win32, linux libusb-1.0)
+                        // it exposes an IUsbDevice interface. If not (WinUSB) the 
+                        // 'wholeUsbDevice' variable will be null indicating this is 
+                        // an interface of a device; it does not require or support 
+                        // configuration and interface selection.
+                        IUsbDevice wholeUsbDevice = MyUsbDevice as IUsbDevice;
+                        if (!ReferenceEquals(wholeUsbDevice, null))
+                        {
+                            // Release interface #0.
+                            wholeUsbDevice.ReleaseInterface(0);
+                        }
+
+                        MyUsbDevice.Close();
+                    }
+                    MyUsbDevice = null;
+                    MonoUsbDevice.Exit();
+                }
+
+                // Wait for user input..
+                Console.ReadKey();
+                MonoUsbDevice.Exit();
+            }
+        }
+    }
+}

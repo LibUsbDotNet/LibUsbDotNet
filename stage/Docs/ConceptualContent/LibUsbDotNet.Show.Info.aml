@@ -1,0 +1,87 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<topic id="6ab39c2b-8611-46bf-8066-bfe79ae9f1f9" revisionNumber="1">
+  <developerHowToDocument xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5" xmlns:xlink="http://www.w3.org/1999/xlink">
+    <!-- ><summary><para>Optional summary abstract</para></summary> -->
+    <introduction>
+      <para>
+      </para>
+    </introduction>
+    <procedure>
+      <title>Show Info: Console Application Description</title>
+      <steps class="ordered">
+        <step>
+          <content>
+            <para>
+    	Opens a USB device by vendor and product id.
+    	</para>
+          </content>
+        </step>
+        <step>
+          <content>
+            <para>
+ 	    Gets and displays the <CREF>T:LibUsbDotNet.Descriptors.UsbDeviceDescriptor</CREF> and the <CREF>T:LibUsbDotNet.Descriptors.UsbConfigDescriptor</CREF>.
+    	</para>
+          </content>
+        </step>
+        <step>
+          <content>
+            <para>
+ 	    Gets and displays the <CREF>P:LibUsbDotNet.Info.UsbDeviceInfo.ManufacturerString</CREF>, if one exists.
+    	</para>
+          </content>
+        </step>
+        <step>
+          <content>
+            <para>
+ 	    Gets and displays the <CREF>P:LibUsbDotNet.Info.UsbDeviceInfo.ProductString</CREF>, if one exists.
+    	</para>
+          </content>
+        </step>
+        <step>
+          <content>
+            <para>
+ 	    Gets and displays the <CREF>P:LibUsbDotNet.Info.UsbDeviceInfo.SerialString</CREF>, if one exists.
+    	</para>
+          </content>
+        </step>
+      </steps>
+    </procedure>
+    <codeExample>
+      <code source="..\Examples\Show.Info\ShowInfo.cs" lang="cs" outlining="true" />
+    </codeExample>
+    <codeExample>
+      <code source="..\Examples\Show.Info\ShowInfo.vb" lang="vb" outlining="true" />
+    </codeExample>    
+    <buildInstructions>
+      <list class="ordered">
+        <listItem>
+          <para>
+		Create a new console application in your 
+		<externalLink target="SharpDevelop_Project_Page"><linkText>favorite designer</linkText><linkAlternateText>SharpDevelop .NET IDE</linkAlternateText><linkUri>http://www.icsharpcode.net/OpenSource/SD</linkUri></externalLink>.
+	</para>
+        </listItem>
+        <listItem>
+          <para>
+	Verify your project references:
+		<list class="bullet"><listItem><para>System.dll</para></listItem><listItem><para>LibUsbDotNet.dll</para></listItem></list></para>
+        </listItem>
+        <listItem>
+          <para>
+	Add/edit the main class.  Copy/Paste code from one of the examples above.
+	</para>
+        </listItem>
+      </list>
+    </buildInstructions>
+    <robustProgramming>
+	The <codeEntityReference>P:LibUsbDotNet.UsbDevice.LastErrorNumber</codeEntityReference>
+	and <codeEntityReference>P:LibUsbDotNet.UsbDevice.LastErrorString</codeEntityReference>
+	properties should be avoided in production code.  For robust error handling, use the
+	<codeEntityReference>E:LibUsbDotNet.UsbDevice.UsbErrorEvent</codeEntityReference> event.
+	The event provides more information, it is executed for every error, and allows
+	some errors to be handled.
+</robustProgramming>
+    <!-- <security>Optional discussion of security issues.</security> -->
+    <relatedTopics>
+    </relatedTopics>
+  </developerHowToDocument>
+</topic>

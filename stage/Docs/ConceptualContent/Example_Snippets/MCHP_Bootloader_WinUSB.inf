@@ -1,0 +1,114 @@
+[Version]
+Signature = "$Windows NT$"
+Class = WinUsbDevices
+ClassGuid={A219BCD5-74D8-4d79-A91F-01F749642227}
+Provider = %ProviderName%
+CatalogFile=MCHP_Bootloader.cat
+DriverVer = 01/18/2010, 6.0.6001.18002
+
+; ========== Manufacturer/Models sections ===========
+; .ntx86, .ntia64, and .ntamd64
+
+[Manufacturer]
+%ProviderName% = MCHP_Bootloader,ntx86,ntamd64,ntia64
+
+[MCHP_Bootloader.ntx86]
+%USB\MCHP_Bootloader.DeviceDesc% =MCHP_Bootloader_Install, USB\VID_04D8&PID_000B
+
+[MCHP_Bootloader.ntamd64]
+%USB\MCHP_Bootloader.DeviceDesc% =MCHP_Bootloader_Install, USB\VID_04D8&PID_000B
+
+[MCHP_Bootloader.ntia64]
+%USB\MCHP_Bootloader.DeviceDesc% =MCHP_Bootloader_Install, USB\VID_04D8&PID_000B
+
+; =================== Installation ===================
+
+;=========================================================================================
+;ClassInstall32 and ClassInstall_AddReg sections used to make new device manager category.
+;=========================================================================================
+[ClassInstall32]
+AddReg=ClassInstall_AddReg
+
+[ClassInstall_AddReg]
+HKR,,,,%DEVICEMANAGERCATEGORY%
+HKR,,Icon,,"-20"
+
+;[1]
+[MCHP_Bootloader_Install]
+Include=winusb.inf
+Needs=WINUSB.NT
+
+;[2]
+[MCHP_Bootloader_Install.Services]
+Include=winusb.inf
+AddService=WinUSB,0x00000002,WinUSB_ServiceInstall
+
+;[3]
+[WinUSB_ServiceInstall]
+DisplayName     = %WinUSB_SvcDesc%
+ServiceType     = 1
+StartType       = 3
+ErrorControl    = 1
+ServiceBinary   = %12%\WinUSB.sys
+
+;[4]
+[MCHP_Bootloader_Install.Wdf]
+KmdfService=WINUSB, WinUsb_Install
+
+[WinUSB_Install]
+KmdfLibraryVersion=1.9
+
+;[5]
+[MCHP_Bootloader_Install.HW]
+AddReg=Dev_AddReg
+
+[Dev_AddReg]
+HKR,,DeviceInterfaceGUIDs,0x10000,"{b2f187de-0a5b-4041-a67c-e42107b8c2da}"
+
+HKR,,"SurpriseRemovalOK",0x00010001,1
+HKR,,"Removable",0x00010001,1
+HKR,,"RemovalPolicy",0x00010001,3
+
+;[6]
+[MCHP_Bootloader_Install.CoInstallers]
+AddReg=CoInstallers_AddReg
+CopyFiles=CoInstallers_CopyFiles
+
+[CoInstallers_AddReg]
+HKR,,CoInstallers32,0x00010000,"WdfCoInstaller01009.dll,WdfCoInstaller","WinUSBCoInstaller2.dll"
+
+[CoInstallers_CopyFiles]
+WinUSBCoInstaller2.dll
+WdfCoInstaller01009.dll
+
+[DestinationDirs]
+CoInstallers_CopyFiles=11
+
+; ================= Source Media Section =====================
+;[7]
+
+[SourceDisksNames]
+1 = %DISK_NAME%,,,\x86
+2 = %DISK_NAME%,,,\amd64
+3 = %DISK_NAME%,,,\ia64
+
+[SourceDisksFiles.x86]
+WinUSBCoInstaller2.dll=1
+WdfCoInstaller01009.dll=1
+
+[SourceDisksFiles.amd64]
+WinUSBCoInstaller2.dll=2
+WdfCoInstaller01009.dll=2
+
+[SourceDisksFiles.ia64]
+WinUSBCoInstaller2.dll=3
+WdfCoInstaller01009.dll=3
+
+; =================== Strings ===================
+
+[Strings]
+ProviderName="Microchip"
+USB\MCHP_Bootloader.DeviceDesc="WinUSB MCHPUSB Bootloader"
+WinUSB_SvcDesc="WinUSB MCHPUSB Bootloader Service 01/18/2010, 6.0.6001.18002"
+DISK_NAME="WinUSB MCHPUSB Bootloader Install Disk"
+DEVICEMANAGERCATEGORY="WinUsb Devices"

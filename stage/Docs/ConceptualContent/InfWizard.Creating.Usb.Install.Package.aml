@@ -1,0 +1,252 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<topic id="c7ed5d69-c342-471d-9122-ab50a5ea21b7" revisionNumber="1">
+  <developerHowToDocument xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5" xmlns:xlink="http://www.w3.org/1999/xlink">
+    <!--
+    <summary>
+      <para>Optional summary abstract</para>
+    </summary>
+    -->
+    <introduction>
+      <para>
+        Creating a generic USB install package is a quick way of getting a vendor class (0xFF) USB device/interface
+        installed and running on windows.  The InfWizard is a simple utility that can create vendor class
+        install packages for any USB device connected or installed on the PC.
+      </para>
+    </introduction>
+    <!-- Optional procedures followed by optional code example but must have
+         at least one procedure or code example -->
+    <procedure>
+      <title>Building a Generic Setup Package with InfWizard</title>
+      <steps class="ordered">
+        <step>
+          <content>
+            <para>Before beginning, have the vendor and product id of the usb device ready.</para>
+          </content>
+        </step>
+        <step>
+          <content>
+            <para>
+              Plug in the usb device. Windows should display the
+              <application>Found New Hardware Wizard</application>.
+              If the <application>Found New Hardware Wizard</application> is not diplayed, the device
+              allready has drivers installed or is supported by built-in Windows class drivers.
+            </para>
+            <mediaLink>
+              <caption placement="after" lead="Found New Hardware Wizard">Welcome</caption>
+              <image placement="left" xlink:href="Found.New.Hardware.Wizard.1" />
+            </mediaLink>
+            <mediaLink>
+              <image placement="left" xlink:href="GoldDivider" />
+            </mediaLink>
+          </content>
+        </step>
+
+        <step>
+          <content>
+            <para>
+              Launch the InfWizard and click <userInput>Next</userInput>.
+            </para>
+            <mediaLink>
+              <caption placement="after" lead="InfWizard">Welcome</caption>
+              <image placement="left" xlink:href="InfWizard.Package.1" />
+            </mediaLink>
+            <mediaLink>
+              <image placement="left" xlink:href="GoldDivider" />
+            </mediaLink>
+          </content>
+        </step>
+
+        <step>
+          <content>
+            <para>
+              Select the vendor and product id of usb device to generate an
+              installation package for and click <userInput>Next</userInput>.
+            </para>
+            <mediaLink>
+              <caption placement="after" lead="InfWizard">Device Selection</caption>
+              <image placement="left" xlink:href="InfWizard.Package.2" />
+            </mediaLink>
+            <mediaLink>
+              <image placement="left" xlink:href="GoldDivider" />
+            </mediaLink>
+          </content>
+        </step>
+        <step>
+          <content>
+            <para>
+              Select either the <userInput>WinUSB</userInput> or <userInput>LibUsb</userInput> option button.
+            </para>
+          </content>
+        </step>
+        <step>
+          <content>
+            <para>
+              Customize the setup package using the property grid.
+              The InfWizard can build entire setup/installation packages or only the inf and cat files.
+              <para>
+                To build a complete package, set the <userInput>Spawn Driver Files</userInput> property
+                to true. Click <userInput>Find Required Drivers</userInput> and follow
+                the online instructions. The libusb-win32 drivers are provided with the LibUsbDotNet Setup and Bin packages.
+                <para>
+                  WinUSB users will need the Windows Driver Kit for spawning driver files. It is available at
+                  <externalLink>
+                    <linkText>Microsoft Connect</linkText>
+                    <linkAlternateText>Microsoft Connect.</linkAlternateText>
+                    <linkUri>http://connect.microsoft.com/</linkUri>
+                  </externalLink>
+                </para>
+              </para>
+            </para>
+            <mediaLink>
+              <caption placement="after" lead="InfWizard">Device Configuration</caption>
+              <image placement="left" xlink:href="InfWizard.Package.3" />
+            </mediaLink>
+            <mediaLink>
+              <caption placement="after" lead="InfWizard">Find Drivers</caption>
+              <image placement="left" xlink:href="InfWizard.Package.3.1" />
+            </mediaLink>
+            <mediaLink>
+              <image placement="left" xlink:href="GoldDivider" />
+            </mediaLink>
+          </content>
+        </step>
+        <step>
+          <content>
+            <para>
+              Before finishing, the profile can be saved and loaded at later time for further modification.
+              Click <userInput>Finish</userInput> and the inf cat files will be generated and save to the
+              <userInput>Save Directory</userInput>. If the <userInput>Spawn Driver Files</userInput>
+              property was set to true, the InfWizard will attempt to gather the required drivers and copy
+              them to the <userInput>Save Directory</userInput>.
+            </para>
+            <para>
+              <mediaLink>
+                <caption placement="after" lead="InfWizard">Output Files</caption>
+                <image placement="left" xlink:href="InfWizard.Package.Output.1" />
+              </mediaLink>
+              <mediaLink>
+                <image placement="left" xlink:href="GoldDivider" />
+              </mediaLink>              
+            </para>
+          </content>
+        </step>
+
+        <step>
+          <content>
+            <para>
+              Return to the <application>Found New Hardware Wizard</application>. Select the
+              <userInput>No, not this time</userInput> option and click <userInput>Next</userInput>.
+            </para>
+            <mediaLink>
+              <caption placement="after" lead="Found New Hardware Wizard">Welcome</caption>
+              <image placement="left" xlink:href="Found.New.Hardware.Wizard.2" />
+            </mediaLink>
+            <mediaLink>
+              <image placement="left" xlink:href="GoldDivider" />
+            </mediaLink>
+          </content>
+        </step>
+
+        <step>
+          <content>
+            <para>
+              Select the <userInput>Install from a list or specific location</userInput> option and click
+              <userInput>Next</userInput>.
+            </para>
+            <mediaLink>
+              <caption placement="after" lead="Found New Hardware Wizard">Select Driver</caption>
+              <image placement="left" xlink:href="Found.New.Hardware.Wizard.3" />
+            </mediaLink>
+            <mediaLink>
+              <image placement="left" xlink:href="GoldDivider" />
+            </mediaLink>
+          </content>
+        </step>
+
+        <step>
+          <content>
+            <para>
+              Select the <userInput>Search for the best driver in these locations</userInput> option and check the
+              <userInput>Include this location in the search.</userInput> box.  Browse to the directory where the
+              freshly generated setup package was saved and click <userInput>Next</userInput>.
+            </para>
+            <mediaLink>
+              <caption placement="after" lead="Found New Hardware Wizard">Advanced Driver Search</caption>
+              <image placement="left" xlink:href="Found.New.Hardware.Wizard.4" />
+            </mediaLink>
+            <mediaLink>
+              <image placement="left" xlink:href="GoldDivider" />
+            </mediaLink>
+          </content>
+        </step>
+
+        <step>
+          <content>
+            <para>
+              The drivers should install and a message is shown indicating that the device is properly installed and ready for use.
+            </para>
+            <mediaLink>
+              <caption placement="after" lead="Found New Hardware Wizard">Finished</caption>
+              <image placement="left" xlink:href="Found.New.Hardware.Wizard.5" />
+            </mediaLink>
+            <mediaLink>
+              <image placement="left" xlink:href="GoldDivider" />
+            </mediaLink>
+          </content>
+        </step>
+
+      </steps>
+
+      
+
+        
+    </procedure>
+
+    <codeExample title="WinUsb Inf Example">
+      <code source=".\ConceptualContent\Example_Snippets\MCHP_Bootloader_WinUSB.inf" lang="inf"/>
+    </codeExample>
+
+    <codeExample title="LibUsb Inf Example">
+      <code source=".\ConceptualContent\Example_Snippets\MCHP_Bootloader_LibUsb.inf" lang="inf"/>
+    </codeExample>
+    <!-- <codeExample>Optional code example</codeExample> -->
+    <!-- <buildInstructions>Optional instructions for building a
+         code example.</buildInstructions> -->
+    <!-- <robustProgramming>Optional discussion of error handling and other
+         issues related to writing solid code.</robustProgramming> -->
+    <!-- <security>Optional discussion of security issues.</security> -->
+    <relatedTopics>
+      <!-- One or more of the following:
+           - A local link
+           - An external link
+           - A code entity reference
+
+      <link xlink:href="c7ed5d69-c342-471d-9122-ab50a5ea21b7">Creating a Usb Install Package</link>
+      <externalLink>
+          <linkText>Link text</linkText>
+          <linkAlternateText>Optional alternate link text</linkAlternateText>
+          <linkUri>URI</linkUri>
+      </externalLink>
+      <codeEntityReference>API member ID</codeEntityReference>
+
+      Examples:
+
+      <link xlink:href="00e97994-e9e6-46e0-b420-5be86b2f8278">Some other topic</link>
+
+      <externalLink>
+          <linkText>SHFB on CodePlex</linkText>
+          <linkAlternateText>Go to CodePlex</linkAlternateText>
+          <linkUri>http://shfb.codeplex.com</linkUri>
+      </externalLink>
+
+      <codeEntityReference>T:TestDoc.TestClass</codeEntityReference>
+      <codeEntityReference>P:TestDoc.TestClass.SomeProperty</codeEntityReference>
+      <codeEntityReference>M:TestDoc.TestClass.#ctor</codeEntityReference>
+      <codeEntityReference>M:TestDoc.TestClass.#ctor(System.String,System.Int32)</codeEntityReference>
+      <codeEntityReference>M:TestDoc.TestClass.ToString</codeEntityReference>
+      <codeEntityReference>M:TestDoc.TestClass.FirstMethod</codeEntityReference>
+      <codeEntityReference>M:TestDoc.TestClass.SecondMethod(System.Int32,System.String)</codeEntityReference>
+      -->
+    </relatedTopics>
+  </developerHowToDocument>
+</topic>

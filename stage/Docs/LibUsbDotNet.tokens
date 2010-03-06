@@ -1,0 +1,114 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<content xml:space="preserve" xmlns:ddue="http://ddue.schemas.microsoft.com/authoring/2003/5" xmlns:xlink="http://www.w3.org/1999/xlink">
+  <item id="Added"><ddue:legacyBold xmlns:ddue="http://ddue.schemas.microsoft.com/authoring/2003/5">Added</ddue:legacyBold></item>
+  <item id="Fixed"><ddue:legacyBold xmlns:ddue="http://ddue.schemas.microsoft.com/authoring/2003/5">Fixed</ddue:legacyBold></item>
+  <item id="Note"><command><legacyBold>Note</legacyBold></command></item>
+  <item id="ProjectFeatures"><ddue:list class="bullet" xmlns:ddue="http://ddue.schemas.microsoft.com/authoring/2003/5">
+      <ddue:listItem>
+        <ddue:para>Supports Microsofts generic user-mode usb driver, WinUsb.  Extended kernel level support for libusb-win32.</ddue:para>
+      </ddue:listItem>
+      <ddue:listItem>
+        <ddue:para>
+          Supports linux-like operating systems using
+          <ddue:externalLink>
+            <ddue:linkText>mono</ddue:linkText>
+            <ddue:linkAlternateText>www.mono-project</ddue:linkAlternateText>
+            <ddue:linkUri>http://www.mono-project.com</ddue:linkUri>
+            <ddue:linkTarget>_blank</ddue:linkTarget>
+          </ddue:externalLink>
+          .NET and
+          <ddue:externalLink>
+            <ddue:linkText>Libusb-1.0</ddue:linkText>
+            <ddue:linkAlternateText>Libusb-1.0</ddue:linkAlternateText>
+            <ddue:linkUri>http://sourceforge.net/projects/libusb/files/libusb-1.0/</ddue:linkUri>
+            <ddue:linkTarget>_blank</ddue:linkTarget>
+          </ddue:externalLink>.
+        </ddue:para>
+      </ddue:listItem>
+      <ddue:listItem>
+        <ddue:para>Code can be easily written to support winusb, libusb-win32, and linux libusb v1.x via a common UsbDevice class.</ddue:para>
+      </ddue:listItem>
+      <ddue:listItem>
+        <ddue:para>Includes a InfWizard utility (windows only)for creating generic INF/CAT files as well as spawning all the appropriate driver files (x86,x64, and ia64) for libusb-win32 and WinUSB.</ddue:para>
+      </ddue:listItem>
+      <ddue:listItem>
+        <ddue:para>Sandcastle documentation available in html and Microsoft Help 1.x (.chm) format.</ddue:para>
+      </ddue:listItem>
+      <ddue:listItem>
+        <ddue:para>
+          Device discovery using any or all of the folowing criteria:
+          <ddue:list class="bullet">
+            <ddue:listItem>
+              <ddue:para>VendorID</ddue:para>
+            </ddue:listItem>
+            <ddue:listItem>
+              <ddue:para>ProductID</ddue:para>
+            </ddue:listItem>
+            <ddue:listItem>
+              <ddue:para>Revision Code</ddue:para>
+            </ddue:listItem>
+            <ddue:listItem>
+              <ddue:para>Serial Number</ddue:para>
+            </ddue:listItem>
+            <ddue:listItem>
+              <ddue:para>Device Interface GUID</ddue:para>
+            </ddue:listItem>
+          </ddue:list>
+        </ddue:para>
+      </ddue:listItem>
+    </ddue:list></item>
+  <item id="ProjectLinks"><ddue:list class="bullet" xmlns:ddue="http://ddue.schemas.microsoft.com/authoring/2003/5">
+            <ddue:listItem>
+              <ddue:para>
+                <ddue:externalLink target="LibUsbDotNet_Downloads">
+                  <ddue:linkText>Download Page</ddue:linkText>
+                  <ddue:linkAlternateText>LibUsbDotNet Sourceforge Project Download Page</ddue:linkAlternateText>
+                  <ddue:linkUri>
+                    http://sourceforge.net/projects/libusbdotnet/files/
+                  </ddue:linkUri>
+                </ddue:externalLink>
+              </ddue:para>
+            </ddue:listItem>
+            <ddue:listItem>
+              <ddue:para>
+                <ddue:externalLink target="LibUsbDotNet_Support">
+                  <ddue:linkText>Support Forum</ddue:linkText>
+                  <ddue:linkAlternateText>LibUsbDotNet PHPBB Support Forum</ddue:linkAlternateText>
+                  <ddue:linkUri>
+                    http://sourceforge.net/apps/phpbb/libusbdotnet
+                  </ddue:linkUri>
+                </ddue:externalLink>
+              </ddue:para>
+            </ddue:listItem>
+            <ddue:listItem>
+              <ddue:para>
+                <ddue:externalLink target="LibUsbDotNet_Bugs">
+                  <ddue:linkText>Submit a Bug</ddue:linkText>
+                  <ddue:linkAlternateText>LibUsbDotNet Sourceforge Bug Tracker</ddue:linkAlternateText>
+                  <ddue:linkUri>
+                    http://sourceforge.net/tracker/?func=add&amp;group_id=206606&amp;atid=1140572
+                  </ddue:linkUri>
+                </ddue:externalLink>
+              </ddue:para>
+            </ddue:listItem>
+            <ddue:listItem>
+              <ddue:para>
+                <ddue:externalLink target="LibUsbDotNet_Bugs">
+                  <ddue:linkText>View Outstanding Bugs</ddue:linkText>
+                  <ddue:linkAlternateText>LibUsbDotNet Sourceforge Bug Tracker</ddue:linkAlternateText>
+                  <ddue:linkUri>
+                    http://sourceforge.net/tracker/?limit=50&amp;func=&amp;group_id=206606&amp;atid=1140572&amp;status=1&amp;submit=Filter
+                  </ddue:linkUri>
+                </ddue:externalLink>
+              </ddue:para>
+            </ddue:listItem>
+          </ddue:list></item>
+  <item id="Removed"><ddue:legacyBold xmlns:ddue="http://ddue.schemas.microsoft.com/authoring/2003/5">Removed</ddue:legacyBold></item>
+  <item id="Updated"><ddue:legacyBold xmlns:ddue="http://ddue.schemas.microsoft.com/authoring/2003/5">Updated</ddue:legacyBold></item>
+  <item id="Libusb-1.0"><ddue:externalLink>
+<ddue:linkText>Official Libusb-1.0 API Reference</ddue:linkText>
+<ddue:linkAlternateText>LibUsb-1.0 API Reference</ddue:linkAlternateText>
+<ddue:linkUri>http://libusb.sourceforge.net/api-1.0/index.html</ddue:linkUri>
+<ddue:linkTarget>_blank</ddue:linkTarget>
+</ddue:externalLink></item>
+</content>

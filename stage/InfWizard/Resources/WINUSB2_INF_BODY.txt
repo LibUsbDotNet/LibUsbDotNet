@@ -1,0 +1,114 @@
+[Version]
+Signature = "$Windows NT$"
+Class = WinUsbDevices
+ClassGuid={A219BCD5-74D8-4d79-A91F-01F749642227}
+Provider = %ProviderName%
+CatalogFile=#DRIVER_CAT_FILENAME#.cat
+DriverVer = #DRIVER_DATE#, #DRIVER_VERSION#
+
+; ========== Manufacturer/Models sections ===========
+; .ntx86, .ntia64, and .ntamd64
+
+[Manufacturer]
+%ProviderName% = #DRIVER_CAT_FILENAME#,ntx86,ntamd64,ntia64
+
+[#DRIVER_CAT_FILENAME#.ntx86]
+%USB\#DRIVER_CAT_FILENAME#.DeviceDesc% =#DRIVER_CAT_FILENAME#_Install, USB\VID_#VID#&PID_#PID#
+
+[#DRIVER_CAT_FILENAME#.ntamd64]
+%USB\#DRIVER_CAT_FILENAME#.DeviceDesc% =#DRIVER_CAT_FILENAME#_Install, USB\VID_#VID#&PID_#PID#
+
+[#DRIVER_CAT_FILENAME#.ntia64]
+%USB\#DRIVER_CAT_FILENAME#.DeviceDesc% =#DRIVER_CAT_FILENAME#_Install, USB\VID_#VID#&PID_#PID#
+
+; =================== Installation ===================
+
+;=========================================================================================
+;ClassInstall32 and ClassInstall_AddReg sections used to make new device manager category.
+;=========================================================================================
+[ClassInstall32]
+AddReg=ClassInstall_AddReg
+
+[ClassInstall_AddReg]
+HKR,,,,%DEVICEMANAGERCATEGORY%
+HKR,,Icon,,"-20"
+
+;[1]
+[#DRIVER_CAT_FILENAME#_Install]
+Include=winusb.inf
+Needs=WINUSB.NT
+
+;[2]
+[#DRIVER_CAT_FILENAME#_Install.Services]
+Include=winusb.inf
+AddService=WinUSB,0x00000002,WinUSB_ServiceInstall
+
+;[3]
+[WinUSB_ServiceInstall]
+DisplayName     = %WinUSB_SvcDesc%
+ServiceType     = 1
+StartType       = 3
+ErrorControl    = 1
+ServiceBinary   = %12%\WinUSB.sys
+
+;[4]
+[#DRIVER_CAT_FILENAME#_Install.Wdf]
+KmdfService=WINUSB, WinUsb_Install
+
+[WinUSB_Install]
+KmdfLibraryVersion=#KMDF_VER#
+
+;[5]
+[#DRIVER_CAT_FILENAME#_Install.HW]
+AddReg=Dev_AddReg
+
+[Dev_AddReg]
+HKR,,DeviceInterfaceGUIDs,0x10000,"{#DEVICE_INTERFACE_GUID#}"
+
+HKR,,"SurpriseRemovalOK",0x00010001,1
+HKR,,"Removable",0x00010001,1
+HKR,,"RemovalPolicy",0x00010001,3
+
+;[6]
+[#DRIVER_CAT_FILENAME#_Install.CoInstallers]
+AddReg=CoInstallers_AddReg
+CopyFiles=CoInstallers_CopyFiles
+
+[CoInstallers_AddReg]
+HKR,,CoInstallers32,0x00010000,"WdfCoInstaller#KMDF_FILE_VER#.dll,WdfCoInstaller","WinUSBCoInstaller2.dll"
+
+[CoInstallers_CopyFiles]
+WinUSBCoInstaller2.dll
+WdfCoInstaller#KMDF_FILE_VER#.dll
+
+[DestinationDirs]
+CoInstallers_CopyFiles=11
+
+; ================= Source Media Section =====================
+;[7]
+
+[SourceDisksNames]
+1 = %DISK_NAME%,,,\x86
+2 = %DISK_NAME%,,,\amd64
+3 = %DISK_NAME%,,,\ia64
+
+[SourceDisksFiles.x86]
+WinUSBCoInstaller2.dll=1
+WdfCoInstaller#KMDF_FILE_VER#.dll=1
+
+[SourceDisksFiles.amd64]
+WinUSBCoInstaller2.dll=2
+WdfCoInstaller#KMDF_FILE_VER#.dll=2
+
+[SourceDisksFiles.ia64]
+WinUSBCoInstaller2.dll=3
+WdfCoInstaller#KMDF_FILE_VER#.dll=3
+
+; =================== Strings ===================
+
+[Strings]
+ProviderName="#DEVICE_MANUFACTURER#"
+USB\#DRIVER_CAT_FILENAME#.DeviceDesc="#DEVICE_DESCRIPTION#"
+WinUSB_SvcDesc="#DEVICE_DESCRIPTION# Service #DRIVER_DATE#, #DRIVER_VERSION#"
+DISK_NAME="#DEVICE_DESCRIPTION# Install Disk"
+DEVICEMANAGERCATEGORY="WinUsb Devices"

@@ -1,0 +1,74 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<topic id="28cd2b6c-c041-442a-a0a2-ed93bed8379f" revisionNumber="1">
+  <developerConceptualDocument xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5" xmlns:xlink="http://www.w3.org/1999/xlink">
+    <!--
+  <summary>
+    <para>Optional summary abstract</para>
+  </summary>
+  -->
+    <introduction>
+      <para>
+        <!-- Caption after with lead-in text, far image alignment -->
+        <mediaLink>
+          <caption placement="after" lead="InfWizard">USB inf/setup package generator for LibUsb and WinUSB.</caption>
+          <image placement="center" xlink:href="Image.InfWizard.Welcome" />
+        </mediaLink>
+      </para>
+      <para>
+      </para>
+      <para>
+        <!-- Caption after with lead-in text, far image alignment -->
+        <mediaLink>
+          <caption placement="after" lead="InfWizard">Select a USB device to use as a starting point for your new usb device driver.  All parameters are fully configurable on the next screen.</caption>
+          <image placement="center" xlink:href="Image.InfWizard.DeviceSelection" />
+        </mediaLink>
+      </para>
+      <para>
+      </para>
+      <para>
+        <!-- Caption after with lead-in text, far image alignment -->
+        <mediaLink>
+          <caption placement="after" lead="InfWizard">Remove a USB device installation.</caption>
+          <image placement="center" xlink:href="Image.InfWizard.RemoveDevice" />
+        </mediaLink>
+      </para>
+      <para>
+      </para>
+      <para>
+        <!-- Caption after with lead-in text, far image alignment -->
+        <mediaLink>
+          <caption placement="after" lead="InfWizard">Choose the driver type, save location, spawn driver options, etc. Fine tune your usb device parameters.  Optionally save this profile for later use.</caption>
+          <image placement="center" xlink:href="Image.InfWizard.DeviceConfiguration" />
+        </mediaLink>
+      </para>
+      <para>
+      </para>
+    </introduction>
+    <relatedTopics>
+      <!-- One or more of the following:
+         - A local link
+         - An external link
+         - A code entity reference
+
+    <link xlink:href="Other Topic's ID">Link text</link>
+    <externalLink>
+        <linkText>Link text</linkText>
+        <linkAlternateText>Optional alternate link text</linkAlternateText>
+        <linkUri>URI</linkUri>
+    </externalLink>
+    <codeEntityReference>API member ID</codeEntityReference>
+
+    Examples:
+
+    <link xlink:href="00e97994-e9e6-46e0-b420-5be86b2f8278">Some other topic</link>
+
+    <externalLink>
+        <linkText>SHFB on CodePlex</linkText>
+        <linkAlternateText>Go to CodePlex</linkAlternateText>
+        <linkUri>http://www.codeplex.com/SHFB</linkUri>
+    </externalLink>
+
+    -->
+    </relatedTopics>
+  </developerConceptualDocument>
+</topic>

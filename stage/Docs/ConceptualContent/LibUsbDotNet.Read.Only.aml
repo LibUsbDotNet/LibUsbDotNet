@@ -1,0 +1,66 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<topic id="9926451f-29bf-4fae-9233-f6467ed072c7" revisionNumber="1">
+<developerHowToDocument xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5" xmlns:xlink="http://www.w3.org/1999/xlink">
+    <!-- ><summary><para>Optional summary abstract</para></summary> -->
+    <introduction>
+      <para>
+      </para>
+    </introduction>
+    <procedure>
+      <title>Read Only (Polling): Console Application Description</title>
+      <steps class="ordered">
+        <step>
+          <content>
+            <para>
+    	Opens a USB device by vendor and product id.
+    	</para>
+          </content>
+        </step>
+        <step>
+          <content>
+            <para>
+ 	    Opens a <CREF>T:LibUsbDotNet.UsbEndpointReader</CREF> class for reading.
+     	</para>
+          </content>
+        </step>
+        <step>
+          <content>
+            <para>
+ 	    Reads and displays usb device output from <CREF>F:LibUsbDotNet.Main.ReadEndpointID.Ep01</CREF> until no data is received for 5 seconds.</para>
+          </content>
+        </step>
+      </steps>
+    </procedure>
+    <codeExample>
+      <code source="..\Examples\Read.Only\ReadOnly.cs" lang="cs" />
+    </codeExample>
+    <codeExample>
+      <code source="..\Examples\Read.Only\ReadOnly.vb" lang="vb" />
+    </codeExample>    
+    <buildInstructions>
+      <list class="ordered">
+        <listItem>
+          <para>
+		Create a new console application in your 
+		<externalLink target="SharpDevelop_Project_Page"><linkText>favorite designer</linkText><linkAlternateText>SharpDevelop .NET IDE</linkAlternateText><linkUri>http://www.icsharpcode.net/OpenSource/SD</linkUri></externalLink>.
+	</para>
+        </listItem>
+        <listItem>
+          <para>
+	Verify your project references:
+		<list class="bullet"><listItem><para>System.dll</para></listItem><listItem><para>LibUsbDotNet.dll</para></listItem></list></para>
+        </listItem>
+        <listItem>
+          <para>
+	Add/edit the main class.  Copy/Paste code from one of the examples above.
+	</para>
+        </listItem>
+      </list>
+    </buildInstructions>
+    <alert class="note">
+    Example usb device firmware is located in the <localUri>[InstallDirectory]\Benchmark\Firmware\[Manufacturer]</localUri> directory.
+  </alert>
+    <relatedTopics>
+    </relatedTopics>
+  </developerHowToDocument>
+</topic>

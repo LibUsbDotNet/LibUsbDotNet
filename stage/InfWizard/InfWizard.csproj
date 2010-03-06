@@ -1,0 +1,197 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Project DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003" ToolsVersion="3.5">
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <ProductVersion>9.0.30729</ProductVersion>
+    <SchemaVersion>2.0</SchemaVersion>
+    <ProjectGuid>{EB5488BF-EA9C-4920-84CB-6C2652A4F163}</ProjectGuid>
+    <OutputType>WinExe</OutputType>
+    <AppDesignerFolder>Properties</AppDesignerFolder>
+    <RootNamespace>InfWizard</RootNamespace>
+    <AssemblyName>InfWizard</AssemblyName>
+    <FileUpgradeFlags>
+    </FileUpgradeFlags>
+    <OldToolsVersion>2.0</OldToolsVersion>
+    <UpgradeBackupLocation>
+    </UpgradeBackupLocation>
+    <ApplicationIcon>Untitled-1.ico</ApplicationIcon>
+    <TargetFrameworkVersion>v2.0</TargetFrameworkVersion>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
+    <OutputPath>bin\Debug\</OutputPath>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <DebugType>pdbonly</DebugType>
+    <Optimize>true</Optimize>
+    <OutputPath>..\bin\Release\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <ItemGroup>
+    <Reference Include="System" />
+    <Reference Include="System.Data" />
+    <Reference Include="System.Deployment" />
+    <Reference Include="System.Design" />
+    <Reference Include="System.Drawing" />
+    <Reference Include="System.Windows.Forms" />
+    <Reference Include="System.Xml" />
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="..\LibWinUsb\Internal\UsbRegex\BaseRegHardwareID.cs" />
+    <Compile Include="..\LibWinUsb\Internal\UsbRegex\BaseRegSymbolicName.cs" />
+    <Compile Include="..\LibWinUsb\Internal\UsbRegex\NamedGroup.cs" />
+    <Compile Include="..\LibWinUsb\Internal\UsbRegex\RegHardwareID.cs" />
+    <Compile Include="..\LibWinUsb\Internal\UsbRegex\RegSymbolicName.cs" />
+    <Compile Include="..\LibWinUsb\Main\UsbSymbolicName.cs" />
+    <Compile Include="DynamicProps\DynamicPropDescriptor.cs" />
+    <Compile Include="DynamicProps\DynamicProps.cs" />
+    <Compile Include="DynamicProps\DynamicPropWrapper.cs" />
+    <Compile Include="DynamicProps\DynamicTypeDescriptor.cs" />
+    <Compile Include="FileDialogUITypeEditor.cs" />
+    <Compile Include="fSpawnDrivers.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="fSpawnDrivers.Designer.cs">
+      <DependentUpon>fSpawnDrivers.cs</DependentUpon>
+    </Compile>
+    <Compile Include="InfWriters\InfBaseWriter.cs" />
+    <Compile Include="InfWriters\InfTagKeys.cs" />
+    <Compile Include="InfWriters\LibUsbInfWriter.cs" />
+    <Compile Include="InfWriters\LibUsbInfWriter.GetSpawnDrivers.cs" />
+    <Compile Include="InfWriters\WinUsbInfWriter.cs" />
+    <Compile Include="InfWriters\WinUsbInfWriter.GetSpawnDrivers.cs" />
+    <Compile Include="fRemoveDevice.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="fRemoveDevice.Designer.cs">
+      <DependentUpon>fRemoveDevice.cs</DependentUpon>
+    </Compile>
+    <Compile Include="resSpawnDriverLibusb.Designer.cs">
+      <DependentUpon>resSpawnDriverLibusb.resx</DependentUpon>
+    </Compile>
+    <Compile Include="resSpawnDriverWinusb.Designer.cs">
+      <DependentUpon>resSpawnDriverWinusb.resx</DependentUpon>
+    </Compile>
+    <Compile Include="SetupApi.cs" />
+    <Compile Include="TagnReplace\TagNReplace.cs" />
+    <Compile Include="TagnReplace\TagNReplaceFile.cs" />
+    <Compile Include="TagnReplace\TagNReplaceFormatters.cs" />
+    <Compile Include="TagnReplace\TagNReplaceGlobals.cs" />
+    <Compile Include="TagnReplace\TagNReplaceList.cs" />
+    <Compile Include="TagnReplace\TagNReplaceString.cs" />
+    <Compile Include="TagnReplace\TagNReplaceString.FormatterCollection.cs" />
+    <Compile Include="WizardClassHelpers\DeviceItem.cs" />
+    <Compile Include="WizardClassHelpers\DeviceSelectionHelper.cs" />
+    <Compile Include="Wizard\Header.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="Wizard\HeaderDesigner.cs" />
+    <Compile Include="Wizard\InfoContainer.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="Wizard\InfoContainerDesigner.cs" />
+    <Compile Include="Wizard\InfoPage.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="Wizard\InfoPageDesigner.cs" />
+    <Compile Include="Wizard\PageCollection.cs" />
+    <Compile Include="Wizard\PageEventHandler.cs" />
+    <Compile Include="Wizard\Wizard.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="Wizard\WizardDesigner.cs" />
+    <Compile Include="Wizard\WizardPage.cs">
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Include="Wizard\WizardPageDesigner.cs" />
+    <Compile Include="fInfWizard.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="fInfWizard.Designer.cs">
+      <DependentUpon>fInfWizard.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Program.cs" />
+    <Compile Include="Properties\AssemblyInfo.cs" />
+    <EmbeddedResource Include="fSpawnDrivers.resx">
+      <DependentUpon>fSpawnDrivers.cs</DependentUpon>
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+    <EmbeddedResource Include="fRemoveDevice.resx">
+      <DependentUpon>fRemoveDevice.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="resSpawnDriverLibusb.resx">
+      <SubType>Designer</SubType>
+      <Generator>ResXFileCodeGenerator</Generator>
+    </EmbeddedResource>
+    <EmbeddedResource Include="resSpawnDriverWinusb.resx">
+      <SubType>Designer</SubType>
+      <Generator>ResXFileCodeGenerator</Generator>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Wizard\Header.resx">
+      <DependentUpon>Header.cs</DependentUpon>
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Wizard\InfoContainer.resx">
+      <DependentUpon>InfoContainer.cs</DependentUpon>
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Wizard\InfoPage.resx">
+      <DependentUpon>InfoPage.cs</DependentUpon>
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Wizard\Wizard.resx">
+      <DependentUpon>Wizard.cs</DependentUpon>
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Wizard\WizardPage.resx">
+      <DependentUpon>WizardPage.cs</DependentUpon>
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+    <EmbeddedResource Include="fInfWizard.resx">
+      <DependentUpon>fInfWizard.cs</DependentUpon>
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Properties\Resources.resx">
+      <SubType>Designer</SubType>
+      <Generator>ResXFileCodeGenerator</Generator>
+    </EmbeddedResource>
+    <Compile Include="Properties\Resources.Designer.cs">
+      <DependentUpon>Resources.resx</DependentUpon>
+    </Compile>
+    <None Include="Properties\Settings.settings">
+      <Generator>SettingsSingleFileGenerator</Generator>
+    </None>
+    <Compile Include="Properties\Settings.Designer.cs">
+      <DependentUpon>Settings.settings</DependentUpon>
+    </Compile>
+    <None Include="app.config" />
+    <None Include="Resources\maintext.txt" />
+    <None Include="Resources\libusb_inf_body.txt" />
+    <None Include="Resources\LIBUSB_CAT_BODY.txt" />
+    <None Include="Resources\WINUSB_INF_BODY.txt" />
+    <None Include="Resources\WINUSB_CAT_BODY.txt" />
+    <None Include="Resources\REMOVE_DEVICE_WARNING.txt" />
+    <None Include="Resources\WINUSB2_INF_BODY.txt" />
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="Untitled-1.ico" />
+    <Content Include="Wizard\Wizard.bmp" />
+    <Content Include="Wizard\wizBigOnlineFolder.gif" />
+  </ItemGroup>
+  <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
+  <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
+       Other similar extension points exist, see Microsoft.Common.targets.
+  <Target Name="BeforeBuild">
+  </Target>
+  <Target Name="AfterBuild">
+  </Target>
+  -->
+</Project>

@@ -1,0 +1,47 @@
+EXPORTS
+    usb_open
+    usb_close
+    usb_get_string
+    usb_get_string_simple
+    usb_get_descriptor_by_endpoint
+    usb_get_descriptor
+    usb_bulk_write
+    usb_bulk_read
+    usb_interrupt_write
+    usb_interrupt_read
+    usb_control_msg
+    usb_set_configuration
+    usb_claim_interface
+    usb_release_interface
+    usb_set_altinterface
+    usb_resetep
+    usb_clear_halt
+    usb_reset
+    usb_strerror
+    usb_init
+    usb_set_debug
+    usb_find_busses
+    usb_find_devices
+    usb_device
+    usb_get_busses
+    usb_install_service_np
+    usb_install_service_np_rundll
+    usb_uninstall_service_np
+    usb_uninstall_service_np_rundll
+    usb_install_driver_np
+    usb_install_driver_np_rundll
+    usb_touch_inf_file_np
+    usb_touch_inf_file_np_rundll
+    usb_get_version
+    usb_isochronous_setup_async
+    usb_bulk_setup_async
+    usb_interrupt_setup_async
+    usb_submit_async
+    usb_reap_async
+    usb_reap_async_nocancel
+    usb_cancel_async
+    usb_free_async  
+    usb_install_needs_restart_np
+
+
+

@@ -1,0 +1,12 @@
+﻿v2.2.2 (01/19/2010)
+
+
+* Fixed Bug ID: 2934547 - DeviceNotifier not working.
+
+  On Linux like OSes the DeviceNotifier never fires events. On Windows, a
+  DllNotFound exception is thrown.
+
+* Fixed Bug ID: 2933530 - Composite WinUSB not found.
+
+  WinUSB interfaces that are part of a composite device do not appear in
+  the WinUsbRegistry.DeviceList.
