@@ -97,11 +97,11 @@ namespace LibUsbDotNet.DeviceNotify
         }
 
         ///<summary>
-        ///Returns a <see cref="T:System.String"></see> that represents the current <see cref="DeviceNotifyEventArgs"></see>.
+        ///Returns a <see cref="T:System.String"/> that represents the current <see cref="DeviceNotifyEventArgs"/>.
         ///</summary>
         ///
         ///<returns>
-        ///A <see cref="System.String"></see> that represents the current <see cref="DeviceNotifyEventArgs"></see>.
+        ///A <see cref="System.String"/> that represents the current <see cref="DeviceNotifyEventArgs"/>.
         ///</returns>
         public override string ToString()
         {

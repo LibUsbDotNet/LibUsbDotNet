@@ -164,16 +164,16 @@ namespace LibUsbDotNet.Info
         }
 
         ///<summary>
-        ///Returns a <see cref="T:System.String"></see> that represents the current <see cref="UsbInterfaceInfo"></see>.
+        ///Returns a <see cref="T:System.String"/> that represents the current <see cref="UsbInterfaceInfo"/>.
         ///</summary>
         ///
         ///<returns>
-        ///A <see cref="System.String"></see> that represents the current <see cref="UsbInterfaceInfo"></see>.
+        ///A <see cref="System.String"/> that represents the current <see cref="UsbInterfaceInfo"/>.
         ///</returns>
         public override string ToString() { return ToString("", UsbDescriptor.ToStringParamValueSeperator, UsbDescriptor.ToStringFieldSeperator); }
 
         ///<summary>
-        ///Returns a <see cref="T:System.String"></see> that represents the current <see cref="UsbInterfaceInfo"/>.
+        ///Returns a <see cref="T:System.String"/> that represents the current <see cref="UsbInterfaceInfo"/>.
         ///</summary>
         ///
         ///<param name="prefixSeperator">The field prefix string.</param>

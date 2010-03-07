@@ -236,11 +236,11 @@ namespace LibUsbDotNet.WinUsb
 
 
         ///<summary>
-        ///Returns a <see cref="T:System.String"></see> that represents the current <see cref="T:System.Object"></see>.
+        ///Returns a <see cref="T:System.String"/> that represents the current <see cref="T:System.Object"/>.
         ///</summary>
         ///
         ///<returns>
-        ///A <see cref="System.String"></see> that represents the current <see cref="T:System.Object"></see>.
+        ///A <see cref="System.String"/> that represents the current <see cref="T:System.Object"/>.
         ///</returns>
         public override string ToString()
         {

@@ -76,17 +76,17 @@ namespace LibUsbDotNet.Descriptors
         public readonly byte StringIndex;
 
         ///<summary>
-        ///Returns a <see cref="T:System.String"></see> that represents the current <see cref="UsbInterfaceDescriptor"></see>.
+        ///Returns a <see cref="T:System.String"/> that represents the current <see cref="UsbInterfaceDescriptor"/>.
         ///</summary>
         ///
         ///<returns>
-        ///A <see cref="System.String"></see> that represents the current <see cref="UsbInterfaceDescriptor"></see>.
+        ///A <see cref="System.String"/> that represents the current <see cref="UsbInterfaceDescriptor"/>.
         ///</returns>
         public override string ToString() { return ToString("", ToStringParamValueSeperator, ToStringFieldSeperator); }
 
 
         ///<summary>
-        ///Returns a <see cref="T:System.String"></see> that represents the current <see cref="UsbInterfaceDescriptor"/>.
+        ///Returns a <see cref="T:System.String"/> that represents the current <see cref="UsbInterfaceDescriptor"/>.
         ///</summary>
         ///
         ///<param name="prefixSeperator">The field prefix string.</param>

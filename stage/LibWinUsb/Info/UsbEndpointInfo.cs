@@ -49,16 +49,16 @@ namespace LibUsbDotNet.Info
         }
 
         ///<summary>
-        ///Returns a <see cref="T:System.String"></see> that represents the current <see cref="UsbEndpointInfo"></see>.
+        ///Returns a <see cref="T:System.String"/> that represents the current <see cref="UsbEndpointInfo"/>.
         ///</summary>
         ///
         ///<returns>
-        ///A <see cref="System.String"></see> that represents the current <see cref="UsbEndpointInfo"></see>.
+        ///A <see cref="System.String"/> that represents the current <see cref="UsbEndpointInfo"/>.
         ///</returns>
         public override string ToString() { return Descriptor.ToString(); }
 
         ///<summary>
-        ///Returns a <see cref="T:System.String"></see> that represents the current <see cref="UsbEndpointInfo"/>.
+        ///Returns a <see cref="T:System.String"/> that represents the current <see cref="UsbEndpointInfo"/>.
         ///</summary>
         ///
         ///<param name="prefixSeperator">The field prefix string.</param>

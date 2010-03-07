@@ -99,14 +99,14 @@ namespace MonoLibUsb.ShowInfo
             Console.WriteLine("Transfer Submitted..");
             while (userCompleted[0] == 0)
             {
-                e = (MonoUsbError) (r = Usb.libusb_handle_events(sessionHandle));
+                e = (MonoUsbError) (r = Usb.HandleEvents(sessionHandle));
                 if (r < 0)
                 {
                     if (e == MonoUsbError.LIBUSB_ERROR_INTERRUPTED)
                         continue;
                     transfer.Cancel();
                     while (userCompleted[0] == 0)
-                        if (Usb.libusb_handle_events(sessionHandle) < 0)
+                        if (Usb.HandleEvents(sessionHandle) < 0)
                             break;
                     transfer.Free();
                     return e;
@@ -155,21 +155,21 @@ namespace MonoLibUsb.ShowInfo
                         if (sessionHandle.IsInvalid) throw new Exception("Invalid session handle.");
 
                         Console.WriteLine("Opening Device..");
-                        device_handle = MonoLibUsbApi.libusb_open_device_with_vid_pid(sessionHandle, MY_VID, MY_PID);
+                        device_handle = MonoLibUsbApi.OpenDeviceWithVidPid(sessionHandle, MY_VID, MY_PID);
                         if ((device_handle == null) || device_handle.IsInvalid) break;
                         if (TEST_REST_DEVICE)
                         {
-                            MonoLibUsbApi.libusb_reset_device(device_handle);
+                            MonoLibUsbApi.ResetDevice(device_handle);
                             device_handle.Close();
-                            device_handle = MonoLibUsbApi.libusb_open_device_with_vid_pid(sessionHandle, MY_VID, MY_PID);
+                            device_handle = MonoLibUsbApi.OpenDeviceWithVidPid(sessionHandle, MY_VID, MY_PID);
                             if ((device_handle == null) || device_handle.IsInvalid) break;
                         }
                         Console.WriteLine("Set Config..");
-                        r = MonoLibUsbApi.libusb_set_configuration(device_handle, MY_CONFIG);
+                        r = MonoLibUsbApi.SetConfiguration(device_handle, MY_CONFIG);
                         if (r != 0) break;
 
                         Console.WriteLine("Set Interface..");
-                        r = MonoLibUsbApi.libusb_claim_interface(device_handle, MY_INTERFACE);
+                        r = MonoLibUsbApi.ClaimInterface(device_handle, MY_INTERFACE);
                         if (r != 0) break;
 
                         // Write test data
@@ -190,7 +190,7 @@ namespace MonoLibUsb.ShowInfo
                             }
                             else
                             {
-                                r = MonoLibUsbApi.libusb_bulk_transfer(device_handle,
+                                r = MonoLibUsbApi.BulkTransfer(device_handle,
                                                                        MY_EP_WRITE,
                                                                        testWriteData,
                                                                        TEST_WRITE_LEN,
@@ -231,7 +231,7 @@ namespace MonoLibUsb.ShowInfo
                             }
                             else
                             {
-                                r = MonoLibUsbApi.libusb_bulk_transfer(device_handle,
+                                r = MonoLibUsbApi.BulkTransfer(device_handle,
                                                                        MY_EP_READ,
                                                                        testReadData,
                                                                        TEST_READ_LEN,
@@ -262,7 +262,7 @@ namespace MonoLibUsb.ShowInfo
                     {
                         if (!device_handle.IsInvalid)
                         {
-                            MonoLibUsbApi.libusb_release_interface(device_handle, MY_INTERFACE);
+                            MonoLibUsbApi.ReleaseInterface(device_handle, MY_INTERFACE);
                             device_handle.Close();
                         }
                     }
@@ -274,11 +274,7 @@ namespace MonoLibUsb.ShowInfo
                 }
             } while (++loopCount < TEST_LOOP_COUNT);
 
-            Console.WriteLine();
-            Console.ForegroundColor = ConsoleColor.Cyan;
-            Console.Write("Done!");
-            Console.ForegroundColor = ConsoleColor.Gray;
-            Console.Write("  [Press any key to exit]");
+            Console.WriteLine("\nDone!  [Press any key to exit]");
             Console.ReadKey();
 
             return r;

@@ -109,11 +109,11 @@ namespace MonoLibUsb.Descriptors
         public readonly byte ConfigurationCount;
 
         ///<summary>
-        ///Returns a <see cref="T:System.String"></see> that represents the current <see cref="MonoUsbDeviceDescriptor"></see>.
+        ///Returns a <see cref="T:System.String"/> that represents the current <see cref="MonoUsbDeviceDescriptor"/>.
         ///</summary>
         ///
         ///<returns>
-        ///A <see cref="System.String"></see> that represents the current <see cref="MonoUsbDeviceDescriptor"></see>.
+        ///A <see cref="System.String"/> that represents the current <see cref="MonoUsbDeviceDescriptor"/>.
         ///</returns>
         public override string ToString()
         {

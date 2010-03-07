@@ -106,11 +106,11 @@ namespace LibUsbDotNet
 
 
         ///<summary>
-        ///Returns a <see cref="T:System.String"></see> that represents the current <see cref="UsbError"></see>.
+        ///Returns a <see cref="T:System.String"/> that represents the current <see cref="UsbError"/>.
         ///</summary>
         ///
         ///<returns>
-        ///A <see cref="System.String"></see> that represents the current <see cref="UsbError"></see>.
+        ///A <see cref="System.String"/> that represents the current <see cref="UsbError"/>.
         ///</returns>
         public override string ToString()
         {
@@ -130,7 +130,7 @@ namespace LibUsbDotNet
             }
             else if (errorCode == ErrorCode.MonoApiError && ret != 0)
             {
-                win32Error = ((MonoUsbError) ret) + ":" + MonoLibUsbApi.libusb_strerror((MonoUsbError) ret);
+                win32Error = ((MonoUsbError) ret) + ":" + MonoLibUsbApi.StrError((MonoUsbError) ret);
             }
             UsbError err = new UsbError(errorCode, ret, win32Error, description, sender);
             lock (mLastErrorString)

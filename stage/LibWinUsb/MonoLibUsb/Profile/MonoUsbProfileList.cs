@@ -92,7 +92,7 @@ namespace MonoLibUsb.Profile
                 {
                     if (mList[iFoundOldIndex].ProfileHandle.DangerousGetHandle().ToInt64() == newProfile.ProfileHandle.DangerousGetHandle().ToInt64())
                     {
-                        //MonoLibUsbApi.libusb_ref_device(mList[iFoundOldIndex].ProfileHandle.DangerousGetHandle());
+                        //MonoLibUsbApi.RefDevice(mList[iFoundOldIndex].ProfileHandle.DangerousGetHandle());
                     }
                     //Console.WriteLine("DeviceDiscovery: Unchanged: Orig:{0} New:{1}", mList[iFoundOldIndex].ProfileHandle.DangerousGetHandle(), newProfile.ProfileHandle.DangerousGetHandle());
                     mList[iFoundOldIndex].mDiscovered = true;
@@ -130,7 +130,7 @@ namespace MonoLibUsb.Profile
         /// <para>The <see cref="MonoUsbProfileList"/> has a crude form of built-in device notification that works on all platforms. By adding an event handler to the <see cref="AddRemoveEvent"/> changes in the device profile list are reported when <see cref="Refresh"/> is called.</para>
         /// </remarks>
         /// <param name="sessionHandle">A valid <see cref="MonoUsbSessionHandle"/>.</param>
-        /// <returns>The number of devices in the outputted list, or <see cref="MonoUsbError.LIBUSB_ERROR_NO_MEM"></see> on memory allocation failure.</returns>
+        /// <returns>The number of devices in the outputted list, or <see cref="MonoUsbError.LIBUSB_ERROR_NO_MEM"/> on memory allocation failure.</returns>
         /// <example>
         /// <code source="..\MonoLibUsb\MonoUsb.ShowInfo\ShowInfo.cs" lang="cs"/>
         /// </example>
@@ -141,11 +141,11 @@ namespace MonoLibUsb.Profile
                 MonoUsbProfileList newList = new MonoUsbProfileList();
                 MonoUsbProfileListHandle monoUSBProfileListHandle;
 
-                int ret = MonoLibUsbApi.libusb_get_device_list(sessionHandle, out monoUSBProfileListHandle);
+                int ret = MonoLibUsbApi.GetDeviceList(sessionHandle, out monoUSBProfileListHandle);
                 if (ret < 0 || monoUSBProfileListHandle.IsInvalid)
                 {
 #if LIBUSBDOTNET
-                    UsbError.Error(ErrorCode.MonoApiError, ret, "Refresh:libusb_get_device_list Failed", this);
+                    UsbError.Error(ErrorCode.MonoApiError, ret, "Refresh:GetDeviceList Failed", this);
 #else
                     System.Diagnostics.Debug.Print("libusb_get_device_list failed:{0} {1}",
                                                    (MonoUsbError) ret,

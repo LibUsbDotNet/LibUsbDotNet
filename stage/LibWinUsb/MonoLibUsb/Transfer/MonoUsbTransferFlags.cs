@@ -36,13 +36,13 @@ namespace MonoLibUsb.Transfer
         LIBUSB_TRANSFER_SHORT_NOT_OK = 1 << 0,
 
         /// <summary>
-        /// Automatically free() transfer buffer during libusb_free_transfer()
+        /// Automatically free() transfer buffer during FreeTransfer()
         /// </summary>
         LIBUSB_TRANSFER_FREE_BUFFER = 1 << 1,
 
         /// <summary>
-        /// Automatically call libusb_free_transfer() after callback returns.
-        /// If this flag is set, it is illegal to call libusb_free_transfer()
+        /// Automatically call FreeTransfer() after callback returns.
+        /// If this flag is set, it is illegal to call FreeTransfer()
         /// from your transfer callback, as this will result in a double-free
         /// when this flag is acted upon.
         /// </summary>

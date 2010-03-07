@@ -37,7 +37,7 @@ namespace MonoLibUsb
         private static UnixNativeTimeval mWaitUnixNativeTimeval;
 
         /// <summary>
-        /// Gets the <see cref="MonoUsbSessionHandle"/> that was initialized in <see cref="Init()"/> with <see cref="MonoLibUsbApi.libusb_init(ref IntPtr)"/>.
+        /// Gets the <see cref="MonoUsbSessionHandle"/> that was initialized in <see cref="Init()"/> with <see cref="MonoLibUsbApi.Init"/>.
         /// </summary>
         /// <remarks>
         /// This structure is needed for members that require a <see cref="MonoUsbSessionHandle"/> parameter when using the <see cref="MonoUsbEventHandler"/>.
@@ -48,7 +48,7 @@ namespace MonoLibUsb
         }
 
         /// <summary>
-        /// False if the handle_events thread is running and periodically calling <see cref="MonoLibUsbApi.libusb_handle_events_timeout"/>.
+        /// False if the handle_events thread is running and periodically calling <see cref="MonoLibUsbApi.HandleEventsTimeout"/>.
         /// </summary>
         public static bool IsStopped
         {
@@ -57,7 +57,7 @@ namespace MonoLibUsb
 
         /// <summary>
         /// Stops the handle_events thread.
-        /// Exits the <see cref="SessionHandle"/> by calling <see cref="MonoLibUsbApi.libusb_exit(IntPtr)"/>.
+        /// Exits the <see cref="SessionHandle"/> by calling <see cref="MonoLibUsbApi.Exit"/>.
         /// </summary>
         public static void Exit()
         {
@@ -73,21 +73,21 @@ namespace MonoLibUsb
         {
             mIsStoppedEvent.Reset();
             while (mRunning)
-                MonoLibUsbApi.libusb_handle_events_timeout(mSessionHandle, ref mWaitUnixNativeTimeval);
+                MonoLibUsbApi.HandleEventsTimeout(mSessionHandle, ref mWaitUnixNativeTimeval);
 
             mIsStoppedEvent.Set();
         }
 
 
         /// <summary>
-        /// Calls <see cref="MonoLibUsbApi.libusb_init(ref IntPtr)"/> and initialize "handle_events" thread. 
+        /// Calls <see cref="MonoLibUsbApi.Init"/> and initialize "handle_events" thread. 
         /// </summary>
         /// <param name="tvSec">handle_events service interval seconds.</param>
         /// <param name="tvUsec">handle_events service interval milliseconds.</param>
         public static void Init(long tvSec, long tvUsec) { Init(new UnixNativeTimeval(tvSec, tvUsec)); }
 
         /// <summary>
-        /// Calls <see cref="MonoLibUsbApi.libusb_init(ref IntPtr)"/> and initialize "handle_events" thread. 
+        /// Calls <see cref="MonoLibUsbApi.Init"/> and initialize "handle_events" thread. 
         /// </summary>
         public static void Init() { Init(UnixNativeTimeval.Default); }
 
@@ -106,7 +106,7 @@ namespace MonoLibUsb
         }
 
         /// <summary>
-        /// Starts the handle_events thread executing <see cref="MonoLibUsbApi.libusb_handle_events_timeout"/>.
+        /// Starts the handle_events thread executing <see cref="MonoLibUsbApi.HandleEventsTimeout"/>.
         /// </summary>
         /// <returns>
         /// True if the thread is started.

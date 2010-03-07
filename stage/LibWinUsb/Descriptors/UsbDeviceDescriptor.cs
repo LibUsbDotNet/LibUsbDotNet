@@ -120,16 +120,16 @@ namespace LibUsbDotNet.Descriptors
         }
 
         ///<summary>
-        ///Returns a <see cref="T:System.String"></see> that represents the current <see cref="UsbDeviceDescriptor"></see>.
+        ///Returns a <see cref="T:System.String"/> that represents the current <see cref="UsbDeviceDescriptor"/>.
         ///</summary>
         ///
         ///<returns>
-        ///A <see cref="System.String"></see> that represents the current <see cref="UsbDeviceDescriptor"></see>.
+        ///A <see cref="System.String"/> that represents the current <see cref="UsbDeviceDescriptor"/>.
         ///</returns>
         public override string ToString() { return ToString("", ToStringParamValueSeperator, ToStringFieldSeperator); }
 
         ///<summary>
-        ///Returns a <see cref="T:System.String"></see> that represents the current <see cref="UsbDeviceDescriptor"/>.
+        ///Returns a <see cref="T:System.String"/> that represents the current <see cref="UsbDeviceDescriptor"/>.
         ///</summary>
         ///
         ///<param name="prefixSeperator">The field prefix string.</param>

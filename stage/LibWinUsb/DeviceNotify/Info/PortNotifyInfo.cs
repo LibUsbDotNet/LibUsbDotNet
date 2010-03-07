@@ -50,11 +50,11 @@ namespace LibUsbDotNet.DeviceNotify.Info
         }
 
         ///<summary>
-        ///Returns a <see cref="T:System.String"></see> that represents the current <see cref="PortNotifyInfo"></see>.
+        ///Returns a <see cref="T:System.String"/> that represents the current <see cref="PortNotifyInfo"/>.
         ///</summary>
         ///
         ///<returns>
-        ///A <see cref="System.String"></see> that represents the current <see cref="PortNotifyInfo"></see>.
+        ///A <see cref="System.String"/> that represents the current <see cref="PortNotifyInfo"/>.
         ///</returns>
         public override string ToString() { return string.Format("[Port Name:{0}] ", Name); }
 

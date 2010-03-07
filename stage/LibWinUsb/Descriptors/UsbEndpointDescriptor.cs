@@ -104,16 +104,16 @@ namespace LibUsbDotNet.Descriptors
         }
 
         ///<summary>
-        ///Returns a <see cref="T:System.String"></see> that represents the current <see cref="UsbEndpointDescriptor"></see>.
+        ///Returns a <see cref="T:System.String"/> that represents the current <see cref="UsbEndpointDescriptor"/>.
         ///</summary>
         ///
         ///<returns>
-        ///A <see cref="System.String"></see> that represents the current <see cref="UsbEndpointDescriptor"></see>.
+        ///A <see cref="System.String"/> that represents the current <see cref="UsbEndpointDescriptor"/>.
         ///</returns>
         public override string ToString() { return ToString("", ToStringParamValueSeperator, ToStringFieldSeperator); }
 
         ///<summary>
-        ///Returns a <see cref="T:System.String"></see> that represents the current <see cref="UsbEndpointDescriptor"/>.
+        ///Returns a <see cref="T:System.String"/> that represents the current <see cref="UsbEndpointDescriptor"/>.
         ///</summary>
         ///
         ///<param name="prefixSeperator">The field prefix string.</param>

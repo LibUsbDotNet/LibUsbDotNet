@@ -57,7 +57,7 @@ namespace MonoLibUsb
         {
             if (!IsInvalid)
             {
-                MonoLibUsbApi.libusb_close(handle);
+                MonoLibUsbApi.Close(handle);
                 SetHandleAsInvalid();
                 return true;
             }

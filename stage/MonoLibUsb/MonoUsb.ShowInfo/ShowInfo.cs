@@ -6,39 +6,49 @@ namespace MonoLibUsb.ShowInfo
 {
     internal class ShowInfo
     {
+        // The first time the Session property is used it creates a new session
+        // handle instance in '__sessionHandle' and returns it. Susequent 
+        // request simply return '__sessionHandle'.
+        private static MonoUsbSessionHandle __sessionHandle;
+        public static MonoUsbSessionHandle Session
+        {
+            get
+            {
+                if (ReferenceEquals(__sessionHandle, null))
+                    __sessionHandle = new MonoUsbSessionHandle();
+                return __sessionHandle;
+            }
+        }
         public static void Main(string[] args)
         {
             int ret;
-            MonoUsbSessionHandle sessionHandle;
             MonoUsbProfileList profileList = null;
 
             // Initialize the context.
-            sessionHandle=new MonoUsbSessionHandle();
-            if (sessionHandle.IsInvalid) throw new Exception("Failed to initialize context.");
-            try
-            {
-                MonoLibUsbApi.libusb_set_debug(sessionHandle, 0);
-                // Create a MonoUsbProfileList instance.
-                profileList = new MonoUsbProfileList();
+            if (Session.IsInvalid) 
+                throw new Exception("Failed to initialize context.");
 
-                // The list is initially empty.
-                // Each time refresh is called the list contents are updated. 
-                ret = profileList.Refresh(sessionHandle);
-                if (ret < 0) throw new Exception("Failed to retrieve device list.");
-                Console.WriteLine("{0} device(s) found.", ret);
+            MonoLibUsbApi.SetDebug(Session, 0);
+            // Create a MonoUsbProfileList instance.
+            profileList = new MonoUsbProfileList();
 
-                foreach (MonoUsbProfile profile in profileList)
-                    Console.WriteLine(profile.DeviceDescriptor);
-            }
-            finally
-            {
-                // If the below lines are removed, the profileList will still get freed and the
-                // session will still get closed.
-                if (profileList != null)
-                    profileList.Free();
+            // The list is initially empty.
+            // Each time refresh is called the list contents are updated. 
+            ret = profileList.Refresh(Session);
+            if (ret < 0) throw new Exception("Failed to retrieve device list.");
+            Console.WriteLine("{0} device(s) found.", ret);
 
-                sessionHandle.Close();
-            }
+            // Iterate through the profile list; write the device descriptor to
+            // console output.
+            foreach (MonoUsbProfile profile in profileList)
+                Console.WriteLine(profile.DeviceDescriptor);
+
+            // Since profile list, profiles, and sessions use safe handles the
+            // code below is not required but it is considered good programming
+            // to explicitly free and close these handle when they are no longer
+            // in-use.
+            profileList.Free();
+            Session.Close();
         }
     }
 }

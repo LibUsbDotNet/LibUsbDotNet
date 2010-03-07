@@ -52,11 +52,11 @@ namespace LibUsbDotNet.DeviceNotify.Info
         int Unitmask { get; }
 
         ///<summary>
-        ///Returns a <see cref="T:System.String"></see> that represents the current <see cref="VolumeNotifyInfo"></see>.
+        ///Returns a <see cref="T:System.String"/> that represents the current <see cref="VolumeNotifyInfo"/>.
         ///</summary>
         ///
         ///<returns>
-        ///A <see cref="System.String"></see> that represents the current <see cref="VolumeNotifyInfo"></see>.
+        ///A <see cref="System.String"/> that represents the current <see cref="VolumeNotifyInfo"/>.
         ///</returns>
         string ToString();
     }

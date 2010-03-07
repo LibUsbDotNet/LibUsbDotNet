@@ -33,22 +33,22 @@ namespace LibUsbDotNet.Main
         internal UsbEndpointList() { }
 
         /// <summary>
-        /// Gets the <see cref="UsbEndpointBase"></see> item at the specified index.
+        /// Gets the <see cref="UsbEndpointBase"/> item at the specified index.
         /// </summary>
         /// <param name="index">The zero-based index of the item.</param>
-        /// <returns>The <see cref="UsbEndpointBase"></see> item at the specified index.</returns>
-        ///<exception cref="T:System.ArgumentOutOfRangeException">index is not a valid index in the <see cref="UsbEndpointList"></see>.</exception>
+        /// <returns>The <see cref="UsbEndpointBase"/> item at the specified index.</returns>
+        ///<exception cref="T:System.ArgumentOutOfRangeException">index is not a valid index in the <see cref="UsbEndpointList"/>.</exception>
         public UsbEndpointBase this[int index]
         {
             get { return mEpList[index]; }
         }
 
         ///<summary>
-        ///Gets the number of elements contained in the <see cref="UsbEndpointList"></see>.
+        ///Gets the number of elements contained in the <see cref="UsbEndpointList"/>.
         ///</summary>
         ///
         ///<returns>
-        ///The number of elements contained in the <see cref="UsbEndpointList"></see>.
+        ///The number of elements contained in the <see cref="UsbEndpointList"/>.
         ///</returns>
         ///
         public int Count
@@ -59,11 +59,11 @@ namespace LibUsbDotNet.Main
         #region IEnumerable<UsbEndpointBase> Members
 
         ///<summary>
-        ///Returns <see cref="UsbEndpointBase"></see> enumerator that iterates through the collection.
+        ///Returns <see cref="UsbEndpointBase"/> enumerator that iterates through the collection.
         ///</summary>
         ///
         ///<returns>
-        ///A <see cref="UsbEndpointBase"></see> enumerator that can be used to iterate through the collection.
+        ///A <see cref="UsbEndpointBase"/> enumerator that can be used to iterate through the collection.
         ///</returns>
         public IEnumerator<UsbEndpointBase> GetEnumerator() { return mEpList.GetEnumerator(); }
 
@@ -72,7 +72,7 @@ namespace LibUsbDotNet.Main
         ///</summary>
         ///
         ///<returns>
-        ///An <see cref="System.Collections.IEnumerator"></see> object that can be used to iterate through the collection.
+        ///An <see cref="System.Collections.IEnumerator"/> object that can be used to iterate through the collection.
         ///</returns>
         ///<filterpriority>2</filterpriority>
         IEnumerator IEnumerable.GetEnumerator() { return mEpList.GetEnumerator(); }
@@ -80,7 +80,7 @@ namespace LibUsbDotNet.Main
         #endregion
 
         ///<summary>
-        ///Removes all items from the <see cref="UsbEndpointList"></see>.
+        ///Removes all items from the <see cref="UsbEndpointList"/>.
         ///</summary>
         public void Clear()
         {
@@ -89,41 +89,41 @@ namespace LibUsbDotNet.Main
         }
 
         ///<summary>
-        ///Determines whether the <see cref="UsbEndpointList"></see> contains a specific value.
+        ///Determines whether the <see cref="UsbEndpointList"/> contains a specific value.
         ///</summary>
         ///
         ///<returns>
-        ///true if item is found in the <see cref="UsbEndpointList"></see>; otherwise, false.
+        ///true if item is found in the <see cref="UsbEndpointList"/>; otherwise, false.
         ///</returns>
         ///
-        ///<param name="item">The <see cref="UsbEndpointBase"></see> to locate in the <see cref="UsbEndpointList"></see>.</param>
+        ///<param name="item">The <see cref="UsbEndpointBase"/> to locate in the <see cref="UsbEndpointList"/>.</param>
         public bool Contains(UsbEndpointBase item) { return mEpList.Contains(item); }
 
 
         ///<summary>
-        ///Determines the index of a specific <see cref="UsbEndpointBase"></see> in the <see cref="UsbEndpointList"></see>.
+        ///Determines the index of a specific <see cref="UsbEndpointBase"/> in the <see cref="UsbEndpointList"/>.
         ///</summary>
         ///
         ///<returns>
         ///The index of item if found in the list; otherwise, -1.
         ///</returns>
         ///
-        ///<param name="item">The <see cref="UsbEndpointBase"></see> to locate in the <see cref="UsbEndpointList"></see>.</param>
+        ///<param name="item">The <see cref="UsbEndpointBase"/> to locate in the <see cref="UsbEndpointList"/>.</param>
         public int IndexOf(UsbEndpointBase item) { return mEpList.IndexOf(item); }
 
         ///<summary>
-        ///Removes the specified <see cref="UsbEndpointBase"></see> in the <see cref="UsbEndpointList"></see>.
+        ///Removes the specified <see cref="UsbEndpointBase"/> in the <see cref="UsbEndpointList"/>.
         ///</summary>
         ///
-        ///<param name="item">The <see cref="UsbEndpointBase"></see> to remove in the <see cref="UsbEndpointList"></see>.</param>
+        ///<param name="item">The <see cref="UsbEndpointBase"/> to remove in the <see cref="UsbEndpointList"/>.</param>
         public void Remove(UsbEndpointBase item) { item.Dispose(); }
 
         ///<summary>
-        ///Removes the <see cref="UsbEndpointList"></see> item at the specified index.
+        ///Removes the <see cref="UsbEndpointList"/> item at the specified index.
         ///</summary>
         ///
         ///<param name="index">The zero-based index of the item to remove.</param>
-        ///<exception cref="T:System.ArgumentOutOfRangeException">index is not a valid index in the <see cref="UsbEndpointList"></see>.</exception>
+        ///<exception cref="T:System.ArgumentOutOfRangeException">index is not a valid index in the <see cref="UsbEndpointList"/>.</exception>
         public void RemoveAt(int index)
         {
             UsbEndpointBase item = mEpList[index];

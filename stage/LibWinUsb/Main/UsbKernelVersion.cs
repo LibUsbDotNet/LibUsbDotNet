@@ -84,7 +84,7 @@ namespace LibUsbDotNet.Main
         ///</summary>
         ///
         ///<returns>
-        ///A <see cref="System.String"></see> containing the full LibUsb-Win32 version.
+        ///A <see cref="System.String"/> containing the full LibUsb-Win32 version.
         ///</returns>
         public override string ToString() { return string.Format("{0}.{1}.{2}.{3}", Major, Minor, Micro, Nano); }
     }

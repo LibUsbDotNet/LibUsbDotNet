@@ -50,22 +50,27 @@
             <linkAlternateText>Libusb-1.0 API Documentation</linkAlternateText>
             <linkUri>http://libusb.sourceforge.net/api-1.0/</linkUri>
           </externalLink>
-          also applies to the .NET MonoLibUsb low-level API library.
-          This is an excellent reference for both novice and advanced users.
-          Users unfamiliar with Libusb-1.0 are encouraged to review the official documentation upon getting started.
+          also applies to the .NET MonoLibUsb low-level API library. This is an excellent reference for both novice and 
+          advanced users. Users unfamiliar with Libusb-1.0 are encouraged to review the official documentation upon 
+          getting started.
         </para>
         <para>
-          The <CREF>T:MonoLibUsb.Profile.MonoUsbProfileList</CREF> is your starting 
-          point for discovering, querying and opening USB devices. For a simple example
-          see the <link xlink:href="13c6b1b8-f805-45a9-8160-e0b2ea8f3d3f">Show Info Console Application Example</link>.
+          Before using MonoLibUsb a <CREF>T:MonoLibUsb.MonoUsbSessionHandle</CREF> must be created. A session
+          handle is required for many of the library functions.
+        </para>
+        <para>
+          The <CREF>T:MonoLibUsb.Profile.MonoUsbProfileList</CREF> is your starting point for discovering, querying and
+          opening USB devices. See the
+          <link xlink:href="13c6b1b8-f805-45a9-8160-e0b2ea8f3d3f">Show Info Console Application Example</link>.
         </para>
         <para>
           The MonoLibUsb source code can be built as a standalone library, seperate from LibUsbDotNet.
-          See the <localUri>LibWinUsb\MonoLibUsb\MonoUsb.sln</localUri> in the LibUsbDotNet source.
+          See the <localUri>[BaseDir]\LibWinUsb\MonoLibUsb\MonoUsb.sln</localUri> in the LibUsbDotNet source.
         </para>
       </content>
     </foldSection>
-    <!-- Optional next steps info
+
+        <!-- Optional next steps info
     <nextSteps>
       <content><para>Next steps info goes here</para></content>
     </nextSteps>

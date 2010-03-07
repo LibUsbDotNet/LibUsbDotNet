@@ -99,11 +99,11 @@ namespace LibUsbDotNet.MonoLibUsb.Internal
             mTransfer.Length = RequestCount;
 
             mTransferCompleteEvent.Reset();
-            int ret = MonoLibUsbApi.libusb_submit_transfer(mTransfer);
+            int ret = MonoLibUsbApi.SubmitTransfer(mTransfer);
             if (ret != 0)
             {
                 mTransferCompleteEvent.Set();
-                UsbError usbErr = UsbError.Error(ErrorCode.MonoApiError, ret, "libusb_submit_transfer", EndpointBase);
+                UsbError usbErr = UsbError.Error(ErrorCode.MonoApiError, ret, "SubmitTransfer", EndpointBase);
                 if (!usbErr.Handled || FailRetries >= UsbConstants.MAX_FAIL_RETRIES_ON_HANDLED_ERROR)
                     return usbErr.ErrorCode;
 
@@ -140,14 +140,14 @@ namespace LibUsbDotNet.MonoLibUsb.Internal
                     IncFailRetries();
                     return ErrorCode.IoEndpointGlobalCancelRedo;
                 default: // mTransferCancelEvent, WaitTimeout
-                    ret = MonoLibUsbApi.libusb_cancel_transfer(mTransfer);
+                    ret = MonoLibUsbApi.CancelTransfer(mTransfer);
                     bool bTransferComplete = mTransferCompleteEvent.WaitOne(100, UsbConstants.EXIT_CONTEXT);
                     mTransferCompleteEvent.Set();
 
                     if (ret != 0 || !bTransferComplete)
                     {
                         ErrorCode ec = ret == 0 ? ErrorCode.CancelIoFailed : ErrorCode.MonoApiError;
-                        UsbError.Error(ec, ret, "Wait:libusb_cancel_transfer", EndpointBase);
+                        UsbError.Error(ec, ret, "Wait:CancelTransfer", EndpointBase);
                         return ec;
                     }
 

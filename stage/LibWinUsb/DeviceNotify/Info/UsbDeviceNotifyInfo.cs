@@ -99,11 +99,11 @@ namespace LibUsbDotNet.DeviceNotify.Info
         }
 
         ///<summary>
-        ///Returns a <see cref="T:System.String"></see> that represents the current <see cref="UsbDeviceNotifyInfo"></see>.
+        ///Returns a <see cref="T:System.String"/> that represents the current <see cref="UsbDeviceNotifyInfo"/>.
         ///</summary>
         ///
         ///<returns>
-        ///A <see cref="System.String"></see> that represents the current <see cref="UsbDeviceNotifyInfo"></see>.
+        ///A <see cref="System.String"/> that represents the current <see cref="UsbDeviceNotifyInfo"/>.
         ///</returns>
         public override string ToString() { return SymbolicName.ToString(); }
 

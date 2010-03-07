@@ -38,9 +38,9 @@
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\MonoUsbLib\MonoUsbLib.csproj">
-      <Project>{DAEC979A-BCBD-487B-87D2-21B693C6DD7A}</Project>
-      <Name>MonoUsbLib</Name>
+    <ProjectReference Include="..\..\LibWinUsb\LibUsbDotNet.csproj">
+      <Project>{0A78F6FF-5586-4052-8104-E23FF83A7CE1}</Project>
+      <Name>LibUsbDotNet</Name>
     </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

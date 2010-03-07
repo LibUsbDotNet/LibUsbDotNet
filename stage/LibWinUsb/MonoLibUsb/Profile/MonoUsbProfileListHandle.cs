@@ -63,8 +63,8 @@ namespace MonoLibUsb.Profile
         {
             if (!IsInvalid)
             {
-                MonoLibUsbApi.libusb_free_device_list(handle, 1);
-                //Console.WriteLine("libusb_free_device_list:{0}", handle);
+                MonoLibUsbApi.FreeDeviceList(handle, 1);
+                //Console.WriteLine("FreeDeviceList:{0}", handle);
                 SetHandleAsInvalid();
                 return true;
             }

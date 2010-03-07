@@ -163,11 +163,11 @@ namespace LibUsbDotNet.Main
         public static UsbSymbolicName Parse(string identifiers) { return new UsbSymbolicName(identifiers); }
 
         ///<summary>
-        ///Returns a <see cref="T:System.String"></see> that represents the current <see cref="UsbSymbolicName"></see>.
+        ///Returns a <see cref="T:System.String"/> that represents the current <see cref="UsbSymbolicName"/>.
         ///</summary>
         ///
         ///<returns>
-        ///A <see cref="System.String"></see> that represents the current <see cref="UsbSymbolicName"></see>.
+        ///A <see cref="System.String"/> that represents the current <see cref="UsbSymbolicName"/>.
         ///</returns>
         public override string ToString()
         {

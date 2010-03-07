@@ -32,11 +32,11 @@ namespace LibUsbDotNet.DeviceNotify.Info
         string Name { get; }
 
         ///<summary>
-        ///Returns a <see cref="T:System.String"></see> that represents the current <see cref="PortNotifyInfo"></see>.
+        ///Returns a <see cref="T:System.String"/> that represents the current <see cref="PortNotifyInfo"/>.
         ///</summary>
         ///
         ///<returns>
-        ///A <see cref="System.String"></see> that represents the current <see cref="PortNotifyInfo"></see>.
+        ///A <see cref="System.String"/> that represents the current <see cref="PortNotifyInfo"/>.
         ///</returns>
         string ToString();
     }

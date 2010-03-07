@@ -35,9 +35,9 @@ namespace MonoLibUsb.Profile
     /// <para>
     /// When a <see cref="MonoUsbProfileHandle"/> instance is created and wrapped around the 
     /// <a href="http://libusb.sourceforge.net/api-1.0/group__dev.html#ga77eedd00d01eb7569b880e861a971c2b">libusb_device</a>
-    /// pointer, <see cref="MonoLibUsbApi.libusb_ref_device"/> is called.  When all references to this 
+    /// pointer, <see cref="MonoLibUsbApi.RefDevice"/> is called.  When all references to this 
     /// <see cref="MonoUsbProfileHandle"/> instance are out-of-scope or have all been closed, this profile handle is de-referenced with 
-    /// <see cref="MonoLibUsbApi.libusb_unref_device"/>.
+    /// <see cref="MonoLibUsbApi.UnrefDevice"/>.
     /// When the reference count equals zero, memory is freed and resources are released.
     /// </para>
     /// <para>
@@ -46,7 +46,7 @@ namespace MonoLibUsb.Profile
     /// </para>
     /// <para>
     /// Certain operations can be performed using just the <see cref="MonoUsbProfileHandle"/>, but in order to do 
-    /// any I/O you will have to first obtain a <see cref="MonoUsbDeviceHandle"/> using <see cref="MonoLibUsbApi.libusb_open"/>.
+    /// any I/O you will have to first obtain a <see cref="MonoUsbDeviceHandle"/> using <see cref="MonoLibUsbApi.Open"/>.
     /// </para>
     /// </remarks>    
     public class MonoUsbProfileHandle : SafeContextHandle
@@ -61,9 +61,9 @@ namespace MonoLibUsb.Profile
         {
             lock (oDeviceProfileRefLock)
             {
-                MonoLibUsbApi.libusb_ref_device(pProfileHandle);
+                MonoLibUsbApi.RefDevice(pProfileHandle);
                 mDeviceProfileRefCount++;
-                Debug.Print("libusb_ref_device:{0}", mDeviceProfileRefCount);
+                Debug.Print("RefDevice:{0}", mDeviceProfileRefCount);
             }
         }
 
@@ -81,10 +81,10 @@ namespace MonoLibUsb.Profile
             {
                 if (!IsInvalid)
                 {
-                    MonoLibUsbApi.libusb_unref_device(handle);
+                    MonoLibUsbApi.UnrefDevice(handle);
                     mDeviceProfileRefCount--;
                     SetHandleAsInvalid();
-                    Debug.Print("libusb_unref_device:{0}", mDeviceProfileRefCount);
+                    Debug.Print("UnrefDevice:{0}", mDeviceProfileRefCount);
                     return true;
                 }
                 return false;
