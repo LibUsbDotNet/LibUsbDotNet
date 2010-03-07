@@ -130,7 +130,7 @@ namespace LibUsbDotNet
             }
             else if (errorCode == ErrorCode.MonoApiError && ret != 0)
             {
-                win32Error = ((MonoUsbError) ret) + ":" + MonoLibUsbApi.StrError((MonoUsbError) ret);
+                win32Error = ((MonoUsbError) ret) + ":" + MonoUsbApi.StrError((MonoUsbError) ret);
             }
             UsbError err = new UsbError(errorCode, ret, win32Error, description, sender);
             lock (mLastErrorString)

@@ -63,13 +63,12 @@ namespace MonoLibUsb.Profile
         {
             if (!IsInvalid)
             {
-                MonoLibUsbApi.FreeDeviceList(handle, 1);
+                MonoUsbApi.FreeDeviceList(handle, 1);
                 //Console.WriteLine("FreeDeviceList:{0}", handle);
                 SetHandleAsInvalid();
-                return true;
             }
 
-            return false;
+            return true;
         }
     }
 }

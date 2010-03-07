@@ -19,9 +19,12 @@
 // visit www.gnu.org.
 // 
 //
+using System;
+
 namespace LibUsbDotNet.Descriptors
 {
     ///<summary> Device and/or Interface Class codes</summary>
+    [Flags]
     public enum ClassCodeType : byte
     {
         ///<summary>In the context of a "device descriptor", this bDeviceClass value indicates that each interface specifies its own class information and all interfaces operate independently.</summary>

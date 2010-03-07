@@ -31,28 +31,14 @@ namespace MonoLibUsb.Profile
     /// <summary>
     /// Manages the device list.  This class is thread safe.
     /// </summary>
-    public class MonoUsbProfileList:IEnumerable<MonoUsbProfile>
+    public class MonoUsbProfileList : IEnumerable<MonoUsbProfile>
     {
-        private List<MonoUsbProfile> mList = new List<MonoUsbProfile>();
         private object LockProfileList = new object();
-
-        /// <summary>
-        /// Gets a copy of the internal list of <see cref="MonoUsbProfile"/> classes 
-        /// </summary>
-        public List<MonoUsbProfile> List
-        {
-            get
-            {
-                lock (LockProfileList)
-                {
-                    return new List<MonoUsbProfile>(mList);
-                }
-            }
-        }
 
         private static bool FindDiscoveredFn(MonoUsbProfile check) { return check.mDiscovered; }
         private static bool FindUnDiscoveredFn(MonoUsbProfile check) { return !check.mDiscovered; }
 
+        private List<MonoUsbProfile> mList=new List<MonoUsbProfile>();
         private void FireAddRemove(MonoUsbProfile monoUSBProfile, AddRemoveType addRemoveType)
         {
             EventHandler<AddRemoveEventArgs> temp = AddRemoveEvent;
@@ -64,7 +50,7 @@ namespace MonoLibUsb.Profile
 
         private void SetDiscovered(bool discovered)
         {
-            foreach (MonoUsbProfile deviceProfile in mList)
+            foreach (MonoUsbProfile deviceProfile in this)
             {
                 deviceProfile.mDiscovered = discovered;
             }
@@ -74,7 +60,6 @@ namespace MonoLibUsb.Profile
         {
             SetDiscovered(false);
             newList.SetDiscovered(true);
-            List<MonoUsbProfile> syncedList = new List<MonoUsbProfile>();
 
             int iNewProfiles = newList.mList.Count;
             for (int iNewProfile = 0; iNewProfile < iNewProfiles; iNewProfile++)
@@ -85,25 +70,20 @@ namespace MonoLibUsb.Profile
                 {
                     //Console.WriteLine("DeviceDiscovery: Added: {0}", newProfile.ProfileHandle.DangerousGetHandle());
                     newProfile.mDiscovered = true;
-                    syncedList.Add(newProfile);
+                    mList.Add(newProfile);
                     FireAddRemove(newProfile, AddRemoveType.Added);
                 }
                 else
                 {
-                    if (mList[iFoundOldIndex].ProfileHandle.DangerousGetHandle().ToInt64() == newProfile.ProfileHandle.DangerousGetHandle().ToInt64())
-                    {
-                        //MonoLibUsbApi.RefDevice(mList[iFoundOldIndex].ProfileHandle.DangerousGetHandle());
-                    }
                     //Console.WriteLine("DeviceDiscovery: Unchanged: Orig:{0} New:{1}", mList[iFoundOldIndex].ProfileHandle.DangerousGetHandle(), newProfile.ProfileHandle.DangerousGetHandle());
                     mList[iFoundOldIndex].mDiscovered = true;
                     newProfile.mDiscovered = false;
-                    syncedList.Add(mList[iFoundOldIndex]);
                    
                 }
             }
 
             newList.mList.RemoveAll(FindDiscoveredFn);
-            newList.Free();
+            newList.Close();
 
             foreach (MonoUsbProfile deviceProfile in mList)
             {
@@ -118,15 +98,15 @@ namespace MonoLibUsb.Profile
 
             // Remove Unplugged device profiles.
             mList.RemoveAll(FindUnDiscoveredFn);
-            mList = syncedList;
         }
 
+
         /// <summary>
-        /// Refreshes the <see cref="MonoUsbProfile"/> <see cref="List"/>.  If an event handler was added to <see cref="AddRemoveEvent"/> changes in the device profile list will reported.
+        /// Refreshes the <see cref="MonoUsbProfile"/> list.  If an event handler was added to <see cref="AddRemoveEvent"/> changes in the device profile list will reported.
         /// </summary>
         /// <remarks>
         /// <para>This is your entry point into finding a USB device to operate.</para>
-        /// <para>This return value of this function indicates the number of devices in the resultant <see cref="List"/>.</para>
+        /// <para>This return value of this function indicates the number of devices in the resultant list.</para>
         /// <para>The <see cref="MonoUsbProfileList"/> has a crude form of built-in device notification that works on all platforms. By adding an event handler to the <see cref="AddRemoveEvent"/> changes in the device profile list are reported when <see cref="Refresh"/> is called.</para>
         /// </remarks>
         /// <param name="sessionHandle">A valid <see cref="MonoUsbSessionHandle"/>.</param>
@@ -141,7 +121,7 @@ namespace MonoLibUsb.Profile
                 MonoUsbProfileList newList = new MonoUsbProfileList();
                 MonoUsbProfileListHandle monoUSBProfileListHandle;
 
-                int ret = MonoLibUsbApi.GetDeviceList(sessionHandle, out monoUSBProfileListHandle);
+                int ret = MonoUsbApi.GetDeviceList(sessionHandle, out monoUSBProfileListHandle);
                 if (ret < 0 || monoUSBProfileListHandle.IsInvalid)
                 {
 #if LIBUSBDOTNET
@@ -149,7 +129,7 @@ namespace MonoLibUsb.Profile
 #else
                     System.Diagnostics.Debug.Print("libusb_get_device_list failed:{0} {1}",
                                                    (MonoUsbError) ret,
-                                                   MonoLibUsbApi.libusb_strerror((MonoUsbError) ret));
+                                                   MonoUsbApi.StrError((MonoUsbError) ret));
 #endif
                     return ret;
                 }
@@ -176,7 +156,7 @@ namespace MonoLibUsb.Profile
         /// out-of-scope or specifically been closed with the <see cref="SafeHandle.Close"/> method.
         /// </para>
         /// </remarks>
-        public void Free()
+        public void Close()
         {
             lock (LockProfileList)
             {
@@ -216,54 +196,48 @@ namespace MonoLibUsb.Profile
         public event EventHandler<AddRemoveEventArgs> AddRemoveEvent;
 
         /// <summary>
-        /// Gets the <see cref="List"/> property enumerator. Same as <see cref="List"/>.GetEnumerator()
+        /// Returns an enumerator that iterates through the collection.
         /// </summary>
-        /// <returns>A <see cref="MonoUsbProfile"/> <see cref="IEnumerator"/>.</returns>
+        /// <returns>
+        /// A <see cref="T:System.Collections.Generic.IEnumerator`1"/> that can be used to iterate through the collection.
+        /// </returns>
+        /// <filterpriority>1</filterpriority>
         public IEnumerator<MonoUsbProfile> GetEnumerator() { return mList.GetEnumerator(); }
 
         IEnumerator IEnumerable.GetEnumerator() { return GetEnumerator(); }
 
         /// <summary>
-        /// Determines whether the <see cref="T:System.Collections.Generic.ICollection`1"/> contains a specific <see cref="MonoUsbProfile"/>.
+        /// Returns the number of <see cref="MonoUsbProfile"/> instances in the list.
         /// </summary>
-        /// <returns>
-        /// true if <paramref name="item"/> is found in the <see cref="T:System.Collections.Generic.ICollection`1"/>; otherwise, false.
-        /// </returns>
-        /// <param name="item">The object to locate in the <see cref="T:System.Collections.Generic.ICollection`1"/>.</param>
-        public bool Contains(MonoUsbProfile item) { return mList.Contains(item); }
-
-
-        /// <summary>
-        /// Gets the number of elements contained in the <see cref="T:System.Collections.Generic.ICollection`1"/>.
-        /// </summary>
-        /// <returns>
-        /// The number of elements contained in the <see cref="T:System.Collections.Generic.ICollection`1"/>.
-        /// </returns>
         public int Count
         {
             get { return mList.Count; }
         }
-
         /// <summary>
-        /// Determines the index of a specific item in the <see cref="T:System.Collections.Generic.IList`1"/>.
+        /// Gets a <see cref="List{T}"/> of <see cref="MonoUsbProfile"/> instances.
         /// </summary>
-        /// <returns>
-        /// The index of <paramref name="item"/> if found in the list; otherwise, -1.
-        /// </returns>
-        /// <param name="item">The object to locate in the <see cref="T:System.Collections.Generic.IList`1"/>.</param>
-        public int IndexOf(MonoUsbProfile item)
+        /// <remarks>
+        /// <para>
+        /// The <see cref="MonoUsbProfileList"/> uses an internal list that is locked when changes must be made.
+        /// The <see cref="GetList"/> method returns a copy of this list that can be searched and modified as needed by the user.
+        /// </para>
+        /// <para>
+        /// The returned generic <see cref="List{T}"/> contains many more functions for finding devices.  
+        /// It may be desirable to use these members, such as <see cref="List{T}.FindAll"/> or <see cref="List{T}.ForEach"/> for discoverying <see cref="MonoUsbProfile"/>s instead of iterating through the <see cref="MonoUsbProfileList"/> one-by-one.
+        /// </para>
+        /// </remarks>
+        /// <returns>A <see cref="List{T}"/> of <see cref="MonoUsbProfile"/> instances.</returns>
+        public List<MonoUsbProfile> GetList()
         {
-            return (mList.IndexOf(item));
+           return new List<MonoUsbProfile>(mList);
         }
 
         /// <summary>
-        /// Gets the <see cref="MonoUsbProfile"/> at the specified index.
+        /// Gets the <see cref="MonoUsbProfile"/> at the specfied index.
         /// </summary>
-        /// <returns>
-        /// The <see cref="MonoUsbProfile"/> at the specified index.
-        /// </returns>
-        /// <param name="index">The zero-based index of the <see cref="MonoUsbProfile"/> to get or set.</param>
-        /// <exception cref="T:System.ArgumentOutOfRangeException"><paramref name="index"/> is not a valid index in the <see cref="T:System.Collections.Generic.IList`1"/>.</exception>
+        /// <param name="index">The index of the <see cref="MonoUsbProfile"/> to retrieve.</param>
+        /// <returns>The <see cref="MonoUsbProfile"/> instance at the specified <paramref name="index"/>.</returns>
+        /// <exception cref="ArgumentOutOfRangeException">If index is invalid.</exception>
         public MonoUsbProfile this[int index]
         {
             get { return mList[index]; }

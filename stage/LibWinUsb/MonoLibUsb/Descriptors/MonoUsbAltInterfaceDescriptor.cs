@@ -31,7 +31,7 @@ namespace MonoLibUsb.Descriptors
     /// descriptor is documented in section 9.6.5 of the USB 2.0 specification.
     /// All multiple-byte fields are represented in host-endian format.
     /// </summary>
-    [StructLayout(LayoutKind.Sequential, Pack = MonoLibUsbApi.LIBUSB_PACK)]
+    [StructLayout(LayoutKind.Sequential, Pack = MonoUsbApi.LIBUSB_PACK)]
     public class MonoUsbAltInterfaceDescriptor
     {
         ///<summary>Size of this descriptor (in bytes)</summary>

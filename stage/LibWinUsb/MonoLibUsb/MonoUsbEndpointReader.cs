@@ -66,7 +66,7 @@ namespace LibUsbDotNet.MonoLibUsb
         {
             if (IsDisposed) throw new ObjectDisposedException(GetType().Name);
             Abort();
-            int ret = MonoLibUsbApi.ClearHalt((MonoUsbDeviceHandle) Device.Handle, EpNum);
+            int ret = MonoUsbApi.ClearHalt((MonoUsbDeviceHandle) Device.Handle, EpNum);
             if (ret < 0)
             {
                 UsbError.Error(ErrorCode.MonoApiError, ret, "Endpoint Reset Failed", this);

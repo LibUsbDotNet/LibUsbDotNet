@@ -19,11 +19,14 @@
 // visit www.gnu.org.
 // 
 // 
+using System;
+
 namespace LibUsbDotNet.Main
 {
     /// <summary>
     /// Device registry property codes
     /// </summary> 
+    [Flags]
     public enum SPDRP
     {
         /// <summary>

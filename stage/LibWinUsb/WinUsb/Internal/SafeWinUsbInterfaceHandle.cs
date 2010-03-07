@@ -45,8 +45,6 @@ namespace LibUsbDotNet.Internal.WinUsb
             get { return (handle == IntPtr.Zero || handle.ToInt64() == -1); }
         }
 
-        public bool Free() { return ReleaseHandle(); }
-
         ///<summary>
         ///Executes the code required to free the <see cref="SafeWinUsbInterfaceHandle"/>.
         ///</summary>

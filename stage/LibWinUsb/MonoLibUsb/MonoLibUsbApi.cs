@@ -33,9 +33,9 @@ namespace MonoLibUsb
     /// <summary>
     /// Libusb-1.0 low-level API library.
     /// </summary>
-    public static class MonoLibUsbApi
+    public static class MonoUsbApi
     {
-        internal const CallingConvention CC = CallingConvention.StdCall;
+        internal const CallingConvention CC = 0;
         internal const string LIBUSB_DLL = "libusb-1.0.dll";
         internal const int LIBUSB_PACK = 0;
 
@@ -131,35 +131,16 @@ namespace MonoLibUsb
         [DllImport(LIBUSB_DLL, CallingConvention = CC, SetLastError = false, EntryPoint = "libusb_get_max_iso_packet_size")]
         public static extern int GetMaxIsoPacketSize([In] MonoUsbProfileHandle deviceProfileHandle, byte endpoint);
 
-        /// <summary>
-        /// Increment the reference count of a device. 
-        /// </summary>
-        /// <param name="pDeviceProfileHandle">A device profile handle.</param>
+
         [DllImport(LIBUSB_DLL, CallingConvention = CC, SetLastError = false, EntryPoint = "libusb_ref_device")]
         internal static extern IntPtr RefDevice(IntPtr pDeviceProfileHandle);
 
-        /// <summary>
-        /// Decrement the reference count of a device.
-        /// </summary>
-        /// <remarks>
-        /// If the decrement operation causes the reference count to reach zero, the device shall be destroyed.
-        /// </remarks>
-        /// <param name="pDeviceProfileHandle">A device profile handle.</param>
+
         [DllImport(LIBUSB_DLL, CallingConvention = CC, SetLastError = false, EntryPoint = "libusb_unref_device")]
         internal static extern IntPtr UnrefDevice(IntPtr pDeviceProfileHandle);
 
-        /// <summary> Open a device and obtain a device handle.</summary>
-        /// <remarks>
-        /// <para>A handle allows you to perform I/O on the device in question.</para>
-        /// <para>Internally, this function adds a reference to the device and makes it available to you through <see cref="GetDevice"/>. This reference is removed during <see cref="Close"/>.</para>
-        /// <para>This is a non-blocking function; no requests are sent over the bus.</para>
-        /// </remarks>
-        /// <param name="deviceProfileHandle">A device profile handle.</param>
-        /// <param name="deviceHandle">Output location for the returned device handle pointer. Only populated when the return code is 0.</param>
-        /// <returns>0 on success; a <see cref="MonoUsbError"/> on failure.</returns>
         [DllImport(LIBUSB_DLL, CallingConvention = CC, SetLastError = false, EntryPoint = "libusb_open")]
-        public static extern int Open([In] MonoUsbProfileHandle deviceProfileHandle,
-                                             [Out] out MonoUsbDeviceHandle deviceHandle);
+        internal static extern int Open([In] MonoUsbProfileHandle deviceProfileHandle, ref IntPtr deviceHandle);
 
 
         [DllImport(LIBUSB_DLL, CallingConvention = CC, SetLastError = false, EntryPoint = "libusb_open_device_with_vid_pid")]
@@ -179,31 +160,25 @@ namespace MonoLibUsb
             return new MonoUsbDeviceHandle(pHandle);
         }
 
-        /// <summary>
-        /// Close a device handle.
-        /// </summary>
-        /// <remarks>
-        /// <para>Should be called on all open handles before your application exits.</para>
-        /// <para>Internally, this function destroys the reference that was added by <see cref="Open"/> on the given device.</para>
-        /// <para>This is a non-blocking function; no requests are sent over the bus.</para>
-        /// </remarks>
-        /// <param name="deviceHandle">The handle to close.</param>
+
         [DllImport(LIBUSB_DLL, CallingConvention = CC, SetLastError = false, EntryPoint = "libusb_close")]
         internal static extern void Close(IntPtr deviceHandle);
 
 
         /// <summary>
-        /// Get the underlying device for a handle. 
+        /// Get a <see cref="MonoUsbProfileHandle"/> for a <see cref="MonoUsbDeviceHandle"/>. 
         /// </summary>
         /// <remarks>
-        /// <para>This function does not modify the reference count of the returned device, so do not feel compelled to unreference it when you are done.</para>
+        /// <para>
+        /// When the new <see cref="MonoUsbProfileHandle"/> is returned the the device profile reference count 
+        /// is incremented ensuring the profile will remain valid as long as it is in-use.
+        /// </para>
         /// </remarks>
         /// <param name="dev_handle">A device handle.</param>
         /// <returns>The underlying profile handle.</returns>
-        public static MonoUsbProfileHandle GetDevice(MonoUsbDeviceHandle dev_handle) { return new MonoUsbProfileHandle(libusb_get_device_internal(dev_handle)); }
-
+        public static MonoUsbProfileHandle GetDevice(MonoUsbDeviceHandle dev_handle) { return new MonoUsbProfileHandle(GetDeviceInternal(dev_handle)); }
         [DllImport(LIBUSB_DLL, CallingConvention = CC, SetLastError = false, EntryPoint = "libusb_get_device")]
-        private static extern IntPtr libusb_get_device_internal([In] MonoUsbDeviceHandle dev_handle);
+        private static extern IntPtr GetDeviceInternal([In] MonoUsbDeviceHandle dev_handle);
 
         /// <summary>
         /// Determine the <see cref="MonoUsbConfigDescriptor.bConfigurationValue"/> of the currently active configuration. 
@@ -386,7 +361,7 @@ namespace MonoLibUsb
         /// <param name="configHandle">A config handle.</param>
         /// <returns>0 on success or a <see cref="MonoUsbError"/> code on failure.</returns>
         [DllImport(LIBUSB_DLL, CallingConvention = CC, SetLastError = false, EntryPoint = "libusb_get_active_config_descriptor")]
-        internal static extern int GetActiveConfigDescriptor([In] MonoUsbProfileHandle deviceProfileHandle,
+        public static extern int GetActiveConfigDescriptor([In] MonoUsbProfileHandle deviceProfileHandle,
                                                                        [Out] out MonoUsbConfigHandle configHandle);
 
 
@@ -414,13 +389,6 @@ namespace MonoLibUsb
                                                                        byte bConfigurationValue,
                                                                        [Out] out MonoUsbConfigHandle configHandle);
 
-        /// <summary>
-        /// Free a configuration descriptor obtained from <see cref="GetActiveConfigDescriptor"/> or <see cref="GetConfigDescriptor"/>. 
-        /// </summary>
-        /// <remarks>
-        /// It is safe to call this function with a NULL config parameter, in which case the function simply returns.
-        /// </remarks>
-        /// <param name="pConfigDescriptor">The configuration descriptor to free.</param>
         [DllImport(LIBUSB_DLL, CallingConvention = CC, SetLastError = false, EntryPoint = "libusb_free_config_descriptor")]
         internal static extern void FreeConfigDescriptor(IntPtr pConfigDescriptor);
 
@@ -472,51 +440,16 @@ namespace MonoLibUsb
 
         #region API LIBRARY FUNCTIONS - Asynchronous device I/O
 
-        /// <summary>
-        /// Allocate a libusb transfer with a specified number of isochronous packet descriptors 
-        /// </summary>
-        /// <remarks>This function will fire off the USB transfer and then return immediately.
-        /// <para>The returned transfer is pre-initialized for you. When the new transfer is no longer needed, it should be freed with <see cref="FreeTransfer"/>.</para>
-        /// <para>Transfers intended for non-isochronous endpoints (e.g. control, bulk, interrupt) should specify an iso_packets count of zero.</para>
-        /// <para>For transfers intended for isochronous endpoints, specify an appropriate number of packet descriptors to be allocated as part of the transfer. The returned transfer is not specially initialized for isochronous I/O; you are still required to set the <see cref="MonoUsbTransfer.NumIsoPackets"/> and <see cref="MonoUsbTransfer.Type"/> fields accordingly.</para>
-        /// <para>It is safe to allocate a transfer with some isochronous packets and then use it on a non-isochronous endpoint. If you do this, ensure that at time of submission, <see cref="MonoUsbTransfer.NumIsoPackets"/> is 0 and that type is set appropriately.</para>
-        /// </remarks>
-        /// <param name="iso_packets">number of isochronous packet descriptors to allocate.</param>
-        /// <returns>A newly allocated <see cref="MonoUsbTransfer"/>.</returns>
+
         [DllImport(LIBUSB_DLL, CallingConvention = CC, SetLastError = false, EntryPoint = "libusb_alloc_transfer")]
         internal static extern IntPtr AllocTransfer(int iso_packets);
 
-        /// <summary>
-        /// Free a transfer structure. 
-        /// </summary>
-        /// <remarks>
-        /// <para>This should be called for all transfers allocated with AllocTransfer().</para>
-        /// <para>If the <see cref="MonoUsbTransferFlags.LIBUSB_TRANSFER_FREE_BUFFER"/> flag is set and the transfer buffer is non-NULL, this function will also free the transfer buffer using the standard system memory allocator (e.g. free()).</para>
-        /// <para>It is legal to call this function with a NULL transfer. In this case, the function will simply return safely.</para>
-        /// <para>It is not legal to free an active transfer (one which has been submitted and has not yet completed).</para>
-        /// </remarks>
-        /// <param name="pTransfer">The <see cref="MonoUsbTransfer"/> to free.</param>
-        /// <returns>0 on success, or a <see cref="MonoUsbError"/> code on other failure.</returns>
         [DllImport(LIBUSB_DLL, CallingConvention = CC, SetLastError = false, EntryPoint = "libusb_free_transfer")]
         internal static extern void FreeTransfer(IntPtr pTransfer);
 
-        /// <summary>
-        /// Submit a transfer. 
-        /// </summary>
-        /// <remarks>This function will fire off the USB transfer and then return immediately.</remarks>
-        /// <param name="pTransfer">The <see cref="MonoUsbTransfer"/> to submit.</param>
-        /// <returns>0 on success, or a <see cref="MonoUsbError"/> code on other failure.</returns>
         [DllImport(LIBUSB_DLL, CallingConvention = CC, SetLastError = false, EntryPoint = "libusb_submit_transfer")]
         internal static extern int SubmitTransfer(MonoUsbTransfer pTransfer);
 
-        /// <summary>
-        /// Asynchronously cancel a previously submitted transfer. 
-        /// </summary>
-        /// <remarks>
-        /// <para>This function returns immediately, but this does not indicate cancellation is complete. Your callback function will be invoked at some later time with a transfer status of <see cref="MonoUsbError.LIBUSB_ERROR_IO_CANCELLED"/>.</para>
-        /// </remarks>
-        /// <param name="pTransfer">The <see cref="MonoUsbTransfer"/> to cancel.</param>
-        /// <returns>0 on success, or a <see cref="MonoUsbError"/> code on other failure.</returns>
         [DllImport(LIBUSB_DLL, CallingConvention = CC, SetLastError = false, EntryPoint = "libusb_cancel_transfer")]
         internal static extern int CancelTransfer(MonoUsbTransfer pTransfer);
 
@@ -659,7 +592,7 @@ namespace MonoLibUsb
         /// <remarks>
         /// <para>This timeout is currently hardcoded at 2 seconds but we may change this if we decide other values are more sensible. For finer control over whether this function is blocking or non-blocking, or the maximum timeout, use <see  cref="HandleEventsTimeout">libusb_handle_events_timeout</see> instead.</para>
         /// </remarks>
-        /// <param name="sessionHandle"></param>
+        /// <param name="sessionHandle">A valid <see cref="MonoUsbSessionHandle"/>.</param>
         /// <returns>0 on success, or a <see cref="MonoUsbError"/> code on other failure.</returns>
         [DllImport(LIBUSB_DLL, CallingConvention = CC, SetLastError = false, EntryPoint = "libusb_handle_events")]
         public static extern int HandleEvents([In]MonoUsbSessionHandle sessionHandle);
@@ -1081,7 +1014,7 @@ namespace MonoLibUsb
         internal static void StopAndExit()
         {
 #if LIBUSBDOTNET
-            if (LibUsbDotNet.MonoLibUsb.MonoUsbDevice.mMonoUSBProfileList != null) LibUsbDotNet.MonoLibUsb.MonoUsbDevice.mMonoUSBProfileList.Free();
+            if (LibUsbDotNet.MonoLibUsb.MonoUsbDevice.mMonoUSBProfileList != null) LibUsbDotNet.MonoLibUsb.MonoUsbDevice.mMonoUSBProfileList.Close();
             LibUsbDotNet.MonoLibUsb.MonoUsbDevice.mMonoUSBProfileList = null;
 #endif
             MonoUsbEventHandler.Stop(true);
@@ -1090,7 +1023,6 @@ namespace MonoLibUsb
 
 
 #if LIBUSBDOTNET
-
         internal static ErrorCode ErrorCodeFromLibUsbError(int ret, out string description)
         {
             description = string.Empty;

@@ -29,7 +29,7 @@ namespace MonoLibUsb.Descriptors
     ///<summary>A structure representing the standard USB device descriptor. 
     ///This descriptor is documented in section 9.6.1 of the USB 2.0 specification. 
     ///All multiple-byte fields are represented in host-endian format.</summary>
-    [StructLayout(LayoutKind.Sequential, Pack = MonoLibUsbApi.LIBUSB_PACK)]
+    [StructLayout(LayoutKind.Sequential, Pack = MonoUsbApi.LIBUSB_PACK)]
     public class MonoUsbDeviceDescriptor
     {
         /// <summary>

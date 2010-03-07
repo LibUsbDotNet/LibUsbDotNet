@@ -20,10 +20,13 @@
 // 
 //
 
+using System;
+
 namespace LibUsbDotNet.Descriptors
 {
     /// <summary> Standard USB descriptor types.
     /// </summary> 
+    [Flags]
     public enum DescriptorType : byte
     {
         /// <summary>

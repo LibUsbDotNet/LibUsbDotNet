@@ -125,8 +125,8 @@
     <Compile Include="..\..\LibWinUsb\MonoLibUsb\Transfer\Internal\libusb_transfer.cs">
       <Link>MonoUsb\Transfer\Internal\libusb_transfer.cs</Link>
     </Compile>
-    <Compile Include="..\..\LibWinUsb\MonoLibUsb\Transfer\MonoUsbIsoPacketWrapper.cs">
-      <Link>MonoUsb\Transfer\MonoUsbIsoPacketWrapper.cs</Link>
+    <Compile Include="..\..\LibWinUsb\MonoLibUsb\Transfer\MonoUsbIsoPacket.cs">
+      <Link>MonoUsb\Transfer\MonoUsbIsoPacket.cs</Link>
     </Compile>
     <Compile Include="..\..\LibWinUsb\MonoLibUsb\Transfer\MonoUsbTansferStatus.cs">
       <Link>MonoUsb\Transfer\MonoUsbTansferStatus.cs</Link>

@@ -19,10 +19,13 @@
 // visit www.gnu.org.
 // 
 // 
+using System;
+
 namespace LibUsbDotNet.Main
 {
     /// <summary> All possible USB endpoint types.
     /// </summary> 
+    [Flags]
     public enum EndpointType : byte
     {
         /// <summary>

@@ -2,7 +2,7 @@
 using System.Runtime.InteropServices;
 using LibUsbDotNet.Main;
 using MonoLibUsb.Transfer;
-using Usb = MonoLibUsb.MonoLibUsbApi;
+using Usb = MonoLibUsb.MonoUsbApi;
 
 namespace MonoLibUsb.ShowInfo
 {
@@ -46,22 +46,17 @@ namespace MonoLibUsb.ShowInfo
                 data[i] = (byte) (value);
         }
 
-        private static void printHexByteString(byte[] data, int len)
-        {
-            int i;
-            for (i = 0; i < len; i++)
-                Console.Write("{0}", (char) data[i]);
-
-            Console.WriteLine();
-        }
-
-        private static void bulk_transfer_cb(MonoUsbTransfer transfer)
+        // This function originated from bulk_transfer_cb()
+        // in sync.c of the Libusb-1.0 source code.
+        private static void bulkTransferCB(MonoUsbTransfer transfer)
         {
             Marshal.WriteInt32(transfer.PtrUserData, 1);
             /* caller interprets results and frees transfer */
         }
 
-        private static MonoUsbError do_sync_bulk_transfer(MonoUsbDeviceHandle dev_handle,
+        // This function originated from do_sync_bulk_transfer()
+        // in sync.c of the Libusb-1.0 source code.
+        private static MonoUsbError doAsyncTransfer(MonoUsbDeviceHandle dev_handle,
                                                           byte endpoint,
                                                           byte[] buffer,
                                                           int length,
@@ -73,7 +68,7 @@ namespace MonoLibUsb.ShowInfo
             MonoUsbTransfer transfer = new MonoUsbTransfer(0);
             if (transfer.IsInvalid) return MonoUsbError.LIBUSB_ERROR_NO_MEM;
 
-            MonoUsbTransferDelegate monoUsbTransferCallbackDelegate = bulk_transfer_cb;
+            MonoUsbTransferDelegate monoUsbTransferCallbackDelegate = bulkTransferCB;
             int[] userCompleted = new int[] {0};
             GCHandle gcUserCompleted = GCHandle.Alloc(userCompleted, GCHandleType.Pinned);
 
@@ -114,8 +109,8 @@ namespace MonoLibUsb.ShowInfo
             }
 
             transferred = transfer.ActualLength;
-            e = MonoLibUsbApi.MonoLibUsbErrorFromTransferStatus(transfer.Status);
-            ;
+            e = MonoUsbApi.MonoLibUsbErrorFromTransferStatus(transfer.Status);
+            transfer.Free();
             return e;
         }
 
@@ -155,21 +150,21 @@ namespace MonoLibUsb.ShowInfo
                         if (sessionHandle.IsInvalid) throw new Exception("Invalid session handle.");
 
                         Console.WriteLine("Opening Device..");
-                        device_handle = MonoLibUsbApi.OpenDeviceWithVidPid(sessionHandle, MY_VID, MY_PID);
+                        device_handle = MonoUsbApi.OpenDeviceWithVidPid(sessionHandle, MY_VID, MY_PID);
                         if ((device_handle == null) || device_handle.IsInvalid) break;
                         if (TEST_REST_DEVICE)
                         {
-                            MonoLibUsbApi.ResetDevice(device_handle);
+                            MonoUsbApi.ResetDevice(device_handle);
                             device_handle.Close();
-                            device_handle = MonoLibUsbApi.OpenDeviceWithVidPid(sessionHandle, MY_VID, MY_PID);
+                            device_handle = MonoUsbApi.OpenDeviceWithVidPid(sessionHandle, MY_VID, MY_PID);
                             if ((device_handle == null) || device_handle.IsInvalid) break;
                         }
                         Console.WriteLine("Set Config..");
-                        r = MonoLibUsbApi.SetConfiguration(device_handle, MY_CONFIG);
+                        r = MonoUsbApi.SetConfiguration(device_handle, MY_CONFIG);
                         if (r != 0) break;
 
                         Console.WriteLine("Set Interface..");
-                        r = MonoLibUsbApi.ClaimInterface(device_handle, MY_INTERFACE);
+                        r = MonoUsbApi.ClaimInterface(device_handle, MY_INTERFACE);
                         if (r != 0) break;
 
                         // Write test data
@@ -180,7 +175,7 @@ namespace MonoLibUsb.ShowInfo
                             Console.WriteLine("Sending test data..");
                             if (TEST_MODE == TestMode.Async)
                             {
-                                r = (int) do_sync_bulk_transfer(device_handle,
+                                r = (int) doAsyncTransfer(device_handle,
                                                                 MY_EP_WRITE,
                                                                 testWriteData,
                                                                 TEST_WRITE_LEN,
@@ -190,7 +185,7 @@ namespace MonoLibUsb.ShowInfo
                             }
                             else
                             {
-                                r = MonoLibUsbApi.BulkTransfer(device_handle,
+                                r = MonoUsbApi.BulkTransfer(device_handle,
                                                                        MY_EP_WRITE,
                                                                        testWriteData,
                                                                        TEST_WRITE_LEN,
@@ -221,7 +216,7 @@ namespace MonoLibUsb.ShowInfo
                         {
                             if (TEST_MODE == TestMode.Async)
                             {
-                                r = (int) do_sync_bulk_transfer(device_handle,
+                                r = (int) doAsyncTransfer(device_handle,
                                                                 MY_EP_READ,
                                                                 testReadData,
                                                                 TEST_READ_LEN,
@@ -231,7 +226,7 @@ namespace MonoLibUsb.ShowInfo
                             }
                             else
                             {
-                                r = MonoLibUsbApi.BulkTransfer(device_handle,
+                                r = MonoUsbApi.BulkTransfer(device_handle,
                                                                        MY_EP_READ,
                                                                        testReadData,
                                                                        TEST_READ_LEN,
@@ -251,7 +246,7 @@ namespace MonoLibUsb.ShowInfo
 
                                 // Display test data.
                                 Console.Write("Received: ");
-                                printHexByteString(testReadData, transferred);
+                                Console.WriteLine(System.Text.Encoding.Default.GetString(testReadData, 0, transferred));
                             }
                         } while (r == 0);
                     } while (false);
@@ -262,7 +257,7 @@ namespace MonoLibUsb.ShowInfo
                     {
                         if (!device_handle.IsInvalid)
                         {
-                            MonoLibUsbApi.ReleaseInterface(device_handle, MY_INTERFACE);
+                            MonoUsbApi.ReleaseInterface(device_handle, MY_INTERFACE);
                             device_handle.Close();
                         }
                     }

@@ -20,7 +20,9 @@
 // 
 // 
 using System;
+using System.Runtime.InteropServices;
 using LibUsbDotNet.Main;
+using MonoLibUsb.Profile;
 
 namespace MonoLibUsb
 {
@@ -34,19 +36,68 @@ namespace MonoLibUsb
 
     public class MonoUsbDeviceHandle : SafeContextHandle
     {
-        /// <summary>
-        /// Creates an empty <see cref="MonoUsbDeviceHandle"/> instance.
-        /// </summary>
-        public MonoUsbDeviceHandle()
-            : base(IntPtr.Zero) { }
+        private static Object handleLOCK = new object();
+        private static MonoUsbError mLastReturnCode;
+        private static String mLastReturnString = String.Empty;
 
         /// <summary>
-        /// Wraps a raw usb device handle pointer in a <see cref="MonoUsbDeviceHandle"/> class.
+        /// If the device handle is <see cref="SafeContextHandle.IsInvalid"/>, gets a descriptive string for the <see cref="LastErrorCode"/>.
         /// </summary>
-        /// <param name="deviceHandle">the device handle to wrap.</param>
-        public MonoUsbDeviceHandle(IntPtr deviceHandle)
-            : base(deviceHandle) { }
+        public static string LastErrorString
+        {
+            get
+            {
+                lock (handleLOCK)
+                {
+                    return mLastReturnString;
+                }
+            }
+        }
+        /// <summary>
+        /// If the device handle is <see cref="SafeContextHandle.IsInvalid"/>, gets the <see cref="MonoUsbError"/> status code indicating the reason.
+        /// </summary>
+        public static MonoUsbError LastErrorCode
+        {
+            get
+            {
+                lock (handleLOCK)
+                {
+                    return mLastReturnCode;
+                }
+            }
+        }
+        /// <summary>Open a device handle using <paramref name="profileHandle"/>.</summary>
+        /// <remarks>
+        /// <para>A handle allows you to perform I/O on the device in question.</para>
+        /// <para>To close a device handle call its <see cref="SafeHandle.Close"/> method.</para>
+        /// <para>This is a non-blocking function; no requests are sent over the bus.</para>
+        /// </remarks>
+        /// <param name="profileHandle">A device profile handle.</param>
+        public MonoUsbDeviceHandle(MonoUsbProfileHandle profileHandle)
+            : base(IntPtr.Zero) 
+        {
+            IntPtr pDeviceHandle = IntPtr.Zero;
+            int ret = MonoUsbApi.Open(profileHandle, ref pDeviceHandle);
+            if (ret < 0 || pDeviceHandle==IntPtr.Zero)
+            {
+                lock (handleLOCK)
+                {
+                    mLastReturnCode = (MonoUsbError) ret;
+                    mLastReturnString = MonoUsbApi.StrError(mLastReturnCode);
+                }
+                SetHandleAsInvalid();
+            }
+            else
+            {
+                SetHandle(pDeviceHandle);
+            }
 
+        }
+
+        internal MonoUsbDeviceHandle(IntPtr pDeviceHandle)
+            : base(pDeviceHandle)
+        {
+        }
         ///<summary>
         ///Closes the <see cref="MonoUsbDeviceHandle"/>.
         ///</summary>
@@ -57,11 +108,10 @@ namespace MonoLibUsb
         {
             if (!IsInvalid)
             {
-                MonoLibUsbApi.Close(handle);
+                MonoUsbApi.Close(handle);
                 SetHandleAsInvalid();
-                return true;
             }
-            return false;
+            return true;
         }
     }
 }

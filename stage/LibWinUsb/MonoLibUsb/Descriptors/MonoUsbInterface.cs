@@ -26,7 +26,7 @@ using System.Runtime.InteropServices;
 namespace MonoLibUsb.Descriptors
 {
     ///<summary>A collection of alternate settings for a particular USB interface.</summary>
-    [StructLayout(LayoutKind.Sequential, Pack = MonoLibUsbApi.LIBUSB_PACK)]
+    [StructLayout(LayoutKind.Sequential, Pack = MonoUsbApi.LIBUSB_PACK)]
     public class MonoUsbInterface
     {
         ///<summary> Array of interface descriptors. The length of this array is determined by the num_altsetting field.</summary>

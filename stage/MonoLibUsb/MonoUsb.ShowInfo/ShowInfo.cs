@@ -1,6 +1,6 @@
 ﻿using System;
 using MonoLibUsb.Profile;
-using Usb = MonoLibUsb.MonoLibUsbApi;
+using Usb = MonoLibUsb.MonoUsbApi;
 
 namespace MonoLibUsb.ShowInfo
 {
@@ -28,7 +28,7 @@ namespace MonoLibUsb.ShowInfo
             if (Session.IsInvalid) 
                 throw new Exception("Failed to initialize context.");
 
-            MonoLibUsbApi.SetDebug(Session, 0);
+            MonoUsbApi.SetDebug(Session, 0);
             // Create a MonoUsbProfileList instance.
             profileList = new MonoUsbProfileList();
 
@@ -47,7 +47,7 @@ namespace MonoLibUsb.ShowInfo
             // code below is not required but it is considered good programming
             // to explicitly free and close these handle when they are no longer
             // in-use.
-            profileList.Free();
+            profileList.Close();
             Session.Close();
         }
     }

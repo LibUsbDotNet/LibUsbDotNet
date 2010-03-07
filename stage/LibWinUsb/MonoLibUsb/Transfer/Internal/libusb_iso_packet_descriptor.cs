@@ -5,7 +5,7 @@ namespace MonoLibUsb.Transfer.Internal
     /// <remarks>
     /// This class is never instantiated in .NET.  Instead it is used as a template by the <see cref="MonoUsbIsoPacket"/> class.
     /// </remarks>
-    [StructLayout(LayoutKind.Sequential, Pack = MonoLibUsbApi.LIBUSB_PACK)]
+    [StructLayout(LayoutKind.Sequential, Pack = MonoUsbApi.LIBUSB_PACK)]
     internal class libusb_iso_packet_descriptor
     {
         /// <summary>

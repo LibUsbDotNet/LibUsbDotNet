@@ -70,6 +70,114 @@
       </content>
     </foldSection>
 
+    <foldSection address="MonoLibUsb.Differences.C">
+      <title>Migrating from the Libusb-1.0 C API to the MonoLibUsb .NET API</title>
+      <content>
+        <para>
+          The <CREF>T:MonoLibUsb.MonoUsbApi</CREF> functions have no "libusb_" prefix.and the naming convention is UpperCamelCase. For example, 
+          <codeInline>MonoUsbApi.GetConfiguration()</codeInline> instead of <codeInline>libusb_get_configuration()</codeInline>.
+        </para>
+        <para>
+          The following functions have been internalized:
+          <list class="bullet">
+            <listItem>
+              <a href="http://libusb.sourceforge.net/api-1.0/group__lib.html#ga9517c37281bba0b51cc62eba728be48b">libusb_init()</a>
+            </listItem>
+            <listItem>
+              <a href="http://libusb.sourceforge.net/api-1.0/group__lib.html#ga9517c37281bba0b51cc62eba728be48b">libusb_exit()</a>
+              <para>
+                A <CREF>T:MonoLibUsb.MonoUsbSessionHandle</CREF> class is used to manage a <codeInline>libusb_context</codeInline>.  
+              </para>
+              <para>
+                <code lang="c++">
+                  // Initialize Context
+                  libusb_context *context;
+                  libusb_init(&amp;context);
+
+                  // Exit Context
+                  libusb_exit(context);
+                </code>
+                <code>
+                  // Initialize Context
+                  MonoUsbSessionHandle context = new MonoUsbSessionHandle();
+
+                  // Exit Context
+                  context.Close();
+                </code>
+              </para>
+            </listItem>
+            <listItem>
+              <a href="http://libusb.sourceforge.net/api-1.0/group__dev.html#gad3b8561d064bb3e1b8851ddeed3cd7d6">libusb_free_device_list()</a>
+              <para>
+              A <CREF>T:MonoLibUsb.Profile.MonoUsbProfileListHandle</CREF> class is used to manage a device list handle. To free a device list handle, call the
+              list handles <codeInline>Close()</codeInline> method.
+              </para>
+            </listItem>
+            <listItem>
+              <a href="http://libusb.sourceforge.net/api-1.0/group__desc.html#ga18d2b08a065857ff7ae4f3f719c115cc">libusb_free_config_descriptor()</a>
+              <para>
+                A <CREF>T:MonoLibUsb.Profile.MonoUsbConfigHandle</CREF> class is used to manage a config descriptor. To free a config descriptor, call the
+                config handles <codeInline>Close()</codeInline> method.
+              </para>
+            </listItem>
+            <listItem>
+              <a href="http://libusb.sourceforge.net/api-1.0/group__dev.html#ga8163100afdf933fabed0db7fa81c89d1">libusb_open()</a>
+            </listItem>
+            <listItem>
+              <a href="http://libusb.sourceforge.net/api-1.0/group__dev.html#ga779bc4f1316bdb0ac383bddbd538620e">libusb_close()</a>
+              <para>
+                A <CREF>T:MonoLibUsb.MonoUsbDeviceHandle</CREF> class is used to manage a <codeInline>libusb_device_handle</codeInline>.
+              </para>
+              <para>
+                <code lang="c++">
+                  // Open Device
+                  libusb_device_handle *device_handle;
+                  libusb_open(profileHandle,&amp;device_handle);
+
+                  // Close Device
+                  libusb_close(device_handle);
+                </code>
+                <code>
+                  // Open Device
+                  MonoUsbDeviceHandle deviceHandle = new MonoUsbDeviceHandle(profileHandle);
+
+                  // Close Device
+                  deviceHandle.Close();
+                </code>                
+              </para>
+            </listItem>
+            <listItem>
+              <a href="http://libusb.sourceforge.net/api-1.0/group__dev.html#gaabaa4193adcabba1789cc1165ac41a03">libusb_ref_device()</a>
+            </listItem>
+            <listItem>
+              <a href="http://libusb.sourceforge.net/api-1.0/group__dev.html#ga3cc62e6a191b7a9f213e62b81ec30f4d">libusb_unref_device()</a>
+              <para>
+                Device referencing is handled internally by the <CREF>T:MonoLibUsb.Profile.MonoUsbProfileHandle</CREF> class.
+              </para>
+            </listItem>
+            <listItem>
+              <a href="http://libusb.sourceforge.net/api-1.0/group__asyncio.html#ga13cc69ea40c702181c430c950121c000">libusb_alloc_transfer()</a>
+            </listItem>
+            <listItem>
+              <a href="http://libusb.sourceforge.net/api-1.0/group__asyncio.html#gabb0932601f2c7dad2fee4b27962848ce">libusb_submit_transfer()</a>
+            </listItem>
+            <listItem>
+              <a href="http://libusb.sourceforge.net/api-1.0/group__asyncio.html#ga685eb7731f9a0593f75beb99727bbe54">libusb_cancel_transfer()</a>
+            </listItem>
+            <listItem>
+              <a href="http://libusb.sourceforge.net/api-1.0/group__asyncio.html#ga6ab8b2cff4de9091298a06b2f4b86cd6">libusb_free_transfer()</a>
+              <para>
+                Asynchronous device I/O functions are implemented in the <CREF>T:MonoLibUsb.Transfer.MonoUsbTransfer</CREF> structure.
+              </para>
+            </listItem>
+          </list>
+          <alert class="warning">
+            Asynchronous transfers must be freed by the user with the <CREF>M:MonoLibUsb.Transfer.MonoUsbTransfer.Free</CREF> method. Failure to do so will result in memory leaks. 
+          </alert>
+        </para>
+      </content>
+    </foldSection>
+    
         <!-- Optional next steps info
     <nextSteps>
       <content><para>Next steps info goes here</para></content>

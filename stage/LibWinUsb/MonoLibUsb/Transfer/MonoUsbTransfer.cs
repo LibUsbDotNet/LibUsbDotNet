@@ -65,13 +65,13 @@ namespace MonoLibUsb.Transfer
         /// <param name="numIsoPackets">number of isochronous packet descriptors to allocate.</param>
         public MonoUsbTransfer(int numIsoPackets)
         {
-            handle = MonoLibUsbApi.AllocTransfer(numIsoPackets);
+            handle = MonoUsbApi.AllocTransfer(numIsoPackets);
         }
 
         /// <summary>
-        /// Creates a new wrapper for transfers allocated by <see cref="MonoLibUsbApi.AllocTransfer"/>,
+        /// Creates a new wrapper for transfers allocated by <see cref="MonoUsbApi.AllocTransfer"/>,
         /// </summary>
-        /// <param name="pTransfer">The pointer to the transfer that was previously allocated with<see cref="MonoLibUsbApi.AllocTransfer"/>. </param>
+        /// <param name="pTransfer">The pointer to the transfer that was previously allocated with<see cref="MonoUsbApi.AllocTransfer"/>. </param>
         internal MonoUsbTransfer(IntPtr pTransfer)
         {
             handle = pTransfer;
@@ -186,7 +186,7 @@ namespace MonoLibUsb.Transfer
         }
 
         /// <summary>
-        /// Frees the transfer with <see cref="MonoLibUsbApi.FreeTransfer"/>.
+        /// Frees the transfer with <see cref="MonoUsbApi.FreeTransfer"/>.
         /// </summary>
         ///<remarks>
         /// After freeing, <see cref="IsInvalid"/> will return <c>true</c>.
@@ -196,7 +196,7 @@ namespace MonoLibUsb.Transfer
         {
             if (handle!=IntPtr.Zero)
             {
-                MonoLibUsbApi.FreeTransfer(handle);
+                MonoUsbApi.FreeTransfer(handle);
                 handle = IntPtr.Zero;
             }
         }
@@ -236,7 +236,7 @@ namespace MonoLibUsb.Transfer
             }
         }
         /// <summary>
-        /// Cancels this transfer with <see cref="MonoLibUsbApi.CancelTransfer"/>.
+        /// Cancels this transfer with <see cref="MonoUsbApi.CancelTransfer"/>.
         /// </summary>
         /// <returns><see cref="MonoUsbError.LIBUSB_SUCCESS"/> if the cancel succeeds, 
         /// otherwise one of the other <see cref="MonoUsbError"/> codes.</returns>
@@ -244,7 +244,7 @@ namespace MonoLibUsb.Transfer
         {
             if (IsInvalid) return MonoUsbError.LIBUSB_ERROR_NO_MEM;
 
-            return (MonoUsbError) MonoLibUsbApi.CancelTransfer(this);
+            return (MonoUsbError) MonoUsbApi.CancelTransfer(this);
         }
 
         /// <summary>
@@ -331,7 +331,7 @@ namespace MonoLibUsb.Transfer
 
         }
         /// <summary>
-        /// Submits the transfer using <see cref="MonoLibUsbApi.SubmitTransfer"/>.
+        /// Submits the transfer using <see cref="MonoUsbApi.SubmitTransfer"/>.
         /// </summary>
         /// <remarks>
         /// This functions submits the USB transfer and return immediately.
@@ -343,7 +343,7 @@ namespace MonoLibUsb.Transfer
         public MonoUsbError Submit()
         {
             if (IsInvalid) return MonoUsbError.LIBUSB_ERROR_NO_MEM;
-            return (MonoUsbError)MonoLibUsbApi.SubmitTransfer(this);
+            return (MonoUsbError)MonoUsbApi.SubmitTransfer(this);
         }
 
         /// <summary>
@@ -360,7 +360,7 @@ namespace MonoLibUsb.Transfer
         /// <exception cref="OutOfMemoryException">If the transfer was not allocated.</exception>
         public static MonoUsbTransfer Alloc(int numIsoPackets)
         {
-            IntPtr p = MonoLibUsbApi.AllocTransfer(numIsoPackets);
+            IntPtr p = MonoUsbApi.AllocTransfer(numIsoPackets);
             if (p == IntPtr.Zero) throw new OutOfMemoryException("AllocTransfer");
             return new MonoUsbTransfer(p);
         }

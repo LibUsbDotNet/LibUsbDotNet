@@ -20,11 +20,14 @@
 // 
 // 
 
+using System;
+
 namespace LibUsbDotNet.Main
 {
     /// <summary>
     /// Standard Device Requests.
     /// </summary>
+    [Flags]
     public enum UsbStandardRequest : byte
     {
         /// <summary>

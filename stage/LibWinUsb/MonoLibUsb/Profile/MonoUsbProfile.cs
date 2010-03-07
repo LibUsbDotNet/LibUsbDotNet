@@ -40,8 +40,8 @@ namespace MonoLibUsb.Profile
         internal MonoUsbProfile(MonoUsbProfileHandle monoUSBProfileHandle)
         {
             mMonoUSBProfileHandle = monoUSBProfileHandle;
-            mBusNumber = MonoLibUsbApi.GetBusNumber(mMonoUSBProfileHandle);
-            mDeviceAddress = MonoLibUsbApi.GetDeviceAddress(mMonoUSBProfileHandle);
+            mBusNumber = MonoUsbApi.GetBusNumber(mMonoUSBProfileHandle);
+            mDeviceAddress = MonoUsbApi.GetDeviceAddress(mMonoUSBProfileHandle);
             GetDeviceDescriptor(out mMonoUsbDeviceDescriptor);
 
 //#if DEBUG
@@ -143,7 +143,7 @@ namespace MonoLibUsb.Profile
 
             monoUsbDeviceDescriptor = new MonoUsbDeviceDescriptor();
             //Console.WriteLine("MonoUsbProfile:GetDeviceDescriptor");
-            ec = (MonoUsbError) MonoLibUsbApi.GetDeviceDescriptor(mMonoUSBProfileHandle, monoUsbDeviceDescriptor);
+            ec = (MonoUsbError) MonoUsbApi.GetDeviceDescriptor(mMonoUSBProfileHandle, monoUsbDeviceDescriptor);
             if (ec != MonoUsbError.LIBUSB_SUCCESS)
             {
 #if LIBUSBDOTNET
@@ -164,11 +164,12 @@ namespace MonoLibUsb.Profile
         }
 
         /// <summary>
-        /// Opens the device handle this profile handle represents.
+        /// Convenience function to open the device handle for this profile handle represents.
         /// </summary>
-        /// <param name="deviceHandle">On success, an opened usb device handle.</param>
-        /// <returns><see cref="MonoUsbError.LIBUSB_SUCCESS"/> or another <see cref="MonoUsbError"/> on failure.</returns>
-        public MonoUsbError OpenDeviceHandle(out MonoUsbDeviceHandle deviceHandle) { return (MonoUsbError) MonoLibUsbApi.Open(ProfileHandle, out deviceHandle); }
+        /// <returns>
+        /// A new <see cref="MonoUsbDeviceHandle"/> instance. Created with <see cref="MonoUsbDeviceHandle(MonoUsbProfileHandle)"/> constructor.
+        /// </returns>
+        public MonoUsbDeviceHandle OpenDeviceHandle() { return new MonoUsbDeviceHandle(ProfileHandle); }
 
         /// <summary>
         /// Compares a <see cref="MonoUsbProfile"/> with this one.

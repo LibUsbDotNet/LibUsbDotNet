@@ -35,6 +35,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MonoUsb.ShowInfo", "MonoLib
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MonoUsb.BulkReadWrite", "MonoLibUsb\MonoUsb.BulkReadWrite\MonoUsb.BulkReadWrite.csproj", "{72CADC24-3ED8-4C14-8945-297A3B4235BA}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MonoUsb.ShowConfig", "MonoLibUsb\MonoUsb.ShowConfig\MonoUsb.ShowConfig.csproj", "{88B42AE9-58FA-4669-A746-05DA78EFCC01}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -155,6 +157,12 @@ Global
 		{72CADC24-3ED8-4C14-8945-297A3B4235BA}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{72CADC24-3ED8-4C14-8945-297A3B4235BA}.Release|Any CPU.Build.0 = Release|Any CPU
 		{72CADC24-3ED8-4C14-8945-297A3B4235BA}.Release|Win32.ActiveCfg = Release|Any CPU
+		{88B42AE9-58FA-4669-A746-05DA78EFCC01}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{88B42AE9-58FA-4669-A746-05DA78EFCC01}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{88B42AE9-58FA-4669-A746-05DA78EFCC01}.Debug|Win32.ActiveCfg = Debug|Any CPU
+		{88B42AE9-58FA-4669-A746-05DA78EFCC01}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{88B42AE9-58FA-4669-A746-05DA78EFCC01}.Release|Any CPU.Build.0 = Release|Any CPU
+		{88B42AE9-58FA-4669-A746-05DA78EFCC01}.Release|Win32.ActiveCfg = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -169,6 +177,7 @@ Global
 		{C67D8BD5-18C4-4D1D-83E6-03E04660884D} = {5E024A6D-DD45-421A-BF51-73DBA0A27E53}
 		{93531142-EF4A-4406-BBF7-A900327D2566} = {362D3C07-F227-4E70-BA83-A3A6003AA1BE}
 		{72CADC24-3ED8-4C14-8945-297A3B4235BA} = {362D3C07-F227-4E70-BA83-A3A6003AA1BE}
+		{88B42AE9-58FA-4669-A746-05DA78EFCC01} = {362D3C07-F227-4E70-BA83-A3A6003AA1BE}
 	EndGlobalSection
 	GlobalSection(MonoDevelopProperties) = preSolution
 		StartupItem = Test_Info\Test_Info.csproj
