@@ -13,7 +13,7 @@
            zero (0) to limit it to top-level sections only.  -->
       <!-- <autoOutline /> -->
       <para>
-        The MonoLibUsb Libusb-1.0 low-level API library is a complete implentention of
+        The MonoLibUsb Libusb-1.0 low-level API library is a complete implementation of
         <externalLink>
           <linkText>Libusb-1.0</linkText>
           <linkAlternateText>Libusb-1.0</linkAlternateText>
@@ -78,7 +78,13 @@
           <codeInline>MonoUsbApi.GetConfiguration()</codeInline> instead of <codeInline>libusb_get_configuration()</codeInline>.
         </para>
         <para>
-          The following functions have been internalized:
+          Functions that deal with freeing, opening and closing (with the exception of asynchronous tranfers) are managed by a <CREF>T:LibUsbDotNet.Main.SafeContextHandle</CREF> class. This ensures all unsafe Libusb-1.0 memory pointers get closed/freed. 
+        </para>
+        <para>
+          The user is required to <CREF>M:MonoLibUsb.Transfer.MonoUsbTransfer.Free</CREF> asynchronous transfers. Failure to do so will result in memory leaks.
+        </para>
+        <para>
+          <legacyBold>The following functions do not exist in the <CREF>T:MonoLibUsb.MonoUsbApi</CREF>:</legacyBold>
           <list class="bullet">
             <listItem>
               <a href="http://libusb.sourceforge.net/api-1.0/group__lib.html#ga9517c37281bba0b51cc62eba728be48b">libusb_init()</a>

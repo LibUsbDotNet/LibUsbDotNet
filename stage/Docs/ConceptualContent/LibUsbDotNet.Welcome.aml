@@ -9,7 +9,7 @@
             <linkAlternateText>LibUsbDotNet Project Page</linkAlternateText>
             <linkUri>http://sourceforge.net/projects/libusbdotnet</linkUri>
           </externalLink>
-          is a complete .NET C# USB library for WinUsb, libusb-win32, and Linux libusb v1.x developers.
+          is a .NET C# USB library for WinUsb, libusb-win32, and Linux libusb v1.x developers.
           All basic USB device functionality can be performed through common device classes
           allowing you to write OS and driver independent code.
         </legacyBold>
@@ -17,7 +17,7 @@
       <para>
         <newTerm>LibUsbDotNet</newTerm> - A development tool written for .NET
         software developers who desire a fast and easy way to create a complete
-        custom USB driver solution for linux and windows.
+        custom USB driver solution for unix-like and windows platforms.
       </para>
       <para>
         <alert class="caution">
@@ -32,7 +32,12 @@
           <list class="bullet">
 
             <listItem>
-              LibUsbDotNet versions 2.2.0 and above support linux using libusb 1.x usb driver.
+              LibUsbDotNet versions 2.2.4 and above support the Libusb-1.0 driver.
+              <para>
+                <a href="http://www.libusb.org/wiki/Libusb1.0">Libusb-1.0</a> is supported under both unix-like and 
+                windows platforms. Under windows the new <a href="http://www.libusb.org/wiki/windows_backend"> Libusb-1.0 windows-backend driver</a> is used.
+                Alternatively, <link xlink:href="9fa3601c-f543-4574-933f-7c3756a2fa67">MonoLibUsb</link> can be used directly to support usb device using only the <a href="http://www.libusb.org/wiki/Libusb1.0">Libusb-1.0</a> driver.
+              </para>
             </listItem>
 
             <listItem>

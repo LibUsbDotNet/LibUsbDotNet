@@ -2,6 +2,12 @@
 <content xml:space="preserve" xmlns:ddue="http://ddue.schemas.microsoft.com/authoring/2003/5" xmlns:xlink="http://www.w3.org/1999/xlink">
   <item id="Added"><ddue:legacyBold xmlns:ddue="http://ddue.schemas.microsoft.com/authoring/2003/5">Added</ddue:legacyBold></item>
   <item id="Fixed"><ddue:legacyBold xmlns:ddue="http://ddue.schemas.microsoft.com/authoring/2003/5">Fixed</ddue:legacyBold></item>
+  <item id="Libusb-1.0"><ddue:externalLink xmlns:ddue="http://ddue.schemas.microsoft.com/authoring/2003/5">
+<ddue:linkText>Official Libusb-1.0 API Reference</ddue:linkText>
+<ddue:linkAlternateText>LibUsb-1.0 API Reference</ddue:linkAlternateText>
+<ddue:linkUri>http://libusb.sourceforge.net/api-1.0/index.html</ddue:linkUri>
+<ddue:linkTarget>_blank</ddue:linkTarget>
+</ddue:externalLink></item>
   <item id="Note"><command><legacyBold>Note</legacyBold></command></item>
   <item id="ProjectFeatures"><ddue:list class="bullet" xmlns:ddue="http://ddue.schemas.microsoft.com/authoring/2003/5">
       <ddue:listItem>
@@ -9,7 +15,7 @@
       </ddue:listItem>
       <ddue:listItem>
         <ddue:para>
-          Supports linux-like operating systems using
+          Supports unix-like operating systems using
           <ddue:externalLink>
             <ddue:linkText>mono</ddue:linkText>
             <ddue:linkAlternateText>www.mono-project</ddue:linkAlternateText>
@@ -26,7 +32,7 @@
         </ddue:para>
       </ddue:listItem>
       <ddue:listItem>
-        <ddue:para>Code can be easily written to support winusb, libusb-win32, and linux libusb v1.x via a common UsbDevice class.</ddue:para>
+        <ddue:para>Code can be universally written to support all drivers and platforms.</ddue:para>
       </ddue:listItem>
       <ddue:listItem>
         <ddue:para>Includes a InfWizard utility (windows only)for creating generic INF/CAT files as well as spawning all the appropriate driver files (x86,x64, and ia64) for libusb-win32 and WinUSB.</ddue:para>
@@ -105,10 +111,4 @@
           </ddue:list></item>
   <item id="Removed"><ddue:legacyBold xmlns:ddue="http://ddue.schemas.microsoft.com/authoring/2003/5">Removed</ddue:legacyBold></item>
   <item id="Updated"><ddue:legacyBold xmlns:ddue="http://ddue.schemas.microsoft.com/authoring/2003/5">Updated</ddue:legacyBold></item>
-  <item id="Libusb-1.0"><ddue:externalLink>
-<ddue:linkText>Official Libusb-1.0 API Reference</ddue:linkText>
-<ddue:linkAlternateText>LibUsb-1.0 API Reference</ddue:linkAlternateText>
-<ddue:linkUri>http://libusb.sourceforge.net/api-1.0/index.html</ddue:linkUri>
-<ddue:linkTarget>_blank</ddue:linkTarget>
-</ddue:externalLink></item>
 </content>

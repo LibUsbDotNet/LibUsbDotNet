@@ -32,9 +32,7 @@ namespace MonoLibUsb.Descriptors
     ///<summary>A structure representing the standard USB configuration descriptor. 
     ///This descriptor is documented in section 9.6.3 of the USB 2.0 specification. 
     ///All multiple-byte fields are represented in host-endian format.</summary>
-    /// <remarks>
     /// <example><code source="..\MonoLibUsb\MonoUsb.ShowConfig\ShowConfig.cs" lang="cs"/></example>
-    /// </remarks>
     [StructLayout(LayoutKind.Sequential, Pack = MonoUsbApi.LIBUSB_PACK)]
     public class MonoUsbConfigDescriptor
     {
@@ -43,7 +41,7 @@ namespace MonoLibUsb.Descriptors
         }
 
         /// <summary>
-        /// Create a new <see cref="MonoUsbConfigDescriptor"/> instance from a <see cref="MonoUsbConfigHandle"/>
+        /// Create a new <see cref="MonoUsbConfigDescriptor"/> instance from a <see cref="MonoUsbConfigHandle"/>.
         /// </summary>
         /// <param name="configHandle">A config handle.</param>
         public MonoUsbConfigDescriptor(MonoUsbConfigHandle configHandle)

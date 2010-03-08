@@ -88,20 +88,21 @@
     </DocumentationSources>
     <NamespaceSummaries>
       <NamespaceSummaryItem name="(global)" isDocumented="True" />
-<NamespaceSummaryItem name="LibUsbDotNet" isDocumented="True">Contains the commonly used types for LibUsbDotNet.</NamespaceSummaryItem>
-<NamespaceSummaryItem name="LibUsbDotNet.Descriptors" isDocumented="True">Contains supported usb device descriptors.  LibUsbDotNet supports all standard USB descriptors and provides some additional support for standard class descriptors.  Unsupported descriptors are accessible via a custom descriptor class.</NamespaceSummaryItem>
-<NamespaceSummaryItem name="LibUsbDotNet.DeviceNotify" isDocumented="True">Contains types need for detecting device system-level events such as the USB device arrival and removal notifications.</NamespaceSummaryItem>
-<NamespaceSummaryItem name="LibUsbDotNet.DeviceNotify.Info" isDocumented="True">Contains types that provide detailed information on system-level device events.</NamespaceSummaryItem>
-<NamespaceSummaryItem name="LibUsbDotNet.DeviceNotify.Linux" isDocumented="True">Contains types need for detecting device system-level events under Linux such as the USB device arrival and removal notifications.</NamespaceSummaryItem>
-<NamespaceSummaryItem name="LibUsbDotNet.Info" isDocumented="True">Contains types that provide detailed information about a usb device and its configurations, interfaces and endpoints.</NamespaceSummaryItem>
-<NamespaceSummaryItem name="LibUsbDotNet.LibUsb" isDocumented="True">Contains types specific to a usb device usng the libusb-win32 driver.</NamespaceSummaryItem>
-<NamespaceSummaryItem name="LibUsbDotNet.Main" isDocumented="True">Additional types used by LibUsbDotNet.</NamespaceSummaryItem>
-<NamespaceSummaryItem name="LibUsbDotNet.MonoLibUsb" isDocumented="True">Contains LibUsbDotNet types specific to a usb device using the Libusb-1.0 driver. Types in this namespace are not part of the MonoLibUsb low-level api.</NamespaceSummaryItem>
-<NamespaceSummaryItem name="LibUsbDotNet.WinUsb" isDocumented="True">Contains types specific to a usb device usng Microsofts WinUsb driver.</NamespaceSummaryItem>
-<NamespaceSummaryItem name="MonoLibUsb" isDocumented="True">&lt;p&gt;&lt;b&gt;MonoLibUsb - Libusb-1.0 low-level API&lt;/b&gt;&lt;/p&gt;</NamespaceSummaryItem>
-<NamespaceSummaryItem name="MonoLibUsb.Descriptors" isDocumented="True">&lt;p&gt;&lt;b&gt;MonoLibUsb - Libusb-1.0 low-level API&lt;/b&gt;&lt;/p&gt;Contains USB descriptor types compatible with Libusb-1.0 (default packing)</NamespaceSummaryItem>
-<NamespaceSummaryItem name="MonoLibUsb.Profile" isDocumented="True">&lt;p&gt;&lt;b&gt;MonoLibUsb - Libusb-1.0 low-level API&lt;/b&gt;&lt;/p&gt;Contains types used for accessing the device list, retrieving device information, and monitoring devices.</NamespaceSummaryItem>
-<NamespaceSummaryItem name="MonoLibUsb.Transfer" isDocumented="True">&lt;p&gt;&lt;b&gt;MonoLibUsb - Libusb-1.0 low-level API&lt;/b&gt;&lt;/p&gt;Contains types used for asynchronous transfers.</NamespaceSummaryItem></NamespaceSummaries>
+      <NamespaceSummaryItem name="LibUsbDotNet" isDocumented="True">Contains the commonly used types for LibUsbDotNet.</NamespaceSummaryItem>
+      <NamespaceSummaryItem name="LibUsbDotNet.Descriptors" isDocumented="True">Contains supported usb device descriptors.  LibUsbDotNet supports all standard USB descriptors and provides some additional support for standard class descriptors.  Unsupported descriptors are accessible via a custom descriptor class.</NamespaceSummaryItem>
+      <NamespaceSummaryItem name="LibUsbDotNet.DeviceNotify" isDocumented="True">Contains types need for detecting device system-level events such as the USB device arrival and removal notifications.</NamespaceSummaryItem>
+      <NamespaceSummaryItem name="LibUsbDotNet.DeviceNotify.Info" isDocumented="True">Contains types that provide detailed information on system-level device events.</NamespaceSummaryItem>
+      <NamespaceSummaryItem name="LibUsbDotNet.DeviceNotify.Linux" isDocumented="True">Contains types need for detecting device system-level events under Linux such as the USB device arrival and removal notifications.</NamespaceSummaryItem>
+      <NamespaceSummaryItem name="LibUsbDotNet.Info" isDocumented="True">Contains types that provide detailed information about a usb device and its configurations, interfaces and endpoints.</NamespaceSummaryItem>
+      <NamespaceSummaryItem name="LibUsbDotNet.LibUsb" isDocumented="True">Contains types specific to a usb device usng the libusb-win32 driver.</NamespaceSummaryItem>
+      <NamespaceSummaryItem name="LibUsbDotNet.Main" isDocumented="True">Additional types used by LibUsbDotNet.</NamespaceSummaryItem>
+      <NamespaceSummaryItem name="LibUsbDotNet.MonoLibUsb" isDocumented="True">Contains LibUsbDotNet types specific to a usb device using the Libusb-1.0 driver. Types in this namespace are not part of the MonoLibUsb low-level api.</NamespaceSummaryItem>
+      <NamespaceSummaryItem name="LibUsbDotNet.WinUsb" isDocumented="True">Contains types specific to a usb device usng Microsofts WinUsb driver.</NamespaceSummaryItem>
+      <NamespaceSummaryItem name="MonoLibUsb" isDocumented="True">&lt;p&gt;&lt;b&gt;MonoLibUsb - Libusb-1.0 low-level API&lt;/b&gt;&lt;/p&gt;</NamespaceSummaryItem>
+      <NamespaceSummaryItem name="MonoLibUsb.Descriptors" isDocumented="True">&lt;p&gt;&lt;b&gt;MonoLibUsb - Libusb-1.0 low-level API&lt;/b&gt;&lt;/p&gt;Contains USB descriptor types compatible with Libusb-1.0 (default packing)</NamespaceSummaryItem>
+      <NamespaceSummaryItem name="MonoLibUsb.Profile" isDocumented="True">&lt;p&gt;&lt;b&gt;MonoLibUsb - Libusb-1.0 low-level API&lt;/b&gt;&lt;/p&gt;Contains types used for accessing the device list, retrieving device information, and monitoring devices.</NamespaceSummaryItem>
+      <NamespaceSummaryItem name="MonoLibUsb.Transfer" isDocumented="True">&lt;p&gt;&lt;b&gt;MonoLibUsb - Libusb-1.0 low-level API&lt;/b&gt;&lt;/p&gt;Contains types used for asynchronous transfers.</NamespaceSummaryItem>
+    </NamespaceSummaries>
   </PropertyGroup>
   <!-- There are no properties for these two groups but they need to appear in
        order for Visual Studio to perform the build. -->

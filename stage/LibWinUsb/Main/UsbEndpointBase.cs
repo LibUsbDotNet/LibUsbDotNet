@@ -206,7 +206,7 @@ namespace LibUsbDotNet.Main
         public virtual ErrorCode Transfer(IntPtr buffer, int offset, int length, int timeout, out int transferLength) { return UsbTransfer.SyncTransfer(TransferContext, buffer, offset, length, timeout, out transferLength); }
 
         /// <summary>
-        /// Creates and sumbits an asynchronous transfer.
+        /// Creates and submits an asynchronous transfer.
         /// </summary>
         /// <param name="buffer">A caller-allocated buffer for the data that is transferred.</param>
         /// <param name="offset">Position in buffer that transferring begins.</param>
@@ -214,7 +214,7 @@ namespace LibUsbDotNet.Main
         /// <param name="timeout">Maximum time to wait for the transfer to complete.</param>
         /// <param name="transferContext">On <see cref="ErrorCode.Success"/>, a new transfer context.</param>
         /// <returns><see cref="ErrorCode.Success"/> if the transfer context was created and <see cref="UsbTransfer.Submit"/> succeeded.</returns>
-        public virtual ErrorCode AsyncTransfer(object buffer, int offset, int length, int timeout, out UsbTransfer transferContext)
+        public virtual ErrorCode SubmitAsyncTransfer(object buffer, int offset, int length, int timeout, out UsbTransfer transferContext)
         {
             transferContext = CreateTransferContext();
             transferContext.Fill(buffer, offset, length, timeout);
@@ -231,7 +231,7 @@ namespace LibUsbDotNet.Main
         }
 
         /// <summary>
-        /// Creates and sumbits an asynchronous transfer.
+        /// Creates and submits an asynchronous transfer.
         /// </summary>
         /// <param name="buffer">A caller-allocated buffer for the data that is transferred.</param>
         /// <param name="offset">Position in buffer that transferring begins.</param>
@@ -239,7 +239,7 @@ namespace LibUsbDotNet.Main
         /// <param name="timeout">Maximum time to wait for the transfer to complete.</param>
         /// <param name="transferContext">On <see cref="ErrorCode.Success"/>, a new transfer context.</param>
         /// <returns><see cref="ErrorCode.Success"/> if the transfer context was created and <see cref="UsbTransfer.Submit"/> succeeded.</returns>
-        public virtual ErrorCode AsyncTransfer(IntPtr buffer, int offset, int length, int timeout, out UsbTransfer transferContext)
+        public virtual ErrorCode SubmitAsyncTransfer(IntPtr buffer, int offset, int length, int timeout, out UsbTransfer transferContext)
         {
             transferContext = CreateTransferContext();
             transferContext.Fill(buffer, offset, length, timeout);
@@ -254,6 +254,19 @@ namespace LibUsbDotNet.Main
 
             return ec;
         }
+        /// <summary>
+        /// Get a new <see cref="UsbTransfer"/> context.
+        /// </summary>
+        /// <remarks>
+        /// <para>This method returns a new, empty transfer context.  Unlike <see cref="SubmitAsyncTransfer(object,int,int,int,out LibUsbDotNet.Main.UsbTransfer)"/>, this context must also be filled and submitted.</para>
+        /// </remarks>
+        /// <returns>A new <see cref="UsbTransfer"/> context.</returns>
+        public UsbTransfer NewAsyncTransfer()
+        {
+            UsbTransfer transfer = CreateTransferContext();
+            return transfer;
+        }
+
         internal static bool LookupEndpointInfo(UsbDevice usbDevice, byte endpointAddress, out UsbEndpointInfo usbEndpointInfo)
         {
             usbEndpointInfo = null;

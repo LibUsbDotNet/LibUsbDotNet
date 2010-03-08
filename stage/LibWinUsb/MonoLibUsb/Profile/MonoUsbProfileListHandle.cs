@@ -27,12 +27,12 @@ using LibUsbDotNet.Main;
 namespace MonoLibUsb.Profile
 {
     /// <summary>
-    /// Wraps a device list handle into a <see cref="System.Runtime.ConstrainedExecution.CriticalFinalizerObject"/>
+    /// Used to iterate through the <see cref="MonoUsbProfileHandle"/> collection contained in the <see cref="MonoUsbProfileListHandle"/>.
     /// </summary>
     /// <remarks>
-    /// The <see cref="MonoUsbDeviceHandle"/> class ensures all device lists get closed and 
-    /// freed regardless of abnormal program terminations or coding errors.
+    /// <para>Wraps a device list handle into a <see cref="System.Runtime.ConstrainedExecution.CriticalFinalizerObject"/></para>
     /// </remarks>
+    /// <seealso cref="MonoUsbProfileList"/>
     public class MonoUsbProfileListHandle : SafeContextHandle, IEnumerable<MonoUsbProfileHandle>
     {
         private MonoUsbProfileListHandle()

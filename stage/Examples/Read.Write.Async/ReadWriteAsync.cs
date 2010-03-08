@@ -72,10 +72,10 @@ namespace Examples
                 int testCount = 0;
                 do
                 {
-                    ecRead = reader.AsyncTransfer(readBuffer, 0, readBuffer.Length, 100, out usbReadTransfer);
+                    ecRead = reader.SubmitAsyncTransfer(readBuffer, 0, readBuffer.Length, 100, out usbReadTransfer);
                     if (ecRead != ErrorCode.None) throw new Exception("Submit Async Read Failed.");
 
-                    ecWrite = writer.AsyncTransfer(bytesToSend, 0, bytesToSend.Length, 100, out usbWriteTransfer);
+                    ecWrite = writer.SubmitAsyncTransfer(bytesToSend, 0, bytesToSend.Length, 100, out usbWriteTransfer);
                     if (ecWrite != ErrorCode.None)
                     {
                         usbReadTransfer.Dispose();

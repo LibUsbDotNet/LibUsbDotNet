@@ -102,7 +102,7 @@ namespace MonoLibUsb.Profile
 
 
         /// <summary>
-        /// Refreshes the <see cref="MonoUsbProfile"/> list.  If an event handler was added to <see cref="AddRemoveEvent"/> changes in the device profile list will reported.
+        /// Refreshes the <see cref="MonoUsbProfile"/> list.
         /// </summary>
         /// <remarks>
         /// <para>This is your entry point into finding a USB device to operate.</para>

@@ -32,8 +32,12 @@ namespace MonoLibUsb
     /// <remarks>
     /// The <see cref="MonoUsbDeviceHandle"/> class ensures all devices get closed and 
     /// freed regardless of abnormal program terminations or coding errors.
+    /// <para><seelibusb10 group="dev"/></para>
     /// </remarks>
-
+    /// <code>
+    /// MonoUsbDeviceHandle deviceHandle = new MonoUsbDeviceHandle(profileHandle);
+    /// if (deviceHandle.IsInvalid) throw new Exception("Invalid device context.");
+    /// </code>
     public class MonoUsbDeviceHandle : SafeContextHandle
     {
         private static Object handleLOCK = new object();

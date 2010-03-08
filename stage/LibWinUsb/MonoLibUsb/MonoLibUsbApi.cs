@@ -77,12 +77,10 @@ namespace MonoLibUsb
         /// </summary>
         /// <remarks>
         /// <para>This is your entry point into finding a USB device to operate.</para>
-        /// <para>You are expected to unreference all the devices when you are done with them, and then free the list with <see  cref="FreeDeviceList">libusb_free_device_list</see>. Note that <see  cref="FreeDeviceList">libusb_free_device_list</see> can unref all the devices for you. Be careful not to unreference a device you are about to open until after you have opened it.</para>
-        /// <para>This return value of this function indicates the number of devices in the resultant list. The list is actually one element larger, as it is NULL-terminated.</para>
         /// </remarks>
         /// <param name="sessionHandle">A valid <see cref="MonoUsbSessionHandle"/>.</param>
-        /// <param name="monoUSBProfileListHandle">	output location for a list of devices. Must be later freed with <see  cref="FreeDeviceList">libusb_free_device_list</see>.</param>
-        /// <returns>The number of devices in the outputted list, or <see cref="MonoUsbError.LIBUSB_ERROR_NO_MEM"/> on memory allocation failure. </returns>
+        /// <param name="monoUSBProfileListHandle">	output location for a list of devices.</param>
+        /// <returns>The number of devices in the outputted list, or <see cref="MonoUsbError.LIBUSB_ERROR_NO_MEM"/> on memory allocation failure.</returns>
         [DllImport(LIBUSB_DLL, CallingConvention = CC, SetLastError = false, EntryPoint = "libusb_get_device_list")]
         public static extern int GetDeviceList([In]MonoUsbSessionHandle sessionHandle, [Out] out MonoUsbProfileListHandle monoUSBProfileListHandle);
 
