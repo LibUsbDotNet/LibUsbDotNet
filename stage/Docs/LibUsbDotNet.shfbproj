@@ -178,6 +178,7 @@
     <None Include="ConceptualContent\MonoLibUsb.Example.ShowInfo.aml" />
     <None Include="ConceptualContent\MonoLibUsb.Example.BulkReadWriteAsync.aml" />
     <None Include="ConceptualContent\MonoLibUsb.Example.ShowConfig.aml" />
+    <None Include="ConceptualContent\MonoLibUsb.Example.AsyncControlIO.aml" />
   </ItemGroup>
   <ItemGroup>
     <ContentLayout Include="LibUsbDotNet.content" />

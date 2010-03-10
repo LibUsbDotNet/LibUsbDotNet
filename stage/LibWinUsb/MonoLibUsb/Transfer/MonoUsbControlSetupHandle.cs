@@ -11,13 +11,21 @@ namespace MonoLibUsb.Transfer
     /// <remarks>
     /// <note type="tip">This type is used for asynchronous control transfers only.</note>
     /// </remarks>
+    /// <seealso cref="MonoUsbControlSetup"/>
     public class MonoUsbControlSetupHandle:SafeContextHandle
     {
+        private MonoUsbControlSetup mSetupPacket;
         /// <summary>
-        /// Allocates memory and sets up a control setup packet.
+        /// Allocates memory and sets up a control setup packet. Copies control data into the control data buffer
         /// </summary>
         /// <remarks>
-        /// This constructor is used when <paramref name="requestType"/> has the <see cref="UsbEndpointDirection.EndpointIn"/> flag and this request will contain extra data (more than just the setup packet). 
+        /// <para>This constructor is used when <paramref name="requestType"/> has the <see cref="UsbCtrlFlags.Direction_In"/> flag and this request will contain control data (more than just the setup packet).</para>
+        /// <para>Allocates <see cref="MonoUsbControlSetup.SETUP_PACKET_SIZE"/> + <paramref name="data"/>.Length for the setup packet. The setup packet is stored first then the control data.</para>
+        /// <para>The <paramref name="data"/> array is copied into the setup packet starting at <see cref="MonoUsbControlSetup.SETUP_PACKET_SIZE"/>.</para>
+        /// <note title="Libusb-1.0 API Note:" type="cpp">
+        /// This contructor is similar to
+        /// <a href="http://libusb.sourceforge.net/api-1.0/group__asyncio.html#ga5447311149ec2bd954b5f1a640a8e231">libusb_fill_control_setup()</a>.
+        /// </note>
         /// </remarks>
         /// <param name="requestType">The request type field for the setup packet.</param>
         /// <param name="request">The request field for the setup packet.</param>
@@ -27,24 +35,27 @@ namespace MonoLibUsb.Transfer
         public MonoUsbControlSetupHandle(byte requestType, byte request, short value, short index, byte[] data)
             : base(IntPtr.Zero, true)
                 {
-                    if (data==null) data=new byte[0];
-
-                    ushort wlength = (ushort) data.Length;
+                    ushort wlength;
+                    if (data == null)
+                        wlength = 0;
+                    else
+                        wlength = (ushort)data.Length; 
+                     
                     int packetSize = MonoUsbControlSetup.SETUP_PACKET_SIZE + wlength;
                     IntPtr pConfigMem = Marshal.AllocHGlobal(packetSize);
                     if (pConfigMem == IntPtr.Zero) throw new OutOfMemoryException(String.Format("Marshal.AllocHGlobal failed allocating {0} bytes", packetSize));
                     SetHandle(pConfigMem);
 
-                    MonoUsbControlSetup w = new MonoUsbControlSetup(pConfigMem);
+                    mSetupPacket = new MonoUsbControlSetup(pConfigMem);
 
-                    w.RequestType = requestType;
-                    w.Request = request;
-                    w.Value = value;
-                    w.Index = index;
-                    w.Length = (short)wlength;
+                    mSetupPacket.RequestType = requestType;
+                    mSetupPacket.Request = request;
+                    mSetupPacket.Value = value;
+                    mSetupPacket.Index = index;
+                    mSetupPacket.Length = (short)wlength;
 
-                    if (data.Length > 0)
-                        w.SetData(data, 0, data.Length);
+                    if (data != null)
+                        mSetupPacket.SetData(data, 0, data.Length);
                 }
 
         /// <summary>
@@ -53,10 +64,15 @@ namespace MonoLibUsb.Transfer
         /// <remarks>
         /// <para>This constructor is used when:
         /// <list type="bullet">
-        /// <item><paramref name="requestType"/> has the <see cref="UsbEndpointDirection.EndpointIn"/> flag and this request will not contain extra data (just the setup packet).</item>
-        /// <item><paramref name="requestType"/> does not have the <see cref="UsbEndpointDirection.EndpointIn"/> flag.</item>
+        /// <item><paramref name="requestType"/> has the <see cref="UsbCtrlFlags.Direction_In"/> flag and this request will not contain extra data (just the setup packet).</item>
+        /// <item><paramref name="requestType"/> does not have the <see cref="UsbCtrlFlags.Direction_In"/> flag.</item>
         /// </list>
         /// </para>
+        /// <note title="Libusb-1.0 API Note:" type="cpp">
+        /// This contructor is similar to
+        /// <a href="http://libusb.sourceforge.net/api-1.0/group__asyncio.html#ga5447311149ec2bd954b5f1a640a8e231">libusb_fill_control_setup()</a>.
+        /// </note>
+        /// <para>Allocates <see cref="MonoUsbControlSetup.SETUP_PACKET_SIZE"/> + <paramref name="length"/> for the setup packet. The setup packet is stored first then the control data.</para>
         /// </remarks>
         /// <param name="requestType">The request type field for the setup packet.</param>
         /// <param name="request">The request field for the setup packet.</param>
@@ -72,14 +88,25 @@ namespace MonoLibUsb.Transfer
             if (pConfigMem == IntPtr.Zero) throw new OutOfMemoryException(String.Format("Marshal.AllocHGlobal failed allocating {0} bytes", packetSize));
             SetHandle(pConfigMem);
 
-            MonoUsbControlSetup w=new MonoUsbControlSetup(pConfigMem);
+            mSetupPacket = new MonoUsbControlSetup(pConfigMem);
 
-            w.RequestType = requestType;
-            w.Request = request;
-            w.Value = value;
-            w.Index = index;
-            w.Length = (short) wlength;
+            mSetupPacket.RequestType = requestType;
+            mSetupPacket.Request = request;
+            mSetupPacket.Value = value;
+            mSetupPacket.Index = index;
+            mSetupPacket.Length = (short) wlength;
 
+        }
+
+        /// <summary>
+        /// Returns the <see cref="MonoUsbControlSetup"/> for this handle.
+        /// </summary>
+        public MonoUsbControlSetup ControlSetup
+        {
+            get
+            {
+                return mSetupPacket;
+            }
         }
         /// <summary>
         /// 

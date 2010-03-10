@@ -14,9 +14,10 @@
     <Topic id="e61bb81e-108b-4f84-a77d-8ccdecebfa31" visible="True" title="Read Write (Event Driven)" />
     <Topic id="8c7cc7dc-5b65-4fab-b2a2-54cf0b727a19" visible="True" title="Device Notification" />
   </Topic>
-  <Topic id="9fa3601c-f543-4574-933f-7c3756a2fa67" visible="True" title="MonoLibUsb (Low-level Libusb-1.0 API Library)">
+  <Topic id="9fa3601c-f543-4574-933f-7c3756a2fa67" visible="True" title="MonoLibUsb - [Libusb 1.0 API Library]">
     <Topic id="13c6b1b8-f805-45a9-8160-e0b2ea8f3d3f" visible="True" title="ShowInfo Example" />
     <Topic id="7d9d422e-9884-43cd-87c8-304e249d0e27" visible="True" title="Bulk Read/Write Example" />
     <Topic id="9afd422e-9884-43cd-87c8-304e249d0e27" visible="True" title="ShowConfig Example" />
+    <Topic id="476f208c-6b00-48ea-b829-29988d214678" visible="True" title="Async Control I/O Example" />
   </Topic>
 </Topics>

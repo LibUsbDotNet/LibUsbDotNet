@@ -28,7 +28,7 @@ using MonoLibUsb.Transfer.Internal;
 namespace MonoLibUsb.Transfer
 {
     /// <summary>
-    /// USB transfer wrapper structure.
+    /// Reads/writes a Libusb-1.0 transfer pointer.  Transfer should be allocated with <see cref="Alloc"/>.
     /// </summary>
     /// <remarks>
     /// The user populates this structure and then submits it in order to request a transfer. 
@@ -267,8 +267,9 @@ namespace MonoLibUsb.Transfer
         /// Helper function to populate the required <see cref="MonoUsbTransfer"/> properties for a bulk transfer.
         /// </summary>
         /// <remarks>
-        /// <note type="tip">
-        /// <para>Isochronous transfers are not supported on windows.</para>
+        /// <note title="Libusb-1.0 API Note:" type="cpp">
+        /// <see cref="FillBulk"/> is similar to
+        /// <a href="http://libusb.sourceforge.net/api-1.0/group__asyncio.html#gad4ddb1a5c6c7fefc979a44d7300b95d7">libusb_fill_bulk_transfer()</a>.
         /// </note>
         /// </remarks>
         /// <param name="devHandle">handle of the device that will handle the transfer</param>
@@ -301,8 +302,9 @@ namespace MonoLibUsb.Transfer
         /// Helper function to populate the required <see cref="MonoUsbTransfer"/> properties for an interrupt transfer.
         /// </summary>
         /// <remarks>
-        /// <note type="tip">
-        /// <para>Isochronous transfers are not supported on windows.</para>
+        /// <note title="Libusb-1.0 API Note:" type="cpp">
+        /// <see cref="FillInterrupt"/> is roughly equivalent to
+        /// <a href="http://libusb.sourceforge.net/api-1.0/group__asyncio.html#ga90f53cea1124a7566df1aa1202b77510">libusb_fill_interrupt_transfer()</a>.
         /// </note>
         /// </remarks>
         /// <param name="devHandle">handle of the device that will handle the transfer</param>
@@ -337,6 +339,10 @@ namespace MonoLibUsb.Transfer
         /// <remarks>
         /// <note type="tip">
         /// <para>Isochronous transfers are not supported on windows.</para>
+        /// </note>
+        /// <note title="Libusb-1.0 API Note:" type="cpp">
+        /// <see cref="FillIsochronous"/> is similar to
+        /// <a href="http://libusb.sourceforge.net/api-1.0/group__asyncio.html#ga30fdce8c461e851f0aa4c851014e1aa7">libusb_fill_iso_transfer()</a>.
         /// </note>
         /// </remarks>
         /// <param name="devHandle">handle of the device that will handle the transfer</param>
@@ -479,6 +485,10 @@ namespace MonoLibUsb.Transfer
         /// <remarks>
         /// <note type="tip">
         /// <para>Isochronous transfers are not supported on windows.</para>
+        /// </note>
+        /// <note title="Libusb-1.0 API Note:" type="cpp">
+        /// <see cref="FillControl"/> is similar to
+        /// <a href="http://libusb.sourceforge.net/api-1.0/group__asyncio.html#ga3a8513ed87229fe2c9771ef0bf17206e">libusb_fill_control_transfer()</a>.
         /// </note>
         /// </remarks>
         /// <param name="devHandle">handle of the device that will handle the transfer</param>

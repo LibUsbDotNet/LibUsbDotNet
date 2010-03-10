@@ -68,8 +68,8 @@ namespace MonoUsb.Async.ControlIO
                 e = (MonoUsbError) (ret = MonoUsbApi.ClaimInterface(myDeviceHandle, 0));
                 if (ret < 0) throw new Exception(String.Format("Failed ClaimInterface.\n{0}:{1}", e, MonoUsbApi.StrError(e)));
 
-                // Configure and create a vendor specific control setup, allocate 1 byte for return control data.
-                byte requestType = (byte) UsbEndpointDirection.EndpointIn | (byte) UsbRequestRecipient.RecipDevice | (byte) UsbRequestType.TypeVendor;
+                // Create a vendor specific control setup, allocate 1 byte for return control data.
+                byte requestType = (byte)(UsbCtrlFlags.Direction_In | UsbCtrlFlags.Recipient_Device | UsbCtrlFlags.RequestType_Vendor);
                 byte request = 0x0F;
                 MonoUsbControlSetupHandle controlSetupHandle = new MonoUsbControlSetupHandle(requestType, request, 0, 0, 1);
 

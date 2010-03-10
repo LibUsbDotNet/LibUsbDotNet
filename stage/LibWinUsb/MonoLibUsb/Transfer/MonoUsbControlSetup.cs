@@ -6,12 +6,15 @@ using MonoLibUsb.Transfer.Internal;
 namespace MonoLibUsb.Transfer
 {
     /// <summary>
-    /// Wraps a control setup packet into a structure for reading/writing setup packet data.
+    /// Reads/writes a Libusb-1.0 control setup packet pointer.  Control setup packets should be allocated with <see cref="MonoUsbControlSetupHandle"/>.
     /// </summary>
     /// <remarks>
+    /// <para>This class that reads and writes values directly from/to the setup packet <see cref="IntPtr"/> using <see cref="Marshal"/>.</para>
     /// <note type="tip">This type is used for asynchronous control transfers only.</note>
     /// </remarks>
-    public struct MonoUsbControlSetup
+    /// <seealso cref="MonoUsbControlSetupHandle"/>
+    [StructLayout(LayoutKind.Sequential)]
+    public class MonoUsbControlSetup
     {
         /// <summary>
         /// Size of a Libusb-1.0 setup packet.
@@ -31,6 +34,9 @@ namespace MonoLibUsb.Transfer
         /// <summary>
         /// Creates a <see cref="MonoUsbControlSetup"/> structure for a control setup packet pointer.
         /// </summary>
+        /// <remarks>
+        /// The <paramref name="pControlSetup"/> pointer must be a pointer in memory to a valid Libusb-1.0 <a href="http://libusb.sourceforge.net/api-1.0/structlibusb__control__setup.html">libusb__control__setup</a> that was allocated with <see cref="MonoUsbControlSetupHandle"/>.
+        /// </remarks>
         /// <param name="pControlSetup">Pointer to the setup packet.  This will usually be <see cref="MonoUsbTransfer.PtrBuffer">MonoUsbTransfer.PtrBuffer</see></param>
         public MonoUsbControlSetup(IntPtr pControlSetup)
         {
@@ -58,7 +64,7 @@ namespace MonoLibUsb.Transfer
         /// The wValue.
         /// </summary>
         /// <remarks>
-        /// <note type="tip">The get/set accessors automatically manage the little-endian to host-endian/host-endian to little-endian conversions.</note>
+        /// <note type="tip">The get/set accessors automatically manage the little-endian to host-endian/host-endian to little-endian conversions using the <see cref="Helper.HostEndianToLE16"/> method.</note>
         /// </remarks>
         public short Value
         {
@@ -70,7 +76,7 @@ namespace MonoLibUsb.Transfer
         /// The wIndex.
         /// </summary>
         /// <remarks>
-        /// <note type="tip">The get/set accessors automatically manage the little-endian to host-endian/host-endian to little-endian conversions.</note>
+        /// <note type="tip">The get/set accessors automatically manage the little-endian to host-endian/host-endian to little-endian conversions using the <see cref="Helper.HostEndianToLE16"/> method.</note>
         /// </remarks>
         public short Index
         {
@@ -81,7 +87,7 @@ namespace MonoLibUsb.Transfer
         /// Number of bytes to transfer. 
         /// </summary>
         /// <remarks>
-        /// <note type="tip">The get/set accessors automatically manage the little-endian to host-endian/host-endian to little-endian conversions.</note>
+        /// <note type="tip">The get/set accessors automatically manage the little-endian to host-endian/host-endian to little-endian conversions using the <see cref="Helper.HostEndianToLE16"/> method.</note>
         /// </remarks>
         public short Length
         {
@@ -92,6 +98,7 @@ namespace MonoLibUsb.Transfer
         /// <summary>
         /// Gets a pointer to the control data buffer.
         /// </summary>
+        /// <remarks>This is the <see cref="IntPtr"/> to the control data inside of the setup packet, not to the setup packet itself.</remarks>
         public IntPtr PtrData
         {
             get
