@@ -152,7 +152,7 @@ namespace TagNReplace
                                                 fiSource.FullName);
 
             if (fiDest.Exists && !mbAllowOverwrite)
-                throw new NotSupportedException("Destination file allready exists. See the AllowOverwrite property.\r\nDest:" + fiDest.FullName);
+                throw new NotSupportedException("Destination file already exists. See the AllowOverwrite property.\r\nDest:" + fiDest.FullName);
 
             StreamReader sr = new StreamReader(fiSource.FullName);
             string sTaggedData = sr.ReadToEnd();

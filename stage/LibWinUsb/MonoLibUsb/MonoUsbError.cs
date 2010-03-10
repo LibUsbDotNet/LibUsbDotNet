@@ -31,76 +31,79 @@ namespace MonoLibUsb
         /// <summary>
         /// Success (no error) 
         /// </summary>
-        LIBUSB_SUCCESS = 0,
-
+        Success = 0,
+        /// <summary>
+        /// Same as <see cref="Success"/>
+        /// </summary>
+        None =0,
         /// <summary>
         /// Input/output error 
         /// </summary>
-        LIBUSB_ERROR_IO = -1,
+        ErrorIO = -1,
 
         /// <summary>
         /// Invalid parameter 
         /// </summary>
-        LIBUSB_ERROR_INVALID_PARAM = -2,
+        ErrorInvalidParam = -2,
 
         /// <summary>
         /// Access denied (insufficient permissions) 
         /// </summary>
-        LIBUSB_ERROR_ACCESS = -3,
+        ErrorAccess = -3,
 
         /// <summary>
         /// No such device (it may have been disconnected) 
         /// </summary>
-        LIBUSB_ERROR_NO_DEVICE = -4,
+        ErrorNoDevice = -4,
 
         /// <summary>
         /// Entity not found 
         /// </summary>
-        LIBUSB_ERROR_NOT_FOUND = -5,
+        ErrorNotFound = -5,
 
         /// <summary>
         /// Resource busy 
         /// </summary>
-        LIBUSB_ERROR_BUSY = -6,
+        ErrorBusy = -6,
 
         /// <summary>
         /// Operation timed out 
         /// </summary>
-        LIBUSB_ERROR_TIMEOUT = -7,
+        ErrorTimeout = -7,
 
         /// <summary>
         /// Overflow 
         /// </summary>
-        LIBUSB_ERROR_OVERFLOW = -8,
+        ErrorOverflow = -8,
 
         /// <summary>
         /// Pipe error 
         /// </summary>
-        LIBUSB_ERROR_PIPE = -9,
+        ErrorPipe = -9,
 
         /// <summary>
         /// System call interrupted (perhaps due to signal) 
         /// </summary>
-        LIBUSB_ERROR_INTERRUPTED = -10,
+        ErrorInterrupted = -10,
 
         /// <summary>
         /// Insufficient memory 
         /// </summary>
-        LIBUSB_ERROR_NO_MEM = -11,
+        ErrorNoMem = -11,
 
         /// <summary>
         /// Operation not supported or unimplemented on this platform 
         /// </summary>
-        LIBUSB_ERROR_NOT_SUPPORTED = -12,
+        ErrorNotSupported = -12,
 
         /// <summary>
         /// Cancel IO failed.
         /// </summary>
-        LIBUSB_ERROR_IO_CANCELLED = -13,
+        ErrorIOCancelled = -13,
 
         /// <summary>
         /// Other error 
         /// </summary>
-        LIBUSB_ERROR_OTHER = -99,
+        ErrorOther = -99,
     } ;
 }

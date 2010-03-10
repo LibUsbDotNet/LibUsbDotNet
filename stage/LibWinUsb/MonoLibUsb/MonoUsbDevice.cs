@@ -247,7 +247,7 @@ namespace LibUsbDotNet.MonoLibUsb
         /// Opens the USB device handle.
         ///</summary>
         ///<returns>
-        ///True if the device is allready opened or was opened successfully.
+        ///True if the device is already opened or was opened successfully.
         ///False if the device does not exists or is no longer valid.  
         ///</returns>
         public override bool Open()
@@ -274,7 +274,7 @@ namespace LibUsbDotNet.MonoLibUsb
         /// <param name="readEndpointID">Endpoint number for read operations.</param>
         /// <param name="readBufferSize">Size of the read buffer allocated for the <see cref="UsbEndpointReader.DataReceived"/> event.</param>
         /// <returns>A <see cref="UsbEndpointReader"/> class ready for reading.
-        /// If the specified endpoint has allready been opened, the original <see cref="UsbEndpointReader"/> object will be returned.
+        /// If the specified endpoint has already been opened, the original <see cref="UsbEndpointReader"/> object will be returned.
         /// </returns>
         /// <exception cref="UsbException">If the endpoint does not exist.</exception>
         /// <exception cref="UsbException">If the device has not been configured.</exception>
@@ -289,7 +289,7 @@ namespace LibUsbDotNet.MonoLibUsb
         /// </summary>
         /// <param name="writeEndpointID">Endpoint number for read operations.</param>
         /// <returns>A <see cref="UsbEndpointWriter"/> class ready for writing.
-        /// If the specified endpoint has allready been opened, the original <see cref="UsbEndpointWriter"/> object will be returned.
+        /// If the specified endpoint has already been opened, the original <see cref="UsbEndpointWriter"/> object will be returned.
         /// </returns>
         /// <exception cref="UsbException">If the endpoint does not exist.</exception>
         /// <exception cref="UsbException">If the device has not been configured.</exception>

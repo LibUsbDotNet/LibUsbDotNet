@@ -105,7 +105,7 @@ namespace LibUsbDotNet.WinUsb
         /// Opens the USB device handle.
         ///</summary>
         ///<returns>
-        ///True if the device is allready opened or was opened successfully.
+        ///True if the device is already opened or was opened successfully.
         ///False if the device does not exists or is no longer valid.  
         ///</returns>
         public override bool Open()

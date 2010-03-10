@@ -153,7 +153,7 @@ namespace LibUsbDotNet
                     {
                         try
                         {
-                            MonoUsbApi.StrError(MonoUsbError.LIBUSB_SUCCESS);
+                            MonoUsbApi.StrError(MonoUsbError.Success);
                             mHasLibUsbWinBackDriver = true;
                         }
                         catch(Exception)

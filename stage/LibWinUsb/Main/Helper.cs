@@ -192,6 +192,26 @@ namespace LibUsbDotNet.Main
         }
 
         #endregion
+
+        /// <summary>
+        /// Convenience function to build a hex string using an array of bytes. 
+        /// </summary>
+        /// <param name="data">array of bytes</param>
+        /// <param name="prefix">string to place before each byte</param>
+        /// <param name="suffix">string to place after each byte</param>
+        /// <returns>a formatted hex string</returns>
+        public static string HexString(byte[] data, string prefix, string suffix)
+        {
+            if (prefix == null) prefix = String.Empty;
+            if (suffix == null) suffix = String.Empty;
+
+            StringBuilder sb = new StringBuilder((data.Length*2) + (data.Length*prefix.Length) + (data.Length*suffix.Length));
+            foreach (byte b in data)
+                sb.Append(prefix + b.ToString("X2") + suffix);
+
+            return sb.ToString();
+        }
+
     }
     /// <summary>
     /// Used for allocating a <see cref="GCHandle"/> to access the underlying pointer of an object.

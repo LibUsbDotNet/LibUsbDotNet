@@ -29,23 +29,23 @@ namespace MonoLibUsb.Transfer
         /// <summary>
         /// No transfer flags.
         /// </summary>
-        NONE = 0,
+        None = 0,
         /// <summary>
         /// Report short frames as errors
         /// </summary>
-        LIBUSB_TRANSFER_SHORT_NOT_OK = 1 << 0,
+        TransferShortNotOk = 1 << 0,
 
         /// <summary>
-        /// Automatically free() transfer buffer during FreeTransfer()
+        /// Automatically free() transfer buffer during <see cref ="MonoUsbTransfer.Free">MonoUsbTransfer.Free()</see>.
         /// </summary>
-        LIBUSB_TRANSFER_FREE_BUFFER = 1 << 1,
+        TransferFreeBuffer = 1 << 1,
 
         /// <summary>
-        /// Automatically call FreeTransfer() after callback returns.
-        /// If this flag is set, it is illegal to call FreeTransfer()
-        /// from your transfer callback, as this will result in a double-free
-        /// when this flag is acted upon.
+        /// Automatically call <see cref ="MonoUsbTransfer.Free">MonoUsbTransfer.Free()</see> after callback returns.
         /// </summary>
-        LIBUSB_TRANSFER_FREE_TRANSFER = 1 << 2,
+        /// <remakrks>
+        /// <para>If this flag is set, it is illegal to call <see cref ="MonoUsbTransfer.Free"/> from your transfer callback, as this will result in a double-free when this flag is acted upon.</para>
+        /// </remakrks>
+        TransferFreeTransfer = 1 << 2,
     } ;
 }

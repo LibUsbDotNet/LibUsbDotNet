@@ -139,12 +139,12 @@ namespace MonoLibUsb.Profile
 
         private MonoUsbError GetDeviceDescriptor(out MonoUsbDeviceDescriptor monoUsbDeviceDescriptor)
         {
-            MonoUsbError ec = MonoUsbError.LIBUSB_SUCCESS;
+            MonoUsbError ec = MonoUsbError.Success;
 
             monoUsbDeviceDescriptor = new MonoUsbDeviceDescriptor();
             //Console.WriteLine("MonoUsbProfile:GetDeviceDescriptor");
             ec = (MonoUsbError) MonoUsbApi.GetDeviceDescriptor(mMonoUSBProfileHandle, monoUsbDeviceDescriptor);
-            if (ec != MonoUsbError.LIBUSB_SUCCESS)
+            if (ec != MonoUsbError.Success)
             {
 #if LIBUSBDOTNET
                 UsbError.Error(ErrorCode.MonoApiError, (int) ec, "GetDeviceDescriptor Failed", this);
@@ -164,7 +164,7 @@ namespace MonoLibUsb.Profile
         }
 
         /// <summary>
-        /// Convenience function to open the device handle for this profile handle represents.
+        /// Convenience function to open the device handle this profile handle represents.
         /// </summary>
         /// <returns>
         /// A new <see cref="MonoUsbDeviceHandle"/> instance. Created with <see cref="MonoUsbDeviceHandle(MonoUsbProfileHandle)"/> constructor.

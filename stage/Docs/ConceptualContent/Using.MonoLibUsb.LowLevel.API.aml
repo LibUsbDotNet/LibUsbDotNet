@@ -80,9 +80,9 @@
         <para>
           Functions that deal with freeing, opening and closing (with the exception of asynchronous tranfers) are managed by a <CREF>T:LibUsbDotNet.Main.SafeContextHandle</CREF> class. This ensures all unsafe Libusb-1.0 memory pointers get closed/freed. 
         </para>
-        <para>
+        <alert class="warning">
           The user is required to <CREF>M:MonoLibUsb.Transfer.MonoUsbTransfer.Free</CREF> asynchronous transfers. Failure to do so will result in memory leaks.
-        </para>
+        </alert>
         <para>
           <legacyBold>The following functions do not exist in the <CREF>T:MonoLibUsb.MonoUsbApi</CREF>:</legacyBold>
           <list class="bullet">

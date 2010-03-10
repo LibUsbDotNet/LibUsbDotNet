@@ -26,8 +26,12 @@ using LibUsbDotNet.Main;
 namespace MonoLibUsb
 {
     /// <summary>
-    /// Manages the Libusb-1.0 session context and a static "handle_events" thread for simplified asynchronous IO.
+    /// Manages a static Libusb-1.0 <see cref="MonoUsbSessionHandle"/> and "handle_events" thread for simplified asynchronous IO.
     /// </summary>
+    /// <remarks>
+    /// <para>This class contains its own <see cref="MonoUsbSessionHandle"/> that is initialized with one of the overloaded <see cref="MonoUsbEventHandler.Init()">MonoUsbEventHandler.Init()</see> functions.</para>
+    /// <para>This class contains a static thread that execute <see cref="MonoUsbApi.HandleEventsTimeout"/>. See the <see cref="Start"/> and <see cref="Stop"/> methods.</para>
+    /// </remarks>
     public static class MonoUsbEventHandler
     {
         private static readonly ManualResetEvent mIsStoppedEvent = new ManualResetEvent(true);
@@ -37,10 +41,10 @@ namespace MonoLibUsb
         private static UnixNativeTimeval mWaitUnixNativeTimeval;
 
         /// <summary>
-        /// Gets the <see cref="MonoUsbSessionHandle"/> that was initialized in <see cref="Init()"/> with <see cref="MonoUsbApi.Init"/>.
+        /// Gets the session handle. 
         /// </summary>
         /// <remarks>
-        /// This structure is needed for members that require a <see cref="MonoUsbSessionHandle"/> parameter when using the <see cref="MonoUsbEventHandler"/>.
+        /// Used for MonoLibUsb members that require the <see cref="MonoUsbSessionHandle"/> parameter.
         /// </remarks>
         public static MonoUsbSessionHandle SessionHandle
         {
@@ -48,7 +52,7 @@ namespace MonoLibUsb
         }
 
         /// <summary>
-        /// False if the handle_events thread is running and periodically calling <see cref="MonoUsbApi.HandleEventsTimeout"/>.
+        /// False if the handle events thread is running.
         /// </summary>
         public static bool IsStopped
         {
@@ -56,8 +60,7 @@ namespace MonoLibUsb
         }
 
         /// <summary>
-        /// Stops the handle_events thread.
-        /// Exits the <see cref="SessionHandle"/> by calling <see cref="MonoUsbApi.Exit"/>.
+        /// Stops the handle events thread and closes the session handle.
         /// </summary>
         public static void Exit()
         {
@@ -80,15 +83,22 @@ namespace MonoLibUsb
 
 
         /// <summary>
-        /// Calls <see cref="MonoUsbApi.Init"/> and initialize "handle_events" thread. 
+        /// Initializes the <see cref="SessionHandle"/> and sets a custom polling interval.
         /// </summary>
-        /// <param name="tvSec">handle_events service interval seconds.</param>
-        /// <param name="tvUsec">handle_events service interval milliseconds.</param>
+        /// <param name="tvSec">polling interval seconds</param>
+        /// <param name="tvUsec">polling interval milliseconds</param>
+        /// <seealso cref="Init()"/>
+        /// <seealso cref="SessionHandle"/> 
         public static void Init(long tvSec, long tvUsec) { Init(new UnixNativeTimeval(tvSec, tvUsec)); }
 
         /// <summary>
-        /// Calls <see cref="MonoUsbApi.Init"/> and initialize "handle_events" thread. 
+        /// Initializes the <see cref="SessionHandle"/>.
         /// </summary>
+        /// <remarks>
+        /// <para>If the session has already been initialized, this method does nothing.</para>
+        /// <para>The handle events thread is not started until the <see cref="Start"/> method is called.</para>
+        /// <para>Uses the MonoLibUsb <see cref="UnixNativeTimeval.Default"/> polling interval for <see cref="MonoUsbApi.HandleEventsTimeout"/>.</para>
+        /// </remarks>
         public static void Init() { Init(UnixNativeTimeval.Default); }
 
         private static void Init(UnixNativeTimeval unixNativeTimeval)
@@ -106,11 +116,17 @@ namespace MonoLibUsb
         }
 
         /// <summary>
-        /// Starts the handle_events thread executing <see cref="MonoUsbApi.HandleEventsTimeout"/>.
+        /// Starts the handle events thread.
         /// </summary>
+        /// <remarks>
+        /// <para>If the thread is already running, this method does nothing.</para>
+        /// <para>
+        /// Using a seperate thread which executes <see cref="MonoUsbApi.HandleEventsTimeout"/> can simplify asynchronous I/O
+        /// and improve performance in multi-threaded applications which use multiple endpoints.
+        /// </para>
+        /// </remarks>
         /// <returns>
-        /// True if the thread is started.
-        /// False if the thread is allready running.
+        /// True if the thread is started or is already running.
         /// </returns>
         public static bool Start()
         {
@@ -121,16 +137,19 @@ namespace MonoLibUsb
                 mUsbEventThread.Priority = Helper.IsLinux ? ThreadPriority.Normal : ThreadPriority.Lowest;
                 mUsbEventThread.Start(mSessionHandle);
 
-                return true;
             }
-            return false;
+            return true;
         }
 
         /// <summary>
-        /// Stops the handle_events thread.
+        /// Stops the handle events thread.
         /// </summary>
         /// <remarks>
-        /// <alert class="warning">Must be called before your application exits.</alert>
+        /// <para>Calling this method when the thread is not running will have no affect.</para>
+        /// <note type="warning">
+        /// If the thread is running, this method must be called before the application exits.
+        /// Failure to do so will cause the application to hang.
+        /// </note>
         /// </remarks>
         /// <param name="bWait">If true, wait for the thread to exit before returning.</param>
         public static void Stop(bool bWait)

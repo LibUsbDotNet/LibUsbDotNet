@@ -27,12 +27,11 @@ using MonoLibUsb.Profile;
 namespace MonoLibUsb
 {
     /// <summary>
-    /// Wraps a device handle into a <see cref="System.Runtime.ConstrainedExecution.CriticalFinalizerObject"/>
+    /// Represents a Libusb-1.0 device handle.
     /// </summary>
     /// <remarks>
-    /// The <see cref="MonoUsbDeviceHandle"/> class ensures all devices get closed and 
-    /// freed regardless of abnormal program terminations or coding errors.
-    /// <para><seelibusb10 group="dev"/></para>
+    /// <para>To close a device, see the <see cref="Close"/> method.</para>
+    /// <note title="Libusb-1.0 API Note:" type="cpp">A <see cref="MonoUsbDeviceHandle"/> is roughly equivalent to a <a href="http://libusb.sourceforge.net/api-1.0/group__dev.html#ga7df95821d20d27b5597f1d783749d6a4">libusb_device_handle</a>.</note>
     /// </remarks>
     /// <code>
     /// MonoUsbDeviceHandle deviceHandle = new MonoUsbDeviceHandle(profileHandle);
@@ -70,11 +69,12 @@ namespace MonoLibUsb
                 }
             }
         }
-        /// <summary>Open a device handle using <paramref name="profileHandle"/>.</summary>
+        /// <summary>Open a device handle from <paramref name="profileHandle"/>.</summary>
         /// <remarks>
         /// <para>A handle allows you to perform I/O on the device in question.</para>
         /// <para>To close a device handle call its <see cref="SafeHandle.Close"/> method.</para>
         /// <para>This is a non-blocking function; no requests are sent over the bus.</para>
+        /// <note title="Libusb-1.0 API Note:" type="cpp">The <see cref="MonoUsbDeviceHandle(MonoUsbProfileHandle)"/> constructor is roughly equivalent to <a href="http://libusb.sourceforge.net/api-1.0/group__dev.html#ga8163100afdf933fabed0db7fa81c89d1">libusb_open()</a>.</note>
         /// </remarks>
         /// <param name="profileHandle">A device profile handle.</param>
         public MonoUsbDeviceHandle(MonoUsbProfileHandle profileHandle)
@@ -116,6 +116,18 @@ namespace MonoLibUsb
                 SetHandleAsInvalid();
             }
             return true;
+        }
+
+        /// <summary>
+        /// Closes the <see cref="MonoUsbDeviceHandle"/> reference.  When all references are no longer is use, the device
+        /// is closed in the <see cref="ReleaseHandle"/> finalizer.
+        /// </summary>
+        /// <remarks>
+        /// <note title="Libusb-1.0 API Note:" type="cpp">The <see cref="Close"/> method is roughly equivalent to <a href="http://libusb.sourceforge.net/api-1.0/group__dev.html#ga779bc4f1316bdb0ac383bddbd538620e">libusb_close()</a>.</note>
+        /// </remarks>
+        public new void Close()
+        {
+            base.Close();
         }
     }
 }

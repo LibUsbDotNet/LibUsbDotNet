@@ -30,36 +30,36 @@ namespace MonoLibUsb.Transfer
         /// <summary>
         /// Transfer completed without error. Note that this does not indicate that the entire amount of requested data was transferred.
         /// </summary>
-        LIBUSB_TRANSFER_COMPLETED,
+        TransferCompleted,
 
         /// <summary>
         /// Transfer failed 
         /// </summary>
-        LIBUSB_TRANSFER_ERROR,
+        TransferError,
 
         /// <summary>
         /// Transfer timed out 
         /// </summary>
-        LIBUSB_TRANSFER_TIMED_OUT,
+        TransferTimedOut,
 
         /// <summary>
         /// Transfer was cancelled 
         /// </summary>
-        LIBUSB_TRANSFER_CANCELLED,
+        TransferCancelled,
 
         /// <summary>
         /// For bulk/interrupt endpoints: halt condition detected (endpoint stalled). For control endpoints: control request not supported. 
         /// </summary>
-        LIBUSB_TRANSFER_STALL,
+        TransferStall,
 
         /// <summary>
         /// Device was disconnected 
         /// </summary>
-        LIBUSB_TRANSFER_NO_DEVICE,
+        TransferNoDevice,
 
         /// <summary>
         /// Device sent more data than requested 
         /// </summary>
-        LIBUSB_TRANSFER_OVERFLOW
+        TransferOverflow
     } ;
 }

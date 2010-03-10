@@ -83,7 +83,7 @@ namespace LibUsbDotNet.MonoLibUsb.Internal
             
             mTransfer.ActualLength = 0;
             mTransfer.Status = 0;
-            mTransfer.Flags = MonoUsbTransferFlags.NONE;
+            mTransfer.Flags = MonoUsbTransferFlags.None;
         }
 
 
@@ -99,7 +99,7 @@ namespace LibUsbDotNet.MonoLibUsb.Internal
             mTransfer.Length = RequestCount;
 
             mTransferCompleteEvent.Reset();
-            int ret = MonoUsbApi.SubmitTransfer(mTransfer);
+            int ret = (int) mTransfer.Submit();
             if (ret != 0)
             {
                 mTransferCompleteEvent.Set();
@@ -126,7 +126,7 @@ namespace LibUsbDotNet.MonoLibUsb.Internal
             {
                 case 0: // TransferCompleteEvent
 
-                    if (mTransfer.Status == MonoUsbTansferStatus.LIBUSB_TRANSFER_COMPLETED)
+                    if (mTransfer.Status == MonoUsbTansferStatus.TransferCompleted)
                     {
                         transferredCount = mTransfer.ActualLength;
                         return ErrorCode.Success;
@@ -140,7 +140,7 @@ namespace LibUsbDotNet.MonoLibUsb.Internal
                     IncFailRetries();
                     return ErrorCode.IoEndpointGlobalCancelRedo;
                 default: // mTransferCancelEvent, WaitTimeout
-                    ret = MonoUsbApi.CancelTransfer(mTransfer);
+                    ret = (int) mTransfer.Cancel();
                     bool bTransferComplete = mTransferCompleteEvent.WaitOne(100, UsbConstants.EXIT_CONTEXT);
                     mTransferCompleteEvent.Set();
 

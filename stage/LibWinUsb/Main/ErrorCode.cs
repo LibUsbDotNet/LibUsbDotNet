@@ -123,11 +123,11 @@ namespace LibUsbDotNet.Main
         /// </summary>
         Win32Error,
         /// <summary>
-        /// An attempt was made to lock a device that is allready locked.
+        /// An attempt was made to lock a device that is already locked.
         /// </summary>
         DeviceAllreadyLocked,
         /// <summary>
-        /// An attempt was made to lock an endpoint that is allready locked.
+        /// An attempt was made to lock an endpoint that is already locked.
         /// </summary>
         EndpointAllreadyLocked,
         /// <summary>

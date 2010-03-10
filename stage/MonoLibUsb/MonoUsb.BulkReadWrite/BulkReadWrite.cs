@@ -56,17 +56,16 @@ namespace MonoLibUsb.ShowInfo
 
         // This function originated from do_sync_bulk_transfer()
         // in sync.c of the Libusb-1.0 source code.
-        private static MonoUsbError doAsyncTransfer(MonoUsbDeviceHandle dev_handle,
+        private static MonoUsbError doBulkAsyncTransfer(MonoUsbDeviceHandle dev_handle,
                                                           byte endpoint,
                                                           byte[] buffer,
                                                           int length,
                                                           out int transferred,
-                                                          int timeout,
-                                                          byte type)
+                                                          int timeout)
         {
             transferred = 0;
             MonoUsbTransfer transfer = new MonoUsbTransfer(0);
-            if (transfer.IsInvalid) return MonoUsbError.LIBUSB_ERROR_NO_MEM;
+            if (transfer.IsInvalid) return MonoUsbError.ErrorNoMem;
 
             MonoUsbTransferDelegate monoUsbTransferCallbackDelegate = bulkTransferCB;
             int[] userCompleted = new int[] {0};
@@ -74,15 +73,14 @@ namespace MonoLibUsb.ShowInfo
 
             MonoUsbError e;
             GCHandle gcBuffer = GCHandle.Alloc(buffer, GCHandleType.Pinned);
-            transfer.Fill(
+            transfer.FillBulk(
                 dev_handle,
                 endpoint,
                 gcBuffer.AddrOfPinnedObject(),
                 length,
                 monoUsbTransferCallbackDelegate,
                 gcUserCompleted.AddrOfPinnedObject(),
-                timeout,
-                (EndpointType) type);
+                timeout);
 
             e = transfer.Submit();
             if ((int) e < 0)
@@ -97,7 +95,7 @@ namespace MonoLibUsb.ShowInfo
                 e = (MonoUsbError) (r = Usb.HandleEvents(sessionHandle));
                 if (r < 0)
                 {
-                    if (e == MonoUsbError.LIBUSB_ERROR_INTERRUPTED)
+                    if (e == MonoUsbError.ErrorInterrupted)
                         continue;
                     transfer.Cancel();
                     while (userCompleted[0] == 0)
@@ -175,13 +173,12 @@ namespace MonoLibUsb.ShowInfo
                             Console.WriteLine("Sending test data..");
                             if (TEST_MODE == TestMode.Async)
                             {
-                                r = (int) doAsyncTransfer(device_handle,
+                                r = (int)doBulkAsyncTransfer(device_handle,
                                                                 MY_EP_WRITE,
                                                                 testWriteData,
                                                                 TEST_WRITE_LEN,
                                                                 out transferred,
-                                                                MY_TIMEOUT,
-                                                                (byte) EndpointType.Bulk);
+                                                                MY_TIMEOUT);
                             }
                             else
                             {
@@ -199,11 +196,11 @@ namespace MonoLibUsb.ShowInfo
                             }
                         } while (r == 0 && packetCount < 5);
 
-                        if (r == (int) MonoUsbError.LIBUSB_ERROR_TIMEOUT)
+                        if (r == (int) MonoUsbError.ErrorTimeout)
                         {
                             Console.WriteLine("Write Timed Out. {0} packet(s) written ({1} bytes)", packetCount, transferredTotal);
                         }
-                        else if (r != (int) MonoUsbError.LIBUSB_ERROR_TIMEOUT && r != 0)
+                        else if (r != (int) MonoUsbError.ErrorTimeout && r != 0)
                         {
                             Console.WriteLine("Write failed:{0}", (MonoUsbError) r);
                             break;
@@ -216,13 +213,12 @@ namespace MonoLibUsb.ShowInfo
                         {
                             if (TEST_MODE == TestMode.Async)
                             {
-                                r = (int) doAsyncTransfer(device_handle,
+                                r = (int) doBulkAsyncTransfer(device_handle,
                                                                 MY_EP_READ,
                                                                 testReadData,
                                                                 TEST_READ_LEN,
                                                                 out transferred,
-                                                                MY_TIMEOUT,
-                                                                (byte) EndpointType.Bulk);
+                                                                MY_TIMEOUT);
                             }
                             else
                             {
@@ -233,7 +229,7 @@ namespace MonoLibUsb.ShowInfo
                                                                        out transferred,
                                                                        MY_TIMEOUT);
                             }
-                            if (r == (int) MonoUsbError.LIBUSB_ERROR_TIMEOUT)
+                            if (r == (int) MonoUsbError.ErrorTimeout)
                             {
                                 Console.WriteLine("Read Timed Out. {0} packet(s) read ({1} bytes)", packetCount, transferredTotal);
                             }

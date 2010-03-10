@@ -30,7 +30,7 @@
     </BuildLogFile>
     <HelpFileFormat>HtmlHelp1, Website</HelpFileFormat>
     <FrameworkVersion>2.0.50727</FrameworkVersion>
-    <RootNamespaceContainer>True</RootNamespaceContainer>
+    <RootNamespaceContainer>False</RootNamespaceContainer>
     <RootNamespaceTitle>Library Reference</RootNamespaceTitle>
     <HelpTitle>LibUsbDotNet 2.2.4</HelpTitle>
     <CopyrightHref>http://www.gnu.org/licenses/lgpl.html</CopyrightHref>
@@ -103,6 +103,13 @@
       <NamespaceSummaryItem name="MonoLibUsb.Profile" isDocumented="True">&lt;p&gt;&lt;b&gt;MonoLibUsb - Libusb-1.0 low-level API&lt;/b&gt;&lt;/p&gt;Contains types used for accessing the device list, retrieving device information, and monitoring devices.</NamespaceSummaryItem>
       <NamespaceSummaryItem name="MonoLibUsb.Transfer" isDocumented="True">&lt;p&gt;&lt;b&gt;MonoLibUsb - Libusb-1.0 low-level API&lt;/b&gt;&lt;/p&gt;Contains types used for asynchronous transfers.</NamespaceSummaryItem>
     </NamespaceSummaries>
+    <PlugInConfigurations>
+      <PlugInConfig id="Hierarchical Table of Contents" enabled="True">
+        <configuration>
+          <toc minParts="1" insertBelow="False" />
+        </configuration>
+      </PlugInConfig>
+    </PlugInConfigurations>
   </PropertyGroup>
   <!-- There are no properties for these two groups but they need to appear in
        order for Visual Studio to perform the build. -->

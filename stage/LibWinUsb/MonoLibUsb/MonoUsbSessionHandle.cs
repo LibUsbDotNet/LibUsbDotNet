@@ -1,4 +1,5 @@
 using System;
+using System.Diagnostics;
 using System.Runtime.InteropServices;
 using LibUsbDotNet.Main;
 
@@ -23,6 +24,7 @@ namespace MonoLibUsb
         private static Object sessionLOCK = new object();
         private static MonoUsbError mLastReturnCode;
         private static String mLastReturnString=String.Empty;
+        private static int mSessionCount;
 
         /// <summary>
         /// If the session handle is <see cref="SafeContextHandle.IsInvalid"/>, gets the <see cref="MonoUsbError"/> status code indicating the reason.
@@ -65,12 +67,14 @@ namespace MonoLibUsb
                 mLastReturnCode = (MonoUsbError)MonoUsbApi.Init(ref pNewSession);
                 if ((int)mLastReturnCode < 0)
                 {
-                    mLastReturnString=MonoUsbApi.StrError(mLastReturnCode);
+                    mLastReturnString = MonoUsbApi.StrError(mLastReturnCode);
                     SetHandleAsInvalid();
                 }
                 else
+                {
                     SetHandle(pNewSession);
-              
+                    mSessionCount++;
+                }
             }
         }
         /// <summary>
@@ -85,6 +89,9 @@ namespace MonoLibUsb
                 {
                     MonoUsbApi.Exit(handle);
                     SetHandleAsInvalid();
+                    mSessionCount--;
+                    Debug.Print(GetType().Name + " : ReleaseHandle #{0}", mSessionCount);
+
                 }
             }
             return true;

@@ -28,7 +28,7 @@
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
     <UseVSHostingProcess>false</UseVSHostingProcess>
-    <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
+    <AllowUnsafeBlocks>false</AllowUnsafeBlocks>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
     <DebugType>pdbonly</DebugType>
@@ -112,6 +112,9 @@
       <SubType>Code</SubType>
     </Compile>
     <Compile Include="MonoLibUsb\Transfer\Internal\libusb_iso_packet_descriptor.cs" />
+    <Compile Include="MonoLibUsb\Transfer\Internal\libusb_control_setup.cs" />
+    <Compile Include="MonoLibUsb\Transfer\MonoUsbControlSetupHandle.cs" />
+    <Compile Include="MonoLibUsb\Transfer\MonoUsbControlSetup.cs" />
     <Compile Include="MonoLibUsb\Transfer\MonoUsbIsoPacket.cs" />
     <Compile Include="MonoLibUsb\Profile\MonoUsbProfileHandleEnumerator.cs" />
     <Compile Include="MonoLibUsb\Profile\MonoUsbProfileHandle.cs" />

@@ -110,7 +110,7 @@ namespace MonoLibUsb.Profile
         /// <para>The <see cref="MonoUsbProfileList"/> has a crude form of built-in device notification that works on all platforms. By adding an event handler to the <see cref="AddRemoveEvent"/> changes in the device profile list are reported when <see cref="Refresh"/> is called.</para>
         /// </remarks>
         /// <param name="sessionHandle">A valid <see cref="MonoUsbSessionHandle"/>.</param>
-        /// <returns>The number of devices in the outputted list, or <see cref="MonoUsbError.LIBUSB_ERROR_NO_MEM"/> on memory allocation failure.</returns>
+        /// <returns>The number of devices in the outputted list, or <see cref="MonoUsbError.ErrorNoMem"/> on memory allocation failure.</returns>
         /// <example>
         /// <code source="..\MonoLibUsb\MonoUsb.ShowInfo\ShowInfo.cs" lang="cs"/>
         /// </example>
@@ -202,7 +202,11 @@ namespace MonoLibUsb.Profile
         /// A <see cref="T:System.Collections.Generic.IEnumerator`1"/> that can be used to iterate through the collection.
         /// </returns>
         /// <filterpriority>1</filterpriority>
-        public IEnumerator<MonoUsbProfile> GetEnumerator() { return mList.GetEnumerator(); }
+        public IEnumerator<MonoUsbProfile> GetEnumerator() 
+        { 
+            lock(LockProfileList)
+                return mList.GetEnumerator(); 
+        }
 
         IEnumerator IEnumerable.GetEnumerator() { return GetEnumerator(); }
 
@@ -211,7 +215,11 @@ namespace MonoLibUsb.Profile
         /// </summary>
         public int Count
         {
-            get { return mList.Count; }
+            get
+            {
+                lock (LockProfileList)
+                    return mList.Count;
+            }
         }
         /// <summary>
         /// Gets a <see cref="List{T}"/> of <see cref="MonoUsbProfile"/> instances.
@@ -223,13 +231,14 @@ namespace MonoLibUsb.Profile
         /// </para>
         /// <para>
         /// The returned generic <see cref="List{T}"/> contains many more functions for finding devices.  
-        /// It may be desirable to use these members, such as <see cref="List{T}.FindAll"/> or <see cref="List{T}.ForEach"/> for discoverying <see cref="MonoUsbProfile"/>s instead of iterating through the <see cref="MonoUsbProfileList"/> one-by-one.
+        /// It may be desirable to use these members, such as <see cref="List{T}.FindAll"/> or <see cref="List{T}.ForEach"/> to find a <see cref="MonoUsbProfile"/> instead of iterating through the <see cref="MonoUsbProfileList"/> one-by-one.
         /// </para>
         /// </remarks>
         /// <returns>A <see cref="List{T}"/> of <see cref="MonoUsbProfile"/> instances.</returns>
         public List<MonoUsbProfile> GetList()
         {
-           return new List<MonoUsbProfile>(mList);
+            lock (LockProfileList)
+                return new List<MonoUsbProfile>(mList);
         }
 
         /// <summary>
@@ -240,7 +249,11 @@ namespace MonoLibUsb.Profile
         /// <exception cref="ArgumentOutOfRangeException">If index is invalid.</exception>
         public MonoUsbProfile this[int index]
         {
-            get { return mList[index]; }
+            get
+            {
+                lock (LockProfileList)
+                    return mList[index];
+            }
         }
     }
 }

@@ -24,7 +24,10 @@ namespace MonoUsb.ShowConfig
         {
             // Initialize the context.
             sessionHandle = new MonoUsbSessionHandle();
-            if (sessionHandle.IsInvalid) throw new Exception("Failed to initialize context.");
+            if (sessionHandle.IsInvalid)
+                throw new Exception(String.Format("Failed intialized libusb context.\n{0}:{1}",
+                                                  MonoUsbSessionHandle.LastErrorCode,
+                                                  MonoUsbSessionHandle.LastErrorString));
 
             MonoUsbProfileList profileList = new MonoUsbProfileList();
 

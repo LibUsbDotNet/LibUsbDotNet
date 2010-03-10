@@ -80,12 +80,12 @@ namespace MonoLibUsb
         /// </remarks>
         /// <param name="sessionHandle">A valid <see cref="MonoUsbSessionHandle"/>.</param>
         /// <param name="monoUSBProfileListHandle">	output location for a list of devices.</param>
-        /// <returns>The number of devices in the outputted list, or <see cref="MonoUsbError.LIBUSB_ERROR_NO_MEM"/> on memory allocation failure.</returns>
+        /// <returns>The number of devices in the outputted list, or <see cref="MonoUsbError.ErrorNoMem"/> on memory allocation failure.</returns>
         [DllImport(LIBUSB_DLL, CallingConvention = CC, SetLastError = false, EntryPoint = "libusb_get_device_list")]
         public static extern int GetDeviceList([In]MonoUsbSessionHandle sessionHandle, [Out] out MonoUsbProfileListHandle monoUSBProfileListHandle);
 
         [DllImport(LIBUSB_DLL, CallingConvention = CC, SetLastError = false, EntryPoint = "libusb_free_device_list")]
-        internal static extern void FreeDeviceList(IntPtr pHandleList, int unref_devices);
+        internal static extern void FreeDeviceList(IntPtr pHandleList, int unrefDevices);
 
         /// <summary>
         /// Get the number of the bus that a device is connected to. 
@@ -142,18 +142,18 @@ namespace MonoLibUsb
 
 
         [DllImport(LIBUSB_DLL, CallingConvention = CC, SetLastError = false, EntryPoint = "libusb_open_device_with_vid_pid")]
-        private static extern IntPtr OpenDeviceWithVidPidInternal([In]MonoUsbSessionHandle sessionHandle, short vendor_id, short product_id);
+        private static extern IntPtr OpenDeviceWithVidPidInternal([In]MonoUsbSessionHandle sessionHandle, short vendorID, short productID);
 
         /// <summary>
         /// Convenience function for finding a device with a particular idVendor/idProduct combination. 
         /// </summary>
         /// <param name="sessionHandle">A valid <see cref="MonoUsbSessionHandle"/>.</param>
-        /// <param name="vendor_id">The idVendor value to search for.</param>
-        /// <param name="product_id">The idProduct value to search for.</param>
+        /// <param name="vendorID">The idVendor value to search for.</param>
+        /// <param name="productID">The idProduct value to search for.</param>
         /// <returns>Null if the device was not opened or not found, otherwise an opened device handle.</returns>
-        public static MonoUsbDeviceHandle OpenDeviceWithVidPid([In]MonoUsbSessionHandle sessionHandle, short vendor_id, short product_id)
+        public static MonoUsbDeviceHandle OpenDeviceWithVidPid([In]MonoUsbSessionHandle sessionHandle, short vendorID, short productID)
         {
-            IntPtr pHandle = OpenDeviceWithVidPidInternal(sessionHandle, vendor_id, product_id);
+            IntPtr pHandle = OpenDeviceWithVidPidInternal(sessionHandle, vendorID, productID);
             if (pHandle == IntPtr.Zero) return null;
             return new MonoUsbDeviceHandle(pHandle);
         }
@@ -172,11 +172,11 @@ namespace MonoLibUsb
         /// is incremented ensuring the profile will remain valid as long as it is in-use.
         /// </para>
         /// </remarks>
-        /// <param name="dev_handle">A device handle.</param>
+        /// <param name="devicehandle">A device handle.</param>
         /// <returns>The underlying profile handle.</returns>
-        public static MonoUsbProfileHandle GetDevice(MonoUsbDeviceHandle dev_handle) { return new MonoUsbProfileHandle(GetDeviceInternal(dev_handle)); }
+        public static MonoUsbProfileHandle GetDevice(MonoUsbDeviceHandle devicehandle) { return new MonoUsbProfileHandle(GetDeviceInternal(devicehandle)); }
         [DllImport(LIBUSB_DLL, CallingConvention = CC, SetLastError = false, EntryPoint = "libusb_get_device")]
-        private static extern IntPtr GetDeviceInternal([In] MonoUsbDeviceHandle dev_handle);
+        private static extern IntPtr GetDeviceInternal([In] MonoUsbDeviceHandle devicehandle);
 
         /// <summary>
         /// Determine the <see cref="MonoUsbConfigDescriptor.bConfigurationValue"/> of the currently active configuration. 
@@ -218,10 +218,10 @@ namespace MonoLibUsb
         /// <para>Claiming of interfaces is a purely logical operation; it does not cause any requests to be sent over the bus. Interface claiming is used to instruct the underlying operating system that your application wishes to take ownership of the interface.</para>
         /// </remarks>
         /// <param name="deviceHandle">A device handle.</param>
-        /// <param name="interface_number">the <see cref="MonoUsbAltInterfaceDescriptor.bInterfaceNumber"/> of the interface you wish to claim.</param>
+        /// <param name="interfaceNumber">the <see cref="MonoUsbAltInterfaceDescriptor.bInterfaceNumber"/> of the interface you wish to claim.</param>
         /// <returns>0 on success, or a <see cref="MonoUsbError"/> code on other failure.</returns>
         [DllImport(LIBUSB_DLL, CallingConvention = CC, SetLastError = false, EntryPoint = "libusb_claim_interface")]
-        public static extern int ClaimInterface([In] MonoUsbDeviceHandle deviceHandle, int interface_number);
+        public static extern int ClaimInterface([In] MonoUsbDeviceHandle deviceHandle, int interfaceNumber);
 
         /// <summary>
         /// Release an interface previously claimed with <see cref="ClaimInterface"/>.
@@ -231,10 +231,10 @@ namespace MonoLibUsb
         /// <para>This is a blocking function. A SET_INTERFACE control request will be sent to the device, resetting interface state to the first alternate setting.</para>
         /// </remarks>
         /// <param name="deviceHandle">A device handle.</param>
-        /// <param name="interface_number">the <see cref="MonoUsbAltInterfaceDescriptor.bInterfaceNumber"/> of the interface you wish to claim.</param>
+        /// <param name="interfaceNumber">the <see cref="MonoUsbAltInterfaceDescriptor.bInterfaceNumber"/> of the interface you wish to claim.</param>
         /// <returns>0 on success, or a <see cref="MonoUsbError"/> code on other failure.</returns>
         [DllImport(LIBUSB_DLL, CallingConvention = CC, SetLastError = false, EntryPoint = "libusb_release_interface")]
-        public static extern int ReleaseInterface([In] MonoUsbDeviceHandle deviceHandle, int interface_number);
+        public static extern int ReleaseInterface([In] MonoUsbDeviceHandle deviceHandle, int interfaceNumber);
 
         /// <summary>
         /// Activate an alternate setting for an interface.
@@ -245,11 +245,11 @@ namespace MonoLibUsb
         /// <para>This is a blocking function.</para>
         /// </remarks>
         /// <param name="deviceHandle">A device handle.</param>
-        /// <param name="interface_number">The <see cref="MonoUsbAltInterfaceDescriptor.bInterfaceNumber"/> of the previously-claimed interface.</param>
-        /// <param name="alternate_setting">The <see cref="MonoUsbAltInterfaceDescriptor.bAlternateSetting"/> of the alternate setting to activate.</param>
+        /// <param name="interfaceNumber">The <see cref="MonoUsbAltInterfaceDescriptor.bInterfaceNumber"/> of the previously-claimed interface.</param>
+        /// <param name="alternateSetting">The <see cref="MonoUsbAltInterfaceDescriptor.bAlternateSetting"/> of the alternate setting to activate.</param>
         /// <returns>0 on success, or a <see cref="MonoUsbError"/> code on other failure.</returns>
         [DllImport(LIBUSB_DLL, CallingConvention = CC, SetLastError = false, EntryPoint = "libusb_set_interface_alt_setting")]
-        public static extern int SetInterfaceAltSetting([In] MonoUsbDeviceHandle deviceHandle, int interface_number, int alternate_setting);
+        public static extern int SetInterfaceAltSetting([In] MonoUsbDeviceHandle deviceHandle, int interfaceNumber, int alternateSetting);
 
         /// <summary>
         /// Clear the halt/stall condition for an endpoint.
@@ -270,7 +270,7 @@ namespace MonoLibUsb
         /// </summary>
         /// <remarks>
         /// <para>The system will attempt to restore the previous configuration and alternate settings after the reset has completed.</para>
-        /// <para>If the reset fails, the descriptors change, or the previous state cannot be restored, the device will appear to be disconnected and reconnected. This means that the device handle is no longer valid (you should close it) and rediscover the device. A return code of <see cref="MonoUsbError.LIBUSB_ERROR_NOT_FOUND"/> indicates when this is the case.</para>
+        /// <para>If the reset fails, the descriptors change, or the previous state cannot be restored, the device will appear to be disconnected and reconnected. This means that the device handle is no longer valid (you should close it) and rediscover the device. A return code of <see cref="MonoUsbError.ErrorNotFound"/> indicates when this is the case.</para>
         /// <para>This is a blocking function which usually incurs a noticeable delay.</para>
         /// </remarks>
         /// <param name="deviceHandle">A device handle.</param>
@@ -287,7 +287,7 @@ namespace MonoLibUsb
         /// <list type="bullet">
         /// <item>0 if no kernel driver is active.</item>
         /// <item>1 if a kernel driver is active.</item>
-        /// <item><see cref="MonoUsbError.LIBUSB_ERROR_NO_DEVICE"/> if the device has been disconnected.</item>
+        /// <item><see cref="MonoUsbError.ErrorNoDevice"/> if the device has been disconnected.</item>
         /// <item>Another <see cref="MonoUsbError"/> code on other failure.</item>
         /// </list>
         /// </returns>
@@ -305,9 +305,9 @@ namespace MonoLibUsb
         /// <returns>
         /// <list type="bullet">
         /// <item>0 on success.</item>
-        /// <item><see cref="MonoUsbError.LIBUSB_ERROR_NOT_FOUND"/> if no kernel driver was active.</item>
-        /// <item><see cref="MonoUsbError.LIBUSB_ERROR_INVALID_PARAM"/> if the interface does not exist.</item>
-        /// <item><see cref="MonoUsbError.LIBUSB_ERROR_NO_DEVICE"/> if the device has been disconnected </item>
+        /// <item><see cref="MonoUsbError.ErrorNotFound"/> if no kernel driver was active.</item>
+        /// <item><see cref="MonoUsbError.ErrorInvalidParam"/> if the interface does not exist.</item>
+        /// <item><see cref="MonoUsbError.ErrorNoDevice"/> if the device has been disconnected </item>
         /// <item>Another <see cref="MonoUsbError"/> code on other failure.</item>
         /// </list>
         /// </returns>
@@ -322,10 +322,10 @@ namespace MonoLibUsb
         /// <returns>
         /// <list type="bullet">
         /// <item>0 on success.</item>
-        /// <item><see cref="MonoUsbError.LIBUSB_ERROR_NOT_FOUND"/> if no kernel driver was active.</item>
-        /// <item><see cref="MonoUsbError.LIBUSB_ERROR_INVALID_PARAM"/> if the interface does not exist.</item>
-        /// <item><see cref="MonoUsbError.LIBUSB_ERROR_NO_DEVICE"/> if the device has been disconnected.</item>
-        /// <item><see cref="MonoUsbError.LIBUSB_ERROR_BUSY"/> if the driver cannot be attached because the interface is claimed by a program or driver.</item>
+        /// <item><see cref="MonoUsbError.ErrorNotFound"/> if no kernel driver was active.</item>
+        /// <item><see cref="MonoUsbError.ErrorInvalidParam"/> if the interface does not exist.</item>
+        /// <item><see cref="MonoUsbError.ErrorNoDevice"/> if the device has been disconnected.</item>
+        /// <item><see cref="MonoUsbError.ErrorBusy"/> if the driver cannot be attached because the interface is claimed by a program or driver.</item>
         /// <item>Another <see cref="MonoUsbError"/> code on other failure.</item>
         /// </list>
         /// </returns>
@@ -367,12 +367,12 @@ namespace MonoLibUsb
         /// Get a USB configuration descriptor based on its index. 
         /// </summary>
         /// <param name="deviceProfileHandle">A device profile handle.</param>
-        /// <param name="config_index">The index of the configuration you wish to retrieve.</param>
+        /// <param name="configIndex">The index of the configuration you wish to retrieve.</param>
         /// <param name="configHandle">A config handle.</param>
         /// <returns>0 on success or a <see cref="MonoUsbError"/> code on failure.</returns>
         [DllImport(LIBUSB_DLL, CallingConvention = CC, SetLastError = false, EntryPoint = "libusb_get_config_descriptor")]
         public static extern int GetConfigDescriptor([In] MonoUsbProfileHandle deviceProfileHandle,
-                                                              byte config_index,
+                                                              byte configIndex,
                                                               [Out] out MonoUsbConfigHandle configHandle);
 
         /// <summary>
@@ -398,17 +398,17 @@ namespace MonoLibUsb
         /// to retrieve the descriptor.
         /// </remarks>
         /// <param name="deviceHandle">Retrieve a descriptor from the default control pipe.</param>
-        /// <param name="desc_type">The descriptor type, <see cref="DescriptorType"/></param>
-        /// <param name="desc_index">The index of the descriptor to retrieve.</param>
+        /// <param name="descType">The descriptor type, <see cref="DescriptorType"/></param>
+        /// <param name="descIndex">The index of the descriptor to retrieve.</param>
         /// <param name="pData">Output buffer for descriptor.</param>
         /// <param name="length">Size of data buffer.</param>
         /// <returns>Number of bytes returned in data, or <see cref="MonoUsbError"/> code on failure.</returns>
-        public static int GetDescriptor(MonoUsbDeviceHandle deviceHandle, byte desc_type, byte desc_index, IntPtr pData, int length)
+        public static int GetDescriptor(MonoUsbDeviceHandle deviceHandle, byte descType, byte descIndex, IntPtr pData, int length)
         {
             return ControlTransfer(deviceHandle,
                                            (byte) UsbEndpointDirection.EndpointIn,
                                            (byte) UsbStandardRequest.GetDescriptor,
-                                           (short) ((desc_type << 8) | desc_index),
+                                           (short) ((descType << 8) | descIndex),
                                            0,
                                            pData,
                                            (short) length,
@@ -423,15 +423,15 @@ namespace MonoLibUsb
         /// to retrieve the descriptor.
         /// </remarks>
         /// <param name="deviceHandle">Retrieve a descriptor from the default control pipe.</param>
-        /// <param name="desc_type">The descriptor type, <see cref="DescriptorType"/></param>
-        /// <param name="desc_index">The index of the descriptor to retrieve.</param>
+        /// <param name="descType">The descriptor type, <see cref="DescriptorType"/></param>
+        /// <param name="descIndex">The index of the descriptor to retrieve.</param>
         /// <param name="data">Output buffer for descriptor. This object is pinned using <see cref="PinnedHandle"/>.</param>
         /// <param name="length">Size of data buffer.</param>
         /// <returns>Number of bytes returned in data, or <see cref="MonoUsbError"/> code on failure.</returns>
-        public static int GetDescriptor(MonoUsbDeviceHandle deviceHandle, byte desc_type, byte desc_index, object data, int length)
+        public static int GetDescriptor(MonoUsbDeviceHandle deviceHandle, byte descType, byte descIndex, object data, int length)
         {
             PinnedHandle p = new PinnedHandle(data);
-            return GetDescriptor(deviceHandle, desc_type, desc_index, p.Handle, length);
+            return GetDescriptor(deviceHandle, descType, descIndex, p.Handle, length);
         }
 
         #endregion
@@ -440,16 +440,16 @@ namespace MonoLibUsb
 
 
         [DllImport(LIBUSB_DLL, CallingConvention = CC, SetLastError = false, EntryPoint = "libusb_alloc_transfer")]
-        internal static extern IntPtr AllocTransfer(int iso_packets);
+        internal static extern IntPtr AllocTransfer(int isoPackets);
 
         [DllImport(LIBUSB_DLL, CallingConvention = CC, SetLastError = false, EntryPoint = "libusb_free_transfer")]
         internal static extern void FreeTransfer(IntPtr pTransfer);
 
         [DllImport(LIBUSB_DLL, CallingConvention = CC, SetLastError = false, EntryPoint = "libusb_submit_transfer")]
-        internal static extern int SubmitTransfer(MonoUsbTransfer pTransfer);
+        internal static extern int SubmitTransfer(IntPtr pTransfer);
 
         [DllImport(LIBUSB_DLL, CallingConvention = CC, SetLastError = false, EntryPoint = "libusb_cancel_transfer")]
-        internal static extern int CancelTransfer(MonoUsbTransfer pTransfer);
+        internal static extern int CancelTransfer(IntPtr pTransfer);
 
         #endregion
 
@@ -634,7 +634,7 @@ namespace MonoLibUsb
         /// </remarks>
         /// <param name="sessionHandle">A valid <see cref="MonoUsbSessionHandle"/>.</param>
         /// <param name="tv">The maximum time to block waiting for events, or zero for non-blocking mode</param>
-        /// <returns>0 if there are no pending timeouts, 1 if a timeout was returned, or <see cref="MonoUsbError.LIBUSB_ERROR_OTHER"/> on failure.</returns>
+        /// <returns>0 if there are no pending timeouts, 1 if a timeout was returned, or <see cref="MonoUsbError.ErrorOther"/> on failure.</returns>
         [DllImport(LIBUSB_DLL, CallingConvention = CC, SetLastError = false, EntryPoint = "libusb_get_next_timeout")]
         public static extern int GetNextTimeout([In]MonoUsbSessionHandle sessionHandle, ref UnixNativeTimeval tv);
 
@@ -649,12 +649,12 @@ namespace MonoLibUsb
         /// <param name="sessionHandle">A valid <see cref="MonoUsbSessionHandle"/>.</param>
         /// <param name="addedDelegate">Function delegate for addition notifications.</param>
         /// <param name="removedDelegate">Function delegate for removal notifications.</param>
-        /// <param name="user_data">User data to be passed back to callbacks (useful for passing sessionHandle information).</param>
+        /// <param name="pUserData">User data to be passed back to callbacks (useful for passing sessionHandle information).</param>
         [DllImport(LIBUSB_DLL, CallingConvention = CC, SetLastError = false, EntryPoint = "libusb_set_pollfd_notifiers")]
         public static extern void SetPollfdNotifiers([In]MonoUsbSessionHandle sessionHandle,
                                                               PollfdAddedDelegate addedDelegate,
                                                               PollfdRemovedDelegate removedDelegate,
-                                                              IntPtr user_data);
+                                                              IntPtr pUserData);
 
 
         [DllImport(LIBUSB_DLL, CallingConvention = CC, SetLastError = false, EntryPoint = "libusb_get_pollfds")]
@@ -696,7 +696,7 @@ namespace MonoLibUsb
         /// The wValue, wIndex and wLength fields values should be given in host-endian byte order.
         /// </remarks>
         /// <param name="deviceHandle">A handle for the device to communicate with.</param>
-        /// <param name="request_type">The request type field for the setup packet.</param>
+        /// <param name="requestType">The request type field for the setup packet.</param>
         /// <param name="request">The request field for the setup packet.</param>
         /// <param name="value">The value field for the setup packet</param>
         /// <param name="index">The index field for the setup packet.</param>
@@ -706,7 +706,7 @@ namespace MonoLibUsb
         /// <returns>on success, the number of bytes actually transferred, Other wise a <see cref="MonoUsbError"/>.</returns>
         [DllImport(LIBUSB_DLL, CallingConvention = CC, SetLastError = false, EntryPoint = "libusb_control_transfer")]
         public static extern int ControlTransfer([In] MonoUsbDeviceHandle deviceHandle,
-                                                         byte request_type,
+                                                         byte requestType,
                                                          byte request,
                                                          short value,
                                                          short index,
@@ -722,7 +722,7 @@ namespace MonoLibUsb
         /// The wValue, wIndex and wLength fields values should be given in host-endian byte order.
         /// </remarks>
         /// <param name="deviceHandle">A handle for the device to communicate with.</param>
-        /// <param name="request_type">The request type field for the setup packet.</param>
+        /// <param name="requestType">The request type field for the setup packet.</param>
         /// <param name="request">The request field for the setup packet.</param>
         /// <param name="value">The value field for the setup packet</param>
         /// <param name="index">The index field for the setup packet.</param>
@@ -739,7 +739,7 @@ namespace MonoLibUsb
         /// <param name="timeout">timeout (in milliseconds) that this function should wait before giving up due to no response being received. For an unlimited timeout, use value 0.</param>
         /// <returns>on success, the number of bytes actually transferred, Other wise a <see cref="MonoUsbError"/>.</returns>
         public static int ControlTransfer([In] MonoUsbDeviceHandle deviceHandle,
-                                                  byte request_type,
+                                                  byte requestType,
                                                   byte request,
                                                   short value,
                                                   short index,
@@ -748,7 +748,7 @@ namespace MonoLibUsb
                                                   int timeout)
         {
             PinnedHandle p = new PinnedHandle(data);
-            int ret = ControlTransfer(deviceHandle, request_type, request, value, index, p.Handle, dataLength, timeout);
+            int ret = ControlTransfer(deviceHandle, requestType, request, value, index, p.Handle, dataLength, timeout);
             p.Dispose();
             return ret;
         }
@@ -808,7 +808,7 @@ namespace MonoLibUsb
         /// <param name="pData">
         /// A suitably-sized data buffer for either input or output (depending on endpoint).</param>
         /// <param name="length">For bulk writes, the number of bytes from data to be sent. for bulk reads, the maximum number of bytes to receive into the data buffer.</param>
-        /// <param name="actual_length">Output location for the number of bytes actually transferred.</param>
+        /// <param name="actualLength">Output location for the number of bytes actually transferred.</param>
         /// <param name="timeout">Timeout (in milliseconds) that this function should wait before giving up due to no response being received. For an unlimited timeout, use value 0.</param>
         /// <returns>0 on success (and populates transferred).</returns>
         [DllImport(LIBUSB_DLL, CallingConvention = CC, SetLastError = false, EntryPoint = "libusb_bulk_transfer")]
@@ -816,7 +816,7 @@ namespace MonoLibUsb
                                                       byte endpoint,
                                                       IntPtr pData,
                                                       int length,
-                                                      out int actual_length,
+                                                      out int actualLength,
                                                       int timeout);
 
         /// <summary>
@@ -850,18 +850,18 @@ namespace MonoLibUsb
         /// </list>
         /// </param>
         /// <param name="length">For bulk writes, the number of bytes from data to be sent. for bulk reads, the maximum number of bytes to receive into the data buffer.</param>
-        /// <param name="actual_length">Output location for the number of bytes actually transferred.</param>
+        /// <param name="actualLength">Output location for the number of bytes actually transferred.</param>
         /// <param name="timeout">Timeout (in milliseconds) that this function should wait before giving up due to no response being received. For an unlimited timeout, use value 0.</param>
         /// <returns>0 on success (and populates transferred).</returns>
         public static int BulkTransfer([In] MonoUsbDeviceHandle deviceHandle,
                                                byte endpoint,
                                                object data,
                                                int length,
-                                               out int actual_length,
+                                               out int actualLength,
                                                int timeout)
         {
             PinnedHandle p = new PinnedHandle(data);
-            int ret = BulkTransfer(deviceHandle, endpoint, p.Handle, length, out actual_length, timeout);
+            int ret = BulkTransfer(deviceHandle, endpoint, p.Handle, length, out actualLength, timeout);
             p.Dispose();
             return ret;
         }
@@ -889,7 +889,7 @@ namespace MonoLibUsb
         /// <param name="endpoint">The address of a valid endpoint to communicate with.</param>
         /// <param name="pData">A suitably-sized data buffer for either input or output (depending on endpoint).</param>
         /// <param name="length">For interrupt writes, the number of bytes from data to be sent. for interrupt reads, the maximum number of bytes to receive into the data buffer.</param>
-        /// <param name="actual_length">Output location for the number of bytes actually transferred.</param>
+        /// <param name="actualLength">Output location for the number of bytes actually transferred.</param>
         /// <param name="timeout">Timeout (in milliseconds) that this function should wait before giving up due to no response being received. For an unlimited timeout, use value 0.</param>
         /// <returns>0 on success (and populates transferred).</returns>
         [DllImport(LIBUSB_DLL, CallingConvention = CC, SetLastError = false, EntryPoint = "libusb_interrupt_transfer")]
@@ -897,7 +897,7 @@ namespace MonoLibUsb
                                                            byte endpoint,
                                                            IntPtr pData,
                                                            int length,
-                                                           out int actual_length,
+                                                           out int actualLength,
                                                            int timeout);
 
 
@@ -932,18 +932,18 @@ namespace MonoLibUsb
         /// </list>
         /// </param>
         /// <param name="length">For interrupt writes, the number of bytes from data to be sent. for interrupt reads, the maximum number of bytes to receive into the data buffer.</param>
-        /// <param name="actual_length">Output location for the number of bytes actually transferred.</param>
+        /// <param name="actualLength">Output location for the number of bytes actually transferred.</param>
         /// <param name="timeout">Timeout (in milliseconds) that this function should wait before giving up due to no response being received. For an unlimited timeout, use value 0.</param>
         /// <returns>0 on success (and populates transferred).</returns>
         public static int InterruptTransfer([In] MonoUsbDeviceHandle deviceHandle,
                                                     byte endpoint,
                                                     object data,
                                                     int length,
-                                                    out int actual_length,
+                                                    out int actualLength,
                                                     int timeout)
         {
             PinnedHandle p = new PinnedHandle(data);
-            int ret = InterruptTransfer(deviceHandle, endpoint, p.Handle, length, out actual_length, timeout);
+            int ret = InterruptTransfer(deviceHandle, endpoint, p.Handle, length, out actualLength, timeout);
             p.Dispose();
             return ret;
         }
@@ -977,22 +977,22 @@ namespace MonoLibUsb
         {
             switch (status)
             {
-                case MonoUsbTansferStatus.LIBUSB_TRANSFER_COMPLETED:
-                    return MonoUsbError.LIBUSB_SUCCESS;
-                case MonoUsbTansferStatus.LIBUSB_TRANSFER_ERROR:
-                    return MonoUsbError.LIBUSB_ERROR_PIPE;
-                case MonoUsbTansferStatus.LIBUSB_TRANSFER_TIMED_OUT:
-                    return MonoUsbError.LIBUSB_ERROR_TIMEOUT;
-                case MonoUsbTansferStatus.LIBUSB_TRANSFER_CANCELLED:
-                    return MonoUsbError.LIBUSB_ERROR_IO_CANCELLED;
-                case MonoUsbTansferStatus.LIBUSB_TRANSFER_STALL:
-                    return MonoUsbError.LIBUSB_ERROR_PIPE;
-                case MonoUsbTansferStatus.LIBUSB_TRANSFER_NO_DEVICE:
-                    return MonoUsbError.LIBUSB_ERROR_NO_DEVICE;
-                case MonoUsbTansferStatus.LIBUSB_TRANSFER_OVERFLOW:
-                    return MonoUsbError.LIBUSB_ERROR_OVERFLOW;
+                case MonoUsbTansferStatus.TransferCompleted:
+                    return MonoUsbError.Success;
+                case MonoUsbTansferStatus.TransferError:
+                    return MonoUsbError.ErrorPipe;
+                case MonoUsbTansferStatus.TransferTimedOut:
+                    return MonoUsbError.ErrorTimeout;
+                case MonoUsbTansferStatus.TransferCancelled:
+                    return MonoUsbError.ErrorIOCancelled;
+                case MonoUsbTansferStatus.TransferStall:
+                    return MonoUsbError.ErrorPipe;
+                case MonoUsbTansferStatus.TransferNoDevice:
+                    return MonoUsbError.ErrorNoDevice;
+                case MonoUsbTansferStatus.TransferOverflow:
+                    return MonoUsbError.ErrorOverflow;
                 default:
-                    return MonoUsbError.LIBUSB_ERROR_OTHER;
+                    return MonoUsbError.ErrorOther;
             }
         }
 
@@ -1028,43 +1028,43 @@ namespace MonoLibUsb
 
             switch ((MonoUsbError) ret)
             {
-                case MonoUsbError.LIBUSB_SUCCESS:
+                case MonoUsbError.Success:
                     description += "Success";
                     return ErrorCode.Success;
-                case MonoUsbError.LIBUSB_ERROR_IO:
+                case MonoUsbError.ErrorIO:
                     description += "Input/output error";
                     return ErrorCode.IoSyncFailed;
-                case MonoUsbError.LIBUSB_ERROR_INVALID_PARAM:
+                case MonoUsbError.ErrorInvalidParam:
                     description += "Invalid parameter";
                     return ErrorCode.InvalidParam;
-                case MonoUsbError.LIBUSB_ERROR_ACCESS:
+                case MonoUsbError.ErrorAccess:
                     description += "Access denied (insufficient permissions)";
                     return ErrorCode.AccessDenied;
-                case MonoUsbError.LIBUSB_ERROR_NO_DEVICE:
+                case MonoUsbError.ErrorNoDevice:
                     description += "No such device (it may have been disconnected)";
                     return ErrorCode.DeviceNotFound;
-                case MonoUsbError.LIBUSB_ERROR_BUSY:
+                case MonoUsbError.ErrorBusy:
                     description += "Resource busy";
                     return ErrorCode.ResourceBusy;
-                case MonoUsbError.LIBUSB_ERROR_TIMEOUT:
+                case MonoUsbError.ErrorTimeout:
                     description += "Operation timed out";
                     return ErrorCode.IoTimedOut;
-                case MonoUsbError.LIBUSB_ERROR_OVERFLOW:
+                case MonoUsbError.ErrorOverflow:
                     description += "Overflow";
                     return ErrorCode.Overflow;
-                case MonoUsbError.LIBUSB_ERROR_PIPE:
+                case MonoUsbError.ErrorPipe:
                     description += "Pipe error or endpoint halted";
                     return ErrorCode.PipeError;
-                case MonoUsbError.LIBUSB_ERROR_INTERRUPTED:
+                case MonoUsbError.ErrorInterrupted:
                     description += "System call interrupted (perhaps due to signal)";
                     return ErrorCode.Interrupted;
-                case MonoUsbError.LIBUSB_ERROR_NO_MEM:
+                case MonoUsbError.ErrorNoMem:
                     description += "Insufficient memory";
                     return ErrorCode.InsufficientMemory;
-                case MonoUsbError.LIBUSB_ERROR_IO_CANCELLED:
+                case MonoUsbError.ErrorIOCancelled:
                     description += "Transfer was canceled";
                     return ErrorCode.IoCancelled;
-                case MonoUsbError.LIBUSB_ERROR_NOT_SUPPORTED:
+                case MonoUsbError.ErrorNotSupported:
                     description += "Operation not supported or unimplemented on this platform";
                     return ErrorCode.NotSupported;
                 default:
