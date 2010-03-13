@@ -27,7 +27,7 @@ using System.Windows.Forms;
 using LibUsbDotNet;
 using LibUsbDotNet.LibUsb;
 using LibUsbDotNet.Main;
-using LibUsbDotNet.MonoLibUsb;
+using LibUsbDotNet.LudnMonoLibUsb;
 using EC = LibUsbDotNet.Main.ErrorCode;
 
 namespace Test_Bulk

@@ -1226,8 +1226,8 @@ namespace MonoLibUsb
         internal static void StopAndExit()
         {
 #if LIBUSBDOTNET
-            if (LibUsbDotNet.MonoLibUsb.MonoUsbDevice.mMonoUSBProfileList != null) LibUsbDotNet.MonoLibUsb.MonoUsbDevice.mMonoUSBProfileList.Close();
-            LibUsbDotNet.MonoLibUsb.MonoUsbDevice.mMonoUSBProfileList = null;
+            if (LibUsbDotNet.LudnMonoLibUsb.MonoUsbDevice.mMonoUSBProfileList != null) LibUsbDotNet.LudnMonoLibUsb.MonoUsbDevice.mMonoUSBProfileList.Close();
+            LibUsbDotNet.LudnMonoLibUsb.MonoUsbDevice.mMonoUSBProfileList = null;
 #endif
             MonoUsbEventHandler.Stop(true);
             MonoUsbEventHandler.Exit();

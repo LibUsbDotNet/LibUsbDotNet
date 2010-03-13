@@ -6,7 +6,7 @@ using System.Threading;
 using LibUsbDotNet;
 using LibUsbDotNet.Internal;
 using LibUsbDotNet.Main;
-using LibUsbDotNet.MonoLibUsb;
+using LibUsbDotNet.LudnMonoLibUsb;
 
 namespace Examples
 {

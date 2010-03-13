@@ -188,7 +188,6 @@
     <Compile Include="Main\UsbEndpointBase.cs" />
     <Compile Include="UsbEndpointReader.cs" />
     <Compile Include="UsbEndpointWriter.cs" />
-    <Compile Include="Main\UsbError.cs" />
     <Compile Include="Main\UsbDeviceFinder.cs" />
     <Compile Include="UsbGlobals.cs" />
     <Compile Include="UsbDevice.cs" />

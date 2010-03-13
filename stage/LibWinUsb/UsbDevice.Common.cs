@@ -24,6 +24,7 @@ using System.Collections.Generic;
 using LibUsbDotNet.Internal.LibUsb;
 using LibUsbDotNet.LibUsb;
 using LibUsbDotNet.Main;
+using LibUsbDotNet.LudnMonoLibUsb;
 using LibUsbDotNet.WinUsb.Internal;
 using Debug=System.Diagnostics.Debug;
 
@@ -83,8 +84,8 @@ namespace LibUsbDotNet
                 UsbRegDeviceList regDevList = new UsbRegDeviceList();
                 if (HasLibUsbWinBackDriver && ForceLibUsbWinBack)
                 {
-                    List<MonoLibUsb.MonoUsbDevice> deviceList = MonoLibUsb.MonoUsbDevice.MonoUsbDeviceList;
-                    foreach (MonoLibUsb.MonoUsbDevice usbDevice in deviceList)
+                    List<MonoUsbDevice> deviceList = MonoUsbDevice.MonoUsbDeviceList;
+                    foreach (MonoUsbDevice usbDevice in deviceList)
                     {
                         regDevList.Add(new LegacyUsbRegistry(usbDevice));
                     }

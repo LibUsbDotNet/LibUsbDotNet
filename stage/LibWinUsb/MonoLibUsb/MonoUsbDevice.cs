@@ -27,11 +27,12 @@ using System.Runtime.InteropServices;
 using LibUsbDotNet.Descriptors;
 using LibUsbDotNet.Info;
 using LibUsbDotNet.Main;
+using LibUsbDotNet.LudnMonoLibUsb;
 using MonoLibUsb;
 using MonoLibUsb.Descriptors;
 using MonoLibUsb.Profile;
 
-namespace LibUsbDotNet.MonoLibUsb
+namespace LibUsbDotNet.LudnMonoLibUsb
 {
     /// <summary>This is the LibUsbDotNet Libusb-1.0 implementation of a <see cref="UsbDevice"/>.
     /// </summary> 
@@ -41,7 +42,7 @@ namespace LibUsbDotNet.MonoLibUsb
     /// </remarks> 
     public class MonoUsbDevice : UsbDevice, IUsbDevice
     {
-        private static readonly object OLockDeviceList = new object();
+        internal static readonly object OLockDeviceList = new object();
         internal static MonoUsbProfileList mMonoUSBProfileList;
         private readonly MonoUsbProfile mMonoUSBProfile;
 
@@ -495,25 +496,6 @@ namespace LibUsbDotNet.MonoLibUsb
                 }
                 return (int)mMonoUSBProfileList.Refresh(MonoUsbEventHandler.SessionHandle);
             }
-        }
-
-        /// <summary>
-        /// Clears and frees the static profile list, 
-        /// <see cref="MonoUsbEventHandler.Stop"/>s the static handle events thread and <see cref="MonoUsbEventHandler.Exit"/>s the <see cref="MonoUsbEventHandler.SessionHandle"/>.
-        /// </summary>
-        /// <remarks>
-        /// If this method is not called before the application exits, it can cause it to hang indefinitely.
-        /// <para>Calling this method multiple times without calling <see cref="Init"/> will have no effect.</para>
-        /// </remarks>
-        public static void Exit()
-        {
-            lock (OLockDeviceList)
-            {
-                if (mMonoUSBProfileList != null)
-                    mMonoUSBProfileList.Close();
-                mMonoUSBProfileList = null;
-            }
-            MonoUsbApi.StopAndExit();
         }
 
         /// <summary>

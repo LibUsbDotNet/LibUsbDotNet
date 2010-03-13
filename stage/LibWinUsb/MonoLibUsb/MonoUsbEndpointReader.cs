@@ -22,10 +22,10 @@
 using System;
 using LibUsbDotNet.Internal;
 using LibUsbDotNet.Main;
-using LibUsbDotNet.MonoLibUsb.Internal;
+using LibUsbDotNet.LudnMonoLibUsb.Internal;
 using MonoLibUsb;
 
-namespace LibUsbDotNet.MonoLibUsb
+namespace LibUsbDotNet.LudnMonoLibUsb
 {
     /// <summary>
     /// Implements mono-linux libusb 1.x methods for reading data from a <see cref="EndpointType.Bulk"/> or <see cref="EndpointType.Interrupt"/> endpoints.

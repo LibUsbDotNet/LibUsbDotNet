@@ -29,7 +29,7 @@ using LibUsbDotNet;
 using LibUsbDotNet.Descriptors;
 using LibUsbDotNet.Info;
 using LibUsbDotNet.Main;
-using LibUsbDotNet.MonoLibUsb;
+using LibUsbDotNet.LudnMonoLibUsb;
 
 namespace Test_Info
 {

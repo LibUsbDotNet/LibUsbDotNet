@@ -23,7 +23,7 @@ using System;
 using System.Collections.Generic;
 using LibUsbDotNet.Internal.LibUsb;
 using LibUsbDotNet.LibUsb;
-using LibUsbDotNet.MonoLibUsb;
+using LibUsbDotNet.LudnMonoLibUsb;
 using Microsoft.Win32.SafeHandles;
 using Debug=System.Diagnostics.Debug;
 

@@ -28,7 +28,7 @@ using System.Windows.Forms;
 using LibUsbDotNet;
 using LibUsbDotNet.Info;
 using LibUsbDotNet.Main;
-using LibUsbDotNet.MonoLibUsb;
+using LibUsbDotNet.LudnMonoLibUsb;
 using TestDevice;
 
 // ReSharper disable InconsistentNaming

@@ -19,7 +19,7 @@
 // visit www.gnu.org.
 // 
 // 
-using LibUsbDotNet.MonoLibUsb;
+using LibUsbDotNet.LudnMonoLibUsb;
 using LibUsbDotNet.WinUsb;
 
 namespace LibUsbDotNet
