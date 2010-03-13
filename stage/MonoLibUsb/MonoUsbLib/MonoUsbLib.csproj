@@ -119,11 +119,20 @@
     <Compile Include="..\..\LibWinUsb\MonoLibUsb\Profile\PollfdItem.cs">
       <Link>MonoUsb\Profile\PollfdItem.cs</Link>
     </Compile>
+    <Compile Include="..\..\LibWinUsb\MonoLibUsb\Transfer\Internal\libusb_control_setup.cs">
+      <Link>MonoUsb\Transfer\Internal\libusb_control_setup.cs</Link>
+    </Compile>
     <Compile Include="..\..\LibWinUsb\MonoLibUsb\Transfer\Internal\libusb_iso_packet_descriptor.cs">
       <Link>MonoUsb\Transfer\Internal\libusb_iso_packet_descriptor.cs</Link>
     </Compile>
     <Compile Include="..\..\LibWinUsb\MonoLibUsb\Transfer\Internal\libusb_transfer.cs">
       <Link>MonoUsb\Transfer\Internal\libusb_transfer.cs</Link>
+    </Compile>
+    <Compile Include="..\..\LibWinUsb\MonoLibUsb\Transfer\MonoUsbControlSetup.cs">
+      <Link>MonoUsb\Transfer\MonoUsbControlSetup.cs</Link>
+    </Compile>
+    <Compile Include="..\..\LibWinUsb\MonoLibUsb\Transfer\MonoUsbControlSetupHandle.cs">
+      <Link>MonoUsb\Transfer\MonoUsbControlSetupHandle.cs</Link>
     </Compile>
     <Compile Include="..\..\LibWinUsb\MonoLibUsb\Transfer\MonoUsbIsoPacket.cs">
       <Link>MonoUsb\Transfer\MonoUsbIsoPacket.cs</Link>

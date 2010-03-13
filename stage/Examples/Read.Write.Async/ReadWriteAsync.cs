@@ -55,23 +55,21 @@ namespace Examples
                 // open write endpoint 1.
                 UsbEndpointWriter writer = MyUsbDevice.OpenEndpointWriter(WriteEndpointID.Ep01);
 
-                // Remove the exepath/startup filename text from the begining of the CommandLine.
-                string cmdLine = Regex.Replace(
-                    Environment.CommandLine, "^\".+?\"^.*? |^.*? ", "", RegexOptions.Singleline);
+                // the write test data.
+                string testWriteString = "ABCDEFGH";
 
-                if (!String.IsNullOrEmpty(cmdLine)) cmdLine = "ABCDEFGH";
-                cmdLine = "ABCDEFGH";
                 ErrorCode ecWrite;
                 ErrorCode ecRead;
                 int transferredOut;
                 int transferredIn;
                 UsbTransfer usbWriteTransfer;
                 UsbTransfer usbReadTransfer;
-                byte[] bytesToSend = Encoding.Default.GetBytes(cmdLine);
+                byte[] bytesToSend = Encoding.Default.GetBytes(testWriteString);
                 byte[] readBuffer = new byte[1024];
                 int testCount = 0;
                 do
                 {
+                    // Create and submit transfer
                     ecRead = reader.SubmitAsyncTransfer(readBuffer, 0, readBuffer.Length, 100, out usbReadTransfer);
                     if (ecRead != ErrorCode.None) throw new Exception("Submit Async Read Failed.");
 

@@ -78,8 +78,8 @@ namespace MonoUsb.Async.ControlIO
                 if (ret > 0)
                 {
                     Console.WriteLine("\nSuccess!\n");
-                    MonoUsbControlSetup w = new MonoUsbControlSetup(controlSetupHandle.DangerousGetHandle());
-                    string ctrlDataString = Helper.HexString(w.GetData(ret), String.Empty, "h ");
+                    byte[] ctrlDataBytes = controlSetupHandle.ControlSetup.GetData(ret);
+                    string ctrlDataString = Helper.HexString(ctrlDataBytes, String.Empty, "h ");
                     Console.WriteLine("Return Length: {0}", ret);
                     Console.WriteLine("DATA (hex)   : [ {0} ]\n", ctrlDataString.Trim());
                 }
@@ -111,10 +111,11 @@ namespace MonoUsb.Async.ControlIO
             if (r < 0)
             {
                 transfer.Free();
+                gcCompleteEvent.Free();
                 return r;
             }
 
-            while (!completeEvent.WaitOne(0))
+            while (!completeEvent.WaitOne(0,false))
             {
                 r = MonoUsbApi.HandleEvents(sessionHandle);
                 if (r < 0)
@@ -122,14 +123,14 @@ namespace MonoUsb.Async.ControlIO
                     if (r == (int) MonoUsbError.ErrorInterrupted)
                         continue;
                     transfer.Cancel();
-                    while (!completeEvent.WaitOne(0))
+                    while (!completeEvent.WaitOne(0, false))
                         if (MonoUsbApi.HandleEvents(sessionHandle) < 0)
                             break;
                     transfer.Free();
+                    gcCompleteEvent.Free();
                     return r;
                 }
             }
-            MonoUsbApi.MonoLibUsbErrorFromTransferStatus(transfer.Status);
 
             if (transfer.Status == MonoUsbTansferStatus.TransferCompleted)
                 r = transfer.ActualLength;
@@ -137,6 +138,7 @@ namespace MonoUsb.Async.ControlIO
                 r = (int) MonoUsbApi.MonoLibUsbErrorFromTransferStatus(transfer.Status);
 
             transfer.Free();
+            gcCompleteEvent.Free();
             return r;
         }
     }

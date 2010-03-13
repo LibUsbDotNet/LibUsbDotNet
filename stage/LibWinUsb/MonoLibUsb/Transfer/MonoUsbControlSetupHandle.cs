@@ -33,27 +33,8 @@ namespace MonoLibUsb.Transfer
         /// <param name="index">The index field for the setup packet.</param>
         /// <param name="data">The control data buffer to copy into the setup packet.</param>
         public MonoUsbControlSetupHandle(byte requestType, byte request, short value, short index, byte[] data)
-            : base(IntPtr.Zero, true)
+            : this(requestType, request, value, index, data == null ? (short)0 : (short)(ushort)data.Length)
                 {
-                    ushort wlength;
-                    if (data == null)
-                        wlength = 0;
-                    else
-                        wlength = (ushort)data.Length; 
-                     
-                    int packetSize = MonoUsbControlSetup.SETUP_PACKET_SIZE + wlength;
-                    IntPtr pConfigMem = Marshal.AllocHGlobal(packetSize);
-                    if (pConfigMem == IntPtr.Zero) throw new OutOfMemoryException(String.Format("Marshal.AllocHGlobal failed allocating {0} bytes", packetSize));
-                    SetHandle(pConfigMem);
-
-                    mSetupPacket = new MonoUsbControlSetup(pConfigMem);
-
-                    mSetupPacket.RequestType = requestType;
-                    mSetupPacket.Request = request;
-                    mSetupPacket.Value = value;
-                    mSetupPacket.Index = index;
-                    mSetupPacket.Length = (short)wlength;
-
                     if (data != null)
                         mSetupPacket.SetData(data, 0, data.Length);
                 }
@@ -83,7 +64,12 @@ namespace MonoLibUsb.Transfer
             :base(IntPtr.Zero,true)
         {
             ushort wlength = (ushort) length;
-            int packetSize = MonoUsbControlSetup.SETUP_PACKET_SIZE + wlength;
+            int packetSize;
+            if (wlength > 0)
+                packetSize = MonoUsbControlSetup.SETUP_PACKET_SIZE + wlength + (IntPtr.Size - (wlength % IntPtr.Size));
+            else
+                packetSize = MonoUsbControlSetup.SETUP_PACKET_SIZE;
+                
             IntPtr pConfigMem = Marshal.AllocHGlobal(packetSize);
             if (pConfigMem == IntPtr.Zero) throw new OutOfMemoryException(String.Format("Marshal.AllocHGlobal failed allocating {0} bytes", packetSize));
             SetHandle(pConfigMem);

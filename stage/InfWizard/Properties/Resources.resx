@@ -137,7 +137,7 @@
     <value>..\Resources\libusb_inf_body.txt;System.String, mscorlib, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089;Windows-1252</value>
   </data>
   <data name="MAINTEXT" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>..\Resources\maintext.txt;System.String, mscorlib, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089;Windows-1252</value>
+    <value>..\Resources\MAINTEXT.txt;System.String, mscorlib, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089;Windows-1252</value>
   </data>
   <data name="REMOVE_DEVICE_WARNING" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\Resources\REMOVE_DEVICE_WARNING.txt;System.String, mscorlib, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089;Windows-1252</value>

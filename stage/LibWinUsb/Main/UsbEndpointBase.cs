@@ -195,9 +195,9 @@ namespace LibUsbDotNet.Main
         }
 
         /// <summary>
-        /// reads/Writes data to.from this enpdoint depending on the endpoint direction bit.
+        /// Synchronous bulk/interrupt transfer function.
         /// </summary>
-        /// <param name="buffer">A caller-allocated buffer for the data that is transferred.</param>
+        /// <param name="buffer">An <see cref="IntPtr"/> to a caller-allocated buffer.</param>
         /// <param name="offset">Position in buffer that transferring begins.</param>
         /// <param name="length">Number of bytes, starting from thr offset parameter to transfer.</param>
         /// <param name="timeout">Maximum time to wait for the transfer to complete.</param>
@@ -206,14 +206,19 @@ namespace LibUsbDotNet.Main
         public virtual ErrorCode Transfer(IntPtr buffer, int offset, int length, int timeout, out int transferLength) { return UsbTransfer.SyncTransfer(TransferContext, buffer, offset, length, timeout, out transferLength); }
 
         /// <summary>
-        /// Creates and submits an asynchronous transfer.
+        /// Creates, fills and submits an asynchronous <see cref="UsbTransfer"/> context.
         /// </summary>
+        /// <remarks>
+        /// <note type="tip">This is a non-blocking asynchronous transfer function. This function returns immediately after the context is created and submitted.</note>
+        /// </remarks>
         /// <param name="buffer">A caller-allocated buffer for the data that is transferred.</param>
         /// <param name="offset">Position in buffer that transferring begins.</param>
         /// <param name="length">Number of bytes, starting from thr offset parameter to transfer.</param>
         /// <param name="timeout">Maximum time to wait for the transfer to complete.</param>
         /// <param name="transferContext">On <see cref="ErrorCode.Success"/>, a new transfer context.</param>
         /// <returns><see cref="ErrorCode.Success"/> if the transfer context was created and <see cref="UsbTransfer.Submit"/> succeeded.</returns>
+        /// <seealso cref="SubmitAsyncTransfer(System.IntPtr,int,int,int,out LibUsbDotNet.Main.UsbTransfer)"/>
+        /// <seealso cref="NewAsyncTransfer"/>
         public virtual ErrorCode SubmitAsyncTransfer(object buffer, int offset, int length, int timeout, out UsbTransfer transferContext)
         {
             transferContext = CreateTransferContext();
@@ -224,21 +229,26 @@ namespace LibUsbDotNet.Main
             {
                 transferContext.Dispose();
                 transferContext = null;
-                UsbError.Error(ec, 0, "AsyncTransfer Failed", this);
+                UsbError.Error(ec, 0, "SubmitAsyncTransfer Failed", this);
             }
 
             return ec;
         }
 
         /// <summary>
-        /// Creates and submits an asynchronous transfer.
+        /// Creates, fills and submits an asynchronous <see cref="UsbTransfer"/> context.
         /// </summary>
+        /// <remarks>
+        /// <note type="tip">This is a non-blocking asynchronous transfer function. This function returns immediately after the context is created and submitted.</note>
+        /// </remarks>
         /// <param name="buffer">A caller-allocated buffer for the data that is transferred.</param>
         /// <param name="offset">Position in buffer that transferring begins.</param>
         /// <param name="length">Number of bytes, starting from thr offset parameter to transfer.</param>
         /// <param name="timeout">Maximum time to wait for the transfer to complete.</param>
         /// <param name="transferContext">On <see cref="ErrorCode.Success"/>, a new transfer context.</param>
         /// <returns><see cref="ErrorCode.Success"/> if the transfer context was created and <see cref="UsbTransfer.Submit"/> succeeded.</returns>
+        /// <seealso cref="SubmitAsyncTransfer(object,int,int,int,out LibUsbDotNet.Main.UsbTransfer)"/>
+        /// <seealso cref="NewAsyncTransfer"/>
         public virtual ErrorCode SubmitAsyncTransfer(IntPtr buffer, int offset, int length, int timeout, out UsbTransfer transferContext)
         {
             transferContext = CreateTransferContext();
@@ -249,18 +259,21 @@ namespace LibUsbDotNet.Main
             {
                 transferContext.Dispose();
                 transferContext = null;
-                UsbError.Error(ec,0, "AsyncTransfer Failed",this);
+                UsbError.Error(ec, 0, "SubmitAsyncTransfer Failed", this);
             }
 
             return ec;
         }
         /// <summary>
-        /// Get a new <see cref="UsbTransfer"/> context.
+        /// Creates a <see cref="UsbTransfer"/> context for asynchronous transfers.
         /// </summary>
         /// <remarks>
-        /// <para>This method returns a new, empty transfer context.  Unlike <see cref="SubmitAsyncTransfer(object,int,int,int,out LibUsbDotNet.Main.UsbTransfer)"/>, this context must also be filled and submitted.</para>
+        /// <para> This method returns a new, empty transfer context.  Unlike <see cref="SubmitAsyncTransfer(object,int,int,int,out LibUsbDotNet.Main.UsbTransfer)">SubmitAsyncTransfer</see>, this context is <c>not</c> filled and submitted.</para>
+        /// <note type="tip">This is a non-blocking asynchronous transfer function. This function returns immediately after the context created.</note>
         /// </remarks>
         /// <returns>A new <see cref="UsbTransfer"/> context.</returns>
+        /// <seealso cref="SubmitAsyncTransfer(System.IntPtr,int,int,int,out LibUsbDotNet.Main.UsbTransfer)"/>
+        /// <seealso cref="SubmitAsyncTransfer(object,int,int,int,out LibUsbDotNet.Main.UsbTransfer)"/>
         public UsbTransfer NewAsyncTransfer()
         {
             UsbTransfer transfer = CreateTransferContext();
@@ -307,9 +320,9 @@ namespace LibUsbDotNet.Main
         }
 
         /// <summary>
-        /// reads/Writes data to.from this enpdoint depending on the endpoint direction bit.
+        /// Synchronous bulk/interrupt transfer function.
         /// </summary>
-        /// <param name="buffer">A caller-allocated buffer for the data that is transferred.</param>
+        /// <param name="buffer">A caller-allocated buffer for the transfer data. This object is pinned using <see cref="PinnedHandle"/>.</param>
         /// <param name="offset">Position in buffer that transferring begins.</param>
         /// <param name="length">Number of bytes, starting from thr offset parameter to transfer.</param>
         /// <param name="timeout">Maximum time to wait for the transfer to complete.</param>

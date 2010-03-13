@@ -190,10 +190,10 @@ namespace LibUsbDotNet.MonoLibUsb
         public override bool ControlTransfer(ref UsbSetupPacket setupPacket, IntPtr buffer, int bufferLength, out int lengthTransferred)
         {
             int ret = MonoUsbApi.ControlTransfer((MonoUsbDeviceHandle) mUsbHandle,
-                                                            (byte) setupPacket.RequestType,
-                                                            (byte) setupPacket.Request,
-                                                            Helper.HostEndianToLE16(setupPacket.Value),
-                                                            Helper.HostEndianToLE16(setupPacket.Index),
+                                                            setupPacket.RequestType,
+                                                            setupPacket.Request,
+                                                            setupPacket.Value,
+                                                            setupPacket.Index,
                                                             buffer,
                                                             (short)bufferLength,
                                                             UsbConstants.DEFAULT_TIMEOUT);

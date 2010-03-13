@@ -19,9 +19,28 @@
     <!--    DO NOT REMOVE    -->
     <!-- CurrentReleaseNotes -->
   <releaseNotes address="LibUsbDotNet_Changes_v2.2.4">
-    <title>v2.2.4 (03/05/2010)</title>
+    <title>v2.2.4 (03/13/2010)</title>
     <content>
       <bugs class="bullet">
+        <bug>
+          <bugaction>
+            <token>Fixed</token>
+          </bugaction>
+          <bugentry>
+            <externalLink target="LibUsbDotNet_Bug">
+              <linkText>Bug ID: 2969931</linkText>
+              <linkUri>
+                http://sourceforge.net/tracker/?func=detail&amp;aid=2969931&amp;group_id=206606&amp;atid=1140572
+              </linkUri>
+            </externalLink>
+            - Linux xbuild issue.
+            <para>
+              The xbuild utility failed to build the LibUsbDotNet.sln. This was caused
+              by an invalid resource in the InfWizard application and a casting issue for
+              function that take a Predicate&lt;&gt; as a parameter.
+            </para>
+          </bugentry>
+        </bug>
         <bug>
           <bugaction>
             <token>Fixed</token>
@@ -47,7 +66,7 @@
           <bugentry>
             Asynchronous transfer functions to <CREF>T:LibUsbDotNet.Main.UsbEndpointBase</CREF>.
             <para>
-             For more details see the AsyncTransfer functions in the <CREF>T:LibUsbDotNet.Main.UsbEndpointBase</CREF> class.
+             For more details see the <CREF>M:LibUsbDotNet.Main.UsbEndpointBase.NewAsyncTransfer</CREF> and <CREF>M:LibUsbDotNet.Main.UsbEndpointBase.SubmitAsyncTransfer</CREF> functions in the <CREF>T:LibUsbDotNet.Main.UsbEndpointBase</CREF> class.
             </para>
           </bugentry>
         </bug>
@@ -56,7 +75,7 @@
             <token>Added</token>
           </bugaction>
           <bugentry>
-            Low-level .NET MonoLibUsb API for <externalLink target="LibUsbDotNet_Bug"><linkText>Libusb-1.0.</linkText><linkUri>http://www.libusb.org/</linkUri></externalLink>
+            Low-level .NET MonoLibUsb API for <externalLink target="Libusb-1.0"><linkText>Libusb-1.0.</linkText><linkUri>http://www.libusb.org/</linkUri></externalLink>
             <para>
               The low-level MonoLibUsb API (Libusb-1.0) is supported on many platforms including windows via the <externalLink target="LibUsbDotNet_Bug"><linkText>Libusb-1.0 windows-backend port</linkText><linkUri>http://www.libusb.org/wiki/windows_backend</linkUri></externalLink>.
             </para>

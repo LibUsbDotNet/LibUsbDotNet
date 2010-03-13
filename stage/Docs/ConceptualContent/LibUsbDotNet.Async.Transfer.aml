@@ -1,5 +1,5 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
-<topic id="7d9d422e-9884-43cd-87c8-304e249d0e27" revisionNumber="1">
+<topic id="8564be8a-3154-4b2e-8017-5013ca8244ee" revisionNumber="1">
   <developerHowToDocument xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5" xmlns:xlink="http://www.w3.org/1999/xlink">
     <!-- ><summary><para>Optional summary abstract</para></summary> -->
     <introduction>
@@ -11,74 +11,66 @@
       </para>
     </introduction>
     <procedure>
-      <title>MonoLibUsb Bulk Read/Write: Console Application Description</title>
+      <title>Async Read/Write: Console Application Description</title>
       <steps class="ordered">
         <step>
           <content>
             <para>
-              Initializes the usb context.
+              Opens a USB device by vendor and product id.
             </para>
           </content>
         </step>
         <step>
           <content>
             <para>
-              Opens the device define in the <application>MY DEVICE</application> region by vid and pid.
-            </para>
-          </content>
-        </step>
-
-        <step>
-          <content>
-            <para>
-              If TEST_REST_DEVICE = True, the device is reset and re-open.
-            </para>
-          </content>
-        </step>
-
-
-        <step>
-          <content>
-            <para>
-              Sets the configuration and claims the interface defined in the <application>MY DEVICE</application> region.
-          </para>
-          </content>
-        </step>
-        
-        <step>
-          <content>
-            <para>
-              Writes test data until an error or timeout occurs, or until 4 packets are written.
-            </para>
-          </content>
-        </step>
-        
-        <step>
-          <content>
-            <para>
-              Reads test data until an error or timeout occurs.
+              Opens a <CREF>T:LibUsbDotNet.UsbEndpointReader</CREF> class for reading.
             </para>
           </content>
         </step>
         <step>
           <content>
             <para>
-              Displays results and repeats test until the <application>TEST_LOOP_COUNT</application> threshold is reached.
+              Opens a <CREF>T:LibUsbDotNet.UsbEndpointWriter</CREF> class for writing.
             </para>
           </content>
         </step>
         <step>
           <content>
             <para>
-              Frees/closes resources and exits the usb context.
+              Creates and submits an asynchronous read transfer to <CREF>F:LibUsbDotNet.Main.ReadEndpointID.Ep01</CREF>.
+            </para>
+          </content>
+        </step>
+        <step>
+          <content>
+            <para>
+              Creates and submits an asynchronous write transfer to <CREF>F:LibUsbDotNet.Main.WriteEndpointID.Ep01</CREF>.
+            </para>
+          </content>
+        </step>
+        <step>
+          <content>
+            <para>
+              Displays the transfer results.
+            </para>
+          </content>
+        </step>
+        <step>
+          <content>
+            <para>
+              Steps 4,5 and 6 are repeated 5 times.
             </para>
           </content>
         </step>
       </steps>
     </procedure>
     <codeExample>
-      <code source="..\MonoLibUsb\MonoUsb.BulkReadWrite\BulkReadWrite.cs" lang="cs" outlining="true" />
+      <code source="..\Examples\Read.Write.Async\ReadWriteAsync.cs" lang="cs" />
     </codeExample>
+    <codeExample>
+      <code source="..\Examples\Read.Write.Async\ReadWriteAsync.vb" lang="vb" />
+    </codeExample>
+
     <buildInstructions>
       <list class="ordered">
         <listItem>
@@ -111,8 +103,9 @@
         </listItem>
       </list>
     </buildInstructions>
-    <!-- <robustProgramming></robustProgramming> -->
-    <!-- <security>Optional discussion of security issues.</security> -->
+    <alert class="note">
+      Example usb device firmware is located in the <localUri>[InstallDirectory]\Benchmark\Firmware\[Manufacturer]</localUri> directory.
+    </alert>
     <relatedTopics>
     </relatedTopics>
   </developerHowToDocument>

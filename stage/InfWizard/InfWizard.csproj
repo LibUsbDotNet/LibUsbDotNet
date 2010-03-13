@@ -74,6 +74,11 @@
     <Compile Include="fRemoveDevice.Designer.cs">
       <DependentUpon>fRemoveDevice.cs</DependentUpon>
     </Compile>
+    <Compile Include="Properties\Resources1.Designer.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>Resources.resx</DependentUpon>
+    </Compile>
     <Compile Include="resSpawnDriverLibusb.Designer.cs">
       <DependentUpon>resSpawnDriverLibusb.resx</DependentUpon>
     </Compile>
@@ -162,10 +167,8 @@
     <EmbeddedResource Include="Properties\Resources.resx">
       <SubType>Designer</SubType>
       <Generator>ResXFileCodeGenerator</Generator>
+      <LastGenOutput>Resources1.Designer.cs</LastGenOutput>
     </EmbeddedResource>
-    <Compile Include="Properties\Resources.Designer.cs">
-      <DependentUpon>Resources.resx</DependentUpon>
-    </Compile>
     <None Include="Properties\Settings.settings">
       <Generator>SettingsSingleFileGenerator</Generator>
     </None>
@@ -173,9 +176,9 @@
       <DependentUpon>Settings.settings</DependentUpon>
     </Compile>
     <None Include="app.config" />
-    <None Include="Resources\maintext.txt" />
     <None Include="Resources\libusb_inf_body.txt" />
     <None Include="Resources\LIBUSB_CAT_BODY.txt" />
+    <None Include="Resources\MAINTEXT.txt" />
     <None Include="Resources\WINUSB_INF_BODY.txt" />
     <None Include="Resources\WINUSB_CAT_BODY.txt" />
     <None Include="Resources\REMOVE_DEVICE_WARNING.txt" />

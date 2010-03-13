@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Runtime.InteropServices;
-using LibUsbDotNet.Main;
 using MonoLibUsb.Transfer;
 using Usb = MonoLibUsb.MonoUsbApi;
 
@@ -14,13 +13,17 @@ namespace MonoLibUsb.ShowInfo
 
     internal class BulkReadWrite
     {
+        #region DEVICE SETUP
         private const int MY_CONFIG = 1;
         private const byte MY_EP_READ = 0x81;
         private const byte MY_EP_WRITE = 0x01;
         private const int MY_INTERFACE = 0;
         private const short MY_PID = 0x0053;
-        private const int MY_TIMEOUT = 2000;
         private const short MY_VID = 0x04d8;
+        #endregion
+
+        #region TEST SETUP
+        private const int MY_TIMEOUT = 2000;
         private const int TEST_LOOP_COUNT = 1;
 
         private const int TEST_READ_LEN = 64;
@@ -29,6 +32,7 @@ namespace MonoLibUsb.ShowInfo
         private const int TEST_WRITE_LEN = 8;
 
         private static TestMode TEST_MODE = TestMode.Async;
+        #endregion
 
         private static MonoUsbSessionHandle sessionHandle  = null;
 
@@ -150,6 +154,8 @@ namespace MonoLibUsb.ShowInfo
                         Console.WriteLine("Opening Device..");
                         device_handle = MonoUsbApi.OpenDeviceWithVidPid(sessionHandle, MY_VID, MY_PID);
                         if ((device_handle == null) || device_handle.IsInvalid) break;
+
+                        // If TEST_REST_DEVICE = True, reset the device and re-open
                         if (TEST_REST_DEVICE)
                         {
                             MonoUsbApi.ResetDevice(device_handle);
@@ -157,20 +163,28 @@ namespace MonoLibUsb.ShowInfo
                             device_handle = MonoUsbApi.OpenDeviceWithVidPid(sessionHandle, MY_VID, MY_PID);
                             if ((device_handle == null) || device_handle.IsInvalid) break;
                         }
+
+                        // Set configuration
                         Console.WriteLine("Set Config..");
                         r = MonoUsbApi.SetConfiguration(device_handle, MY_CONFIG);
                         if (r != 0) break;
 
+                        // Claim interface
                         Console.WriteLine("Set Interface..");
                         r = MonoUsbApi.ClaimInterface(device_handle, MY_INTERFACE);
                         if (r != 0) break;
-
-                        // Write test data
+                        
+                        /////////////////////
+                        // Write test data //
+                        /////////////////////
                         int packetCount = 0;
                         int transferredTotal = 0;
                         do
                         {
                             Console.WriteLine("Sending test data..");
+
+                            // If the Async TEST_MODE enumeration is set, use
+                            // the internal transfer function
                             if (TEST_MODE == TestMode.Async)
                             {
                                 r = (int)doBulkAsyncTransfer(device_handle,
@@ -182,6 +196,7 @@ namespace MonoLibUsb.ShowInfo
                             }
                             else
                             {
+                                // Use the sync bulk transfer API function 
                                 r = MonoUsbApi.BulkTransfer(device_handle,
                                                                        MY_EP_WRITE,
                                                                        testWriteData,
@@ -194,23 +209,32 @@ namespace MonoLibUsb.ShowInfo
                                 packetCount++;
                                 transferredTotal += transferred;
                             }
+                            // Keep writing data until an error occurs or
+                            // 4 packets have been sent.
                         } while (r == 0 && packetCount < 5);
 
+                        
                         if (r == (int) MonoUsbError.ErrorTimeout)
                         {
+                            // This is considered normal operation
                             Console.WriteLine("Write Timed Out. {0} packet(s) written ({1} bytes)", packetCount, transferredTotal);
                         }
                         else if (r != (int) MonoUsbError.ErrorTimeout && r != 0)
                         {
+                            // An error, other than ErrorTimeout was received. 
                             Console.WriteLine("Write failed:{0}", (MonoUsbError) r);
                             break;
                         }
-                        // Read test data
+                        ////////////////////
+                        // Read test data //
+                        ////////////////////
                         Console.WriteLine("Reading test data..");
                         packetCount = 0;
                         transferredTotal = 0;
                         do
                         {
+                            // If the Async TEST_MODE enumeration is set, use
+                            // the internal transfer function
                             if (TEST_MODE == TestMode.Async)
                             {
                                 r = (int) doBulkAsyncTransfer(device_handle,
@@ -222,6 +246,7 @@ namespace MonoLibUsb.ShowInfo
                             }
                             else
                             {
+                                // Use the sync bulk transfer API function 
                                 r = MonoUsbApi.BulkTransfer(device_handle,
                                                                        MY_EP_READ,
                                                                        testReadData,
@@ -231,10 +256,14 @@ namespace MonoLibUsb.ShowInfo
                             }
                             if (r == (int) MonoUsbError.ErrorTimeout)
                             {
+                                // This is considered normal operation
                                 Console.WriteLine("Read Timed Out. {0} packet(s) read ({1} bytes)", packetCount, transferredTotal);
                             }
                             else if (r != 0)
-                                Console.WriteLine("Read failed:{0}", (MonoUsbError) r);
+                            {
+                                // An error, other than ErrorTimeout was received. 
+                                Console.WriteLine("Read failed:{0}", (MonoUsbError)r);
+                            }
                             else
                             {
                                 transferredTotal += transferred;
@@ -244,11 +273,13 @@ namespace MonoLibUsb.ShowInfo
                                 Console.Write("Received: ");
                                 Console.WriteLine(System.Text.Encoding.Default.GetString(testReadData, 0, transferred));
                             }
+                            // Keep reading data until an error occurs, (ErrorTimeout)
                         } while (r == 0);
                     } while (false);
                 }
                 finally
                 {
+                    // Free and close resources
                     if (device_handle != null)
                     {
                         if (!device_handle.IsInvalid)
@@ -263,6 +294,7 @@ namespace MonoLibUsb.ShowInfo
                         sessionHandle = null;
                     }
                 }
+                // Run the entire test TEST_LOOP_COUNT times.
             } while (++loopCount < TEST_LOOP_COUNT);
 
             Console.WriteLine("\nDone!  [Press any key to exit]");

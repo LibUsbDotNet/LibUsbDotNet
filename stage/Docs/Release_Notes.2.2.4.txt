@@ -1,15 +1,20 @@
 LibUsbDotNet Version History
 
-V2.2.4 (03/05/2010)
+V2.2.4 (03/13/2010)
 ====================
+  * [Fixed] Bug ID: 2969931 - Linux xbuild issue. 
+    The xbuild utility failed to build the LibUsbDotNet.sln. This was caused 
+    by an invalid resource in the InfWizard application and a casting issue 
+    for function that take a Predicate<> as a parameter. 
+
   * [Fixed] Bug ID: 2956665 - UsbDeviceFinder fails to find VID and PIDs > 
     0x7FFF. 
     USB devices that have VID or PIDs greater than 0x7FFF are not found by the 
     UsbDeviceFinder class. 
 
   * [Added] Asynchronous transfer functions to UsbEndpointBase. 
-    For more details see the AsyncTransfer functions in the UsbEndpointBase 
-    class. 
+    For more details see the NewAsyncTransfer and SubmitAsyncTransfer 
+    functions in the UsbEndpointBase class. 
 
   * [Added] Low-level .NET MonoLibUsb API for Libusb-1.0.
     The low-level MonoLibUsb API (Libusb-1.0) is supported on many platforms 

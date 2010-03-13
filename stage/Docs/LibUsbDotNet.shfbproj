@@ -39,7 +39,7 @@
     <FeedbackEMailLinkText>LibUsbDotNet Support</FeedbackEMailLinkText>
     <PresentationStyle>Prototype</PresentationStyle>
     <IncludeFavorites>True</IncludeFavorites>
-    <HelpFileVersion>2.2.4.13</HelpFileVersion>
+    <HelpFileVersion>2.2.4.25</HelpFileVersion>
     <ComponentConfigurations>
       <ComponentConfig id="Code Block Component" enabled="True" xmlns="">
         <component id="Code Block Component" type="SandcastleBuilder.Components.CodeBlockComponent" assembly="{@SHFBFolder}SandcastleBuilder.Components.dll">
@@ -179,6 +179,7 @@
     <None Include="ConceptualContent\MonoLibUsb.Example.BulkReadWriteAsync.aml" />
     <None Include="ConceptualContent\MonoLibUsb.Example.ShowConfig.aml" />
     <None Include="ConceptualContent\MonoLibUsb.Example.AsyncControlIO.aml" />
+    <None Include="ConceptualContent\LibUsbDotNet.Async.Transfer.aml" />
   </ItemGroup>
   <ItemGroup>
     <ContentLayout Include="LibUsbDotNet.content" />

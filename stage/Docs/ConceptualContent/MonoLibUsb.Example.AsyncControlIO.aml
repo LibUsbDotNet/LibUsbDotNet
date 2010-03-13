@@ -4,6 +4,10 @@
     <!-- ><summary><para>Optional summary abstract</para></summary> -->
     <introduction>
       <para>
+        <alert class="warning">
+          This example only works with custom usb hardware. Using this example on a usb device it was not designed for could be catastrophic!
+          To meet the requirements, your usb hardware must respond to a vendor-specific control request (see code) on the default control pipe.
+        </alert>
       </para>
     </introduction>
     <procedure>

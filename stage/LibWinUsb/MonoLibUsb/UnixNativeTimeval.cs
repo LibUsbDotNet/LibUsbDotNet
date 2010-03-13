@@ -18,7 +18,7 @@ namespace MonoLibUsb
         /// </summary>
         public static UnixNativeTimeval WindowsDefault
         {
-            get { return new UnixNativeTimeval(0, 1); }
+            get { return new UnixNativeTimeval(2, 0); }
         }
 
         /// <summary>
@@ -26,7 +26,7 @@ namespace MonoLibUsb
         /// </summary>
         public static UnixNativeTimeval LinuxDefault
         {
-            get { return new UnixNativeTimeval(1, 0); }
+            get { return new UnixNativeTimeval(2, 0); }
         }
 
         /// <summary>

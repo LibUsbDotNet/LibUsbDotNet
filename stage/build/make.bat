@@ -371,6 +371,7 @@ GOTO :EOF
 	CALL :CopyDirs "!CMDVAR_BASEDIR!Examples\*" "!_DST_!Examples\"
 	CALL :CopyDirs "!CMDVAR_BASEDIR!InfWizard\*" "!_DST_!InfWizard\"
 	CALL :CopyDirs "!CMDVAR_BASEDIR!LibWinUsb\*" "!_DST_!LibWinUsb\"
+	CALL :CopyDirs "!CMDVAR_BASEDIR!MonoLibUsb\*" "!_DST_!MonoLibUsb\"
 	CALL :CopyDirs "!CMDVAR_BASEDIR!Utility\*" "!_DST_!Utility\"
 	CALL :CopyDirs "!CMDVAR_BASEDIR!Test_DeviceNotify\*" "!_DST_!Test_DeviceNotify\"
 	CALL :CopyDirs "!CMDVAR_LIBUSBPATH!*" "!_DST_!libusb-win32-src-0.1.12.2\"
@@ -380,6 +381,7 @@ GOTO :EOF
 	
 	SET _SRC_=!CMDVAR_BASEDIR!
 	CALL :CopyFile LibUsbDotNet.sln
+	CALL :CopyFile All.sln
 	
 	CALL :TagEnv "'!CMDVAR_BASENAME!_Setup.Template.iss' -o='!_DST_!!CMDVAR_BASENAME!_Setup.iss'"
 	

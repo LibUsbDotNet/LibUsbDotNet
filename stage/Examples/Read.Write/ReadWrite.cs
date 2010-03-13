@@ -12,7 +12,7 @@ namespace Examples
 
         #region SET YOUR USB Vendor and Product ID!
 
-        public static UsbDeviceFinder MyUsbFinder = new UsbDeviceFinder(0x04d8, 0x80ff);
+        public static UsbDeviceFinder MyUsbFinder = new UsbDeviceFinder(0x04d8, 0x0053);
 
         #endregion
 

@@ -7,6 +7,10 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MonoUsbLib", "MonoUsbLib\Mo
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MonoUsb.ShowInfo", "MonoUsb.ShowInfo\MonoUsb.ShowInfo.csproj", "{93531142-EF4A-4406-BBF7-A900327D2566}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MonoUsb.ShowConfig", "MonoUsb.ShowConfig\MonoUsb.ShowConfig.csproj", "{88B42AE9-58FA-4669-A746-05DA78EFCC01}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MonoUsb.Async.ControlIO", "MonoUsb.Async.ControlIO\MonoUsb.Async.ControlIO.csproj", "{2B770F5C-421A-4C39-8933-C1DE62F025E6}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -25,6 +29,14 @@ Global
 		{93531142-EF4A-4406-BBF7-A900327D2566}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{93531142-EF4A-4406-BBF7-A900327D2566}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{93531142-EF4A-4406-BBF7-A900327D2566}.Release|Any CPU.Build.0 = Release|Any CPU
+		{88B42AE9-58FA-4669-A746-05DA78EFCC01}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{88B42AE9-58FA-4669-A746-05DA78EFCC01}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{88B42AE9-58FA-4669-A746-05DA78EFCC01}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{88B42AE9-58FA-4669-A746-05DA78EFCC01}.Release|Any CPU.Build.0 = Release|Any CPU
+		{2B770F5C-421A-4C39-8933-C1DE62F025E6}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{2B770F5C-421A-4C39-8933-C1DE62F025E6}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{2B770F5C-421A-4C39-8933-C1DE62F025E6}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{2B770F5C-421A-4C39-8933-C1DE62F025E6}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

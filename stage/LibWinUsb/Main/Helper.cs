@@ -117,11 +117,13 @@ namespace LibUsbDotNet.Main
 
 
         /// <summary>
-        /// Has no effect on little endian systems.  Swaps low and high bytesSwaps low and high bytes on big endian systems.
+        /// Swaps low and high bytes on big endian systems.  Has no effect on little endian systems.
         /// </summary>
-        public static short HostEndianToLE16(short x)
+        /// <param name="swapValue">The value to convert.</param>
+        /// <returns>a swapped value an big endian system, the same value on little endian systems</returns>
+        public static short HostEndianToLE16(short swapValue)
         {
-            HostEndian16BitValue rtn = new HostEndian16BitValue(x);
+            HostEndian16BitValue rtn = new HostEndian16BitValue(swapValue);
             return (short)rtn.U16;
         }
 
@@ -139,6 +141,7 @@ namespace LibUsbDotNet.Main
             if (standardValue is UInt16) return "0x" + ((UInt16)standardValue).ToString("X4");
             if (standardValue is Int16) return "0x" + ((Int16)standardValue).ToString("X4");
             if (standardValue is Byte) return "0x" + ((Byte)standardValue).ToString("X2");
+            if (standardValue is String) return HexString(standardValue as byte[], "", " ");
 
             return "";
         }
@@ -167,13 +170,6 @@ namespace LibUsbDotNet.Main
         [StructLayout(LayoutKind.Explicit, Pack = 1)]
         internal struct HostEndian16BitValue
         {
-            public HostEndian16BitValue(byte b0, byte b1)
-            {
-                U16 = 0;
-                B0 = b0;
-                B1 = b1;
-            }
-
             public HostEndian16BitValue(short x)
             {
                 U16 = 0;
@@ -194,9 +190,9 @@ namespace LibUsbDotNet.Main
         #endregion
 
         /// <summary>
-        /// Convenience function to build a hex string using an array of bytes. 
+        /// Builds a formatted hexidecimal string from an array of bytes. 
         /// </summary>
-        /// <param name="data">array of bytes</param>
+        /// <param name="data">the byte array</param>
         /// <param name="prefix">string to place before each byte</param>
         /// <param name="suffix">string to place after each byte</param>
         /// <returns>a formatted hex string</returns>
@@ -205,7 +201,7 @@ namespace LibUsbDotNet.Main
             if (prefix == null) prefix = String.Empty;
             if (suffix == null) suffix = String.Empty;
 
-            StringBuilder sb = new StringBuilder((data.Length*2) + (data.Length*prefix.Length) + (data.Length*suffix.Length));
+            StringBuilder sb = new StringBuilder((data.Length * 2) + (data.Length * prefix.Length) + (data.Length * suffix.Length));
             foreach (byte b in data)
                 sb.Append(prefix + b.ToString("X2") + suffix);
 

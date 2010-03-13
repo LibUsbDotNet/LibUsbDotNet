@@ -3,7 +3,7 @@ using LibUsbDotNet.Main;
 
 namespace MonoLibUsb.Transfer.Internal
 {
-    [StructLayout(LayoutKind.Sequential,Pack = MonoUsbApi.LIBUSB_PACK)]
+    [StructLayout(LayoutKind.Sequential)]
     internal class libusb_control_setup
     {
 
@@ -31,13 +31,5 @@ namespace MonoLibUsb.Transfer.Internal
         /** Number of bytes to transfer */
         public readonly short wLength;
 
-        public libusb_control_setup(byte bmRequestType, byte bRequest, short wValue, short wIndex, short wLength)
-        {
-            this.bmRequestType = bmRequestType;
-            this.bRequest = bRequest;
-            this.wValue = Helper.HostEndianToLE16(wValue);
-            this.wIndex = Helper.HostEndianToLE16(wIndex);
-            this.wLength = Helper.HostEndianToLE16(wLength);
-        }
     }
 }

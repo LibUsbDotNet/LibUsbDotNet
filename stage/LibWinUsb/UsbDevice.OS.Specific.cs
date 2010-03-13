@@ -45,7 +45,7 @@ namespace LibUsbDotNet
         /// <remarks>
         /// If this is <see langword="true"/>, <see cref="AllDevices"/> will return only <see cref="MonoUsbDevice"/>s in the list.
         /// </remarks>
-        public static bool ForceLibUsbWinBack = true;
+        public static bool ForceLibUsbWinBack = false;
         
 
         /// <summary>
