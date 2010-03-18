@@ -25,21 +25,22 @@
     </HtmlHelp2xCompilerPath>
     <SandcastlePath>
     </SandcastlePath>
-    <WorkingPath>B:\Temp\</WorkingPath>
+    <WorkingPath>
+    </WorkingPath>
     <BuildLogFile>
     </BuildLogFile>
     <HelpFileFormat>HtmlHelp1, Website</HelpFileFormat>
     <FrameworkVersion>2.0.50727</FrameworkVersion>
     <RootNamespaceContainer>False</RootNamespaceContainer>
     <RootNamespaceTitle>Library Reference</RootNamespaceTitle>
-    <HelpTitle>LibUsbDotNet 2.2.4</HelpTitle>
+    <HelpTitle>LibUsbDotNet 2.2.5</HelpTitle>
     <CopyrightHref>http://www.gnu.org/licenses/lgpl.html</CopyrightHref>
     <CopyrightText>Copyright %28C%29 2009 Travis Robinson. All Rights Reserved.</CopyrightText>
     <FeedbackEMailAddress>libusbdotnet%40gmail.com</FeedbackEMailAddress>
     <FeedbackEMailLinkText>LibUsbDotNet Support</FeedbackEMailLinkText>
     <PresentationStyle>Prototype</PresentationStyle>
     <IncludeFavorites>True</IncludeFavorites>
-    <HelpFileVersion>2.2.4.26</HelpFileVersion>
+    <HelpFileVersion>2.2.5.27</HelpFileVersion>
     <ComponentConfigurations>
       <ComponentConfig id="Code Block Component" enabled="True" xmlns="">
         <component id="Code Block Component" type="SandcastleBuilder.Components.CodeBlockComponent" assembly="{@SHFBFolder}SandcastleBuilder.Components.dll">
@@ -96,12 +97,12 @@
       <NamespaceSummaryItem name="LibUsbDotNet.Info" isDocumented="True">Contains types that provide detailed information about a usb device and its configurations, interfaces and endpoints.</NamespaceSummaryItem>
       <NamespaceSummaryItem name="LibUsbDotNet.LibUsb" isDocumented="True">Contains types specific to a usb device usng the libusb-win32 driver.</NamespaceSummaryItem>
       <NamespaceSummaryItem name="LibUsbDotNet.Main" isDocumented="True">Additional types used by LibUsbDotNet.</NamespaceSummaryItem>
-      <NamespaceSummaryItem name="LibUsbDotNet.MonoLibUsb" isDocumented="True">Contains LibUsbDotNet types specific to a usb device using the Libusb-1.0 driver. Types in this namespace are not part of the MonoLibUsb low-level api.</NamespaceSummaryItem>
       <NamespaceSummaryItem name="LibUsbDotNet.WinUsb" isDocumented="True">Contains types specific to a usb device usng Microsofts WinUsb driver.</NamespaceSummaryItem>
       <NamespaceSummaryItem name="MonoLibUsb" isDocumented="True">&lt;p&gt;&lt;b&gt;MonoLibUsb - Libusb-1.0 low-level API&lt;/b&gt;&lt;/p&gt;</NamespaceSummaryItem>
       <NamespaceSummaryItem name="MonoLibUsb.Descriptors" isDocumented="True">&lt;p&gt;&lt;b&gt;MonoLibUsb - Libusb-1.0 low-level API&lt;/b&gt;&lt;/p&gt;Contains USB descriptor types compatible with Libusb-1.0 (default packing)</NamespaceSummaryItem>
       <NamespaceSummaryItem name="MonoLibUsb.Profile" isDocumented="True">&lt;p&gt;&lt;b&gt;MonoLibUsb - Libusb-1.0 low-level API&lt;/b&gt;&lt;/p&gt;Contains types used for accessing the device list, retrieving device information, and monitoring devices.</NamespaceSummaryItem>
       <NamespaceSummaryItem name="MonoLibUsb.Transfer" isDocumented="True">&lt;p&gt;&lt;b&gt;MonoLibUsb - Libusb-1.0 low-level API&lt;/b&gt;&lt;/p&gt;Contains types used for asynchronous transfers.</NamespaceSummaryItem>
+      <NamespaceSummaryItem name="LibUsbDotNet.LudnMonoLibUsb" isDocumented="True">Contains LibUsbDotNet types specific to a usb device using the Libusb-1.0 driver. Types in this namespace are not part of the MonoLibUsb low-level api.  These types use the MonoLibUsb low-level api to implement the LibUsbDotNet common UsbDevice class.</NamespaceSummaryItem>
     </NamespaceSummaries>
     <PlugInConfigurations>
       <PlugInConfig id="Hierarchical Table of Contents" enabled="True">

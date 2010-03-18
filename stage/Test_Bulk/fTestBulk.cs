@@ -1,4 +1,4 @@
-// Copyright © 2006-2009 Travis Robinson. All rights reserved.
+// Copyright © 2006-2010 Travis Robinson. All rights reserved.
 // 
 // website: http://sourceforge.net/projects/libusbdotnet
 // e-mail:  libusbdotnet@gmail.com
@@ -404,5 +404,6 @@ namespace Test_Bulk
         private delegate void UsbErrorEventDelegate(object sender, UsbError e);
 
         #endregion
+
     }
 }

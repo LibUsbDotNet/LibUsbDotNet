@@ -1,6 +1,6 @@
 LibUsbDotNet Version History
 
-V2.2.4 (03/13/2010)
+V2.2.4 (03/14/2010)
 ====================
   * [Fixed] Bug ID: 2969931 - Linux xbuild issue. 
     The xbuild utility failed to build the LibUsbDotNet.sln. This was caused 
@@ -11,6 +11,11 @@ V2.2.4 (03/13/2010)
     0x7FFF. 
     USB devices that have VID or PIDs greater than 0x7FFF are not found by the 
     UsbDeviceFinder class. 
+
+  * [Added] UsbDevice.Exit method. 
+    This was added to support the Libusb-1.0 windows backend port. If the usb 
+    device is using Libusb-1.0, this method must be called before the 
+    application exits. 
 
   * [Added] Asynchronous transfer functions to UsbEndpointBase. 
     For more details see the NewAsyncTransfer and SubmitAsyncTransfer 

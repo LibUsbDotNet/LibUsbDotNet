@@ -1,4 +1,4 @@
-// Copyright © 2006-2009 Travis Robinson. All rights reserved.
+// Copyright © 2006-2010 Travis Robinson. All rights reserved.
 // 
 // website: http://sourceforge.net/projects/libusbdotnet
 // e-mail:  libusbdotnet@gmail.com
@@ -118,9 +118,12 @@ namespace LibUsbDotNet.LudnMonoLibUsb.Internal
         {
             transferredCount = 0;
             int ret = 0;
+            int failTimeOut=mTimeout;
+            if (mTimeout != Timeout.Infinite && mTimeout < (int.MaxValue - 1000))
+                failTimeOut = mTimeout + 1000;
 
             int iWait = WaitHandle.WaitAny(new WaitHandle[] {mTransferCompleteEvent, mTransferCancelEvent},
-                                           mTimeout,
+                                           failTimeOut,
                                            UsbConstants.EXIT_CONTEXT);
             switch (iWait)
             {
@@ -131,12 +134,12 @@ namespace LibUsbDotNet.LudnMonoLibUsb.Internal
                         transferredCount = mTransfer.ActualLength;
                         return ErrorCode.Success;
                     }
-
+                    string s;
                     MonoUsbError monoError = MonoUsbApi.MonoLibUsbErrorFromTransferStatus(mTransfer.Status);
                     UsbError usbErr = UsbError.Error(ErrorCode.MonoApiError, (int)monoError, "GetOverlappedResult", EndpointBase);
                     if (!usbErr.Handled || FailRetries >= UsbConstants.MAX_FAIL_RETRIES_ON_HANDLED_ERROR)
-                        return usbErr.ErrorCode;
-
+                        return MonoUsbApi.ErrorCodeFromLibUsbError((int)monoError,out s);
+                    MonoUsbApi.ClearHalt((MonoUsbDeviceHandle)EndpointBase.Handle, EndpointBase.EpNum);
                     IncFailRetries();
                     return ErrorCode.IoEndpointGlobalCancelRedo;
                 default: // mTransferCancelEvent, WaitTimeout
@@ -147,7 +150,7 @@ namespace LibUsbDotNet.LudnMonoLibUsb.Internal
                     if (ret != 0 || !bTransferComplete)
                     {
                         ErrorCode ec = ret == 0 ? ErrorCode.CancelIoFailed : ErrorCode.MonoApiError;
-                        UsbError.Error(ec, ret, "Wait:CancelTransfer", EndpointBase);
+                        UsbError.Error(ec, ret, String.Format("Wait:CancelTransfer Cancel:{0} Completed:{1}",(MonoUsbError)ret,bTransferComplete), EndpointBase);
                         return ec;
                     }
 

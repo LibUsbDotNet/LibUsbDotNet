@@ -1,4 +1,4 @@
-// Copyright © 2006-2009 Travis Robinson. All rights reserved.
+// Copyright © 2006-2010 Travis Robinson. All rights reserved.
 // 
 // website: http://sourceforge.net/projects/libusbdotnet
 // e-mail:  libusbdotnet@gmail.com
@@ -53,7 +53,7 @@ namespace LibUsbDotNet.Main
         /// for listing, finding, and opening devices.  For these drivers, the <see cref="ForceSetupApi"/> can
         /// be set to do a "reverse lookup" via the setupapi using only the vid, pid and revision of the 
         /// <see cref="UsbDeviceDescriptor"/>.  The <see cref="UsbRegistry"/> class is then populated with
-        /// all available <see cref="SPDRP"/> properties, device interface guids, winsub device paths, etc.
+        /// all available <see cref="SPDRP"/> properties, device interface guids, winusb device paths, etc.
         /// </para>
         /// </remarks>
         public static bool ForceSetupApi = true;

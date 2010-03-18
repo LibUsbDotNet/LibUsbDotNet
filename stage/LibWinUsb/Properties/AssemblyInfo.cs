@@ -1,4 +1,4 @@
-// Copyright © 2006-2009 Travis Robinson. All rights reserved.
+// Copyright © 2006-2010 Travis Robinson. All rights reserved.
 // 
 // website: sourceforge.net/projects/libusbdotnet/
 // e-mail:  libusbdotnet@gmail.com
@@ -33,7 +33,7 @@ using System.Runtime.InteropServices;
 [assembly: AssemblyConfiguration("")]
 [assembly: AssemblyCompany("Travis Robinson")]
 [assembly: AssemblyProduct("LibUsbDotNet")]
-[assembly: AssemblyCopyright("Copyright © 2006-2009 Travis Robinson. All rights reserved.")]
+[assembly: AssemblyCopyright("Copyright © 2006-2010 Travis Robinson. All rights reserved.")]
 [assembly: AssemblyTrademark("")]
 [assembly: AssemblyCulture("")]
 
@@ -57,7 +57,7 @@ using System.Runtime.InteropServices;
 // You can specify all the values or you can default the Revision and Build Numbers 
 // by using the '*' as shown below:
 
-[assembly: AssemblyVersion("2.2.4.26")]
-[assembly: AssemblyFileVersion("2.2.4.26")]
+[assembly: AssemblyVersion("2.2.5.27")]
+[assembly: AssemblyFileVersion("2.2.5.27")]
 [assembly: CLSCompliant(true)]
 [assembly: NeutralResourcesLanguage("en-US")]

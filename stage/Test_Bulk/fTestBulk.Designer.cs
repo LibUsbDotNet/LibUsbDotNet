@@ -35,6 +35,8 @@ namespace Test_Bulk
             this.tsRefresh = new System.Windows.Forms.ToolStripStatusLabel();
             this.tsStatus = new System.Windows.Forms.ToolStripStatusLabel();
             this.groupBox1 = new System.Windows.Forms.GroupBox();
+            this.label1 = new System.Windows.Forms.Label();
+            this.comboBoxEndpoint = new System.Windows.Forms.ComboBox();
             this.cmdOpen = new System.Windows.Forms.Button();
             this.cboDevices = new System.Windows.Forms.ComboBox();
             this.panTransfer = new System.Windows.Forms.Panel();
@@ -59,8 +61,6 @@ namespace Test_Bulk
             this.getConfigurationToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.getInterfaceToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.sfdLogFile = new System.Windows.Forms.SaveFileDialog();
-            this.comboBoxEndpoint = new System.Windows.Forms.ComboBox();
-            this.label1 = new System.Windows.Forms.Label();
             this.statusStrip1.SuspendLayout();
             this.groupBox1.SuspendLayout();
             this.panTransfer.SuspendLayout();
@@ -120,6 +120,42 @@ namespace Test_Bulk
             this.groupBox1.TabIndex = 2;
             this.groupBox1.TabStop = false;
             this.groupBox1.Text = "USB Device";
+            // 
+            // label1
+            // 
+            this.label1.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
+            this.label1.AutoSize = true;
+            this.label1.Location = new System.Drawing.Point(357, 19);
+            this.label1.Name = "label1";
+            this.label1.Size = new System.Drawing.Size(52, 13);
+            this.label1.TabIndex = 3;
+            this.label1.Text = "Endpoint:";
+            // 
+            // comboBoxEndpoint
+            // 
+            this.comboBoxEndpoint.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
+            this.comboBoxEndpoint.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
+            this.comboBoxEndpoint.FormattingEnabled = true;
+            this.comboBoxEndpoint.Items.AddRange(new object[] {
+            "1",
+            "2",
+            "3",
+            "4",
+            "5",
+            "6",
+            "7",
+            "8",
+            "9",
+            "A",
+            "B",
+            "C",
+            "D",
+            "E",
+            "F"});
+            this.comboBoxEndpoint.Location = new System.Drawing.Point(410, 16);
+            this.comboBoxEndpoint.Name = "comboBoxEndpoint";
+            this.comboBoxEndpoint.Size = new System.Drawing.Size(56, 21);
+            this.comboBoxEndpoint.TabIndex = 2;
             // 
             // cmdOpen
             // 
@@ -366,42 +402,6 @@ namespace Test_Bulk
             this.sfdLogFile.DefaultExt = "bin";
             this.sfdLogFile.Filter = "Bin Files|*.bin|Hex Files|*.hex|All Files|*.*";
             this.sfdLogFile.SupportMultiDottedExtensions = true;
-            // 
-            // comboBoxEndpoint
-            // 
-            this.comboBoxEndpoint.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-            this.comboBoxEndpoint.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
-            this.comboBoxEndpoint.FormattingEnabled = true;
-            this.comboBoxEndpoint.Items.AddRange(new object[] {
-            "1",
-            "2",
-            "3",
-            "4",
-            "5",
-            "6",
-            "7",
-            "8",
-            "9",
-            "A",
-            "B",
-            "C",
-            "D",
-            "E",
-            "F"});
-            this.comboBoxEndpoint.Location = new System.Drawing.Point(410, 16);
-            this.comboBoxEndpoint.Name = "comboBoxEndpoint";
-            this.comboBoxEndpoint.Size = new System.Drawing.Size(56, 21);
-            this.comboBoxEndpoint.TabIndex = 2;
-            // 
-            // label1
-            // 
-            this.label1.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-            this.label1.AutoSize = true;
-            this.label1.Location = new System.Drawing.Point(357, 19);
-            this.label1.Name = "label1";
-            this.label1.Size = new System.Drawing.Size(52, 13);
-            this.label1.TabIndex = 3;
-            this.label1.Text = "Endpoint:";
             // 
             // fTestBulk
             // 

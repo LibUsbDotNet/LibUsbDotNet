@@ -1,4 +1,4 @@
-// Copyright © 2006-2009 Travis Robinson. All rights reserved.
+// Copyright © 2006-2010 Travis Robinson. All rights reserved.
 // 
 // website: http://sourceforge.net/projects/libusbdotnet
 // e-mail:  libusbdotnet@gmail.com
@@ -29,7 +29,7 @@ namespace LibUsbDotNet
     /// </summary>
     /// <remarks>
     /// Only "whole" usb devices have a <see cref="IUsbDevice"/> interface such as a 
-    /// <see cref="LibUsb.LibUsbDevice"/> or a <see cref="MonoLibUsb.MonoUsbDevice"/>. This indicates
+    /// <see cref="LibUsb.LibUsbDevice"/> or a <see cref="MonoUsbDevice"/>. This indicates
     /// the USB device must be properly configured by the user before it can be used.
     /// Partial or interfaces of devices such as a <see cref="WinUsbDevice"/> do not have an <see cref="IUsbDevice"/> 
     /// interface. This indicates that the driver is handling device configuration.
