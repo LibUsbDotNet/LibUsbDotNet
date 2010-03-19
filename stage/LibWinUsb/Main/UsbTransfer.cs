@@ -49,6 +49,8 @@ namespace LibUsbDotNet.Main
         /// <summary></summary>
         protected bool mHasWaitBeenCalled = true;
 
+        protected readonly object mTransferLOCK = new object();
+
         /// <summary></summary>
         protected ManualResetEvent mTransferCancelEvent = new ManualResetEvent(false);
         /// <summary></summary>
@@ -187,7 +189,7 @@ namespace LibUsbDotNet.Main
             if (ReferenceEquals(transferContext, null)) throw new NullReferenceException("Invalid transfer context.");
             if (offset < 0) throw new ArgumentException("must be >=0", "offset");
 
-            lock (transferContext)
+            lock (transferContext.mTransferLOCK)
             {
                 transferLength = 0;
 
