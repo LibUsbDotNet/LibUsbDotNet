@@ -7,7 +7,7 @@ namespace MonoLibUsb.ShowInfo
     internal class ShowInfo
     {
         // The first time the Session property is used it creates a new session
-        // handle instance in '__sessionHandle' and returns it. Susequent 
+        // handle instance in '__sessionHandle' and returns it. Subsequent 
         // request simply return '__sessionHandle'.
         private static MonoUsbSessionHandle __sessionHandle;
         public static MonoUsbSessionHandle Session

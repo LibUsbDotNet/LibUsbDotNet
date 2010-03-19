@@ -29,7 +29,7 @@ namespace MonoUsb.Async.ControlIO
             // Initialize the context.
             sessionHandle = new MonoUsbSessionHandle();
             if (sessionHandle.IsInvalid)
-                throw new Exception(String.Format("Failed intialized libusb context.\n{0}:{1}",
+                throw new Exception(String.Format("Failed intializing libusb context.\n{0}:{1}",
                                                   MonoUsbSessionHandle.LastErrorCode,
                                                   MonoUsbSessionHandle.LastErrorString));
 

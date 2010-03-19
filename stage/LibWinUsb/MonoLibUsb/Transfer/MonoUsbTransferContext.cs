@@ -99,6 +99,8 @@ namespace LibUsbDotNet.LudnMonoLibUsb.Internal
             mTransfer.Length = RequestCount;
 
             mTransferCompleteEvent.Reset();
+            mTransferCancelEvent.Reset();
+
             int ret = (int) mTransfer.Submit();
             if (ret != 0)
             {
@@ -118,6 +120,8 @@ namespace LibUsbDotNet.LudnMonoLibUsb.Internal
         {
             transferredCount = 0;
             int ret = 0;
+            MonoUsbError monoError;
+
             int failTimeOut=mTimeout;
             if (mTimeout != Timeout.Infinite && mTimeout < (int.MaxValue - 1000))
                 failTimeOut = mTimeout + 1000;
@@ -134,12 +138,13 @@ namespace LibUsbDotNet.LudnMonoLibUsb.Internal
                         transferredCount = mTransfer.ActualLength;
                         return ErrorCode.Success;
                     }
+
                     string s;
-                    MonoUsbError monoError = MonoUsbApi.MonoLibUsbErrorFromTransferStatus(mTransfer.Status);
+                    monoError = MonoUsbApi.MonoLibUsbErrorFromTransferStatus(mTransfer.Status);
                     UsbError usbErr = UsbError.Error(ErrorCode.MonoApiError, (int)monoError, "GetOverlappedResult", EndpointBase);
                     if (!usbErr.Handled || FailRetries >= UsbConstants.MAX_FAIL_RETRIES_ON_HANDLED_ERROR)
                         return MonoUsbApi.ErrorCodeFromLibUsbError((int)monoError,out s);
-                    MonoUsbApi.ClearHalt((MonoUsbDeviceHandle)EndpointBase.Handle, EndpointBase.EpNum);
+                    
                     IncFailRetries();
                     return ErrorCode.IoEndpointGlobalCancelRedo;
                 default: // mTransferCancelEvent, WaitTimeout

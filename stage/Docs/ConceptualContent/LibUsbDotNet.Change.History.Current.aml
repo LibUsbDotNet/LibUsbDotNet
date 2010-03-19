@@ -3,7 +3,7 @@
     <title>v$(Major).$(Minor).$(Build) ($(Date))</title>
     <content>
       <bugs class="bullet">
-        <bug>
+        <!--<bug>
           <bugaction>
             <token>Fixed</token>
           </bugaction>
@@ -84,7 +84,7 @@
               This option forces LibUsbDotNet to use only the Libusb-1.0 windows backend driver.
             </para>
           </bugentry>
-        </bug>        
+        </bug>-->        
       </bugs>
     </content>
   </releaseNotes>
