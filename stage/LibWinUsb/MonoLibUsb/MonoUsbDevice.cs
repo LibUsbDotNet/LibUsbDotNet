@@ -190,6 +190,7 @@ namespace LibUsbDotNet.LudnMonoLibUsb
         /// <returns>True on success.</returns>
         public override bool ControlTransfer(ref UsbSetupPacket setupPacket, IntPtr buffer, int bufferLength, out int lengthTransferred)
         {
+            Debug.WriteLine(GetType().Name + ".ControlTransfer() Before","Libusb-1.0");
             int ret = MonoUsbApi.ControlTransfer((MonoUsbDeviceHandle) mUsbHandle,
                                                             setupPacket.RequestType,
                                                             setupPacket.Request,
@@ -199,6 +200,7 @@ namespace LibUsbDotNet.LudnMonoLibUsb
                                                             (short)bufferLength,
                                                             UsbConstants.DEFAULT_TIMEOUT);
 
+            Debug.WriteLine(GetType().Name + ".ControlTransfer() Error:" + ((MonoUsbError)ret).ToString(), "Libusb-1.0");
             if (ret < 0)
             {
                 UsbError.Error(ErrorCode.MonoApiError, ret, "ControlTransfer Failed", this);

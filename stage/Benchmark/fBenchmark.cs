@@ -430,7 +430,18 @@ namespace Benchmark
             {
                 bWriteThreadEP1Enabled = false;
                 mEP1Writer.Abort();
-                while (mthWriteThreadEP1.IsAlive) Application.DoEvents();
+                DateTime dtStart = DateTime.Now;
+                while (mthWriteThreadEP1.IsAlive)
+                {
+                    Application.DoEvents();
+                    Thread.Sleep(10);
+                    if ((DateTime.Now - dtStart).TotalMilliseconds > 1000)
+                    {
+                        System.Diagnostics.Debug.Print("[CRITICAL ERROR] Benchmark write thread is frozen! Terminating thread..");
+                        mthWriteThreadEP1.Abort();
+                        break;
+                    }
+                }
 
                 mthWriteThreadEP1 = null;
             }
@@ -443,7 +454,12 @@ namespace Benchmark
             while (bWriteThreadEP1Enabled)
             {
                 int bytesTransmitted;
-                mEP1Writer.Write(loopTestBytes, mBenchMarkParameters.LoopWriteTimeout, out bytesTransmitted);
+                ErrorCode ec = mEP1Writer.Write(loopTestBytes, mBenchMarkParameters.LoopWriteTimeout, out bytesTransmitted);
+                if (ec != ErrorCode.Success)
+                {
+                    bWriteThreadEP1Enabled = false;
+                    break;
+                }
                 Thread.Sleep(0);
             }
         }
@@ -463,6 +479,11 @@ namespace Benchmark
                 {
                     UpdateDataRate(uiBytesTransmitted);
                 }
+                else
+                {
+                    bWriteThreadEP1Enabled = false;
+                    break;
+                } 
                 Thread.Sleep(0);
             }
         }

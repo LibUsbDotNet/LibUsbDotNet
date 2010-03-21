@@ -42,7 +42,7 @@ namespace LibUsbDotNet.Main
         /// </remarks>
         public static int MaxReadWrite = 65536;
 
-        private readonly byte mEpNum;
+        internal readonly byte mEpNum;
         internal readonly UsbApiBase mUsbApi;
         private readonly UsbDevice mUsbDevice;
         private readonly SafeHandle mUsbHandle;

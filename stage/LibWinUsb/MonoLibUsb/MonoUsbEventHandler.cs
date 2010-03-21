@@ -158,7 +158,19 @@ namespace MonoLibUsb
             {
                 mRunning = false;
 
-                if (bWait) mIsStoppedEvent.WaitOne(2100, false);
+                if (bWait)
+                {
+                    bool bSuccess = mIsStoppedEvent.WaitOne((int)((mWaitUnixNativeTimeval.tv_sec * 1000 + mWaitUnixNativeTimeval.tv_usec) * 1.2), false);
+                    if (!bSuccess)
+                    {
+                        mUsbEventThread.Abort();
+                        throw new UsbException(typeof(MonoUsbEventHandler), "Critical timeout failure! MonoUsbApi.HandleEventsTimeout did not return within the allotted time.");
+                        //LibUsbDotNet.UsbError.Error(ErrorCode.UnknownError, 0, "Critical timeout failure!", typeof(MonoUsbEventHandler));
+                        //mIsStoppedEvent.Set();
+                    }
+                }
+                mUsbEventThread = null;
+
             }
         }
     }

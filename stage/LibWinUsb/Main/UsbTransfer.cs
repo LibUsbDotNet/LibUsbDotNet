@@ -49,6 +49,7 @@ namespace LibUsbDotNet.Main
         /// <summary></summary>
         protected bool mHasWaitBeenCalled = true;
 
+        /// <summary></summary>
         protected readonly object mTransferLOCK = new object();
 
         /// <summary></summary>
@@ -201,11 +202,9 @@ namespace LibUsbDotNet.Main
                 while (true)
                 {
                     ec = transferContext.Submit();
-                    if (ec == ErrorCode.IoEndpointGlobalCancelRedo) continue;
                     if (ec != ErrorCode.Success) return ec;
 
                     ec = transferContext.Wait(out transferred);
-                    if (ec == ErrorCode.IoEndpointGlobalCancelRedo) continue;
                     if (ec != ErrorCode.Success) return ec;
 
                     transferLength += transferred;

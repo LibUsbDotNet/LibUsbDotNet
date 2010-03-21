@@ -58,10 +58,30 @@ namespace LibUsbDotNet
         internal UsbError(ErrorCode errorCode, int win32ErrorNumber, string win32ErrorString, string description, object sender)
         {
             mSender = sender;
+            string senderText = String.Empty;
+            if ((mSender is UsbEndpointBase)|| (mSender is UsbTransfer))
+            {
+                UsbEndpointBase ep;
+                if (mSender is UsbTransfer)
+                    ep = ((UsbTransfer)mSender).EndpointBase;
+                else
+                    ep = mSender as UsbEndpointBase;
+
+                if (ep.mEpNum != 0)
+                {
+
+                    senderText = senderText+=string.Format(" Ep 0x{0:X2} ", ep.mEpNum);
+                }
+            }
+            else if (mSender is Type)
+            {
+                Type t = mSender as Type;
+                senderText = senderText += string.Format(" {0} ", t.Name);
+            }
             mErrorCode = errorCode;
             mWin32ErrorNumber = win32ErrorNumber;
             mWin32ErrorString = win32ErrorString;
-            mDescription = description;
+            mDescription = description + senderText;
         }
 
         /// <summary>

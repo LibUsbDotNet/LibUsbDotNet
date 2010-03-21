@@ -20,6 +20,7 @@
 // 
 // 
 using System;
+using System.Diagnostics;
 using System.Runtime.InteropServices;
 using LibUsbDotNet.Main;
 using MonoLibUsb.Profile;
@@ -112,7 +113,9 @@ namespace MonoLibUsb
         {
             if (!IsInvalid)
             {
+                Debug.WriteLine(GetType().Name + ".ReleaseHandle() Before", "Libusb-1.0");
                 MonoUsbApi.Close(handle);
+                Debug.WriteLine(GetType().Name + ".ReleaseHandle() After", "Libusb-1.0");
                 SetHandleAsInvalid();
             }
             return true;

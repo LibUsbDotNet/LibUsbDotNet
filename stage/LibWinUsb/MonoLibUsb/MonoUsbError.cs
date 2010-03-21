@@ -32,10 +32,7 @@ namespace MonoLibUsb
         /// Success (no error) 
         /// </summary>
         Success = 0,
-        /// <summary>
-        /// Same as <see cref="Success"/>
-        /// </summary>
-        None =0,
+
         /// <summary>
         /// Input/output error 
         /// </summary>

@@ -70,6 +70,7 @@ namespace LibUsbDotNet.LudnMonoLibUsb.Internal
         }
         public override void Fill(IntPtr buffer, int offset, int count, int timeout)
         {
+//            allocTransfer(EndpointBase, true);
             base.Fill(buffer, offset, count, timeout);
 
             mTransfer.Timeout =  timeout;
@@ -101,16 +102,16 @@ namespace LibUsbDotNet.LudnMonoLibUsb.Internal
             mTransferCompleteEvent.Reset();
             mTransferCancelEvent.Reset();
 
-            int ret = (int) mTransfer.Submit();
-            if (ret != 0)
+            int ret = (int)mTransfer.Submit();
+            if (ret < 0)
             {
                 mTransferCompleteEvent.Set();
                 UsbError usbErr = UsbError.Error(ErrorCode.MonoApiError, ret, "SubmitTransfer", EndpointBase);
-                if (!usbErr.Handled || FailRetries >= UsbConstants.MAX_FAIL_RETRIES_ON_HANDLED_ERROR)
-                    return usbErr.ErrorCode;
+                //if (!usbErr.Handled || FailRetries >= UsbConstants.MAX_FAIL_RETRIES_ON_HANDLED_ERROR)
+                return usbErr.ErrorCode;
 
-                IncFailRetries();
-                return ErrorCode.IoEndpointGlobalCancelRedo;
+                //IncFailRetries();
+                //return ErrorCode.IoEndpointGlobalCancelRedo;
             }
 
             return ErrorCode.Success;
@@ -121,10 +122,11 @@ namespace LibUsbDotNet.LudnMonoLibUsb.Internal
             transferredCount = 0;
             int ret = 0;
             MonoUsbError monoError;
+            ErrorCode ec;
 
             int failTimeOut=mTimeout;
-            if (mTimeout != Timeout.Infinite && mTimeout < (int.MaxValue - 1000))
-                failTimeOut = mTimeout + 1000;
+            if (mTimeout != Timeout.Infinite && mTimeout < (int.MaxValue - 5000))
+                failTimeOut = mTimeout + 5000;
 
             int iWait = WaitHandle.WaitAny(new WaitHandle[] {mTransferCompleteEvent, mTransferCancelEvent},
                                            failTimeOut,
@@ -141,26 +143,34 @@ namespace LibUsbDotNet.LudnMonoLibUsb.Internal
 
                     string s;
                     monoError = MonoUsbApi.MonoLibUsbErrorFromTransferStatus(mTransfer.Status);
-                    UsbError usbErr = UsbError.Error(ErrorCode.MonoApiError, (int)monoError, "GetOverlappedResult", EndpointBase);
-                    if (!usbErr.Handled || FailRetries >= UsbConstants.MAX_FAIL_RETRIES_ON_HANDLED_ERROR)
-                        return MonoUsbApi.ErrorCodeFromLibUsbError((int)monoError,out s);
+                    ec = MonoUsbApi.ErrorCodeFromLibUsbError((int)monoError, out s);
+                    UsbError.Error(ErrorCode.MonoApiError, (int)monoError, "Wait:" + s, EndpointBase);
+                    return ec;
                     
-                    IncFailRetries();
-                    return ErrorCode.IoEndpointGlobalCancelRedo;
-                default: // mTransferCancelEvent, WaitTimeout
-                    ret = (int) mTransfer.Cancel();
+                    //IncFailRetries();
+                    //return ErrorCode.IoEndpointGlobalCancelRedo;
+                case 1: // TransferCancelEvent
+                    ret = (int)mTransfer.Cancel();
                     bool bTransferComplete = mTransferCompleteEvent.WaitOne(100, UsbConstants.EXIT_CONTEXT);
                     mTransferCompleteEvent.Set();
 
                     if (ret != 0 || !bTransferComplete)
                     {
-                        ErrorCode ec = ret == 0 ? ErrorCode.CancelIoFailed : ErrorCode.MonoApiError;
-                        UsbError.Error(ec, ret, String.Format("Wait:CancelTransfer Cancel:{0} Completed:{1}",(MonoUsbError)ret,bTransferComplete), EndpointBase);
+                        ec = ret == 0 ? ErrorCode.CancelIoFailed : ErrorCode.MonoApiError;
+                        UsbError.Error(ec, ret, String.Format("Wait:Unable to cancel transfer or the transfer did not return after it was cancelled. Cancelled:{0} TransferCompleted:{1}", (MonoUsbError)ret, bTransferComplete), EndpointBase);
                         return ec;
                     }
 
                     if (iWait == WaitHandle.WaitTimeout) return ErrorCode.IoTimedOut;
                     return ErrorCode.IoCancelled;
+
+                    break;
+                default: // Critical failure timeout
+                    mTransfer.Cancel();
+                    ec = ((EndpointBase.mEpNum & (byte)UsbCtrlFlags.Direction_In) > 0) ? ErrorCode.ReadFailed : ErrorCode.WriteFailed;
+                    mTransferCompleteEvent.Set();
+                    UsbError.Error(ec, ret, String.Format("Wait:Critical timeout failure! The transfer callback function was not called within the allotted time."), EndpointBase);
+                    return ec;
             }
         }
 
