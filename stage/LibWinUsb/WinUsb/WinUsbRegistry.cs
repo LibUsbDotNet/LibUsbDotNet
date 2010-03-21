@@ -206,7 +206,7 @@ namespace LibUsbDotNet.WinUsb
                         foreach (string devicePath in devicePathList)
                         {
                             UsbSymbolicName symbolicName = UsbSymbolicName.Parse(devicePath);
-                            if (symbolicNameToMatch.SerialNumber == symbolicName.SerialNumber)
+                            if (symbolicNameToMatch.SerialNumber.ToLower() == symbolicName.SerialNumber.ToLower())
                             {
                                 if (WinUsbDevice.Open(devicePath, out usbDevice))
                                 {
