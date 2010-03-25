@@ -18,6 +18,21 @@
 
     <!--    DO NOT REMOVE    -->
     <!-- CurrentReleaseNotes -->
+  <releaseNotes address="LibUsbDotNet_Changes_v2.2.5">
+    <title>v2.2.5 (03/25/2010)</title>
+    <content>
+      <bugs class="bullet">
+        <bug>
+          <bugaction>
+            <token>Added</token>
+          </bugaction>
+          <bugentry>
+            Benchmark Console application.
+          </bugentry>
+        </bug>
+      </bugs>
+    </content>
+  </releaseNotes>
     <!-- END OF CurrentReleaseNotes -->
 
     <releaseNotes address="LibUsbDotNet_Previous_Release_Notes" display="none">

@@ -313,6 +313,7 @@ GOTO :EOF
 	CALL :ReCreateDir "!_DST_!"
 	
 	CALL :CopyFile Benchmark.exe
+	CALL :CopyFile BenchmarkCon.exe
 	CALL :CopyFile InfWizard.exe
 	CALL :CopyFile LibUsbDotNet.dll
 	CALL :CopyFile LibUsbDotNet.xml
@@ -366,6 +367,7 @@ GOTO :EOF
 	SET _DST_=!CMDVAR_TEMPDIR!Src\
 	CALL :ReCreateDir "!_DST_!"
 	CALL :CopyDirs "!CMDVAR_BASEDIR!Benchmark\*" "!_DST_!Benchmark\"
+	CALL :CopyDirs "!CMDVAR_BASEDIR!BenchmarkCon\*" "!_DST_!BenchmarkCon\"
 	CALL :CopyDirs "!CMDVAR_BASEDIR!Test_Bulk\*" "!_DST_!Test_Bulk\"
 	CALL :CopyDirs "!CMDVAR_BASEDIR!Test_Info\*" "!_DST_!Test_Info\"
 	CALL :CopyDirs "!CMDVAR_BASEDIR!Examples\*" "!_DST_!Examples\"

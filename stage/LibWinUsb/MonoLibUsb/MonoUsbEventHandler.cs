@@ -38,6 +38,8 @@ namespace MonoLibUsb
         private static bool mRunning;
         private static MonoUsbSessionHandle mSessionHandle;
         internal static Thread mUsbEventThread;
+        private static ThreadPriority mPriority = ThreadPriority.Normal;
+
         private static UnixNativeTimeval mWaitUnixNativeTimeval;
 
         /// <summary>
@@ -57,6 +59,15 @@ namespace MonoLibUsb
         public static bool IsStopped
         {
             get { return mIsStoppedEvent.WaitOne(0, false); }
+        }
+
+        /// <summary>
+        /// Thread proirity to use for the handle events thread.
+        /// </summary>
+        public static ThreadPriority Priority
+        {
+            get { return mPriority; }
+            set {mPriority=value;}
         }
 
         /// <summary>
@@ -134,7 +145,7 @@ namespace MonoLibUsb
             {
                 mRunning = true;
                 mUsbEventThread = new Thread(HandleEventFn);
-                mUsbEventThread.Priority = Helper.IsLinux ? ThreadPriority.Normal : ThreadPriority.Lowest;
+                mUsbEventThread.Priority = mPriority;
                 mUsbEventThread.Start(mSessionHandle);
 
             }

@@ -30,10 +30,12 @@ namespace LibUsbDotNet.LudnMonoLibUsb.Internal
 {
     internal class MonoUsbTransferContext : UsbTransfer, IDisposable
     {
+        private static object mSubmitLOCK = new object();
+
         private bool mOwnsTransfer;
 
-        private MonoUsbTransferDelegate mMonoUsbTransferCallbackDelegate;
-
+        private static readonly MonoUsbTransferDelegate mMonoUsbTransferCallbackDelegate = TransferCallback;
+        private GCHandle gcCompleteEvent = new GCHandle();
         private MonoUsbTransfer mTransfer;
 
         public MonoUsbTransferContext(UsbEndpointBase endpointBase)
@@ -58,6 +60,11 @@ namespace LibUsbDotNet.LudnMonoLibUsb.Internal
             mTransfer.Type = endpointBase.Type;
             mTransfer.Endpoint = endpointBase.EpNum;
 
+            if (!gcCompleteEvent.IsAllocated)
+                gcCompleteEvent = GCHandle.Alloc(mTransferCompleteEvent);
+
+            mTransfer.PtrUserData = GCHandle.ToIntPtr(gcCompleteEvent);
+
 
         }
         private void freeTransfer()
@@ -76,7 +83,6 @@ namespace LibUsbDotNet.LudnMonoLibUsb.Internal
             mTransfer.Timeout =  timeout;
             mTransfer.PtrDeviceHandle = EndpointBase.Handle.DangerousGetHandle();
 
-            mMonoUsbTransferCallbackDelegate = TransferCallback;
             mTransfer.PtrCallbackFn = Marshal.GetFunctionPointerForDelegate(mMonoUsbTransferCallbackDelegate);
 
             mTransfer.Type = EndpointBase.Type;
@@ -107,11 +113,7 @@ namespace LibUsbDotNet.LudnMonoLibUsb.Internal
             {
                 mTransferCompleteEvent.Set();
                 UsbError usbErr = UsbError.Error(ErrorCode.MonoApiError, ret, "SubmitTransfer", EndpointBase);
-                //if (!usbErr.Handled || FailRetries >= UsbConstants.MAX_FAIL_RETRIES_ON_HANDLED_ERROR)
                 return usbErr.ErrorCode;
-
-                //IncFailRetries();
-                //return ErrorCode.IoEndpointGlobalCancelRedo;
             }
 
             return ErrorCode.Success;
@@ -124,12 +126,8 @@ namespace LibUsbDotNet.LudnMonoLibUsb.Internal
             MonoUsbError monoError;
             ErrorCode ec;
 
-            int failTimeOut=mTimeout;
-            if (mTimeout != Timeout.Infinite && mTimeout < (int.MaxValue - 5000))
-                failTimeOut = mTimeout + 5000;
-
             int iWait = WaitHandle.WaitAny(new WaitHandle[] {mTransferCompleteEvent, mTransferCancelEvent},
-                                           failTimeOut,
+                                           Timeout.Infinite,
                                            UsbConstants.EXIT_CONTEXT);
             switch (iWait)
             {
@@ -146,9 +144,6 @@ namespace LibUsbDotNet.LudnMonoLibUsb.Internal
                     ec = MonoUsbApi.ErrorCodeFromLibUsbError((int)monoError, out s);
                     UsbError.Error(ErrorCode.MonoApiError, (int)monoError, "Wait:" + s, EndpointBase);
                     return ec;
-                    
-                    //IncFailRetries();
-                    //return ErrorCode.IoEndpointGlobalCancelRedo;
                 case 1: // TransferCancelEvent
                     ret = (int)mTransfer.Cancel();
                     bool bTransferComplete = mTransferCompleteEvent.WaitOne(100, UsbConstants.EXIT_CONTEXT);
@@ -160,11 +155,7 @@ namespace LibUsbDotNet.LudnMonoLibUsb.Internal
                         UsbError.Error(ec, ret, String.Format("Wait:Unable to cancel transfer or the transfer did not return after it was cancelled. Cancelled:{0} TransferCompleted:{1}", (MonoUsbError)ret, bTransferComplete), EndpointBase);
                         return ec;
                     }
-
-                    if (iWait == WaitHandle.WaitTimeout) return ErrorCode.IoTimedOut;
                     return ErrorCode.IoCancelled;
-
-                    break;
                 default: // Critical failure timeout
                     mTransfer.Cancel();
                     ec = ((EndpointBase.mEpNum & (byte)UsbCtrlFlags.Direction_In) > 0) ? ErrorCode.ReadFailed : ErrorCode.WriteFailed;
@@ -174,9 +165,10 @@ namespace LibUsbDotNet.LudnMonoLibUsb.Internal
             }
         }
 
-        private void TransferCallback(MonoUsbTransfer pTransfer)
+        private static void TransferCallback(MonoUsbTransfer pTransfer)
         {
-            mTransferCompleteEvent.Set();
+            ManualResetEvent completeEvent = GCHandle.FromIntPtr(pTransfer.PtrUserData).Target as ManualResetEvent;
+            completeEvent.Set();
         }
     }
 }

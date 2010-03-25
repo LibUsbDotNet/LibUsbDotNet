@@ -40,7 +40,7 @@
     <FeedbackEMailLinkText>LibUsbDotNet Support</FeedbackEMailLinkText>
     <PresentationStyle>Prototype</PresentationStyle>
     <IncludeFavorites>True</IncludeFavorites>
-    <HelpFileVersion>2.2.5.27</HelpFileVersion>
+    <HelpFileVersion>2.2.5.32</HelpFileVersion>
     <ComponentConfigurations>
       <ComponentConfig id="Code Block Component" enabled="True" xmlns="">
         <component id="Code Block Component" type="SandcastleBuilder.Components.CodeBlockComponent" assembly="{@SHFBFolder}SandcastleBuilder.Components.dll">

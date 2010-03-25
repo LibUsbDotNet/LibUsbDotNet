@@ -55,13 +55,8 @@ namespace LibUsbDotNet.Internal
             {
                 mTransferCompleteEvent.Set();
                 UsbError usbErr = UsbError.Error(ErrorCode.Win32Error, Marshal.GetLastWin32Error(), "PipeTransferSubmit", EndpointBase);
-                if (!usbErr.Handled || FailRetries >= UsbConstants.MAX_FAIL_RETRIES_ON_HANDLED_ERROR)
-                    eReturn = usbErr.ErrorCode;
-                else
-                {
-                    IncFailRetries();
-                    return ErrorCode.IoEndpointGlobalCancelRedo;
-                }
+
+                eReturn = usbErr.ErrorCode;
             }
             return eReturn;
         }
@@ -94,11 +89,7 @@ namespace LibUsbDotNet.Internal
             if (!bSuccess)
             {
                 UsbError usbErr = UsbError.Error(ErrorCode.Win32Error, Marshal.GetLastWin32Error(), "GetOverlappedResult",EndpointBase);
-                if (!usbErr.Handled || FailRetries >= UsbConstants.MAX_FAIL_RETRIES_ON_HANDLED_ERROR)
-                    return usbErr.ErrorCode;
-
-                IncFailRetries();
-                return ErrorCode.IoEndpointGlobalCancelRedo;
+                return usbErr.ErrorCode;
             }
             return ErrorCode.None;
         }

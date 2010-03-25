@@ -43,10 +43,10 @@ namespace LibUsbDotNet
         internal static int mLastErrorNumber;
         internal static string mLastErrorString = String.Empty;
 
-        /// <summary>
-        /// The the error is <see cref="Handled"/> field is set to true for errors resulting from endpoint read/write errors.  The operation will retry instead of exiting with an error code. 
-        /// </summary>
-        public bool Handled;
+        ///// <summary>
+        ///// The the error is <see cref="Handled"/> field is set to true for errors resulting from endpoint read/write errors.  The operation will retry instead of exiting with an error code. 
+        ///// </summary>
+        //public bool Handled;
 
         internal string mDescription;
 

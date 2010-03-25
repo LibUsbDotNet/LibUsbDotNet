@@ -229,7 +229,7 @@ namespace LibUsbDotNet
                 {
                     if (IsLinux)
                     {
-                        mUsbKernelVersion = new UsbKernelVersion(1, 0, 5, 0, 0);
+                        mUsbKernelVersion = new UsbKernelVersion(1, 0, 0, 0, 0);
                     }
                     else
                     {

@@ -296,6 +296,10 @@ namespace MonoLibUsb.Transfer
             Timeout = timeout;
             Type = EndpointType.Bulk;
             Flags = MonoUsbTransferFlags.None;
+            NumIsoPackets = 0;
+            ActualLength = 0;
+
+
         }
 
         /// <summary>

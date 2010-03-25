@@ -47,10 +47,10 @@ namespace LibUsbDotNet.Main
         /// </summary>
         public const int MAX_ENDPOINTS = 32;
 
-        /// <summary>
-        /// See <see cref="UsbError.Handled"/>.  Number of RETRIES before failed regardless of the handled field value.
-        /// </summary>
-        public const int MAX_FAIL_RETRIES_ON_HANDLED_ERROR = 4;
+        ///// <summary>
+        ///// See <see cref="UsbError.Handled"/>.  Number of RETRIES before failed regardless of the handled field value.
+        ///// </summary>
+        //public const int MAX_FAIL_RETRIES_ON_HANDLED_ERROR = 4;
 
     }
 }

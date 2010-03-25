@@ -36,7 +36,6 @@ namespace LibUsbDotNet.Main
         private int mCurrentRemaining;
         private int mCurrentTransmitted;
 
-        private int mFailRetries;
         /// <summary></summary>
         protected int mOriginalCount;
         /// <summary></summary>
@@ -76,11 +75,11 @@ namespace LibUsbDotNet.Main
             get { return (mCurrentRemaining > UsbEndpointBase.MaxReadWrite ? UsbEndpointBase.MaxReadWrite : mCurrentRemaining); }
         }
 
-        /// <summary></summary>
-        protected int FailRetries
-        {
-            get { return mFailRetries; }
-        }
+        ///// <summary></summary>
+        //protected int FailRetries
+        //{
+        //    get { return mFailRetries; }
+        //}
 
         /// <summary></summary>
         protected IntPtr NextBufPtr
@@ -234,9 +233,6 @@ namespace LibUsbDotNet.Main
             return true;
         }
 
-        /// <summary></summary>
-        protected void IncFailRetries() { mFailRetries++; }
-
         /// <summary>
         /// Resets the transfer to its orignal state.
         /// </summary>
@@ -248,7 +244,6 @@ namespace LibUsbDotNet.Main
             mCurrentOffset = mOriginalOffset;
             mCurrentRemaining = mOriginalCount;
             mCurrentTransmitted = 0;
-            mFailRetries = 0;
 
             mTransferCancelEvent.Reset();
         }

@@ -1,0 +1,13 @@
+(vid=(0x)?(?<Vid>[a-f0-9]{1,4})(h)?) |
+(pid=(0x)?(?<Pid>[a-f0-9]{1,4})(h)?) |
+(retry=(?<Retry>[0-9]{1,2})) |
+(size=(?<Size>[0-9]+)) |
+(timeout=(?<Timeout>[0-9]+)) |
+(priority=(?<Priority>Lowest|BelowNormal|Normal|AboveNormal|Highest)) |
+(refresh=(?<Refresh>[0-9]+)) |
+(driver=(?<Driver>libusb10|winusb|libusb-win32))|
+
+# Error Catch
+((?<SwitchName>[A-Z0-9]+)=(?<SwitchValue>.+))|
+(?<SwitchName>.+)
+

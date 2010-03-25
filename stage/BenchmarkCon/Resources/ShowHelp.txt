@@ -1,0 +1,45 @@
+LibUsbDotNet Benchmark Console Application
+
+USAGE: benchmark pid={your pid} [read|write|loop] [vid=] [retry=] 
+                 [timeout=] [size=] [refresh=]
+Commands:
+         read  : Read from the device.
+         write : Write to the device.
+         loop  : [Default] Read and write to the device at the same time.
+Switches:
+         pid     : [REQUIRED] Product id of device. (hex)
+         vid     : Vendor id of device. (hex) (Default=0x04D8)
+         retry   : Number of times to retry a transfer that timesout
+         timeout : Transfer timeout value. (in milliseconds) (Default=1)
+                   The timeout value used for read/write operations. If a
+                   transfer times out more than {retry} times, the test 
+                   fails and the operation is aborted.
+         size    : Transfer test size in bytes. (Default=4096)
+                   Increasing this value will generally yield higher
+                   transfer rates. Using a value greater than 65536 is not
+                   recommended. 
+         priority: AboveNormal|BelowNormal|Highest|Lowest|Normal
+                   (Default=AboveNormal) The thread priority level to use
+                   for the test.
+         refresh : The display refresh interval. (in milliseconds)
+                   (Default=1000) This also effect the running status.
+         driver  : libusb10|winusb (Default=winusb)
+                   LibUsbDotNet supports three different drivers on windows.
+                   winusb, libusb-win32, and libusb-1.0.  If winusb is set 
+                   and the device is a libusb-win32 device, the libusb-win32
+                   driver will be used instead. On unix-like platforms this
+                   switch has no effect.
+         
+WARNING:
+          This example only works with custom usb hardware. Using this
+          example on a usb device it was not designed for could be
+          catastrophic! To meet the requirements, your usb hardware
+          must implement loopback functionality in Config 1,
+          Interface 0, Endpoints 0x01 and 0x81.
+          
+Examples:
+
+benchmark pid=0001
+benchmark pid=0001 read
+benchmark pid=0001 write
+benchmark pid=0001 size=65536
