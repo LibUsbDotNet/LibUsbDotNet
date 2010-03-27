@@ -85,9 +85,12 @@ namespace MonoLibUsb
 
         private static void HandleEventFn(object oHandle)
         {
+            MonoUsbSessionHandle sessionHandle = oHandle as MonoUsbSessionHandle;
+
             mIsStoppedEvent.Reset();
+
             while (mRunning)
-                MonoUsbApi.HandleEventsTimeout(mSessionHandle, ref mWaitUnixNativeTimeval);
+                MonoUsbApi.HandleEventsTimeout(sessionHandle, ref mWaitUnixNativeTimeval);
 
             mIsStoppedEvent.Set();
         }
@@ -171,7 +174,8 @@ namespace MonoLibUsb
 
                 if (bWait)
                 {
-                    bool bSuccess = mIsStoppedEvent.WaitOne((int)((mWaitUnixNativeTimeval.tv_sec * 1000 + mWaitUnixNativeTimeval.tv_usec) * 1.2), false);
+                    bool bSuccess = mUsbEventThread.Join((int)((mWaitUnixNativeTimeval.tv_sec * 1000 + mWaitUnixNativeTimeval.tv_usec) * 1.2));
+                    //bool bSuccess = mIsStoppedEvent.WaitOne((int)((mWaitUnixNativeTimeval.tv_sec * 1000 + mWaitUnixNativeTimeval.tv_usec) * 1.2), false);
                     if (!bSuccess)
                     {
                         mUsbEventThread.Abort();

@@ -34,7 +34,7 @@ namespace LibUsbDotNet
         private const byte MY_EP_READ = 0x81;
         private const byte MY_EP_WRITE = 0x01;
         private const int MY_INTERFACE = 0;
-
+        private const EndpointType MY_ENDPOINT_TYPE = EndpointType.Bulk;
 
         /// <summary>Custom vendor request implemented in the test firmware.</summary>
         /// <remarks>Gets the test type byte to the user allocated data buffer.</remarks>
@@ -68,7 +68,9 @@ namespace LibUsbDotNet
         private static UsbDevice.DriverModeType mDriverMode;
 
         /// <summary>The benchmark usb device vendor id.</summary>
-        private static ushort mPid = 0x0000;
+        private static ushort mPid;
+
+        private static bool mShowDeviceList;
 
         /// <summary>The type of test to run.</summary>
         private static UsbTestType mTestMode = UsbTestType.Loop;
@@ -101,8 +103,8 @@ namespace LibUsbDotNet
         private static UsbDevice mUsbDevice;
         private static UsbEndpointWriter mWriter;
 
-        private static Thread readThread;
-        private static Thread writeThread;
+        private static Thread mReadThread;
+        private static Thread mWriteThread;
 
         #endregion
 
@@ -113,15 +115,25 @@ namespace LibUsbDotNet
                 switch (mTestMode)
                 {
                     case UsbTestType.ReadFromDevice:
-                        return (readThread.IsAlive);
+                        return (mReadThread.IsAlive);
                     case UsbTestType.WriteToDevice:
-                        return (writeThread.IsAlive);
+                        return (mWriteThread.IsAlive);
                     case UsbTestType.Loop:
-                        return (readThread.IsAlive && writeThread.IsAlive);
+                        return (mReadThread.IsAlive && mWriteThread.IsAlive);
                     default:
                         throw new ArgumentOutOfRangeException();
                 }
             }
+        }
+
+        private static bool NeedsReadThread
+        {
+            get { return (mTestMode == UsbTestType.Loop || mTestMode == UsbTestType.ReadFromDevice); }
+        }
+
+        private static bool NeedsWriteThread
+        {
+            get { return (mTestMode == UsbTestType.Loop || mTestMode == UsbTestType.WriteToDevice); }
         }
 
         private static void fillTestData(byte[] data, int len)
@@ -163,30 +175,47 @@ namespace LibUsbDotNet
 
         public static void Main(string[] args)
         {
+            Console.ForegroundColor = ConsoleColor.Gray;
+            Console.BackgroundColor = ConsoleColor.Black;
+            Console.Clear();
+
             try
             {
                 if (args.Length == 0)
                 {
-                    Console.WriteLine(resBenchmark.ShowHelp);
+                    ConWriteLine(ConType.Info, resBenchmark.ShowHelp);
                     return;
                 }
                 string argErrors;
                 if (!parseArguments(args, out argErrors))
-                    throw new BenchmarkException(argErrors);
+                    throw new BenchmarkArgumentException(argErrors);
 
-                if (mPid == 0)
-                    throw new BenchmarkException("The benchmark device product id must be specified");
 
                 Thread.CurrentThread.Priority = mThreadPriority;
+                UsbRegistry deviceProfile = null;
 
+                if (mPid == 0 || mShowDeviceList)
+                {
+                    showDeviceSelection(out deviceProfile);
+                }
+                else
+                {
+                    UsbDeviceFinder finder = new UsbDeviceFinder(mVid, mPid);
+                    UsbRegDeviceList deviceProfiles = UsbDevice.AllDevices.FindAll(finder);
 
-                Console.Clear();
+                    if (deviceProfiles.Count == 0) throw new BenchmarkException("Benchmark test device not connected.");
 
-                UsbDeviceFinder finder = new UsbDeviceFinder(mVid, mPid);
-                UsbRegistry deviceProfile = UsbDevice.AllDevices.Find(finder);
-                if (deviceProfile == null) throw new BenchmarkException("Benchmark test device not connected.");
+                    foreach (UsbRegistry availProfile in deviceProfiles)
+                    {
+                        if (availProfile.Open(out mUsbDevice))
+                        {
+                            deviceProfile = availProfile;
+                            break;
+                        }
+                    }
+                }
 
-                if (!deviceProfile.Open(out mUsbDevice)) throw new BenchmarkException("Benchmark test device could not be opened.");
+                if (ReferenceEquals(deviceProfile, null)) throw new BenchmarkException("Benchmark test device could not be opened.");
 
                 mDriverMode = mUsbDevice.DriverMode;
 
@@ -202,52 +231,51 @@ namespace LibUsbDotNet
                     // the desired configuration and interface must be selected.
 
                     // Select config #1
-                    wholeUsbDevice.SetConfiguration(1);
+                    if (!wholeUsbDevice.SetConfiguration(MY_CONFIG))
+                        throw new Exception(String.Format("Failed set configuration!\n{0}", UsbDevice.LastErrorString));
 
                     // Claim interface #0.
-                    wholeUsbDevice.ClaimInterface(0);
+                    if (!wholeUsbDevice.ClaimInterface(MY_INTERFACE))
+                        throw new Exception(String.Format("Failed claim interface!\n{0}", UsbDevice.LastErrorString));
                 }
 
                 byte testType;
                 if (!GetTestType(out testType))
-                    throw new BenchmarkException("Failed getting test type, {0:X4}:{1:X4} doesn't appear to be a benchmark device.",
+                    throw new BenchmarkException("Failed getting test type, {0:X4}:{1:X4} doesn't appear to be a benchmark device.\n{2}",
                                                  mVid,
-                                                 mPid);
+                                                 mPid,
+                                                 UsbDevice.LastErrorString);
 
                 // Make sure the device is in loop mode.
                 if (testType != (byte) mTestMode)
                     if (!SetTestType(ref mTestMode))
-                        throw new BenchmarkException("Failed setting test type, {0:X4}:{1:X4} may not be a benchmark device.",
+                        throw new BenchmarkException("Failed setting test type, {0:X4}:{1:X4} may not be a benchmark device.\n{2}",
                                                      mVid,
-                                                     mPid);
+                                                     mPid,
+                                                     UsbDevice.LastErrorString);
 
 
-                showTestInfo();
-                Console.WriteLine();
-                Console.WriteLine("Press 'q' at any time to stop the test or now to abort.");
-                Console.Write("[Press any other key to begin]");
-                if (Console.ReadKey().KeyChar.ToString().ToLower() == "q") return;
-                Console.WriteLine();
-                Console.WriteLine("Starting benchmark test..");
+                showTestInfo(ConType.Info);
+                showBenchmarkStartTest();
 
                 // Create the read/write threads
-                readThread = new Thread(ReadThreadFn);
-                writeThread = new Thread(WriteThreadFn);
+                mReadThread = new Thread(ReadThreadFn);
+                mWriteThread = new Thread(WriteThreadFn);
 
-                readThread.Priority = mThreadPriority;
-                writeThread.Priority = mThreadPriority;
+                mReadThread.Priority = mThreadPriority;
+                mWriteThread.Priority = mThreadPriority;
 
 
                 // Start the read/write threads
-                if (mTestMode == UsbTestType.ReadFromDevice || mTestMode == UsbTestType.Loop)
+                if (NeedsReadThread)
                 {
-                    mReader = mUsbDevice.OpenEndpointReader((ReadEndpointID) MY_EP_READ);
-                    readThread.Start();
+                    mReader = mUsbDevice.OpenEndpointReader((ReadEndpointID)MY_EP_READ, mTestTransferSize, MY_ENDPOINT_TYPE);
+                    mReadThread.Start();
                 }
-                if (mTestMode == UsbTestType.WriteToDevice || mTestMode == UsbTestType.Loop)
+                if (NeedsWriteThread)
                 {
-                    mWriter = mUsbDevice.OpenEndpointWriter((WriteEndpointID) MY_EP_WRITE);
-                    writeThread.Start();
+                    mWriter = mUsbDevice.OpenEndpointWriter((WriteEndpointID)MY_EP_WRITE, MY_ENDPOINT_TYPE);
+                    mWriteThread.Start();
                 }
                 Thread.Sleep(10);
 
@@ -256,7 +284,7 @@ namespace LibUsbDotNet
                 // code is returned by the bulk read/write sync functions.
                 while (IsTestRunning)
                 {
-                    if (mTestMode == UsbTestType.ReadFromDevice || mTestMode == UsbTestType.Loop)
+                    if (NeedsReadThread)
                         showRunningStatus(mStatusReader);
                     else
                         showRunningStatus(mStatusWriter);
@@ -269,36 +297,53 @@ namespace LibUsbDotNet
                         if (key.KeyChar.ToString().ToLower() == "q")
                         {
                             mCancelTestEvent.Set();
-                            Console.WriteLine("\nStopping Test..");
+                            if (NeedsReadThread)
+                                mReader.Abort();
+
+                            if (NeedsWriteThread)
+                                mWriter.Abort();
+
+                            ConWriteLine(ConType.Info, "\nStopping Test..");
                             break;
                         }
+
                         if (key.KeyChar.ToString().ToLower() == "i")
                         {
-                            showTestInfo();
+                            showTestInfo(ConType.Info);
                         }
+                        else if (key.KeyChar.ToString().ToLower() == "r")
+                        {
+                            showResults(ConType.Status);
+                        }
+                        while (Console.KeyAvailable) Console.ReadKey(true);
                     }
                     Thread.Sleep(mDisplayUpdateInterval);
                 }
                 mStatusReader.Enabled = false;
                 mStatusWriter.Enabled = false;
                 // When both threads have exited the test is over.
-                Console.WriteLine("\nWaiting for threads..");
-                while (readThread.IsAlive || writeThread.IsAlive)
+                ConWriteLine(ConType.Info, "\nWaiting for threads..");
+                while (mReadThread.IsAlive || mWriteThread.IsAlive)
                 {
-                    Console.WriteLine("\treading:{0}, writing:{1}", readThread.IsAlive, writeThread.IsAlive);
+                    ConWriteLine(ConType.Info, "\treading:{0}, writing:{1}", mReadThread.IsAlive, mWriteThread.IsAlive);
                     Thread.Sleep(1000);
                 }
             }
+            catch (BenchmarkArgumentException ex)
+            {
+                ConWriteLine(ConType.Info, resBenchmark.ShowHelp);
+                ConWriteLine(ConType.Error, "\n\nARGUMENT ERROR!");
+                ConWriteLine(ConType.Error, ex.Message);
+            }
             catch (BenchmarkException ex)
             {
-                if (ReferenceEquals(mUsbDevice, null))
-                    Console.WriteLine(resBenchmark.ShowHelp);
-
-                Console.WriteLine(ex.ToString());
+                ConWriteLine(ConType.Error, "\n\nBENCHMARK ERROR!");
+                ConWriteLine(ConType.Error, ex.Message);
             }
             catch (Exception ex)
             {
-                Console.WriteLine(ex.ToString());
+                ConWriteLine(ConType.Error, "\n\nBENCHMARK EXCEPTION!");
+                ConWriteLine(ConType.Error, ex.ToString());
             }
             finally
             {
@@ -318,8 +363,9 @@ namespace LibUsbDotNet
 
                     mUsbDevice.Close();
 
-                    Console.WriteLine("\nDone!\n");
-                    showResults();
+                    ConWriteLine(ConType.Info, "\nDone!\n");
+                    showTestInfo(ConType.Status);
+                    showResults(ConType.Status);
                 }
                 mUsbDevice = null;
                 UsbDevice.Exit();
@@ -335,24 +381,34 @@ namespace LibUsbDotNet
         {
             byte[] dataBuffer = new byte[mTestTransferSize];
             int timeoutCount = 0;
-            ErrorCode ec;
+            ErrorCode ec = ErrorCode.InvalidParam;
             do
             {
                 int transferred;
+                if (mCancelTestEvent.WaitOne(0, false)) break;
                 ec = mReader.Read(dataBuffer, mTransferTimeout, out transferred);
                 mStatusReader.AddPacket(transferred);
                 Thread.Sleep(0);
+
+                if (mTestMode == UsbTestType.Loop)
+                {
+                    // TODO: Verify Loop Data..
+                }
+                else if (mTestMode == UsbTestType.ReadFromDevice)
+                {
+                    // TODO: Verify Read Data..
+                }
 
                 if (ec == ErrorCode.Success)
                 {
                     timeoutCount = 0;
                 }
-                if (ec == ErrorCode.IoTimedOut)
+                if (ec == ErrorCode.IoTimedOut && !mCancelTestEvent.WaitOne(0, false))
                 {
                     mStatusReader.TimeoutCount++;
                     if (timeoutCount < mTimeoutRetryCount)
                     {
-                        Console.WriteLine("ReadThreadFn  :BulkTransfer timeout count:{0}", timeoutCount);
+                        ConWriteLine(ConType.Error, "ReadThreadFn   : BulkTransfer timeout count:{0}", timeoutCount);
                         ec = ErrorCode.Success;
                     }
                     timeoutCount++;
@@ -360,22 +416,23 @@ namespace LibUsbDotNet
             } while (ec == ErrorCode.Success && !mCancelTestEvent.WaitOne(0, false));
 
             // The thread is exiting
-            if (ec != ErrorCode.Success)
-                Console.WriteLine("ReadThreadFn  :BulkTransfer failed: {0}", ec);
+            if (ec != ErrorCode.Success && !mCancelTestEvent.WaitOne(0, false))
+                ConWriteLine(ConType.Error, "ReadThreadFn   : BulkTransfer failed: {0}", ec);
             else
-                Console.WriteLine("ReadThreadFn  : Normal termination.");
+                ConWriteLine(ConType.Status, "ReadThreadFn   : Normal termination.");
         }
 
         private static void WriteThreadFn()
         {
             byte[] dataBuffer = new byte[mTestTransferSize];
             fillTestData(dataBuffer, dataBuffer.Length);
-            ErrorCode ec;
+            ErrorCode ec = ErrorCode.InvalidParam;
             int timeoutCount = 0;
 
             do
             {
                 int transferred;
+                if (mCancelTestEvent.WaitOne(0, false)) break;
                 ec = mWriter.Write(dataBuffer, mTransferTimeout, out transferred);
                 mStatusWriter.AddPacket(transferred);
 
@@ -385,29 +442,29 @@ namespace LibUsbDotNet
                 {
                     timeoutCount = 0;
                 }
-                if (ec == ErrorCode.IoTimedOut)
+                if (ec == ErrorCode.IoTimedOut && !mCancelTestEvent.WaitOne(0, false))
                 {
                     mStatusWriter.TimeoutCount++;
 
                     if (timeoutCount < mTimeoutRetryCount)
                     {
                         ec = ErrorCode.Success;
-                        Console.WriteLine("WriteThreadFn : BulkTransfer timeout count:{0}", timeoutCount);
+                        ConWriteLine(ConType.Error, "WriteThreadFn  : BulkTransfer timeout count:{0}", timeoutCount);
                     }
                     timeoutCount++;
                 }
-                else if (ec == ErrorCode.Success && transferred != dataBuffer.Length)
+                else if (ec == ErrorCode.Success && transferred != dataBuffer.Length && !mCancelTestEvent.WaitOne(0, false))
                 {
                     mStatusWriter.ShortPacketCount++;
-                    Console.WriteLine("WriteThreadFn : BulkTransfer short write ({0} bytes)", transferred);
+                    ConWriteLine(ConType.Error, "WriteThreadFn  : BulkTransfer short write ({0} bytes)", transferred);
                 }
             } while (ec == ErrorCode.Success && !mCancelTestEvent.WaitOne(0, false));
 
             // The thread is exiting
-            if (ec != ErrorCode.Success)
-                Console.WriteLine("WriteThreadFn : BulkTransfer failed: {0}", ec);
+            if (ec != ErrorCode.Success && !mCancelTestEvent.WaitOne(0, false))
+                ConWriteLine(ConType.Error, "WriteThreadFn  : BulkTransfer failed: {0}", ec);
             else
-                Console.WriteLine("WriteThreadFn : Normal termination.");
+                ConWriteLine(ConType.Status, "WriteThreadFn  : Normal termination.");
         }
     }
 
@@ -418,5 +475,14 @@ namespace LibUsbDotNet
 
         public BenchmarkException(string format, params object[] args)
             : base(string.Format(format, args)) { }
+    }
+
+    internal class BenchmarkArgumentException : BenchmarkException
+    {
+        public BenchmarkArgumentException(string argErrors)
+            : base(argErrors) { }
+
+        public BenchmarkArgumentException(string format, params object[] args)
+            : base(format, args) { }
     }
 }

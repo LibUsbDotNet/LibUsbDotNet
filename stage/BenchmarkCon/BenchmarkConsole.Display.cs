@@ -20,53 +20,55 @@
 // 
 // 
 using System;
+using LibUsbDotNet.Main;
 
 namespace LibUsbDotNet
 {
     internal partial class BenchmarkConsole
     {
-        private static void showResults()
+        private static void showResults(ConType conType)
         {
-            Console.WriteLine();
-            Console.WriteLine("Benchmark Results:");
-            showTestInfo();
-            EndpointRunningStatus status;
+            ConWriteLine(conType);
+            ConWriteLine(conType, "Benchmark Results:");
+            EndpointRunningStatus status = NeedsReadThread ? mStatusReader : mStatusWriter;
 
-            if (mTestMode == UsbTestType.ReadFromDevice || mTestMode == UsbTestType.Loop)
-                status = mStatusReader;
-            else
-                status = mStatusWriter;
+            lock (mStatusReader.mStatusLock)
+            {
+                lock (mStatusWriter.mStatusLock)
+                {
+                    DateTime dtStart = status.StartDateTime;
+                    DateTime dtStop = status.StopDateTime;
 
-            DateTime dtStart = status.StartDateTime;
-            DateTime dtStop = status.StopDateTime;
+                    if (dtStart == DateTime.MinValue) dtStart = DateTime.Now;
+                    if (dtStop == DateTime.MinValue) dtStop = DateTime.Now;
 
-            if (dtStart == DateTime.MinValue) dtStart = DateTime.Now;
-            if (dtStop == DateTime.MinValue) dtStop = DateTime.Now;
+                    TimeSpan totalTime = dtStop - dtStart;
 
-            TimeSpan totalTime = dtStop - dtStart;
+                    ConWriteLine(conType, "\tTotal Packets   : {0}", status.PacketsTotal);
+                    ConWriteLine(conType, "\tElapsed Time    : {0}", totalTime);
+                    ConWriteLine(conType, "\tBytes per second: {0:#,###,###.00}", Math.Round(status.BytesTotal/totalTime.TotalSeconds, 2));
 
-            Console.WriteLine("\tTotal Packets   : {0}", status.PacketsTotal);
-            Console.WriteLine("\tElapsed Time    : {0}", totalTime);
-            Console.WriteLine("\tBytes per second: {0:#,###,###.00}", Math.Round(status.BytesTotal/totalTime.TotalSeconds, 2));
+                    ConWriteLine(conType);
+                    ConWriteLine(conType, "\tRead timeouts : {0}", mStatusReader.TimeoutCount);
+                    ConWriteLine(conType, "\tWrite timeouts: {0}", mStatusWriter.TimeoutCount);
 
-            Console.WriteLine();
-            Console.WriteLine("\tRead timeouts : {0}", mStatusReader.TimeoutCount);
-            Console.WriteLine("\tWrite timeouts: {0}", mStatusWriter.TimeoutCount);
-
-            Console.WriteLine("\tShort write packets (with bytes < {0}): {1}", mTestTransferSize, mStatusWriter.ShortPacketCount);
+                    ConWriteLine(conType, "\tShort write packets (with bytes < {0}): {1}", mTestTransferSize, mStatusWriter.ShortPacketCount);
+                }
+            }
         }
 
-        private static void showTestInfo()
+        private static void showTestInfo(ConType conType)
         {
-            Console.WriteLine();
-            Console.WriteLine("\tVid / Pid       : 0x{0:X4} / 0x{1:X4}", mVid, mPid);
-            Console.WriteLine("\tTest Mode       : {0}", mTestMode);
-            Console.WriteLine("\tPriority        : {0}", mThreadPriority);
-            Console.WriteLine("\tTransfer Size   : {0}", mTestTransferSize);
-            Console.WriteLine("\tDriver Mode     : {0}", mDriverMode);
-            Console.WriteLine("\tRetry Count     : {0}", mTimeoutRetryCount);
-            Console.WriteLine("\tDisplay Refresh : {0} (ms)", mDisplayUpdateInterval);
-            Console.WriteLine("\tTransfer Timeout: {0} (ms)", mTransferTimeout);
+            ConWriteLine(conType);
+            ConWriteLine(conType, "Test Information:");
+            ConWriteLine(conType, "\tVid / Pid       : 0x{0:X4} / 0x{1:X4}", mVid, mPid);
+            ConWriteLine(conType, "\tTest Mode       : {0}", mTestMode);
+            ConWriteLine(conType, "\tPriority        : {0}", mThreadPriority);
+            ConWriteLine(conType, "\tTransfer Size   : {0}", mTestTransferSize);
+            ConWriteLine(conType, "\tDriver Mode     : {0}", mDriverMode);
+            ConWriteLine(conType, "\tRetry Count     : {0}", mTimeoutRetryCount);
+            ConWriteLine(conType, "\tDisplay Refresh : {0} (ms)", mDisplayUpdateInterval);
+            ConWriteLine(conType, "\tTransfer Timeout: {0} (ms)", mTransferTimeout);
         }
 
         private static void showRunningStatus(EndpointRunningStatus endpointStatus)
@@ -78,12 +80,90 @@ namespace LibUsbDotNet
             if (endpointStatus.GetStatus(out packets, out pps, out bps))
             {
                 // Display some packet status
-                Console.WriteLine("packets/sec: {0,-9:##,###.00}  bytes/sec: {1,-12:#,###,###} packets: {2}", pps, bps, packets);
+                ConWriteLine(ConType.Status, "packets/sec: {0,-9:##,###.00}  bytes/sec: {1,-12:#,###,###} packets: {2}", pps, bps, packets);
             }
             else
             {
-                Console.WriteLine("Synchronizing {0}..", packets);
+                ConWriteLine(ConType.Info, "Synchronizing {0}..", packets);
             }
         }
+
+        private static void showDeviceSelection(out UsbRegistry selectedProfile)
+        {
+            selectedProfile = null;
+            UsbRegDeviceList deviceProfiles = UsbDevice.AllDevices;
+            if (deviceProfiles.Count == 0) throw new BenchmarkException("No devices were detected.");
+
+            ConWriteLine(ConType.Info);
+            ConWriteLine(ConType.Info, "Select benchmark device from available devices:");
+            ConWriteLine(ConType.Info);
+            for (int i = 0; i < deviceProfiles.Count; i++)
+            {
+                ConWrite(ConType.Info, (i + 1) + ". ");
+                ConWrite(ConType.Info,
+                         "{0:X4}:{1:X4} {2} (rev. {3})",
+                         (ushort) deviceProfiles[i].Vid,
+                         (ushort) deviceProfiles[i].Pid,
+                         deviceProfiles[i].Name,
+                         deviceProfiles[i].Rev);
+                ConWriteLine(ConType.Info);
+            }
+            ConWriteLine(ConType.Info);
+
+            ConsoleColor fg = Console.ForegroundColor;
+            ConsoleColor bg = Console.BackgroundColor;
+            Console.BackgroundColor = ConsoleColor.White;
+            Console.ForegroundColor = ConsoleColor.Black;
+            ConWrite(ConType.Info, "Select (1-{0}) :", deviceProfiles.Count);
+            Console.ForegroundColor = fg;
+            Console.BackgroundColor = bg;
+            ConWrite(ConType.Info, " ");
+            int curSize = Console.CursorSize;
+            Console.CursorSize = 100;
+            string input = Console.ReadLine();
+            Console.CursorSize = curSize;
+            ushort inputValue;
+            if (!ushort.TryParse(input, out inputValue))
+            {
+                ConWriteLine(ConType.Info);
+                ConWriteLine(ConType.Info, "Invalid device selection. Exiting..");
+                return;
+            }
+            selectedProfile = deviceProfiles[inputValue - 1];
+            if (!selectedProfile.Open(out mUsbDevice))
+                selectedProfile = null;
+            else
+            {
+                mPid = (ushort) mUsbDevice.Info.Descriptor.ProductID;
+                mVid = (ushort) mUsbDevice.Info.Descriptor.VendorID;
+            }
+        }
+
+        private static void showBenchmarkStartTest()
+        {
+            ConWriteLine(ConType.Info);
+            ConWriteLine(ConType.Info, "Press 'q' at any time to stop the test or now to abort.");
+            ConWriteLine(ConType.Info, "Press 'i' any time during the test to display test information.");
+            ConWriteLine(ConType.Info, "Press 'r' any time during the test to display overall results.");
+            ConWriteLine(ConType.Info);
+            ConWrite(ConType.Info, "[Press any other key to begin]");
+            while (Console.KeyAvailable) Console.ReadKey(true);
+            if (Console.ReadKey().KeyChar.ToString().ToLower() == "q") return;
+            ConWriteLine(ConType.Info);
+            ConWriteLine(ConType.Info, "Starting benchmark test..");
+        }
+
+        private static void ConWriteLine(ConType conType) { Console.WriteLine(); }
+        private static void ConWriteLine(ConType conType, string text) { Console.WriteLine(text); }
+        private static void ConWriteLine(ConType conType, string text, params object[] args) { Console.WriteLine(text, args); }
+        private static void ConWrite(ConType conType, string text) { Console.Write(text); }
+        private static void ConWrite(ConType conType, string text, params object[] args) { Console.Write(text, args); }
+    }
+
+    internal enum ConType
+    {
+        Info,
+        Status,
+        Error,
     }
 }

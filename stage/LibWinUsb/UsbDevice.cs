@@ -240,18 +240,35 @@ namespace LibUsbDotNet
 
 
         /// <summary>
-        /// Opens an endpoint for writing
+        /// Opens a <see cref="EndpointType.Bulk"/> endpoint for writing
         /// </summary>
         /// <param name="writeEndpointID">Endpoint number for read operations.</param>
         /// <returns>A <see cref="UsbEndpointWriter"/> class ready for writing.
         /// If the specified endpoint has already been opened, the original <see cref="UsbEndpointWriter"/> object will be returned.
         /// </returns>
-        /// <exception cref="UsbException">If the endpoint does not exist.</exception>
-        /// <exception cref="UsbException">If the device has not been configured.</exception>
+        /// <exception cref="UsbException">If the <paramref name="writeEndpointID"/> does not exist.</exception>
         public virtual UsbEndpointWriter OpenEndpointWriter(WriteEndpointID writeEndpointID)
         {
-            UsbEndpointWriter epNew = new UsbEndpointWriter(this, writeEndpointID);
-            return (UsbEndpointWriter) mActiveEndpoints.Add(epNew);
+            return OpenEndpointWriter(writeEndpointID, EndpointType.Bulk);
+        }
+
+        /// <summary>
+        /// Opens an endpoint for writing
+        /// </summary>
+        /// <param name="writeEndpointID">Endpoint number for read operations.</param>
+        /// <param name="endpointType">The type of endpoint to open.</param>
+        /// <returns>A <see cref="UsbEndpointWriter"/> class ready for writing.
+        /// If the specified endpoint has already been opened, the original <see cref="UsbEndpointWriter"/> object will be returned.
+        /// </returns>
+        /// <exception cref="UsbException">If the <paramref name="writeEndpointID"/> does not exist.</exception>
+        public virtual UsbEndpointWriter OpenEndpointWriter(WriteEndpointID writeEndpointID, EndpointType endpointType)
+        {
+            foreach (UsbEndpointBase activeEndpoint in ActiveEndpoints)
+            {
+                if (activeEndpoint.EpNum == (byte) writeEndpointID) return (UsbEndpointWriter) activeEndpoint;
+            }
+            UsbEndpointWriter epNew = new UsbEndpointWriter(this, writeEndpointID, endpointType);
+            return (UsbEndpointWriter)mActiveEndpoints.Add(epNew);
         }
 
         internal static List<UsbConfigInfo> GetDeviceConfigs(UsbDevice usbDevice)
@@ -384,10 +401,13 @@ namespace LibUsbDotNet
         /// </returns>
         /// <exception cref="UsbException">If the endpoint does not exist.</exception>
         /// <exception cref="UsbException">If the device has not been configured.</exception>
-        public UsbEndpointReader OpenEndpointReader(ReadEndpointID readEndpointID) { return OpenEndpointReader(readEndpointID, UsbEndpointReader.DefReadBufferSize); }
+        public UsbEndpointReader OpenEndpointReader(ReadEndpointID readEndpointID)
+        {
+            return OpenEndpointReader(readEndpointID, UsbEndpointReader.DefReadBufferSize);
+        }
 
         /// <summary>
-        /// Opens an endpoint for reading
+        /// Opens a <see cref="EndpointType.Bulk"/> endpoint for reading
         /// </summary>
         /// <param name="readEndpointID">Endpoint number for read operations.</param>
         /// <param name="readBufferSize">Size of the read buffer allocated for the <see cref="UsbEndpointReader.DataReceived"/> event.</param>
@@ -396,12 +416,29 @@ namespace LibUsbDotNet
         /// </returns>
         /// <exception cref="UsbException">If the endpoint does not exist.</exception>
         /// <exception cref="UsbException">If the device has not been configured.</exception>
-        public virtual UsbEndpointReader OpenEndpointReader(ReadEndpointID readEndpointID, int readBufferSize)
+        public UsbEndpointReader OpenEndpointReader(ReadEndpointID readEndpointID, int readBufferSize)
         {
-            UsbEndpointReader epNew = new UsbEndpointReader(this, readBufferSize, readEndpointID);
-            return (UsbEndpointReader) mActiveEndpoints.Add(epNew);
+            return OpenEndpointReader(readEndpointID, readBufferSize, EndpointType.Bulk);
         }
+        /// <summary>
+        /// Opens an endpoint for reading
+        /// </summary>
+        /// <param name="readEndpointID">Endpoint number for read operations.</param>
+        /// <param name="readBufferSize">Size of the read buffer allocated for the <see cref="UsbEndpointReader.DataReceived"/> event.</param>
+        /// <param name="endpointType">The type of endpoint to open.</param>
+        /// <returns>A <see cref="UsbEndpointReader"/> class ready for reading.
+        /// If the specified endpoint has already been opened, the original <see cref="UsbEndpointReader"/> object will be returned.
+        /// </returns>
+        /// <exception cref="UsbException">If the endpoint does not exist.</exception>
+        /// <exception cref="UsbException">If the device has not been configured.</exception>
+        public virtual UsbEndpointReader OpenEndpointReader(ReadEndpointID readEndpointID, int readBufferSize, EndpointType endpointType)
+        {
+            foreach (UsbEndpointBase activeEndpoint in mActiveEndpoints)
+                if (activeEndpoint.EpNum == (byte)readEndpointID) return (UsbEndpointReader) activeEndpoint;
 
+            UsbEndpointReader epNew = new UsbEndpointReader(this, readBufferSize, readEndpointID, endpointType);
+            return (UsbEndpointReader)mActiveEndpoints.Add(epNew);
+        }
         /// <summary>
         /// Gets the selected alternate interface of the specified interface.
         /// </summary>

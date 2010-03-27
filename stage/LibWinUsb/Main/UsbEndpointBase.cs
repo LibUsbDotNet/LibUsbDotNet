@@ -50,14 +50,15 @@ namespace LibUsbDotNet.Main
         internal TransferDelegate mPipeTransferSubmit;
         private UsbTransfer mTransferContext;
         private UsbEndpointInfo mUsbEndpointInfo;
+        private EndpointType mEndpointType;
 
-        internal UsbEndpointBase(UsbDevice usbDevice, byte epNum)
+        internal UsbEndpointBase(UsbDevice usbDevice, byte epNum, EndpointType endpointType)
         {
             mUsbDevice = usbDevice;
             mUsbApi = mUsbDevice.mUsbApi;
             mUsbHandle = mUsbDevice.Handle;
             mEpNum = epNum;
-
+            mEndpointType = endpointType;
             if ((mEpNum & 0x80) > 0)
             {
                 mPipeTransferSubmit = ReadPipe;
@@ -111,7 +112,7 @@ namespace LibUsbDotNet.Main
             get
             {
                 if (mIsDisposed) throw new ObjectDisposedException(GetType().Name);
-                return EndpointInfo.Descriptor.EndpointID;
+                return mEpNum;
             }
         }
 
@@ -120,7 +121,7 @@ namespace LibUsbDotNet.Main
         /// </summary>
         public EndpointType Type
         {
-            get { return (EndpointType) (EndpointInfo.Descriptor.Attributes & 0x03); }
+            get { return mEndpointType; }
         }
 
         /// <summary>

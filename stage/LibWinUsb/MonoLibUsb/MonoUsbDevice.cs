@@ -191,7 +191,7 @@ namespace LibUsbDotNet.LudnMonoLibUsb
         public override bool ControlTransfer(ref UsbSetupPacket setupPacket, IntPtr buffer, int bufferLength, out int lengthTransferred)
         {
             Debug.WriteLine(GetType().Name + ".ControlTransfer() Before","Libusb-1.0");
-            int ret = MonoUsbApi.ControlTransfer((MonoUsbDeviceHandle) mUsbHandle,
+            int ret = MonoUsbApi.ControlTransferAsync((MonoUsbDeviceHandle) mUsbHandle,
                                                             setupPacket.RequestType,
                                                             setupPacket.Request,
                                                             setupPacket.Value,
@@ -276,14 +276,15 @@ namespace LibUsbDotNet.LudnMonoLibUsb
         /// </summary>
         /// <param name="readEndpointID">Endpoint number for read operations.</param>
         /// <param name="readBufferSize">Size of the read buffer allocated for the <see cref="UsbEndpointReader.DataReceived"/> event.</param>
+        /// <param name="endpointType">The type of endpoint to open.</param>
         /// <returns>A <see cref="UsbEndpointReader"/> class ready for reading.
         /// If the specified endpoint has already been opened, the original <see cref="UsbEndpointReader"/> object will be returned.
         /// </returns>
         /// <exception cref="UsbException">If the endpoint does not exist.</exception>
         /// <exception cref="UsbException">If the device has not been configured.</exception>
-        public override UsbEndpointReader OpenEndpointReader(ReadEndpointID readEndpointID, int readBufferSize)
+        public override UsbEndpointReader OpenEndpointReader(ReadEndpointID readEndpointID, int readBufferSize, EndpointType endpointType)
         {
-            UsbEndpointReader epNew = new MonoUsbEndpointReader(this, readBufferSize, readEndpointID);
+            UsbEndpointReader epNew = new MonoUsbEndpointReader(this, readBufferSize, readEndpointID, endpointType);
             return (UsbEndpointReader) ActiveEndpoints.Add(epNew);
         }
 
@@ -291,14 +292,15 @@ namespace LibUsbDotNet.LudnMonoLibUsb
         /// Opens an endpoint for writing
         /// </summary>
         /// <param name="writeEndpointID">Endpoint number for read operations.</param>
+        /// <param name="endpointType">The type of endpoint to open.</param>
         /// <returns>A <see cref="UsbEndpointWriter"/> class ready for writing.
         /// If the specified endpoint has already been opened, the original <see cref="UsbEndpointWriter"/> object will be returned.
         /// </returns>
         /// <exception cref="UsbException">If the endpoint does not exist.</exception>
         /// <exception cref="UsbException">If the device has not been configured.</exception>
-        public override UsbEndpointWriter OpenEndpointWriter(WriteEndpointID writeEndpointID)
+        public override UsbEndpointWriter OpenEndpointWriter(WriteEndpointID writeEndpointID, EndpointType endpointType)
         {
-            UsbEndpointWriter epNew = new MonoUsbEndpointWriter(this, writeEndpointID);
+            UsbEndpointWriter epNew = new MonoUsbEndpointWriter(this, writeEndpointID, endpointType);
             return (UsbEndpointWriter) mActiveEndpoints.Add(epNew);
         }
 

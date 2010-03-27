@@ -54,6 +54,11 @@ namespace LibUsbDotNet
                     mTestMode = UsbTestType.ReadFromDevice;
                     continue;
                 }
+                if (arg.ToLower().Trim() == "list")
+                {
+                    mShowDeviceList = true;
+                    continue;
+                }
                 if (arg.ToLower().Trim() == "write")
                 {
                     mTestMode = UsbTestType.WriteToDevice;
@@ -64,6 +69,7 @@ namespace LibUsbDotNet
                     mTestMode = UsbTestType.Loop;
                     continue;
                 }
+
                 MatchCollection vidPidMatches = CmdLineParser.Matches(arg);
                 foreach (Match match in vidPidMatches)
                 {
@@ -122,7 +128,7 @@ namespace LibUsbDotNet
                     }
                     else
                     {
-                        throw new BenchmarkException("CommandLineArgs.txt is broke!");
+                        throw new BenchmarkArgumentException("CommandLineArgs.txt is broke!");
                     }
                 }
             }

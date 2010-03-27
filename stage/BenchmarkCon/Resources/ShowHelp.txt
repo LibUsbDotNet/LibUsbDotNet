@@ -1,13 +1,15 @@
 LibUsbDotNet Benchmark Console Application
 
-USAGE: benchmark pid={your pid} [read|write|loop] [vid=] [retry=] 
+USAGE: benchmark [pid=] [list] [read|write|loop] [vid=] [retry=] 
                  [timeout=] [size=] [refresh=]
 Commands:
+         list  : Display a list of connected devices before starting. 
+                 Select the device to use for the test from the list.
          read  : Read from the device.
          write : Write to the device.
          loop  : [Default] Read and write to the device at the same time.
 Switches:
-         pid     : [REQUIRED] Product id of device. (hex)
+         pid     : Product id of device. (hex)
          vid     : Vendor id of device. (hex) (Default=0x04D8)
          retry   : Number of times to retry a transfer that timesout
          timeout : Transfer timeout value. (in milliseconds) (Default=1)

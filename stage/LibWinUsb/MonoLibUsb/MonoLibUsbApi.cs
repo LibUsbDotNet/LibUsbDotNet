@@ -27,6 +27,7 @@ using LibUsbDotNet.Main;
 using MonoLibUsb.Descriptors;
 using MonoLibUsb.Profile;
 using MonoLibUsb.Transfer;
+using System.Threading;
 
 namespace MonoLibUsb
 {
@@ -39,6 +40,16 @@ namespace MonoLibUsb
         internal const string LIBUSB_DLL = "libusb-1.0.dll";
         internal const int LIBUSB_PACK = 0;
 
+        #region Private Members
+
+        private static readonly MonoUsbTransferDelegate DefaultAsyncDelegate = DefaultAsyncCB;
+        private static void DefaultAsyncCB(MonoUsbTransfer transfer)
+        {
+            ManualResetEvent completeEvent = GCHandle.FromIntPtr(transfer.PtrUserData).Target as ManualResetEvent;
+            completeEvent.Set();
+        }
+
+        #endregion
         #region API LIBRARY FUNCTIONS - Initialization & Deinitialization
 
 
@@ -566,7 +577,7 @@ namespace MonoLibUsb
         /// </summary>
         /// <remarks>
         /// <para>This lock is used to ensure that only one thread is monitoring libusb event sources at any one time.</para>
-        /// <para>You only need to use this lock if you are developing an application which calls poll() or select() on libusb's file descriptors directly. If you stick to libusb's event handling loop functions (e.g. <see  cref="HandleEvents">libusb_handle_events</see>) then you do not need to be concerned with this locking.</para>
+        /// <para>You only need to use this lock if you are developing an application which calls poll() or select() on libusb's file descriptors directly. If you stick to libusb's event handling loop functions (e.g. <see  cref="HandleEvents(MonoUsbSessionHandle)">libusb_handle_events</see>) then you do not need to be concerned with this locking.</para>
         /// <para>While holding this lock, you are trusted to actually be handling events. If you are no longer handling events, you must call <see  cref="UnlockEvents">libusb_unlock_events</see> as soon as possible.</para>
         /// <note type="tip" title="Libusb-1.0 API:"><seelibusb10 group="poll"/></note>
         /// </remarks>
@@ -585,7 +596,7 @@ namespace MonoLibUsb
         /// </summary>
         /// <remarks>
         /// <para>This lock is used to ensure that only one thread is monitoring libusb event sources at any one time.</para>
-        /// <para>You only need to use this lock if you are developing an application which calls poll() or select() on libusb's file descriptors directly. If you stick to libusb's event handling loop functions (e.g. <see  cref="HandleEvents">libusb_handle_events</see>) then you do not need to be concerned with this locking.</para>
+        /// <para>You only need to use this lock if you are developing an application which calls poll() or select() on libusb's file descriptors directly. If you stick to libusb's event handling loop functions (e.g. <see  cref="HandleEvents(MonoUsbSessionHandle)">libusb_handle_events</see>) then you do not need to be concerned with this locking.</para>
         /// <para>While holding this lock, you are trusted to actually be handling events. If you are no longer handling events, you must call <see  cref="UnlockEvents">libusb_unlock_events</see> as soon as possible.</para>
         /// <note type="tip" title="Libusb-1.0 API:"><seelibusb10 group="poll"/></note>
         /// </remarks>
@@ -643,9 +654,9 @@ namespace MonoLibUsb
         /// Acquire the event waiters lock.
         /// </summary>
         /// <remarks>
-        /// <para>This lock is designed to be obtained under the situation where you want to be aware when events are completed, but some other thread is event handling so calling <see  cref="HandleEvents">libusb_handle_events</see> is not allowed.</para>
+        /// <para>This lock is designed to be obtained under the situation where you want to be aware when events are completed, but some other thread is event handling so calling <see  cref="HandleEvents(MonoUsbSessionHandle)">libusb_handle_events</see> is not allowed.</para>
         /// <para>You then obtain this lock, re-check that another thread is still handling events, then call <see  cref="WaitForEvent">libusb_wait_for_event</see>.</para>
-        /// <para>You only need to use this lock if you are developing an application which calls poll() or select() on libusb's file descriptors directly, and may potentially be handling events from 2 threads simultaenously. If you stick to libusb's event handling loop functions (e.g. <see  cref="HandleEvents">libusb_handle_events</see>) then you do not need to be concerned with this locking.</para>
+        /// <para>You only need to use this lock if you are developing an application which calls poll() or select() on libusb's file descriptors directly, and may potentially be handling events from 2 threads simultaenously. If you stick to libusb's event handling loop functions (e.g. <see  cref="HandleEvents(MonoUsbSessionHandle)">libusb_handle_events</see>) then you do not need to be concerned with this locking.</para>
         /// <note type="tip" title="Libusb-1.0 API:"><seelibusb10 group="poll"/></note>
         /// </remarks>
         /// <param name="sessionHandle">A valid <see cref="MonoUsbSessionHandle"/>.</param>
@@ -714,13 +725,15 @@ namespace MonoLibUsb
         /// <returns>0 on success, or a <see cref="MonoUsbError"/> code on other failure.</returns>
         [DllImport(LIBUSB_DLL, CallingConvention = CC, SetLastError = false, EntryPoint = "libusb_handle_events")]
         public static extern int HandleEvents([In]MonoUsbSessionHandle sessionHandle);
+        [DllImport(LIBUSB_DLL, CallingConvention = CC, SetLastError = false, EntryPoint = "libusb_handle_events")]
+        private static extern int HandleEvents(IntPtr pSessionHandle);
 
         /// <summary>
         /// Handle any pending events by polling file descriptors, without checking if any other threads are already doing so. 
         /// </summary>
         /// <remarks>
         /// <para>Must be called with the event lock held, see <see  cref="LockEvents">libusb_lock_events</see>.</para>
-        /// <para>This function is designed to be called under the situation where you have taken the event lock and are calling poll()/select() directly on libusb's file descriptors (as opposed to using <see  cref="HandleEvents">libusb_handle_events</see> or similar). You detect events on libusb's descriptors, so you then call this function with a zero timeout value (while still holding the event lock).</para>
+        /// <para>This function is designed to be called under the situation where you have taken the event lock and are calling poll()/select() directly on libusb's file descriptors (as opposed to using <see  cref="HandleEvents(MonoUsbSessionHandle)">libusb_handle_events</see> or similar). You detect events on libusb's descriptors, so you then call this function with a zero timeout value (while still holding the event lock).</para>
         /// <note type="tip" title="Libusb-1.0 API:"><seelibusb10 group="poll"/></note>
         /// </remarks>
         /// <param name="sessionHandle">A valid <see cref="MonoUsbSessionHandle"/>.</param>
@@ -748,7 +761,7 @@ namespace MonoLibUsb
         /// Determine the next internal timeout that libusb needs to handle. 
         /// </summary>
         /// <remarks>
-        /// <para>You only need to use this function if you are calling poll() or select() or similar on libusb's file descriptors yourself - you do not need to use it if you are calling <see  cref="HandleEvents">libusb_handle_events</see> or a variant directly.</para>
+        /// <para>You only need to use this function if you are calling poll() or select() or similar on libusb's file descriptors yourself - you do not need to use it if you are calling <see  cref="HandleEvents(MonoUsbSessionHandle)">libusb_handle_events</see> or a variant directly.</para>
         /// <para>You should call this function in your main loop in order to determine how long to wait for select() or poll() to return results. libusb needs to be called into at this timeout, so you should use it as an upper bound on your select() or poll() call.</para>
         /// <para>When the timeout has expired, call into <see  cref="HandleEventsTimeout">libusb_handle_events_timeout</see> (perhaps in non-blocking mode) so that libusb can handle the timeout.</para>
         /// <para>This function may return 1 (success) and an all-zero timeval. If this is the case, it indicates that libusb has a timeout that has already expired so you should call <see  cref="HandleEventsTimeout">libusb_handle_events_timeout</see> or similar immediately. A return code of 0 indicates that there are no pending timeouts.</para>
@@ -849,6 +862,104 @@ namespace MonoLibUsb
                                                          IntPtr pData,
                                                          short dataLength,
                                                          int timeout);
+
+
+        /// <summary>
+        /// Perform a USB control transfer for multi-threaded applications using the <see cref="MonoUsbEventHandler"/> class.
+        /// </summary>
+        /// <remarks>
+        /// <para>The direction of the transfer is inferred from the bmRequestType field of the setup packet.</para>
+        /// <para>The wValue, wIndex and wLength fields values should be given in host-endian byte order.</para>
+        /// <note type="tip" title="Libusb-1.0 API:"><seelibusb10 group="syncio"/></note>
+        /// </remarks>
+        /// <param name="deviceHandle">A handle for the device to communicate with.</param>
+        /// <param name="requestType">The request type field for the setup packet.</param>
+        /// <param name="request">The request field for the setup packet.</param>
+        /// <param name="value">The value field for the setup packet</param>
+        /// <param name="index">The index field for the setup packet.</param>
+        /// <param name="pData">A suitably-sized data buffer for either input or output (depending on direction bits within bmRequestType).</param>
+        /// <param name="dataLength">The length field for the setup packet. The data buffer should be at least this size.</param>
+        /// <param name="timeout">timeout (in milliseconds) that this function should wait before giving up due to no response being received. For an unlimited timeout, use value 0.</param>
+        /// <returns>
+        /// <list type="bullet">
+        /// <item>on success, the number of bytes actually transferred</item>
+        /// <item><see cref="MonoUsbError.ErrorTimeout"/> if the transfer timed out</item>
+        /// <item><see cref="MonoUsbError.ErrorPipe"/> if the control request was not supported by the device.</item>
+        /// <item><see cref="MonoUsbError.ErrorNoDevice"/> if the device has been disconnected</item>
+        /// <item>another <see cref="MonoUsbError"/> code on other failures</item>
+        /// </list>
+        /// </returns>
+        public static int ControlTransferAsync([In] MonoUsbDeviceHandle deviceHandle,
+                                                 byte requestType,
+                                                 byte request,
+                                                 short value,
+                                                 short index,
+                                                 IntPtr pData,
+                                                 short dataLength,
+                                                 int timeout)
+        {
+            MonoUsbControlSetupHandle setupHandle = new MonoUsbControlSetupHandle(requestType, request, value, index, pData, dataLength);
+            MonoUsbTransfer transfer = new MonoUsbTransfer(0);
+            ManualResetEvent completeEvent = new ManualResetEvent(false);
+            GCHandle gcCompleteEvent = GCHandle.Alloc(completeEvent);
+
+            transfer.FillControl(deviceHandle, setupHandle, DefaultAsyncDelegate, GCHandle.ToIntPtr(gcCompleteEvent), timeout);
+
+            int r = (int)transfer.Submit();
+            if (r < 0)
+            {
+                transfer.Free();
+                gcCompleteEvent.Free();
+                return r;
+            }
+            IntPtr pSessionHandle;
+            MonoUsbSessionHandle sessionHandle = MonoUsbEventHandler.SessionHandle;
+            if (sessionHandle == null) 
+                pSessionHandle = IntPtr.Zero;
+            else
+                pSessionHandle = sessionHandle.DangerousGetHandle();
+
+            if (MonoUsbEventHandler.IsStopped)
+            {
+                while (!completeEvent.WaitOne(0, false))
+                {
+                    r = HandleEvents(pSessionHandle);
+                    if (r < 0)
+                    {
+                        if (r == (int)MonoUsbError.ErrorInterrupted)
+                            continue;
+                        transfer.Cancel();
+                        while (!completeEvent.WaitOne(0, false))
+                            if (HandleEvents(pSessionHandle) < 0)
+                                break;
+                        transfer.Free();
+                        gcCompleteEvent.Free();
+                        return r;
+                    }
+                }
+            }
+            else
+            {
+                completeEvent.WaitOne(Timeout.Infinite, UsbConstants.EXIT_CONTEXT);
+            }
+
+            if (transfer.Status == MonoUsbTansferStatus.TransferCompleted)
+            {
+                r = transfer.ActualLength;
+                if (r > 0)
+                {
+                    byte[] ctrlDataBytes = setupHandle.ControlSetup.GetData(r);
+                    Marshal.Copy(ctrlDataBytes, 0, pData, Math.Min(ctrlDataBytes.Length, dataLength));
+                }
+
+            }
+            else
+                r = (int)MonoLibUsbErrorFromTransferStatus(transfer.Status);
+
+            transfer.Free();
+            gcCompleteEvent.Free();
+            return r;
+        }
 
         /// <summary>
         /// Perform a USB control transfer.

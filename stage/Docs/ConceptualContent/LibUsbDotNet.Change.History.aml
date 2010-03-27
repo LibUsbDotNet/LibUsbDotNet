@@ -19,9 +19,18 @@
     <!--    DO NOT REMOVE    -->
     <!-- CurrentReleaseNotes -->
   <releaseNotes address="LibUsbDotNet_Changes_v2.2.5">
-    <title>v2.2.5 (03/25/2010)</title>
+    <title>v2.2.5 (03/26/2010)</title>
     <content>
       <bugs class="bullet">
+        <bug>
+          <bugaction>
+            <token>Added</token>
+          </bugaction>
+          <bugentry>
+            <CREF>LibUsbDotNet.Main.EndpointType</CREF> parameter to OpenEndpointReader and OpenEndpointWriter methods.
+            <para>The endpoint type must be specified for linux Libusb-1.0 compatibility.</para>
+          </bugentry>
+        </bug>
         <bug>
           <bugaction>
             <token>Added</token>

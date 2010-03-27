@@ -41,6 +41,8 @@ namespace LibUsbDotNet.Internal
         {
             int iTransferred;
             ErrorCode eReturn = ErrorCode.Success;
+
+            if (mTransferCancelEvent.WaitOne(0, false)) return ErrorCode.IoCancelled;
             if (!mTransferCompleteEvent.WaitOne(0, UsbConstants.EXIT_CONTEXT)) return ErrorCode.ResourceBusy;
 
             mHasWaitBeenCalled = false;

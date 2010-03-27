@@ -25,7 +25,7 @@ namespace LibUsbDotNet
 {
     internal class EndpointRunningStatus
     {
-        private readonly object mStatusLock = new object();
+        internal readonly object mStatusLock = new object();
 
         private ulong mBytesDisplay;
         private ulong mBytesTotal;

@@ -32,11 +32,12 @@ namespace MonoLibUsb.Transfer
         /// <param name="value">The value field for the setup packet</param>
         /// <param name="index">The index field for the setup packet.</param>
         /// <param name="data">The control data buffer to copy into the setup packet.</param>
-        public MonoUsbControlSetupHandle(byte requestType, byte request, short value, short index, byte[] data)
-            : this(requestType, request, value, index, data == null ? (short)0 : (short)(ushort)data.Length)
+        /// <param name="length">Size of <paramref name="data"/> in bytes.  This value is also used for the wLength field of the setup packet.</param>
+        public MonoUsbControlSetupHandle(byte requestType, byte request, short value, short index, object data, int length)
+            : this(requestType, request, value, index, (short)(ushort)length)
                 {
                     if (data != null)
-                        mSetupPacket.SetData(data, 0, data.Length);
+                        mSetupPacket.SetData(data, 0, length);
                 }
 
         /// <summary>

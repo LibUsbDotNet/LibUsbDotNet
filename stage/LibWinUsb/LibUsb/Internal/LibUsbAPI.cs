@@ -98,12 +98,12 @@ namespace LibUsbDotNet.Internal.LibUsb
             req.Endpoint.ID = endPointBase.EpNum;
             req.Timeout = UsbConstants.DEFAULT_TIMEOUT;
             int cltCode;
-            if (endPointBase.Type == EndpointType.Isochronous)
-            {
-                cltCode = LibUsbIoCtl.ISOCHRONOUS_READ;
-                req.Endpoint.PacketSize = 1;
-            }
-            else
+            //if (endPointBase.Type == EndpointType.Isochronous)
+            //{
+            //    cltCode = LibUsbIoCtl.ISOCHRONOUS_READ;
+            //    req.Endpoint.PacketSize = 1;
+            //}
+            //else
                 cltCode = LibUsbIoCtl.INTERRUPT_OR_BULK_READ; 
             
             return Kernel32.DeviceIoControl(endPointBase.Handle,
@@ -126,12 +126,12 @@ namespace LibUsbDotNet.Internal.LibUsb
             req.Endpoint.ID = endPointBase.EpNum;
             req.Timeout = UsbConstants.DEFAULT_TIMEOUT;
             int cltCode;
-            if (endPointBase.Type == EndpointType.Isochronous)
-            {
-                cltCode = LibUsbIoCtl.ISOCHRONOUS_READ;
-                req.Endpoint.PacketSize = 1;
-            }
-            else
+            //if (endPointBase.Type == EndpointType.Isochronous)
+            //{
+            //    cltCode = LibUsbIoCtl.ISOCHRONOUS_READ;
+            //    req.Endpoint.PacketSize = 1;
+            //}
+            //else
                 cltCode = LibUsbIoCtl.INTERRUPT_OR_BULK_READ; 
 
             return Kernel32.DeviceIoControl(endPointBase.Device.Handle,
@@ -164,12 +164,12 @@ namespace LibUsbDotNet.Internal.LibUsb
             req.Endpoint.ID = endPointBase.EpNum;
             req.Timeout = UsbConstants.DEFAULT_TIMEOUT;
             int cltCode;
-            if (endPointBase.Type == EndpointType.Isochronous)
-            {
-                cltCode = LibUsbIoCtl.ISOCHRONOUS_WRITE;
-                req.Endpoint.PacketSize = 1;
-            }
-            else
+            //if (endPointBase.Type == EndpointType.Isochronous)
+            //{
+            //    cltCode = LibUsbIoCtl.ISOCHRONOUS_WRITE;
+            //    req.Endpoint.PacketSize = 1;
+            //}
+            //else
                 cltCode = LibUsbIoCtl.INTERRUPT_OR_BULK_WRITE;
 
             return Kernel32.DeviceIoControl(endPointBase.Handle,
@@ -192,12 +192,12 @@ namespace LibUsbDotNet.Internal.LibUsb
             req.Endpoint.ID = endPointBase.EpNum;
             req.Timeout = UsbConstants.DEFAULT_TIMEOUT;
             int cltCode;
-            if (endPointBase.Type == EndpointType.Isochronous)
-            {
-                cltCode = LibUsbIoCtl.ISOCHRONOUS_WRITE;
-                req.Endpoint.PacketSize = 1;
-            }
-            else
+            //if (endPointBase.Type == EndpointType.Isochronous)
+            //{
+            //    cltCode = LibUsbIoCtl.ISOCHRONOUS_WRITE;
+            //    req.Endpoint.PacketSize = 1;
+            //}
+            //else
                 cltCode = LibUsbIoCtl.INTERRUPT_OR_BULK_WRITE;
 
             return Kernel32.DeviceIoControl(endPointBase.Handle,

@@ -100,13 +100,14 @@ namespace LibUsbDotNet.LudnMonoLibUsb.Internal
 
         public override ErrorCode Submit()
         {
+            if (mTransferCancelEvent.WaitOne(0, false)) return ErrorCode.IoCancelled;
+
             if (!mTransferCompleteEvent.WaitOne(0, UsbConstants.EXIT_CONTEXT)) return ErrorCode.ResourceBusy;
 
             mTransfer.PtrBuffer = NextBufPtr;
             mTransfer.Length = RequestCount;
 
             mTransferCompleteEvent.Reset();
-            mTransferCancelEvent.Reset();
 
             int ret = (int)mTransfer.Submit();
             if (ret < 0)

@@ -8,6 +8,15 @@
             <token>Added</token>
           </bugaction>
           <bugentry>
+            <CREF>LibUsbDotNet.Main.EndpointType</CREF> parameter to OpenEndpointReader and OpenEndpointWriter methods.
+            <para>The endpoint type must be specified for linux Libusb-1.0 compatibility.</para>
+          </bugentry>
+        </bug>
+        <bug>
+          <bugaction>
+            <token>Added</token>
+          </bugaction>
+          <bugentry>
             Benchmark Console application.
           </bugentry>
         </bug>

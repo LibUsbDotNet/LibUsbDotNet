@@ -14,8 +14,7 @@
     <FileAlignment>512</FileAlignment>
     <TargetFrameworkSubset>
     </TargetFrameworkSubset>
-    <ApplicationIcon>
-    </ApplicationIcon>
+    <ApplicationIcon>UsbDos.ico</ApplicationIcon>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <DebugSymbols>true</DebugSymbols>
@@ -76,6 +75,7 @@
     <None Include="Resources\CommandLineArgExp.txt" />
   </ItemGroup>
   <ItemGroup>
+    <Content Include="UsbDos.ico" />
     <Content Include="UsbIco.ico" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

@@ -1,7 +1,11 @@
 LibUsbDotNet Version History
 
-V2.2.5 (03/25/2010)
+V2.2.5 (03/26/2010)
 ====================
+  * [Added] EndpointType parameter to OpenEndpointReader and 
+    OpenEndpointWriter methods. 
+    The endpoint type must be specified for linux Libusb-1.0 compatibility.
+
   * [Added] Benchmark Console application.
 
 
