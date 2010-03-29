@@ -112,16 +112,12 @@ namespace LibUsbDotNet
 
             ConsoleColor fg = Console.ForegroundColor;
             ConsoleColor bg = Console.BackgroundColor;
-            Console.BackgroundColor = ConsoleColor.White;
-            Console.ForegroundColor = ConsoleColor.Black;
+            Console.BackgroundColor = fg;
+            Console.ForegroundColor = bg;
             ConWrite(ConType.Info, "Select (1-{0}) :", deviceProfiles.Count);
             Console.ForegroundColor = fg;
             Console.BackgroundColor = bg;
-            ConWrite(ConType.Info, " ");
-            int curSize = Console.CursorSize;
-            Console.CursorSize = 100;
             string input = Console.ReadLine();
-            Console.CursorSize = curSize;
             ushort inputValue;
             if (!ushort.TryParse(input, out inputValue))
             {

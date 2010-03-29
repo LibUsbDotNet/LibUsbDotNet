@@ -175,8 +175,6 @@ namespace LibUsbDotNet
 
         public static void Main(string[] args)
         {
-            Console.ForegroundColor = ConsoleColor.Gray;
-            Console.BackgroundColor = ConsoleColor.Black;
             Console.Clear();
 
             try
