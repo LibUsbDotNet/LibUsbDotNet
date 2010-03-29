@@ -154,10 +154,14 @@ state according to the definition in the USB specification.
 #define __USB_DESCRIPTORS_C
  
 /** INCLUDES *******************************************************/
-#include "GenericTypeDefs.h"
-#include "Compiler.h"
-#include "usb_config.h"
-#include "./USB/usb_device.h"
+#include "USB/usb.h"
+#include "USB/usb_function_generic.h"
+#include "HardwareProfile.h"
+
+//#include "GenericTypeDefs.h"
+//#include "Compiler.h"
+//#include "usb_config.h"
+//#include "./USB/usb_device.h"
 
 
 /** CONSTANTS ******************************************************/

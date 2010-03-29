@@ -1,7 +1,7 @@
 [HEADER]
 magic_cookie={66E99B07-E706-4689-9E80-9B2582898A13}
 file_version=1.0
-device=PIC24FJ256GB110
+device=PIC24FJ64GB002
 [PATH_INFO]
 BuildDirPolicy=BuildDirIsProjectDir
 dir_src=
@@ -45,6 +45,7 @@ file_017=Hardware Profiles
 file_018=Hardware Profiles
 file_019=Hardware Profiles
 file_020=.
+file_021=Hardware Profiles
 [GENERATED_FILES]
 file_000=no
 file_001=no
@@ -67,6 +68,7 @@ file_017=no
 file_018=no
 file_019=no
 file_020=no
+file_021=no
 [OTHER_FILES]
 file_000=no
 file_001=no
@@ -89,6 +91,7 @@ file_017=no
 file_018=no
 file_019=no
 file_020=no
+file_021=no
 [FILE_INFO]
 file_000=main.c
 file_001=usb_descriptors.c
@@ -111,6 +114,7 @@ file_017=HardwareProfile - PIC24F Starter Kit.h
 file_018=HardwareProfile - PIC24FJ256GB110 PIM.h
 file_019=HardwareProfile - PIC24FJ64GB004 PIM.h
 file_020=Benchmark.h
+file_021=HardwareProfile - PIC24FJ64GB002 BreadBoard.h
 [SUITE_INFO]
 suite_guid={479DDE59-4D56-455E-855E-FFF59A3DB57E}
 suite_state=

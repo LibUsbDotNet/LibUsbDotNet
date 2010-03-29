@@ -1,4 +1,4 @@
-Copyright (C) 2009 Travis Robinson. All Rights Reserved
+Copyright (C) 2010 Travis Robinson. All Rights Reserved
 
 http://sourceforge.net/projects/libusbdotnet/
 mailto:libusbdotnet@gmail.com

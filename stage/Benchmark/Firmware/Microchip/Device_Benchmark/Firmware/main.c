@@ -42,13 +42,14 @@
 ********************************************************************/
 
 /** INCLUDES *******************************************************/
-#include "Compiler.h"
-#include "HardwareProfile.h"
-#include "GenericTypeDefs.h"
-#include "USB/usb_device.h"
 #include "USB/usb.h"
 #include "USB/usb_function_generic.h"
-#include "usb_config.h"
+#include "HardwareProfile.h"
+//#include "Compiler.h"
+//#include "GenericTypeDefs.h"
+//#include "USB/usb_device.h"
+//#include "USB/usb.h"
+//#include "usb_config.h"
 #include "Benchmark.h"
 
 /** CONFIGURATION **************************************************/
@@ -222,6 +223,19 @@
     #pragma config PWP      = OFF           // Program Flash Write Protect
     #pragma config ICESEL   = ICS_PGx2      // ICE/ICD Comm Channel Select
     #pragma config DEBUG    = ON            // Background Debugger Enable
+#elif defined(BREADBOARD)
+	#if defined(__PIC24FJ64GB002__)
+//        _CONFIG1(WDTPS_PS1 & FWPSA_PR32 & WINDIS_OFF & FWDTEN_OFF & ICS_PGx3 & GWRP_OFF & GCP_OFF & JTAGEN_OFF)
+//        _CONFIG2(POSCMOD_HS & I2C1SEL_PRI & IOL1WAY_OFF & OSCIOFNC_ON & FCKSM_CSDCMD & FNOSC_PRIPLL & PLL96MHZ_ON & PLLDIV_DIV3 & IESO_ON)
+//        _CONFIG3(WPFP_WPFP0 & SOSCSEL_SOSC & WUTSEL_LEG & WPDIS_WPDIS & WPCFG_WPCFGDIS & WPEND_WPENDMEM)
+//        _CONFIG4(DSWDTPS_DSWDTPS3 & DSWDTOSC_LPRC & RTCOSC_LPRC & DSBOREN_OFF & DSWDTEN_OFF)
+        _CONFIG1(WDTPS_PS1 & FWPSA_PR32 & WINDIS_OFF & FWDTEN_OFF & ICS_PGx3 & GWRP_OFF & GCP_OFF & JTAGEN_OFF)
+        _CONFIG2(POSCMOD_NONE & I2C1SEL_PRI & IOL1WAY_OFF & OSCIOFNC_OFF & FCKSM_CSDCMD & FNOSC_FRCPLL & PLL96MHZ_ON & PLLDIV_NODIV & IESO_ON)
+        _CONFIG3(WPFP_WPFP0 & SOSCSEL_SOSC & WUTSEL_LEG & WPDIS_WPDIS & WPCFG_WPCFGDIS & WPEND_WPENDMEM)
+        _CONFIG4(DSWDTPS_DSWDTPS3 & DSWDTOSC_LPRC & RTCOSC_SOSC & DSBOREN_OFF & DSWDTEN_OFF)
+    #else
+        #error No breadboard device defined, see "HardwareProfile.h" and __FILE__
+    #endif
 #else
     #error No hardware board defined, see "HardwareProfile.h"
 #endif

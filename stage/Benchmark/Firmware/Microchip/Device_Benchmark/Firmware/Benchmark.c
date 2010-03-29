@@ -1,16 +1,19 @@
 
 
 /** INCLUDES *******************************************************/
+#include "USB/usb.h"
+#include "USB/usb_function_generic.h"
+#include "HardwareProfile.h"
 #include "Benchmark.h"
 #include "PicFWCommands.h"
 
-#include "Compiler.h"
-#include "HardwareProfile.h"
-#include "GenericTypeDefs.h"
-#include "USB/usb_device.h"
-#include "USB/usb.h"
-#include "USB/usb_function_generic.h"
-#include "usb_config.h"
+//#include "Compiler.h"
+//#include "HardwareProfile.h"
+//#include "GenericTypeDefs.h"
+//#include "USB/usb_device.h"
+//#include "USB/usb.h"
+//#include "USB/usb_function_generic.h"
+//#include "usb_config.h"
 
 #if (USB_PING_PONG_MODE==USB_PING_PONG__FULL_PING_PONG) || (USB_PING_PONG_MODE==USB_PING_PONG__ALL_BUT_EP0)
 
@@ -113,8 +116,6 @@ void USBCBInitEP(void)
 {
 	BYTE preLoadedBufferCount;
 
-	if (EP1RxHandles[EVN]) return;
-
     USBEnableEndpoint(USBGEN_EP_NUM,USB_OUT_ENABLED|USB_IN_ENABLED|USB_HANDSHAKE_ENABLED|USB_DISALLOW_SETUP);
 
 	//Prepare the OUT endpoints to receive the first packets from the host.
@@ -129,20 +130,20 @@ void USBCBInitEP(void)
 
 void USBCBCheckOtherReq(void)
 {
-	if (SetupPkt.RequestType != VENDOR) return;
+	if (SetupPkt.RequestType != USB_SETUP_TYPE_VENDOR_BITFIELD) return;
 
 	switch (SetupPkt.bRequest)
 	{
 	case PICFW_SET_TEST:
 		PicFW_TestType=SetupPkt.wValue & 0xff;
 		inPipes[0].pSrc.bRam = (BYTE*)&PicFW_TestType;  // Set Source
-		inPipes[0].info.bits.ctrl_trf_mem = _RAM;		// Set memory type
+		inPipes[0].info.bits.ctrl_trf_mem = USB_EP0_RAM;		// Set memory type
 		inPipes[0].wCount.v[0] = 1;						// Set data count
 		inPipes[0].info.bits.busy = 1;
 		break;
 	case PICFW_GET_TEST:
 		inPipes[0].pSrc.bRam = (BYTE*)&PicFW_TestType;  // Set Source
-		inPipes[0].info.bits.ctrl_trf_mem = _RAM;		// Set memory type
+		inPipes[0].info.bits.ctrl_trf_mem = USB_EP0_RAM;		// Set memory type
 		inPipes[0].wCount.v[0] = 1;						// Set data count
 		inPipes[0].info.bits.busy = 1;
 		break;

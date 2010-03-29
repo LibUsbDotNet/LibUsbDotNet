@@ -20,6 +20,22 @@
             Benchmark Console application.
           </bugentry>
         </bug>
+        <bug>
+          <bugaction>
+            <token>Fixed</token>
+          </bugaction>
+          <bugentry>
+            Usb devices runnning benchmark firmware do not work correctly if plugged in while booting under linux.
+          </bugentry>
+        </bug>
+        <bug>
+          <bugaction>
+            <token>Updated</token>
+          </bugaction>
+          <bugentry>
+            Benchmark firmware for Microchip PIC USB devices updated to MCHPFSUSB Framework v2.6a.
+          </bugentry>
+        </bug>        
       </bugs>
     </content>
   </releaseNotes>

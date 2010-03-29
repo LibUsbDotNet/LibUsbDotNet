@@ -71,6 +71,8 @@
             #include "HardwareProfile - PIC24F Starter Kit.h"
         #elif defined(__PIC24FJ64GB004__)
             #include "HardwareProfile - PIC24FJ64GB004 PIM.h"
+        #elif defined(__PIC24FJ64GB002__)
+            #include "HardwareProfile - PIC24FJ64GB002 BreadBoard.h"
         #endif
     #endif
 
