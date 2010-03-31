@@ -33,7 +33,7 @@
             <token>Updated</token>
           </bugaction>
           <bugentry>
-            Benchmark firmware for Microchip PIC USB devices updated to MCHPFSUSB Framework v2.6a.
+            Benchmark firmware for Microchip PIC USB devices updated to MCHPFSUSB Framework v2.6a. Added support for no ping pong buffering benchmark tests.
           </bugentry>
         </bug>        
       </bugs>

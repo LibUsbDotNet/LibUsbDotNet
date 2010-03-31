@@ -15,10 +15,10 @@
 //#include "USB/usb_function_generic.h"
 //#include "usb_config.h"
 
-#if (USB_PING_PONG_MODE==USB_PING_PONG__FULL_PING_PONG) || (USB_PING_PONG_MODE==USB_PING_PONG__ALL_BUT_EP0)
+#if (USB_PING_PONG_MODE==USB_PING_PONG__NO_PING_PONG) || (USB_PING_PONG_MODE==USB_PING_PONG__EP0_OUT_ONLY)
 
-#if BENCH_MARK_BUFFER_COUNT != 5
-	#error "The BENCH_MARK_BUFFER_COUNT_define must be equal to 5"
+#if BENCH_MARK_BUFFER_COUNT != 3
+	#error "The BENCH_MARK_BUFFER_COUNT_define must be equal to 3"
 #endif
 
 /** VARIABLES ******************************************************/
@@ -73,10 +73,8 @@ USB_VOLATILE BYTE BenchmarkBuffers[BENCH_MARK_BUFFER_COUNT][USBGEN_EP_SIZE];	//U
 //The below variables are only accessed by the CPU and can be placed anywhere in RAM.
 #pragma udata
 
-USB_HANDLE EP1RxHandles[2];	// OUT handles (EVEN,ODD)
-USB_HANDLE EP1TxHandles[2]; // IN  handles (EVEN,ODD)
-BOOL EP1RxBankIsOdd;
-BOOL EP1TxBankIsOdd;
+USB_HANDLE EP1RxHandle;	// OUT handle
+USB_HANDLE EP1TxHandle; // IN  handle
 
 BYTE PicFW_TestType;
 BYTE PicFW_PrevTestType;
@@ -119,10 +117,8 @@ void USBCBInitEP(void)
 
 	//Prepare the OUT endpoints to receive the first packets from the host.
 	preLoadedBufferCount = 0;
-	EP1RxHandles[EVN] = USBGenRead (USBGEN_EP_NUM, (BYTE*)BenchmarkBuffers[preLoadedBufferCount++],USBGEN_EP_SIZE);	
-	EP1RxHandles[ODD] = USBGenRead (USBGEN_EP_NUM, (BYTE*)BenchmarkBuffers[preLoadedBufferCount++],USBGEN_EP_SIZE);
-	EP1TxHandles[EVN] = USBGenWrite(USBGEN_EP_NUM, (BYTE*)BenchmarkBuffers[preLoadedBufferCount++],0);	
-	EP1TxHandles[ODD] = USBGenWrite(USBGEN_EP_NUM, (BYTE*)BenchmarkBuffers[preLoadedBufferCount++],0);
+	EP1RxHandle = USBGenRead (USBGEN_EP_NUM, (BYTE*)BenchmarkBuffers[preLoadedBufferCount++],USBGEN_EP_SIZE);	
+	EP1TxHandle = USBGenWrite(USBGEN_EP_NUM, (BYTE*)BenchmarkBuffers[preLoadedBufferCount++],0);	
 
 	pUserBuffer=BenchmarkBuffers[preLoadedBufferCount++];
 }
@@ -158,13 +154,8 @@ void USBCBCheckOtherReq(void)
 
 void Benchmark_Init(void)
 {
-	EP1RxHandles[EVN]	= 0;	
-	EP1RxHandles[ODD]	= 0;
-	EP1RxBankIsOdd		= FALSE;
-
-	EP1TxHandles[EVN]	= 0;	
-	EP1TxHandles[ODD]	= 0;	
-	EP1TxBankIsOdd		= FALSE;
+	EP1RxHandle = 0;	
+	EP1TxHandle = 0;	
 
 	mBenchMarkInit();
 }//end UserInit
@@ -214,7 +205,7 @@ void Benchmark_ProcessIO(void)
 
 #define mSetWritePacketID(buffer)				\
 {												\
-	if (fillCount < 3)							\
+	if (fillCount < 2)							\
 	{											\
 		fillCount++;							\
 		fillBuffer((BYTE*)buffer);				\
@@ -227,21 +218,12 @@ void doBenchmarkWrite(void)
 {
 	BYTE* pBufferTemp;
 
-	if (EP1TxBankIsOdd && USBHandleBusy(EP1TxHandles[ODD])==FALSE)
+	if (USBHandleBusy(EP1TxHandle)==FALSE)
 	{
 		mSetWritePacketID(pUserBuffer);
-		pBufferTemp = USBHandleGetAddr(EP1TxHandles[ODD]);
-		EP1TxHandles[ODD] = USBGenWrite(USBGEN_EP_NUM,(BYTE*)pUserBuffer,USBGEN_EP_SIZE);
+		pBufferTemp = USBHandleGetAddr(EP1TxHandle);
+		EP1TxHandle = USBGenWrite(USBGEN_EP_NUM,(BYTE*)pUserBuffer,USBGEN_EP_SIZE);
 		pUserBuffer = (USB_VOLATILE BYTE*)pBufferTemp;
-		EP1TxBankIsOdd = FALSE;
-	}
-	else if(!EP1TxBankIsOdd && USBHandleBusy(EP1TxHandles[EVN])==FALSE)
-	{
-		mSetWritePacketID(pUserBuffer);
-		pBufferTemp = USBHandleGetAddr(EP1TxHandles[EVN]);
-		EP1TxHandles[EVN] = USBGenWrite(USBGEN_EP_NUM,(BYTE*)pUserBuffer,USBGEN_EP_SIZE);
-		pUserBuffer = (USB_VOLATILE BYTE*)pBufferTemp;
-		EP1TxBankIsOdd = TRUE;
 	}
 }
 
@@ -250,56 +232,19 @@ void doBenchmarkLoop(void)
 	BYTE packetRxLength;
 	BYTE* pBufferTemp;
 
-	if (USBHandleBusy(EP1TxHandles[ODD]) && USBHandleBusy(EP1TxHandles[EVN])) return;
+	if (USBHandleBusy(EP1TxHandle)) return;
 
-	if (EP1RxBankIsOdd && !USBHandleBusy(EP1RxHandles[ODD]))
+	if (!USBHandleBusy(EP1RxHandle))
 	{
-		packetRxLength = USBHandleGetLength(EP1RxHandles[ODD]);
+		packetRxLength = USBHandleGetLength(EP1RxHandle);
 
-		pBufferTemp = USBHandleGetAddr(EP1RxHandles[ODD]);
-		EP1RxHandles[ODD] = USBGenRead(USBGEN_EP_NUM,(BYTE*)pUserBuffer,USBGEN_EP_SIZE);
+		pBufferTemp = USBHandleGetAddr(EP1RxHandle);
+		EP1RxHandle = USBGenRead(USBGEN_EP_NUM,(BYTE*)pUserBuffer,USBGEN_EP_SIZE);
 		pUserBuffer = (USB_VOLATILE BYTE*)pBufferTemp;
-		EP1RxBankIsOdd=FALSE;
 
-		if (EP1TxBankIsOdd && !USBHandleBusy(EP1TxHandles[ODD]))
-		{
-			pBufferTemp = USBHandleGetAddr(EP1TxHandles[ODD]);
-			EP1TxHandles[ODD]	= USBGenWrite(USBGEN_EP_NUM,(BYTE*)pUserBuffer,packetRxLength);
-			pUserBuffer = (USB_VOLATILE BYTE*)pBufferTemp;
-			EP1TxBankIsOdd = FALSE;
-		}
-		else if(!EP1TxBankIsOdd && !USBHandleBusy(EP1TxHandles[EVN]))
-		{
-			pBufferTemp = USBHandleGetAddr(EP1TxHandles[EVN]);
-			EP1TxHandles[EVN] = USBGenWrite(USBGEN_EP_NUM,(BYTE*)pUserBuffer,packetRxLength);
-			pUserBuffer = (USB_VOLATILE BYTE*)pBufferTemp;
-			EP1TxBankIsOdd = TRUE;
-		}
-	}
-	else if(!EP1RxBankIsOdd && !USBHandleBusy(EP1RxHandles[EVN]))
-	{
-		packetRxLength = USBHandleGetLength(EP1RxHandles[EVN]);
-
-		pBufferTemp = USBHandleGetAddr(EP1RxHandles[EVN]);
-		EP1RxHandles[EVN] = USBGenRead(USBGEN_EP_NUM,(BYTE*)pUserBuffer,USBGEN_EP_SIZE);
+		pBufferTemp = USBHandleGetAddr(EP1TxHandle);
+		EP1TxHandle	= USBGenWrite(USBGEN_EP_NUM,(BYTE*)pUserBuffer,packetRxLength);
 		pUserBuffer = (USB_VOLATILE BYTE*)pBufferTemp;
-		EP1RxBankIsOdd=TRUE;
-
-		if (EP1TxBankIsOdd && !USBHandleBusy(EP1TxHandles[ODD]))
-		{
-			pBufferTemp = USBHandleGetAddr(EP1TxHandles[ODD]);
-			EP1TxHandles[ODD] = USBGenWrite(USBGEN_EP_NUM,(BYTE*)pUserBuffer,packetRxLength);
-			pUserBuffer = (USB_VOLATILE BYTE*)pBufferTemp;
-			EP1TxBankIsOdd = FALSE;
-		}
-		else if(!EP1TxBankIsOdd && !USBHandleBusy(EP1TxHandles[EVN]))
-		{
-			pBufferTemp = USBHandleGetAddr(EP1TxHandles[EVN]);
-			EP1TxHandles[EVN] = USBGenWrite(USBGEN_EP_NUM,(BYTE*)pUserBuffer,packetRxLength);
-			pUserBuffer = (USB_VOLATILE BYTE*)pBufferTemp;
-			EP1TxBankIsOdd = TRUE;
-		}
-
 	}
 }
 
@@ -307,19 +252,11 @@ void doBenchmarkRead(void)
 {
 	BYTE* pBufferTemp;
 
-	if (EP1RxBankIsOdd && USBHandleBusy(EP1RxHandles[ODD])==FALSE)
+	if (USBHandleBusy(EP1RxHandle)==FALSE)
 	{
-		pBufferTemp = USBHandleGetAddr(EP1RxHandles[ODD]);
-		EP1RxHandles[ODD] = USBGenRead(USBGEN_EP_NUM,(BYTE*)pUserBuffer,USBGEN_EP_SIZE);
+		pBufferTemp = USBHandleGetAddr(EP1RxHandle);
+		EP1RxHandle = USBGenRead(USBGEN_EP_NUM,(BYTE*)pUserBuffer,USBGEN_EP_SIZE);
 		pUserBuffer = (USB_VOLATILE BYTE*)pBufferTemp;
-		EP1RxBankIsOdd=FALSE;
-	}
-	else if(!EP1RxBankIsOdd && USBHandleBusy(EP1RxHandles[EVN])==FALSE)
-	{
-		pBufferTemp = USBHandleGetAddr(EP1RxHandles[EVN]);
-		EP1RxHandles[EVN] = USBGenRead(USBGEN_EP_NUM,(BYTE*)pUserBuffer,USBGEN_EP_SIZE);
-		pUserBuffer = (USB_VOLATILE BYTE*)pBufferTemp;
-		EP1RxBankIsOdd=TRUE;
 	}
 }
 

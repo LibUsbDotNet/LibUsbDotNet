@@ -1,12 +1,19 @@
 LibUsbDotNet Version History
 
-V2.2.5 (03/26/2010)
+V2.2.5 (03/31/2010)
 ====================
   * [Added] EndpointType parameter to OpenEndpointReader and 
     OpenEndpointWriter methods. 
     The endpoint type must be specified for linux Libusb-1.0 compatibility.
 
   * [Added] Benchmark Console application.
+
+  * [Fixed] Usb devices runnning benchmark firmware do not work correctly if 
+    plugged in while booting under linux.
+
+  * [Updated] Benchmark firmware for Microchip PIC USB devices updated to 
+    MCHPFSUSB Framework v2.6a. Added support for no ping pong buffering 
+    benchmark tests.
 
 
 PREVIOUS VERSIONS

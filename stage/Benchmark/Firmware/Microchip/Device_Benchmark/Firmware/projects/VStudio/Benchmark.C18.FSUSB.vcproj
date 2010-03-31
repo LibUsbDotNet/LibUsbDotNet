@@ -185,6 +185,17 @@
 				</FileConfiguration>
 			</File>
 			<File
+				RelativePath="..\..\Benchmark_NoPP.c"
+				>
+				<FileConfiguration
+					Name="Release|Win32"
+					>
+					<Tool
+						Name="VCCustomBuildTool"
+					/>
+				</FileConfiguration>
+			</File>
+			<File
 				RelativePath="..\..\main.c"
 				>
 				<FileConfiguration

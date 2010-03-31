@@ -19,7 +19,7 @@
     <!--    DO NOT REMOVE    -->
     <!-- CurrentReleaseNotes -->
   <releaseNotes address="LibUsbDotNet_Changes_v2.2.5">
-    <title>v2.2.5 (03/26/2010)</title>
+    <title>v2.2.5 (03/31/2010)</title>
     <content>
       <bugs class="bullet">
         <bug>
@@ -39,6 +39,22 @@
             Benchmark Console application.
           </bugentry>
         </bug>
+        <bug>
+          <bugaction>
+            <token>Fixed</token>
+          </bugaction>
+          <bugentry>
+            Usb devices runnning benchmark firmware do not work correctly if plugged in while booting under linux.
+          </bugentry>
+        </bug>
+        <bug>
+          <bugaction>
+            <token>Updated</token>
+          </bugaction>
+          <bugentry>
+            Benchmark firmware for Microchip PIC USB devices updated to MCHPFSUSB Framework v2.6a. Added support for no ping pong buffering benchmark tests.
+          </bugentry>
+        </bug>        
       </bugs>
     </content>
   </releaseNotes>

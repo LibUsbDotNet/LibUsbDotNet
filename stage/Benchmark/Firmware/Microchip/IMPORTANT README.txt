@@ -1,4 +1,4 @@
-PIC Benchmark Firmware For MCP USB Stack 2.5
+PIC Benchmark Firmware For MCP USB Stack 2.6a
 
 COMPILE & INSTALLATION:
 

@@ -73,8 +73,8 @@
 
 //Make sure only one of the below "#define USB_PING_PONG_MODE"
 //is uncommented.
-//#define USB_PING_PONG_MODE USB_PING_PONG__NO_PING_PONG
-#define USB_PING_PONG_MODE USB_PING_PONG__FULL_PING_PONG
+#define USB_PING_PONG_MODE USB_PING_PONG__NO_PING_PONG
+//#define USB_PING_PONG_MODE USB_PING_PONG__FULL_PING_PONG
 //#define USB_PING_PONG_MODE USB_PING_PONG__EP0_OUT_ONLY
 //#define USB_PING_PONG_MODE USB_PING_PONG__ALL_BUT_EP0		//NOTE: This mode is not supported in PIC18F4550 family rev A3 devices
 
