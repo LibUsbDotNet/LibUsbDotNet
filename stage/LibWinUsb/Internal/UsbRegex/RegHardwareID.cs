@@ -19,12 +19,14 @@
 // visit www.gnu.org.
 // 
 // 
+using System.Text.RegularExpressions;
+
 namespace LibUsbDotNet.Internal.UsbRegex
 {
     /// <summary>
     /// Regular expression class for quick parsing of usb hardware ids.
     /// </summary>
-    internal class RegHardwareID : BaseRegHardwareID
+    internal class RegHardwareID : Regex
     {
         #region Enumerations
 
@@ -37,10 +39,21 @@ namespace LibUsbDotNet.Internal.UsbRegex
 
         #endregion
 
-        public static readonly NamedGroup[] NAMED_GROUPS = new NamedGroup[]
-                                                               {new NamedGroup(1, "Vid"), new NamedGroup(2, "Pid"), new NamedGroup(3, "Rev")};
+        private const RegexOptions OPTIONS =
+            RegexOptions.CultureInvariant | RegexOptions.IgnorePatternWhitespace | RegexOptions.Singleline | RegexOptions.Compiled |
+            RegexOptions.ExplicitCapture | RegexOptions.IgnoreCase;
 
-        public new string[] GetGroupNames() { return new string[] {"Vid", "Pid", "Rev"}; }
+        private const string PATTERN = "(Vid_(?<Vid>[0-9A-F]{1,4}))|(Pid_(?<Pid>[0-9A-F]{1,4}))|(Rev_(?<Rev>[0-9]{1,4}))|(MI_(?<Pid>[0-9A-F]{1,2}))";
+
+        public static readonly NamedGroup[] NAMED_GROUPS = new NamedGroup[]
+                                                               {
+                                                                   new NamedGroup(1, "Vid"), new NamedGroup(2, "Pid"), new NamedGroup(3, "Rev"),
+                                                                   new NamedGroup(3, "MI")
+                                                               };
+
+        public RegHardwareID() : base(PATTERN, OPTIONS) { }
+
+        public new string[] GetGroupNames() { return new string[] {"Vid", "Pid", "Rev", "MI"}; }
 
         public new int[] GetGroupNumbers() { return new int[] {1, 2, 3}; }
 
@@ -50,12 +63,12 @@ namespace LibUsbDotNet.Internal.UsbRegex
             {
                 case 1:
                     return "Vid";
-
                 case 2:
                     return "Pid";
-
                 case 3:
                     return "Rev";
+                case 4:
+                    return "MI";
             }
             return "";
         }
@@ -66,12 +79,12 @@ namespace LibUsbDotNet.Internal.UsbRegex
             {
                 case "Vid":
                     return 1;
-
                 case "Pid":
                     return 2;
-
                 case "Rev":
                     return 3;
+                case "MI":
+                    return 4;
             }
             return -1;
         }

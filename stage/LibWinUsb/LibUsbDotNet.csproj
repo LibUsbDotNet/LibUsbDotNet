@@ -180,7 +180,6 @@
     <Compile Include="Main\WriteEndpointID.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="WinUsb\Internal\SafeWinUsbInterfaceHandle.cs" />
-    <Compile Include="Internal\UsbRegex\BaseRegHardwareID.cs" />
     <Compile Include="Internal\UsbRegex\BaseRegSymbolicName.cs" />
     <Compile Include="Internal\UsbRegex\NamedGroup.cs" />
     <Compile Include="Internal\UsbRegex\RegHardwareID.cs" />
