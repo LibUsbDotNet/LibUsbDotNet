@@ -33,15 +33,6 @@ namespace LibUsbDotNet.WinUsb
     {
         internal WinUsbRegistry() { }
 
-        private WinUsbRegistry(WinUsbRegistry winUSBRegistry, string devicePath)
-        {
-            foreach (KeyValuePair<string, object> deviceProperty in winUSBRegistry.mDeviceProperties)
-            {
-                mDeviceProperties.Add(deviceProperty.Key, deviceProperty.Value);
-            }
-            mDeviceProperties[SYMBOLIC_NAME_KEY] = devicePath;
-        }
-
         /// <summary>
         /// Gets a list of available LibUsb devices.
         /// </summary>
@@ -51,51 +42,6 @@ namespace LibUsbDotNet.WinUsb
             {
                 List<WinUsbRegistry> deviceList = new List<WinUsbRegistry>();
                 SetupApi.EnumClassDevs(null, SetupApi.DICFG.ALLCLASSES | SetupApi.DICFG.PRESENT, WinUsbRegistryCallBack, deviceList);
-
-                List<WinUsbRegistry> addList = new List<WinUsbRegistry>();
-                List<WinUsbRegistry> delList = new List<WinUsbRegistry>();
-
-                foreach (WinUsbRegistry winUsbRegistry in deviceList)
-                {
-                    // WinUSB device interfaces from a composite device do not have a 
-                    // SynbolicName which LibsUsbDotNet uses to Open WinUsb devices.
-                    if (winUsbRegistry.SymbolicName == String.Empty)
-                    {
-                        delList.Add(winUsbRegistry);
-                        foreach (Guid g in winUsbRegistry.DeviceInterfaceGuids)
-                        {
-                            List<String> devicePaths;
-                            if (SetupApi.GetDevicePath(g, out devicePaths))
-                            {
-                                foreach (string devicePath in devicePaths)
-                                {
-                                    // Use the DevicePath as the SymbolicName
-                                    addList.Add(new WinUsbRegistry(winUsbRegistry, devicePath));
-                                }
-                            }
-                        }
-                    }
-                }
-                foreach (WinUsbRegistry delWinUSBRegistry in delList)
-                {
-                    deviceList.Remove(delWinUSBRegistry);
-                }
-                foreach (WinUsbRegistry addWinUSBRegistry in addList)
-                {
-                    bool bFound = false;
-                    foreach (WinUsbRegistry winUSBRegistry in deviceList)
-                    {
-                        if (winUSBRegistry.SymbolicName == addWinUSBRegistry.SymbolicName)
-                        {
-                            bFound = true;
-                            break;
-                        }
-                    }
-                    if (!bFound)
-                    {
-                        deviceList.Add(addWinUSBRegistry);
-                    }
-                }
                 return deviceList;
             }
         }
@@ -107,18 +53,6 @@ namespace LibUsbDotNet.WinUsb
         {
             get
             {
-                if (ReferenceEquals(mDeviceInterfaceGuids, null))
-                {
-                    if (!mDeviceProperties.ContainsKey(DEVICE_INTERFACE_GUIDS)) return new Guid[0];
-
-                    string[] saDeviceInterfaceGuids = (string[]) mDeviceProperties[DEVICE_INTERFACE_GUIDS];
-                    mDeviceInterfaceGuids = new Guid[saDeviceInterfaceGuids.Length];
-                    for (int i = 0; i < saDeviceInterfaceGuids.Length; i++)
-                    {
-                        string sGuid = saDeviceInterfaceGuids[i].Trim(new char[] {' ', '{', '}', '[', ']', '\0'});
-                        mDeviceInterfaceGuids[i] = new Guid(sGuid);
-                    }
-                }
                 return mDeviceInterfaceGuids;
             }
         }
@@ -190,34 +124,10 @@ namespace LibUsbDotNet.WinUsb
             usbDevice = null;
 
             if (String.IsNullOrEmpty(SymbolicName)) return false;
-            String[] devInterfaceGuids = (string[]) mDeviceProperties[DEVICE_INTERFACE_GUIDS];
-
-            UsbSymbolicName symbolicNameToMatch = UsbSymbolicName.Parse(SymbolicName);
-
-            if (devInterfaceGuids != null && devInterfaceGuids.Length > 0)
+            if (WinUsbDevice.Open(SymbolicName, out usbDevice))
             {
-                foreach (string s in devInterfaceGuids)
-                {
-                    Guid guidInterface = new Guid(s);
-                    List<string> devicePathList;
-                    bool bSuccess = SetupApi.GetDevicePath(guidInterface, out devicePathList);
-                    if (bSuccess)
-                    {
-                        foreach (string devicePath in devicePathList)
-                        {
-                            UsbSymbolicName symbolicName = UsbSymbolicName.Parse(devicePath);
-                            if (symbolicNameToMatch.SerialNumber.ToLower() == symbolicName.SerialNumber.ToLower())
-                            {
-                                if (WinUsbDevice.Open(devicePath, out usbDevice))
-                                {
-                                    usbDevice.mUsbRegistry = this;
-                                    return true;
-                                }
-                                return false;
-                            }
-                        }
-                    }
-                }
+                usbDevice.mUsbRegistry = this;
+                return true;
             }
             return false;
         }
@@ -245,29 +155,49 @@ namespace LibUsbDotNet.WinUsb
             {
                 string[] devInterfaceGuids = GetAsStringArray(propBuffer, requiredSize);
 
-                WinUsbRegistry regInfo = new WinUsbRegistry();
-                regInfo.mDeviceProperties.Add(DEVICE_INTERFACE_GUIDS, devInterfaceGuids);
+                foreach (String devInterfaceGuid in devInterfaceGuids)
+                {
+                    Guid g = new Guid(devInterfaceGuid);
+                    List<string> devicePaths;
+                    if (SetupApi.GetDevicePath(g, out devicePaths))
+                    {
+                        foreach (string devicePath in devicePaths)
+                        {
+                            WinUsbRegistry regInfo = new WinUsbRegistry();
 
-                bSuccess =
-                    SetupApi.SetupDiGetCustomDeviceProperty(deviceInfoSet,
-                                                            ref deviceInfoData,
-                                                            SYMBOLIC_NAME_KEY,
-                                                            SetupApi.DICUSTOMDEVPROP.NONE,
-                                                            out propertyType,
-                                                            propBuffer,
-                                                            propBuffer.Length,
-                                                            out requiredSize);
-                string symbolicName = String.Empty;
-                if (!bSuccess)
-                {
+                            SetupApi.getSPDRPProperties(deviceInfoSet, ref deviceInfoData, regInfo.mDeviceProperties);
+
+                            // Use the actual winusb device path for SYMBOLIC_NAME_KEY. This will be used to open the device.
+                            regInfo.mDeviceProperties.Add(SYMBOLIC_NAME_KEY, devicePath);
+
+                            regInfo.mDeviceInterfaceGuids = new Guid[] { g };
+
+                            // Don't add duplicate devices (with the same device path)
+                            WinUsbRegistry foundRegistry=null;
+                            foreach (WinUsbRegistry usbRegistry in deviceList)
+                            {
+                                if (usbRegistry.SymbolicName == regInfo.SymbolicName)
+                                {
+                                    foundRegistry = usbRegistry;
+                                    break;
+                                }
+                            }
+                            if (foundRegistry == null)
+                                deviceList.Add(regInfo);
+                            else
+                            {
+                                // If the device path already exists, add this compatible guid 
+                                // to the foundRegstry guid list.
+                                List<Guid> newGuidList = new List<Guid>(foundRegistry.mDeviceInterfaceGuids);
+                                if (!newGuidList.Contains(g))
+                                {
+                                    newGuidList.Add(g);
+                                    foundRegistry.mDeviceInterfaceGuids = newGuidList.ToArray();
+                                }
+                            }
+                        }
+                    }
                 }
-                else
-                {
-                    symbolicName = GetAsString(propBuffer, requiredSize);
-                }
-                regInfo.mDeviceProperties.Add(SYMBOLIC_NAME_KEY, symbolicName);
-                SetupApi.getSPDRPProperties(deviceInfoSet, ref deviceInfoData, regInfo.mDeviceProperties);
-                deviceList.Add(regInfo);
             }
 
             return false;

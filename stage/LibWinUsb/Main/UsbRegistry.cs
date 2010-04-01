@@ -61,7 +61,7 @@ namespace LibUsbDotNet.Main
         /// <summary>
         /// Guid array of all <see cref="DeviceInterfaceGuids"/> assigned to this device.
         /// </summary>
-        protected Guid[] mDeviceInterfaceGuids;
+        protected Guid[] mDeviceInterfaceGuids=new Guid[0];
 
         internal Dictionary<string, object> mDeviceProperties = new Dictionary<string, object>();
 
