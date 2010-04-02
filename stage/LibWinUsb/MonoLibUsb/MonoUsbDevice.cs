@@ -27,7 +27,6 @@ using System.Runtime.InteropServices;
 using LibUsbDotNet.Descriptors;
 using LibUsbDotNet.Info;
 using LibUsbDotNet.Main;
-using LibUsbDotNet.LudnMonoLibUsb;
 using MonoLibUsb;
 using MonoLibUsb.Descriptors;
 using MonoLibUsb.Profile;
@@ -92,13 +91,13 @@ namespace LibUsbDotNet.LudnMonoLibUsb
                     {
                         mMonoUSBProfileList = new MonoUsbProfileList();
                     }
-                    int ret = (int)mMonoUSBProfileList.Refresh(MonoUsbEventHandler.SessionHandle);
+                    int ret = (int) mMonoUSBProfileList.Refresh(MonoUsbEventHandler.SessionHandle);
                     if (ret < 0) return null;
                     List<MonoUsbDevice> rtnList = new List<MonoUsbDevice>();
                     for (int iProfile = 0; iProfile < mMonoUSBProfileList.Count; iProfile++)
                     {
                         MonoUsbProfile monoUSBProfile = mMonoUSBProfileList[iProfile];
-                        if (monoUSBProfile.DeviceDescriptor.BcdUsb==0) continue;
+                        if (monoUSBProfile.DeviceDescriptor.BcdUsb == 0) continue;
                         MonoUsbDevice newDevice = new MonoUsbDevice(ref monoUSBProfile);
                         rtnList.Add(newDevice);
                     }
@@ -124,6 +123,8 @@ namespace LibUsbDotNet.LudnMonoLibUsb
             get { return mMonoUSBProfile.BusNumber; }
         }
 
+        #region IUsbDevice Members
+
         /// <summary>
         /// Sends a usb device reset command.
         /// </summary>
@@ -138,7 +139,7 @@ namespace LibUsbDotNet.LudnMonoLibUsb
             if (!IsOpen) throw new UsbException(this, "Device is not opened.");
             ActiveEndpoints.Clear();
 
-            if ((ret = MonoUsbApi.ResetDevice((MonoUsbDeviceHandle)mUsbHandle))!=0)
+            if ((ret = MonoUsbApi.ResetDevice((MonoUsbDeviceHandle) mUsbHandle)) != 0)
             {
                 UsbError.Error(ErrorCode.MonoApiError, ret, "ResetDevice Failed", this);
             }
@@ -147,10 +148,8 @@ namespace LibUsbDotNet.LudnMonoLibUsb
                 Close();
             }
 
-            return ret==0;
+            return ret == 0;
         }
-
-        #region IUsbDevice Members
 
         /// <summary>
         /// Returns the DriverMode this USB device is using.
@@ -159,9 +158,9 @@ namespace LibUsbDotNet.LudnMonoLibUsb
         {
             get
             {
-                if (IsLinux) 
+                if (IsLinux)
                     return DriverModeType.MonoLibUsb;
-                    
+
                 return DriverModeType.LibUsbWinBack;
             }
         }
@@ -190,17 +189,17 @@ namespace LibUsbDotNet.LudnMonoLibUsb
         /// <returns>True on success.</returns>
         public override bool ControlTransfer(ref UsbSetupPacket setupPacket, IntPtr buffer, int bufferLength, out int lengthTransferred)
         {
-            Debug.WriteLine(GetType().Name + ".ControlTransfer() Before","Libusb-1.0");
+            Debug.WriteLine(GetType().Name + ".ControlTransfer() Before", "Libusb-1.0");
             int ret = MonoUsbApi.ControlTransferAsync((MonoUsbDeviceHandle) mUsbHandle,
-                                                            setupPacket.RequestType,
-                                                            setupPacket.Request,
-                                                            setupPacket.Value,
-                                                            setupPacket.Index,
-                                                            buffer,
-                                                            (short)bufferLength,
-                                                            UsbConstants.DEFAULT_TIMEOUT);
+                                                      setupPacket.RequestType,
+                                                      setupPacket.Request,
+                                                      setupPacket.Value,
+                                                      setupPacket.Index,
+                                                      buffer,
+                                                      (short) bufferLength,
+                                                      UsbConstants.DEFAULT_TIMEOUT);
 
-            Debug.WriteLine(GetType().Name + ".ControlTransfer() Error:" + ((MonoUsbError)ret).ToString(), "Libusb-1.0");
+            Debug.WriteLine(GetType().Name + ".ControlTransfer() Error:" + ((MonoUsbError) ret).ToString(), "Libusb-1.0");
             if (ret < 0)
             {
                 UsbError.Error(ErrorCode.MonoApiError, ret, "ControlTransfer Failed", this);
@@ -262,7 +261,6 @@ namespace LibUsbDotNet.LudnMonoLibUsb
                 UsbError.Error(ErrorCode.MonoApiError, (int) MonoUsbDeviceHandle.LastErrorCode, "MonoUsbDevice.Open Failed", this);
                 mUsbHandle = null;
                 return false;
-
             }
             mUsbHandle = handle;
             if (IsOpen) return true;
@@ -277,13 +275,13 @@ namespace LibUsbDotNet.LudnMonoLibUsb
         /// <param name="readEndpointID">Endpoint number for read operations.</param>
         /// <param name="readBufferSize">Size of the read buffer allocated for the <see cref="UsbEndpointReader.DataReceived"/> event.</param>
         /// <param name="endpointType">The type of endpoint to open.</param>
-        /// <returns>A <see cref="UsbEndpointReader"/> class ready for reading.
-        /// If the specified endpoint has already been opened, the original <see cref="UsbEndpointReader"/> object will be returned.
-        /// </returns>
-        /// <exception cref="UsbException">If the endpoint does not exist.</exception>
-        /// <exception cref="UsbException">If the device has not been configured.</exception>
+        /// <returns>A <see cref="UsbEndpointReader"/> class ready for reading. If the specified endpoint is already been opened, the original <see cref="UsbEndpointReader"/> class is returned.</returns>
         public override UsbEndpointReader OpenEndpointReader(ReadEndpointID readEndpointID, int readBufferSize, EndpointType endpointType)
         {
+            foreach (UsbEndpointBase activeEndpoint in mActiveEndpoints)
+                if (activeEndpoint.EpNum == (byte)readEndpointID) 
+                    return (UsbEndpointReader)activeEndpoint;
+
             UsbEndpointReader epNew = new MonoUsbEndpointReader(this, readBufferSize, readEndpointID, endpointType);
             return (UsbEndpointReader) ActiveEndpoints.Add(epNew);
         }
@@ -293,13 +291,13 @@ namespace LibUsbDotNet.LudnMonoLibUsb
         /// </summary>
         /// <param name="writeEndpointID">Endpoint number for read operations.</param>
         /// <param name="endpointType">The type of endpoint to open.</param>
-        /// <returns>A <see cref="UsbEndpointWriter"/> class ready for writing.
-        /// If the specified endpoint has already been opened, the original <see cref="UsbEndpointWriter"/> object will be returned.
-        /// </returns>
-        /// <exception cref="UsbException">If the endpoint does not exist.</exception>
-        /// <exception cref="UsbException">If the device has not been configured.</exception>
+        /// <returns>A <see cref="UsbEndpointWriter"/> class ready for writing. If the specified endpoint is already been opened, the original <see cref="UsbEndpointWriter"/> class is returned.</returns>
         public override UsbEndpointWriter OpenEndpointWriter(WriteEndpointID writeEndpointID, EndpointType endpointType)
         {
+            foreach (UsbEndpointBase activeEndpoint in ActiveEndpoints)
+                if (activeEndpoint.EpNum == (byte)writeEndpointID)
+                    return (UsbEndpointWriter)activeEndpoint;
+
             UsbEndpointWriter epNew = new MonoUsbEndpointWriter(this, writeEndpointID, endpointType);
             return (UsbEndpointWriter) mActiveEndpoints.Add(epNew);
         }
@@ -462,9 +460,9 @@ namespace LibUsbDotNet.LudnMonoLibUsb
                 if (ret != 0 || nextConfigHandle.IsInvalid)
                 {
                     usbError = UsbError.Error(ErrorCode.MonoApiError,
-                                     ret,
-                                     String.Format("GetConfigDescriptor Failed at index:{0}", iConfig),
-                                     usbDevice);
+                                              ret,
+                                              String.Format("GetConfigDescriptor Failed at index:{0}", iConfig),
+                                              usbDevice);
                     return usbError.ErrorCode;
                 }
                 try
@@ -498,7 +496,7 @@ namespace LibUsbDotNet.LudnMonoLibUsb
                 {
                     mMonoUSBProfileList = new MonoUsbProfileList();
                 }
-                return (int)mMonoUSBProfileList.Refresh(MonoUsbEventHandler.SessionHandle);
+                return (int) mMonoUSBProfileList.Refresh(MonoUsbEventHandler.SessionHandle);
             }
         }
 
@@ -509,9 +507,6 @@ namespace LibUsbDotNet.LudnMonoLibUsb
         /// This is done automatically when needed.
         /// <para>Usually there is no need to call this functions externally.</para> 
         /// </remarks>
-        public static void Init() 
-        { 
-            MonoUsbApi.InitAndStart();
-        }
+        public static void Init() { MonoUsbApi.InitAndStart(); }
     }
 }

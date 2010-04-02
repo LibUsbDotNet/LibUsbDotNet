@@ -23,28 +23,18 @@ using System;
 
 namespace LibUsbDotNet.Main
 {
-    /// <summary>
-    /// Standard USB requests.
-    /// </summary>
+    ///<summary>Endpoint direction.</summary>
     /// <seealso cref="UsbCtrlFlags"/>
     [Flags]
-    public enum UsbRequestType : byte
+    public enum UsbEndpointDirection : byte
     {
         /// <summary>
-        /// Class specific request.
+        /// In Direction
         /// </summary>
-        TypeClass = (0x01 << 5),
+        EndpointIn = 0x80,
         /// <summary>
-        /// RESERVED.
+        /// Out Direction
         /// </summary>
-        TypeReserved = (0x03 << 5),
-        /// <summary>
-        /// Standard request.
-        /// </summary>
-        TypeStandard = (0x00 << 5),
-        /// <summary>
-        /// Vendor specific request.
-        /// </summary>
-        TypeVendor = (0x02 << 5),
+        EndpointOut = 0x00,
     }
 }

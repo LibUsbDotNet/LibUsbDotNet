@@ -20,31 +20,54 @@
 // 
 // 
 using System;
-
+// ReSharper disable InconsistentNaming
 namespace LibUsbDotNet.Main
 {
-    /// <summary>
-    /// Standard USB requests.
-    /// </summary>
-    /// <seealso cref="UsbCtrlFlags"/>
+    ///<summary>For Convienience Endpoint direction, recipient of the request, and request type on one enumeration.</summary>
     [Flags]
-    public enum UsbRequestType : byte
+    public enum UsbCtrlFlags : byte
     {
+        /// <summary>
+        /// In Direction
+        /// </summary>
+        Direction_In = 0x80,
+        /// <summary>
+        /// Out Direction
+        /// </summary>
+        Direction_Out = 0x00,
+
+        /// <summary>
+        /// Device is recipient.
+        /// </summary>
+        Recipient_Device = 0x00,
+        /// <summary>
+        /// Endpoint is recipient.
+        /// </summary>
+        Recipient_Endpoint = 0x02,
+        /// <summary>
+        /// Interface is recipient.
+        /// </summary>
+        Recipient_Interface = 0x01,
+        /// <summary>
+        /// Other is recipient.
+        /// </summary>
+        Recipient_Other = 0x03,
+
         /// <summary>
         /// Class specific request.
         /// </summary>
-        TypeClass = (0x01 << 5),
+        RequestType_Class = (0x01 << 5),
         /// <summary>
         /// RESERVED.
         /// </summary>
-        TypeReserved = (0x03 << 5),
+        RequestType_Reserved = (0x03 << 5),
         /// <summary>
         /// Standard request.
         /// </summary>
-        TypeStandard = (0x00 << 5),
+        RequestType_Standard = (0x00 << 5),
         /// <summary>
         /// Vendor specific request.
         /// </summary>
-        TypeVendor = (0x02 << 5),
+        RequestType_Vendor = (0x02 << 5),
     }
 }

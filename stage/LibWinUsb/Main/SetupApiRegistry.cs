@@ -1,3 +1,24 @@
+// Copyright © 2006-2010 Travis Robinson. All rights reserved.
+// 
+// website: http://sourceforge.net/projects/libusbdotnet
+// e-mail:  libusbdotnet@gmail.com
+// 
+// This program is free software; you can redistribute it and/or modify it
+// under the terms of the GNU General Public License as published by the
+// Free Software Foundation; either version 2 of the License, or 
+// (at your option) any later version.
+// 
+// This program is distributed in the hope that it will be useful, but 
+// WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY
+// or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General Public License
+// for more details.
+// 
+// You should have received a copy of the GNU General Public License along
+// with this program; if not, write to the Free Software Foundation, Inc.,
+// 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA. or 
+// visit www.gnu.org.
+// 
+// 
 using System;
 using System.Collections.Generic;
 using LibUsbDotNet.Internal;
@@ -7,17 +28,10 @@ namespace LibUsbDotNet.Main
 {
     internal static class SetupApiRegistry
     {
-        private class MasterItem : Dictionary<string, object>
-        {
-            public Dictionary<Guid,List<string>> DevicePaths=new Dictionary<Guid, List<string>>();
-        }
-        private class MasterList : List<MasterItem>
-        {
-
-        }
-        private static readonly MasterList mMasterSetupApiDeviceList = new MasterList();
         private static readonly Object mLockSetupApiRegistry = new object();
+        private static readonly MasterList mMasterSetupApiDeviceList = new MasterList();
         private static DateTime mLastRefreshTime = DateTime.MinValue;
+
         public static bool NeedsRefresh
         {
             get
@@ -29,7 +43,15 @@ namespace LibUsbDotNet.Main
                     return false;
                 }
             }
+        }
 
+        private class MasterItem : Dictionary<string, object>
+        {
+            public Dictionary<Guid, List<string>> DevicePaths = new Dictionary<Guid, List<string>>();
+        }
+
+        private class MasterList : List<MasterItem>
+        {
         }
 
         public static bool FillDeviceProperties(UsbRegistry usbRegistry, UsbDevice usbDevice)
@@ -38,15 +60,15 @@ namespace LibUsbDotNet.Main
 
             lock (mLockSetupApiRegistry)
             {
-                string fakeHwId = LegacyUsbRegistry.GetRegistryHardwareID((ushort)usbDevice.Info.Descriptor.VendorID,
-                                                                          (ushort)usbDevice.Info.Descriptor.ProductID,
-                                                                          (ushort)usbDevice.Info.Descriptor.BcdDevice);
+                string fakeHwId = LegacyUsbRegistry.GetRegistryHardwareID((ushort) usbDevice.Info.Descriptor.VendorID,
+                                                                          (ushort) usbDevice.Info.Descriptor.ProductID,
+                                                                          (ushort) usbDevice.Info.Descriptor.BcdDevice);
                 bool bFound = false;
                 string hwIdToFind = fakeHwId.ToLower();
                 foreach (MasterItem masterItem in mMasterSetupApiDeviceList)
                 {
                     string[] hwIds = masterItem[SPDRP.HardwareId.ToString()] as string[];
-                    if (ReferenceEquals(hwIds,null)) continue;
+                    if (ReferenceEquals(hwIds, null)) continue;
                     foreach (string hwID in hwIds)
                     {
                         if (hwID.ToLower().Contains(hwIdToFind))
@@ -58,15 +80,14 @@ namespace LibUsbDotNet.Main
                     }
                     if (bFound) break;
                 }
-                return bFound;   
+                return bFound;
             }
-
         }
+
         public static void BuildMasterList()
         {
             lock (mLockSetupApiRegistry)
             {
-
                 mMasterSetupApiDeviceList.Clear();
                 SetupApi.EnumClassDevs(null, SetupApi.DICFG.PRESENT | SetupApi.DICFG.ALLCLASSES, BuildMasterCallback, mMasterSetupApiDeviceList);
                 mLastRefreshTime = DateTime.Now;
@@ -75,7 +96,6 @@ namespace LibUsbDotNet.Main
 
         private static bool BuildMasterCallback(IntPtr deviceInfoSet, int deviceindex, ref SetupApi.SP_DEVINFO_DATA deviceInfoData, object userData)
         {
-
             MasterList deviceList = userData as MasterList;
             MasterItem deviceItem = new MasterItem();
 
@@ -103,15 +123,12 @@ namespace LibUsbDotNet.Main
                     List<string> devicePathList;
                     if (SetupApi.GetDevicePath(g, out devicePathList))
                     {
-
                         deviceItem.DevicePaths.Add(g, devicePathList);
                     }
                 }
-
             }
             else
             {
-
                 bSuccess = SetupApi.SetupDiGetCustomDeviceProperty(deviceInfoSet,
                                                                    ref deviceInfoData,
                                                                    UsbRegistry.LIBUSB_INTERFACE_GUIDS,
@@ -134,7 +151,6 @@ namespace LibUsbDotNet.Main
                             deviceItem.DevicePaths.Add(g, devicePathList);
                         }
                     }
-
                 }
             }
 

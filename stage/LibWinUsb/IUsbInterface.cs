@@ -146,37 +146,42 @@ namespace LibUsbDotNet
         bool Open();
 
         /// <summary>
-        /// Opens an endpoint for reading
+        /// Opens a <see cref="EndpointType.Bulk"/> endpoint for reading
         /// </summary>
         /// <param name="readEndpointID">Endpoint number for read operations.</param>
         /// <param name="readBufferSize">Size of the read buffer allocated for the <see cref="UsbEndpointReader.DataReceived"/> event.</param>
-        /// <returns>A <see cref="UsbEndpointReader"/> class ready for reading.
-        /// If the specified endpoint has already been opened, the original <see cref="UsbEndpointReader"/> object will be returned.
-        /// </returns>
-        /// <exception cref="UsbException">If the endpoint does not exist.</exception>
-        /// <exception cref="UsbException">If the device has not been configured.</exception>
+        /// <returns>A <see cref="UsbEndpointReader"/> class ready for reading. If the specified endpoint is already been opened, the original <see cref="UsbEndpointReader"/> class is returned.</returns>
         UsbEndpointReader OpenEndpointReader(ReadEndpointID readEndpointID, int readBufferSize);
 
         /// <summary>
         /// Opens an endpoint for reading
         /// </summary>
         /// <param name="readEndpointID">Endpoint number for read operations.</param>
-        /// <returns>A <see cref="UsbEndpointReader"/> class ready for reading.
-        /// If the specified endpoint has already been opened, the original <see cref="UsbEndpointReader"/> object will be returned.
-        /// </returns>
-        /// <exception cref="UsbException">If the endpoint does not exist.</exception>
-        /// <exception cref="UsbException">If the device has not been configured.</exception>
+        /// <param name="readBufferSize">Size of the read buffer allocated for the <see cref="UsbEndpointReader.DataReceived"/> event.</param>
+        /// <param name="endpointType">The type of endpoint to open.</param>
+        /// <returns>A <see cref="UsbEndpointReader"/> class ready for reading. If the specified endpoint is already been opened, the original <see cref="UsbEndpointReader"/> class is returned.</returns>
+        UsbEndpointReader OpenEndpointReader(ReadEndpointID readEndpointID, int readBufferSize, EndpointType endpointType);
+
+        /// <summary>
+        /// Opens a <see cref="EndpointType.Bulk"/> endpoint for reading
+        /// </summary>
+        /// <param name="readEndpointID">Endpoint number for read operations.</param>
+        /// <returns>A <see cref="UsbEndpointReader"/> class ready for reading. If the specified endpoint is already been opened, the original <see cref="UsbEndpointReader"/> class is returned.</returns>
         UsbEndpointReader OpenEndpointReader(ReadEndpointID readEndpointID);
+
+        /// <summary>
+        /// Opens a <see cref="EndpointType.Bulk"/> endpoint for writing
+        /// </summary>
+        /// <param name="writeEndpointID">Endpoint number for read operations.</param>
+        /// <returns>A <see cref="UsbEndpointWriter"/> class ready for writing. If the specified endpoint is already been opened, the original <see cref="UsbEndpointWriter"/> class is returned.</returns>
+        UsbEndpointWriter OpenEndpointWriter(WriteEndpointID writeEndpointID);
 
         /// <summary>
         /// Opens an endpoint for writing
         /// </summary>
         /// <param name="writeEndpointID">Endpoint number for read operations.</param>
-        /// <returns>A <see cref="UsbEndpointWriter"/> class ready for writing.
-        /// If the specified endpoint has already been opened, the original <see cref="UsbEndpointWriter"/> object will be returned.
-        /// </returns>
-        /// <exception cref="UsbException">If the endpoint does not exist.</exception>
-        /// <exception cref="UsbException">If the device has not been configured.</exception>
-        UsbEndpointWriter OpenEndpointWriter(WriteEndpointID writeEndpointID);
+        /// <param name="endpointType">The type of endpoint to open.</param>
+        /// <returns>A <see cref="UsbEndpointWriter"/> class ready for writing. If the specified endpoint is already been opened, the original <see cref="UsbEndpointWriter"/> class is returned.</returns>
+        UsbEndpointWriter OpenEndpointWriter(WriteEndpointID writeEndpointID, EndpointType endpointType);
     }
 }

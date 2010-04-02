@@ -110,13 +110,8 @@ namespace LibUsbDotNet
             }
             ConWriteLine(ConType.Info);
 
-            ConsoleColor fg = Console.ForegroundColor;
-            ConsoleColor bg = Console.BackgroundColor;
-            Console.BackgroundColor = fg;
-            Console.ForegroundColor = bg;
+
             ConWrite(ConType.Info, "Select (1-{0}) :", deviceProfiles.Count);
-            Console.ForegroundColor = fg;
-            Console.BackgroundColor = bg;
             string input = Console.ReadLine();
             ushort inputValue;
             if (!ushort.TryParse(input, out inputValue))

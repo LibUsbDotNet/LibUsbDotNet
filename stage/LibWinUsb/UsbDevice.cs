@@ -26,11 +26,9 @@ using System.Runtime.InteropServices;
 using LibUsbDotNet.Descriptors;
 using LibUsbDotNet.Info;
 using LibUsbDotNet.Internal;
-using LibUsbDotNet.LibUsb;
-using LibUsbDotNet.Main;
 using LibUsbDotNet.LudnMonoLibUsb;
-using LibUsbDotNet.LudnMonoLibUsb.Internal;
-using LibUsbDotNet.WinUsb;
+using LibUsbDotNet.Main;
+using MonoLibUsb;
 
 namespace LibUsbDotNet
 {
@@ -43,15 +41,46 @@ namespace LibUsbDotNet
     /// </remarks>
     public abstract partial class UsbDevice
     {
+        #region Enumerations
+
+        /// <summary>
+        /// Kernel driver modes supported by LibUsbDotNet.
+        /// </summary>
+        public enum DriverModeType
+        {
+            /// <summary>
+            /// Not yet determined.
+            /// </summary>
+            Unknown,
+            /// <summary>
+            /// Using LibUsb kernel driver (Legacy or Native) on windows.
+            /// </summary>
+            LibUsb,
+            /// <summary>
+            /// Using WinUsb user-mode driver on windows.
+            /// </summary>
+            WinUsb,
+            /// <summary>
+            /// Using Libusb 1.0 driver on linux.
+            /// </summary>
+            MonoLibUsb,
+            /// <summary>
+            /// Using Libusb 1.0 windows backend driver on windows.
+            /// </summary>
+            LibUsbWinBack
+        }
+
+        #endregion
+
         internal readonly UsbEndpointList mActiveEndpoints;
         internal readonly UsbApiBase mUsbApi;
+        internal UsbDeviceDescriptor mCachedDeviceDescriptor;
         internal List<UsbConfigInfo> mConfigs;
         internal int mCurrentConfigValue = -1;
         internal UsbDeviceInfo mDeviceInfo;
-        internal UsbDeviceDescriptor mCachedDeviceDescriptor;
         internal SafeHandle mUsbHandle;
         internal UsbRegistry mUsbRegistry;
-        
+
         internal UsbDevice(UsbApiBase usbApi, SafeHandle usbHandle)
         {
             mUsbApi = usbApi;
@@ -126,7 +155,7 @@ namespace LibUsbDotNet
         /// <summary>
         /// Returns the DriverMode this USB device is using.
         /// </summary>
-        public abstract DriverModeType DriverMode { get;}
+        public abstract DriverModeType DriverMode { get; }
 
 
         /// <summary>
@@ -193,8 +222,9 @@ namespace LibUsbDotNet
             int uTransferLength;
 
             UsbSetupPacket setupPkt = new UsbSetupPacket();
-            setupPkt.RequestType = (byte)UsbEndpointDirection.EndpointIn | (byte)UsbRequestType.TypeStandard | (byte)UsbRequestRecipient.RecipDevice;
-            setupPkt.Request = (byte)UsbStandardRequest.GetConfiguration;
+            setupPkt.RequestType = (byte) UsbEndpointDirection.EndpointIn | (byte) UsbRequestType.TypeStandard |
+                                   (byte) UsbRequestRecipient.RecipDevice;
+            setupPkt.Request = (byte) UsbStandardRequest.GetConfiguration;
             setupPkt.Value = 0;
             setupPkt.Index = 0;
             setupPkt.Length = 1;
@@ -243,32 +273,23 @@ namespace LibUsbDotNet
         /// Opens a <see cref="EndpointType.Bulk"/> endpoint for writing
         /// </summary>
         /// <param name="writeEndpointID">Endpoint number for read operations.</param>
-        /// <returns>A <see cref="UsbEndpointWriter"/> class ready for writing.
-        /// If the specified endpoint has already been opened, the original <see cref="UsbEndpointWriter"/> object will be returned.
-        /// </returns>
-        /// <exception cref="UsbException">If the <paramref name="writeEndpointID"/> does not exist.</exception>
-        public virtual UsbEndpointWriter OpenEndpointWriter(WriteEndpointID writeEndpointID)
-        {
-            return OpenEndpointWriter(writeEndpointID, EndpointType.Bulk);
-        }
+        /// <returns>A <see cref="UsbEndpointWriter"/> class ready for writing. If the specified endpoint is already been opened, the original <see cref="UsbEndpointWriter"/> class is returned.</returns>
+        public virtual UsbEndpointWriter OpenEndpointWriter(WriteEndpointID writeEndpointID) { return OpenEndpointWriter(writeEndpointID, EndpointType.Bulk); }
 
         /// <summary>
         /// Opens an endpoint for writing
         /// </summary>
         /// <param name="writeEndpointID">Endpoint number for read operations.</param>
         /// <param name="endpointType">The type of endpoint to open.</param>
-        /// <returns>A <see cref="UsbEndpointWriter"/> class ready for writing.
-        /// If the specified endpoint has already been opened, the original <see cref="UsbEndpointWriter"/> object will be returned.
-        /// </returns>
-        /// <exception cref="UsbException">If the <paramref name="writeEndpointID"/> does not exist.</exception>
+        /// <returns>A <see cref="UsbEndpointWriter"/> class ready for writing. If the specified endpoint is already been opened, the original <see cref="UsbEndpointWriter"/> class is returned.</returns>
         public virtual UsbEndpointWriter OpenEndpointWriter(WriteEndpointID writeEndpointID, EndpointType endpointType)
         {
             foreach (UsbEndpointBase activeEndpoint in ActiveEndpoints)
-            {
-                if (activeEndpoint.EpNum == (byte) writeEndpointID) return (UsbEndpointWriter) activeEndpoint;
-            }
+                if (activeEndpoint.EpNum == (byte) writeEndpointID) 
+                    return (UsbEndpointWriter) activeEndpoint;
+
             UsbEndpointWriter epNew = new UsbEndpointWriter(this, writeEndpointID, endpointType);
-            return (UsbEndpointWriter)mActiveEndpoints.Add(epNew);
+            return (UsbEndpointWriter) mActiveEndpoints.Add(epNew);
         }
 
         internal static List<UsbConfigInfo> GetDeviceConfigs(UsbDevice usbDevice)
@@ -306,15 +327,16 @@ namespace LibUsbDotNet
                             rtnConfigs.Add(new UsbConfigInfo(usbDevice, configDescriptor, ref rawDescriptorList));
                         }
                         else
-                            UsbError.Error(ErrorCode.InvalidConfig,0,
-                                  "GetDeviceConfigs: USB config descriptor length doesn't match the length received.",
-                                  usbDevice);
+                            UsbError.Error(ErrorCode.InvalidConfig,
+                                           0,
+                                           "GetDeviceConfigs: USB config descriptor length doesn't match the length received.",
+                                           usbDevice);
                     }
                     else
-                        UsbError.Error(ErrorCode.InvalidConfig,0, "GetDeviceConfigs: USB config descriptor is invalid.", usbDevice);
+                        UsbError.Error(ErrorCode.InvalidConfig, 0, "GetDeviceConfigs: USB config descriptor is invalid.", usbDevice);
                 }
                 else
-                    UsbError.Error(ErrorCode.InvalidConfig,0, "GetDeviceConfigs", usbDevice);
+                    UsbError.Error(ErrorCode.InvalidConfig, 0, "GetDeviceConfigs", usbDevice);
             }
             return rtnConfigs;
         }
@@ -393,52 +415,37 @@ namespace LibUsbDotNet
 
 
         /// <summary>
-        /// Opens an endpoint for reading.
+        /// Opens a <see cref="EndpointType.Bulk"/> endpoint for reading
         /// </summary>
         /// <param name="readEndpointID">Endpoint number for read operations.</param>
-        /// <returns>A <see cref="UsbEndpointReader"/> class ready for reading.
-        /// If the specified endpoint has already been opened, the original <see cref="UsbEndpointReader"/> object will be returned.
-        /// </returns>
-        /// <exception cref="UsbException">If the endpoint does not exist.</exception>
-        /// <exception cref="UsbException">If the device has not been configured.</exception>
-        public UsbEndpointReader OpenEndpointReader(ReadEndpointID readEndpointID)
-        {
-            return OpenEndpointReader(readEndpointID, UsbEndpointReader.DefReadBufferSize);
-        }
+        /// <returns>A <see cref="UsbEndpointReader"/> class ready for reading. If the specified endpoint is already been opened, the original <see cref="UsbEndpointReader"/> class is returned.</returns>
+        public UsbEndpointReader OpenEndpointReader(ReadEndpointID readEndpointID) { return OpenEndpointReader(readEndpointID, UsbEndpointReader.DefReadBufferSize); }
 
         /// <summary>
         /// Opens a <see cref="EndpointType.Bulk"/> endpoint for reading
         /// </summary>
         /// <param name="readEndpointID">Endpoint number for read operations.</param>
         /// <param name="readBufferSize">Size of the read buffer allocated for the <see cref="UsbEndpointReader.DataReceived"/> event.</param>
-        /// <returns>A <see cref="UsbEndpointReader"/> class ready for reading.
-        /// If the specified endpoint has already been opened, the original <see cref="UsbEndpointReader"/> object will be returned.
-        /// </returns>
-        /// <exception cref="UsbException">If the endpoint does not exist.</exception>
-        /// <exception cref="UsbException">If the device has not been configured.</exception>
-        public UsbEndpointReader OpenEndpointReader(ReadEndpointID readEndpointID, int readBufferSize)
-        {
-            return OpenEndpointReader(readEndpointID, readBufferSize, EndpointType.Bulk);
-        }
+        /// <returns>A <see cref="UsbEndpointReader"/> class ready for reading. If the specified endpoint is already been opened, the original <see cref="UsbEndpointReader"/> class is returned.</returns>
+        public UsbEndpointReader OpenEndpointReader(ReadEndpointID readEndpointID, int readBufferSize) { return OpenEndpointReader(readEndpointID, readBufferSize, EndpointType.Bulk); }
+
         /// <summary>
         /// Opens an endpoint for reading
         /// </summary>
         /// <param name="readEndpointID">Endpoint number for read operations.</param>
         /// <param name="readBufferSize">Size of the read buffer allocated for the <see cref="UsbEndpointReader.DataReceived"/> event.</param>
         /// <param name="endpointType">The type of endpoint to open.</param>
-        /// <returns>A <see cref="UsbEndpointReader"/> class ready for reading.
-        /// If the specified endpoint has already been opened, the original <see cref="UsbEndpointReader"/> object will be returned.
-        /// </returns>
-        /// <exception cref="UsbException">If the endpoint does not exist.</exception>
-        /// <exception cref="UsbException">If the device has not been configured.</exception>
+        /// <returns>A <see cref="UsbEndpointReader"/> class ready for reading. If the specified endpoint is already been opened, the original <see cref="UsbEndpointReader"/> class is returned.</returns>
         public virtual UsbEndpointReader OpenEndpointReader(ReadEndpointID readEndpointID, int readBufferSize, EndpointType endpointType)
         {
             foreach (UsbEndpointBase activeEndpoint in mActiveEndpoints)
-                if (activeEndpoint.EpNum == (byte)readEndpointID) return (UsbEndpointReader) activeEndpoint;
+                if (activeEndpoint.EpNum == (byte) readEndpointID) 
+                    return (UsbEndpointReader) activeEndpoint;
 
             UsbEndpointReader epNew = new UsbEndpointReader(this, readBufferSize, readEndpointID, endpointType);
-            return (UsbEndpointReader)mActiveEndpoints.Add(epNew);
+            return (UsbEndpointReader) mActiveEndpoints.Add(epNew);
         }
+
         /// <summary>
         /// Gets the selected alternate interface of the specified interface.
         /// </summary>
@@ -451,8 +458,9 @@ namespace LibUsbDotNet
             int uTransferLength;
 
             UsbSetupPacket setupPkt = new UsbSetupPacket();
-            setupPkt.RequestType = (byte)UsbEndpointDirection.EndpointIn | (byte)UsbRequestType.TypeStandard | (byte)UsbRequestRecipient.RecipInterface;
-            setupPkt.Request = (byte)UsbStandardRequest.GetInterface;
+            setupPkt.RequestType = (byte) UsbEndpointDirection.EndpointIn | (byte) UsbRequestType.TypeStandard |
+                                   (byte) UsbRequestRecipient.RecipInterface;
+            setupPkt.Request = (byte) UsbStandardRequest.GetInterface;
             setupPkt.Value = 0;
             setupPkt.Index = interfaceID;
             setupPkt.Length = 1;
@@ -465,6 +473,7 @@ namespace LibUsbDotNet
 
             return bSuccess;
         }
+
         /// <summary>
         /// De-initializes the USB driver. 
         /// </summary>
@@ -480,38 +489,7 @@ namespace LibUsbDotNet
                     MonoUsbDevice.mMonoUSBProfileList.Close();
                 MonoUsbDevice.mMonoUSBProfileList = null;
             }
-            MonoLibUsb.MonoUsbApi.StopAndExit();
+            MonoUsbApi.StopAndExit();
         }
-        #region Enumerations
-
-        /// <summary>
-        /// Kernel driver modes supported by LibUsbDotNet.
-        /// </summary>
-        public enum DriverModeType
-        {
-            /// <summary>
-            /// Not yet determined.
-            /// </summary>
-            Unknown,
-            /// <summary>
-            /// Using LibUsb kernel driver (Legacy or Native) on windows.
-            /// </summary>
-            LibUsb,
-            /// <summary>
-            /// Using WinUsb user-mode driver on windows.
-            /// </summary>
-            WinUsb,
-            /// <summary>
-            /// Using Libusb 1.0 driver on linux.
-            /// </summary>
-            MonoLibUsb,
-            /// <summary>
-            /// Using Libusb 1.0 windows backend driver on windows.
-            /// </summary>
-            LibUsbWinBack
-        }
-
-        #endregion
-
     }
 }

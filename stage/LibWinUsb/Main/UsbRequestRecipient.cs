@@ -23,28 +23,26 @@ using System;
 
 namespace LibUsbDotNet.Main
 {
-    /// <summary>
-    /// Standard USB requests.
-    /// </summary>
+    ///<summary>Recipient of the request.</summary>
     /// <seealso cref="UsbCtrlFlags"/>
     [Flags]
-    public enum UsbRequestType : byte
+    public enum UsbRequestRecipient : byte
     {
         /// <summary>
-        /// Class specific request.
+        /// Device is recipient.
         /// </summary>
-        TypeClass = (0x01 << 5),
+        RecipDevice = 0x00,
         /// <summary>
-        /// RESERVED.
+        /// Endpoint is recipient.
         /// </summary>
-        TypeReserved = (0x03 << 5),
+        RecipEndpoint = 0x02,
         /// <summary>
-        /// Standard request.
+        /// Interface is recipient.
         /// </summary>
-        TypeStandard = (0x00 << 5),
+        RecipInterface = 0x01,
         /// <summary>
-        /// Vendor specific request.
+        /// Other is recipient.
         /// </summary>
-        TypeVendor = (0x02 << 5),
+        RecipOther = 0x03,
     }
 }
