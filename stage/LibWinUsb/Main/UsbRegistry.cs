@@ -34,6 +34,8 @@ namespace LibUsbDotNet.Main
         internal const string LIBUSB_INTERFACE_GUIDS = "LibUsbInterfaceGUIDs";
 
         internal const string SYMBOLIC_NAME_KEY = "SymbolicName";
+        internal const string DEVICE_ID_KEY = "DeviceID";
+
         private static readonly char[] ChNull = new char[] {'\0'};
 
         /// <summary>
@@ -61,7 +63,7 @@ namespace LibUsbDotNet.Main
         /// <summary>
         /// Guid array of all <see cref="DeviceInterfaceGuids"/> assigned to this device.
         /// </summary>
-        protected Guid[] mDeviceInterfaceGuids=new Guid[0];
+        internal Guid[] mDeviceInterfaceGuids=new Guid[0];
 
         internal Dictionary<string, object> mDeviceProperties = new Dictionary<string, object>();
 

@@ -1,2 +1,0 @@
-WARNING! This function makes permanent changes to the windows registry.  Improper use of this utility can permanately remove core system device required by the operating system to function.
-USE AT YOUR OWN RISK!

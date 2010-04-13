@@ -24,13 +24,55 @@ using System.Diagnostics;
 using System.Globalization;
 using System.Runtime.InteropServices;
 using System.Text;
+using InfWizard.WizardClassHelpers;
 using Microsoft.Win32;
 
 namespace WinApiNet
 {
+    public enum WindowsVersionType {
+	WINDOWS_UNDEFINED,
+	WINDOWS_UNSUPPORTED,
+	WINDOWS_2K,
+	WINDOWS_XP,
+	WINDOWS_VISTA,
+	WINDOWS_7
+    }
+    [Flags]
+    public enum DevKeyType
+    {
+        DEV = 0x00000001,         // Open/Create/Delete device key
+        DRV = 0x00000002,         // Open/Create/Delete driver key
+        BOTH = 0x00000004,         // Delete both driver and Device key
+
+    }
     public class SetupApi
     {
         #region Enumerations
+        /// <summary>
+        /// Define OEM Source Type values for use in SetupCopyOEMInf.
+        /// </summary>
+        public enum SPOST:uint 
+        {
+            SPOST_NONE = 0,
+            SPOST_PATH = 1,
+            SPOST_URL = 2,
+            SPOST_MAX = 3,
+        }
+
+        [Flags]
+        public enum CONFIGFLAG
+        {
+            REINSTALL=0x00000020
+        }
+        [Flags]
+        public enum CM
+        {
+            REENUMERATE_NORMAL = 0x00000000,
+            REENUMERATE_SYNCHRONOUS = 0x00000001,
+            REENUMERATE_RETRY_INSTALLATION = 0x00000002,
+            REENUMERATE_ASYNCHRONOUS = 0x00000004,
+            REENUMERATE_BITS = 0x00000007,
+        }
 
         public enum CR
         {
@@ -144,10 +186,112 @@ namespace WinApiNet
         }
 
 
-        public enum ErrorCodes
+        public enum ErrorCodes:uint
         {
-            ERROR_NO_MORE_ITEMS = -259,
-            ERROR_DEVICE_NOT_CONNECTED = -1167
+            APPLICATION_ERROR_MASK=0x20000000,
+
+            ERROR_SEVERITY_SUCCESS = 0x00000000,
+            ERROR_SEVERITY_INFORMATIONAL = 0x40000000,
+            ERROR_SEVERITY_WARNING = 0x80000000,
+            ERROR_SEVERITY_ERROR = 0xC0000000,
+
+            //
+            // Setupapi-specific error codes
+            //
+            // Inf parse outcomes
+            //
+            EXPECTED_SECTION_NAME = (APPLICATION_ERROR_MASK | ERROR_SEVERITY_ERROR | 0),
+            BAD_SECTION_NAME_LINE = (APPLICATION_ERROR_MASK | ERROR_SEVERITY_ERROR | 1),
+            SECTION_NAME_TOO_LONG = (APPLICATION_ERROR_MASK | ERROR_SEVERITY_ERROR | 2),
+            GENERAL_SYNTAX = (APPLICATION_ERROR_MASK | ERROR_SEVERITY_ERROR | 3),
+            //
+            // Inf runtime errors
+            //
+            WRONG_INF_STYLE = (APPLICATION_ERROR_MASK | ERROR_SEVERITY_ERROR | 0x100),
+            SECTION_NOT_FOUND = (APPLICATION_ERROR_MASK | ERROR_SEVERITY_ERROR | 0x101),
+            LINE_NOT_FOUND = (APPLICATION_ERROR_MASK | ERROR_SEVERITY_ERROR | 0x102),
+            NO_BACKUP = (APPLICATION_ERROR_MASK | ERROR_SEVERITY_ERROR | 0x103),
+            //
+            // Device Installer/other errors
+            //
+            NO_ASSOCIATED_CLASS = (APPLICATION_ERROR_MASK | ERROR_SEVERITY_ERROR | 0x200),
+            CLASS_MISMATCH = (APPLICATION_ERROR_MASK | ERROR_SEVERITY_ERROR | 0x201),
+            DUPLICATE_FOUND = (APPLICATION_ERROR_MASK | ERROR_SEVERITY_ERROR | 0x202),
+            NO_DRIVER_SELECTED = (APPLICATION_ERROR_MASK | ERROR_SEVERITY_ERROR | 0x203),
+            KEY_DOES_NOT_EXIST = (APPLICATION_ERROR_MASK | ERROR_SEVERITY_ERROR | 0x204),
+            INVALID_DEVINST_NAME = (APPLICATION_ERROR_MASK | ERROR_SEVERITY_ERROR | 0x205),
+            INVALID_CLASS = (APPLICATION_ERROR_MASK | ERROR_SEVERITY_ERROR | 0x206),
+            DEVINST_ALREADY_EXISTS = (APPLICATION_ERROR_MASK | ERROR_SEVERITY_ERROR | 0x207),
+            DEVINFO_NOT_REGISTERED = (APPLICATION_ERROR_MASK | ERROR_SEVERITY_ERROR | 0x208),
+            INVALID_REG_PROPERTY = (APPLICATION_ERROR_MASK | ERROR_SEVERITY_ERROR | 0x209),
+            NO_INF = (APPLICATION_ERROR_MASK | ERROR_SEVERITY_ERROR | 0x20A),
+            NO_SUCH_DEVINST = (APPLICATION_ERROR_MASK | ERROR_SEVERITY_ERROR | 0x20B),
+            CANT_LOAD_CLASS_ICON = (APPLICATION_ERROR_MASK | ERROR_SEVERITY_ERROR | 0x20C),
+            INVALID_CLASS_INSTALLER = (APPLICATION_ERROR_MASK | ERROR_SEVERITY_ERROR | 0x20D),
+            DI_DO_DEFAULT = (APPLICATION_ERROR_MASK | ERROR_SEVERITY_ERROR | 0x20E),
+            DI_NOFILECOPY = (APPLICATION_ERROR_MASK | ERROR_SEVERITY_ERROR | 0x20F),
+            INVALID_HWPROFILE = (APPLICATION_ERROR_MASK | ERROR_SEVERITY_ERROR | 0x210),
+            NO_DEVICE_SELECTED = (APPLICATION_ERROR_MASK | ERROR_SEVERITY_ERROR | 0x211),
+            DEVINFO_LIST_LOCKED = (APPLICATION_ERROR_MASK | ERROR_SEVERITY_ERROR | 0x212),
+            DEVINFO_DATA_LOCKED = (APPLICATION_ERROR_MASK | ERROR_SEVERITY_ERROR | 0x213),
+            DI_BAD_PATH = (APPLICATION_ERROR_MASK | ERROR_SEVERITY_ERROR | 0x214),
+            NO_CLASSINSTALL_PARAMS = (APPLICATION_ERROR_MASK | ERROR_SEVERITY_ERROR | 0x215),
+            FILEQUEUE_LOCKED = (APPLICATION_ERROR_MASK | ERROR_SEVERITY_ERROR | 0x216),
+            BAD_SERVICE_INSTALLSECT = (APPLICATION_ERROR_MASK | ERROR_SEVERITY_ERROR | 0x217),
+            NO_CLASS_DRIVER_LIST = (APPLICATION_ERROR_MASK | ERROR_SEVERITY_ERROR | 0x218),
+            NO_ASSOCIATED_SERVICE = (APPLICATION_ERROR_MASK | ERROR_SEVERITY_ERROR | 0x219),
+            NO_DEFAULT_DEVICE_INTERFACE = (APPLICATION_ERROR_MASK | ERROR_SEVERITY_ERROR | 0x21A),
+            DEVICE_INTERFACE_ACTIVE = (APPLICATION_ERROR_MASK | ERROR_SEVERITY_ERROR | 0x21B),
+            DEVICE_INTERFACE_REMOVED = (APPLICATION_ERROR_MASK | ERROR_SEVERITY_ERROR | 0x21C),
+            BAD_INTERFACE_INSTALLSECT = (APPLICATION_ERROR_MASK | ERROR_SEVERITY_ERROR | 0x21D),
+            NO_SUCH_INTERFACE_CLASS = (APPLICATION_ERROR_MASK | ERROR_SEVERITY_ERROR | 0x21E),
+            INVALID_REFERENCE_STRING = (APPLICATION_ERROR_MASK | ERROR_SEVERITY_ERROR | 0x21F),
+            INVALID_MACHINENAME = (APPLICATION_ERROR_MASK | ERROR_SEVERITY_ERROR | 0x220),
+            REMOTE_COMM_FAILURE = (APPLICATION_ERROR_MASK | ERROR_SEVERITY_ERROR | 0x221),
+            MACHINE_UNAVAILABLE = (APPLICATION_ERROR_MASK | ERROR_SEVERITY_ERROR | 0x222),
+            NO_CONFIGMGR_SERVICES = (APPLICATION_ERROR_MASK | ERROR_SEVERITY_ERROR | 0x223),
+            INVALID_PROPPAGE_PROVIDER = (APPLICATION_ERROR_MASK | ERROR_SEVERITY_ERROR | 0x224),
+            NO_SUCH_DEVICE_INTERFACE = (APPLICATION_ERROR_MASK | ERROR_SEVERITY_ERROR | 0x225),
+            DI_POSTPROCESSING_REQUIRED = (APPLICATION_ERROR_MASK | ERROR_SEVERITY_ERROR | 0x226),
+            INVALID_COINSTALLER = (APPLICATION_ERROR_MASK | ERROR_SEVERITY_ERROR | 0x227),
+            NO_COMPAT_DRIVERS = (APPLICATION_ERROR_MASK | ERROR_SEVERITY_ERROR | 0x228),
+            NO_DEVICE_ICON = (APPLICATION_ERROR_MASK | ERROR_SEVERITY_ERROR | 0x229),
+            INVALID_INF_LOGCONFIG = (APPLICATION_ERROR_MASK | ERROR_SEVERITY_ERROR | 0x22A),
+            DI_DONT_INSTALL = (APPLICATION_ERROR_MASK | ERROR_SEVERITY_ERROR | 0x22B),
+            INVALID_FILTER_DRIVER = (APPLICATION_ERROR_MASK | ERROR_SEVERITY_ERROR | 0x22C),
+            NON_WINDOWS_NT_DRIVER = (APPLICATION_ERROR_MASK | ERROR_SEVERITY_ERROR | 0x22D),
+            NON_WINDOWS_DRIVER = (APPLICATION_ERROR_MASK | ERROR_SEVERITY_ERROR | 0x22E),
+            NO_CATALOG_FOR_OEM_INF = (APPLICATION_ERROR_MASK | ERROR_SEVERITY_ERROR | 0x22F),
+            DEVINSTALL_QUEUE_NONNATIVE = (APPLICATION_ERROR_MASK | ERROR_SEVERITY_ERROR | 0x230),
+            NOT_DISABLEABLE = (APPLICATION_ERROR_MASK | ERROR_SEVERITY_ERROR | 0x231),
+            CANT_REMOVE_DEVINST = (APPLICATION_ERROR_MASK | ERROR_SEVERITY_ERROR | 0x232),
+            INVALID_TARGET = (APPLICATION_ERROR_MASK | ERROR_SEVERITY_ERROR | 0x233),
+            DRIVER_NONNATIVE = (APPLICATION_ERROR_MASK | ERROR_SEVERITY_ERROR | 0x234),
+            IN_WOW64 = (APPLICATION_ERROR_MASK | ERROR_SEVERITY_ERROR | 0x235),
+            SET_SYSTEM_RESTORE_POINT = (APPLICATION_ERROR_MASK | ERROR_SEVERITY_ERROR | 0x236),
+
+            SCE_DISABLED = (APPLICATION_ERROR_MASK | ERROR_SEVERITY_ERROR | 0x238),
+            UNKNOWN_EXCEPTION = (APPLICATION_ERROR_MASK | ERROR_SEVERITY_ERROR | 0x239),
+            PNP_REGISTRY_ERROR = (APPLICATION_ERROR_MASK | ERROR_SEVERITY_ERROR | 0x23A),
+            REMOTE_REQUEST_UNSUPPORTED = (APPLICATION_ERROR_MASK | ERROR_SEVERITY_ERROR | 0x23B),
+            NOT_AN_INSTALLED_OEM_INF = (APPLICATION_ERROR_MASK | ERROR_SEVERITY_ERROR | 0x23C),
+            INF_IN_USE_BY_DEVICES = (APPLICATION_ERROR_MASK | ERROR_SEVERITY_ERROR | 0x23D),
+            DI_FUNCTION_OBSOLETE = (APPLICATION_ERROR_MASK | ERROR_SEVERITY_ERROR | 0x23E),
+            NO_AUTHENTICODE_CATALOG = (APPLICATION_ERROR_MASK | ERROR_SEVERITY_ERROR | 0x23F),
+            AUTHENTICODE_DISALLOWED = (APPLICATION_ERROR_MASK | ERROR_SEVERITY_ERROR | 0x240),
+            AUTHENTICODE_TRUSTED_PUBLISHER = (APPLICATION_ERROR_MASK | ERROR_SEVERITY_ERROR | 0x241),
+            AUTHENTICODE_TRUST_NOT_ESTABLISHED = (APPLICATION_ERROR_MASK | ERROR_SEVERITY_ERROR | 0x242),
+            AUTHENTICODE_PUBLISHER_NOT_TRUSTED = (APPLICATION_ERROR_MASK | ERROR_SEVERITY_ERROR | 0x243),
+            SIGNATURE_OSATTRIBUTE_MISMATCH = (APPLICATION_ERROR_MASK | ERROR_SEVERITY_ERROR | 0x244),
+            ONLY_VALIDATE_VIA_AUTHENTICODE = (APPLICATION_ERROR_MASK | ERROR_SEVERITY_ERROR | 0x245),
+            DEVICE_INSTALLER_NOT_READY = (APPLICATION_ERROR_MASK | ERROR_SEVERITY_ERROR | 0x246),
+            DRIVER_STORE_ADD_FAILED = (APPLICATION_ERROR_MASK | ERROR_SEVERITY_ERROR | 0x247),
+            DEVICE_INSTALL_BLOCKED = (APPLICATION_ERROR_MASK | ERROR_SEVERITY_ERROR | 0x248),
+            DRIVER_INSTALL_BLOCKED = (APPLICATION_ERROR_MASK | ERROR_SEVERITY_ERROR | 0x249),
+            WRONG_INF_TYPE = (APPLICATION_ERROR_MASK | ERROR_SEVERITY_ERROR | 0x24A),
+            FILE_HASH_NOT_IN_CATALOG = (APPLICATION_ERROR_MASK | ERROR_SEVERITY_ERROR | 0x24B),
+            DRIVER_STORE_DELETE_FAILED = (APPLICATION_ERROR_MASK | ERROR_SEVERITY_ERROR | 0x24C),
+
         }
 
         public enum SPDIT
@@ -157,6 +301,29 @@ namespace WinApiNet
             COMPATDRIVER = 0x00000002,
         }
 
+        /// <summary>
+        ///  Flags for UpdateDriverForPlugAndPlayDevices
+        /// </summary>
+        [Flags]
+        public enum INSTALLFLAG : uint
+        {
+            /// <summary>
+            /// Force the installation of the specified driver
+            /// </summary>
+            FORCE = 0x00000001,
+            /// <summary>
+            /// Do a read-only install (no file copy)
+            /// </summary>
+            READONLY = 0x00000002,
+            /// <summary>
+            /// No UI shown at all. API will fail if any UI must be shown.
+            /// </summary>
+            NONINTERACTIVE = 0x00000004,
+            /// <summary>
+            /// Mask all flag bits.
+            /// </summary>
+            BITS = 0x00000007
+        }
 
         /// <summary>
         ///
@@ -211,6 +378,22 @@ namespace WinApiNet
 
         #endregion
 
+        [StructLayout(LayoutKind.Sequential)]
+        internal class DEVPROPKEY
+        {
+            public DEVPROPKEY(Guid fmtid,ulong pid )
+            {
+                this.fmtid = fmtid;
+                 this.pid = pid;
+           }
+
+            private Guid fmtid;
+            private ulong pid;
+        }
+
+        internal static readonly DEVPROPKEY DEVPKEY_Device_BusReportedDeviceDesc =
+            new DEVPROPKEY(new Guid(0x540b947e, 0x8b40, 0x45bc, 0xa8, 0xa2, 0x6a, 0x0b, 0x89, 0x4c, 0xbd, 0xa2), 4);
+
         private const int FORMAT_MESSAGE_FROM_SYSTEM = 0x00001000;
 
 
@@ -223,6 +406,42 @@ namespace WinApiNet
             get
             {
                 return mLastErrorString;
+            }
+        }
+
+        private static WindowsVersionType _windowsVersion = WindowsVersionType.WINDOWS_UNDEFINED;
+        public static WindowsVersionType WindowsVersion
+        {
+            get
+            {
+                if (_windowsVersion == WindowsVersionType.WINDOWS_UNDEFINED)
+                {
+                    _windowsVersion = WindowsVersionType.WINDOWS_UNSUPPORTED;
+                    OperatingSystem os_version = Environment.OSVersion;
+                    if (os_version.Platform == PlatformID.Win32NT)
+                    {
+                        if ((os_version.Version.Major == 5) && (os_version.Version.Minor == 0))
+                        {
+                            _windowsVersion = WindowsVersionType.WINDOWS_2K;
+                        }
+                        else if ((os_version.Version.Major == 5) && (os_version.Version.Minor == 1))
+                        {
+                            _windowsVersion = WindowsVersionType.WINDOWS_XP;
+                        }
+                        else if (os_version.Version.Major >= 6)
+                        {
+                            if (os_version.Version.Build < 7000)
+                            {
+                                _windowsVersion = WindowsVersionType.WINDOWS_VISTA;
+                            }
+                            else
+                            {
+                                _windowsVersion = WindowsVersionType.WINDOWS_7;
+                            }
+                        }
+                    }
+                }
+                return _windowsVersion;
             }
         }
 
@@ -252,6 +471,8 @@ namespace WinApiNet
                                                 IntPtr lpArguments);
 
 
+        [DllImport("newdev.dll", CharSet = CharSet.Auto , SetLastError = true)]
+        public static extern bool UpdateDriverForPlugAndPlayDevices(IntPtr hwndParent,[In,MarshalAs(UnmanagedType.LPTStr)] string HardwareId,[In,MarshalAs(UnmanagedType.LPTStr)] string FullInfPath,INSTALLFLAG InstallFlags,IntPtr bRebootRequired);
         /// <summary>
         /// 
         /// </summary>
@@ -261,7 +482,14 @@ namespace WinApiNet
         /// <param name="ulFlags">Not used. set to 0.</param>
         /// <returns>If the operation succeeds, the function returns CR_SUCCESS. Otherwise, it returns one of the CR_-prefixed error codes defined in cfgmgr32.h.</returns>
         [DllImport("setupapi.dll", CharSet = CharSet.Auto)]
-        public static extern CR CM_Get_Device_ID(IntPtr dnDevInst, IntPtr Buffer, int BufferLen, int ulFlags);
+        public static extern CR CM_Get_Device_ID(uint dnDevInst, IntPtr Buffer, int BufferLen, int ulFlags);
+        [DllImport("setupapi.dll", CharSet = CharSet.Auto)]
+        public static extern CR CM_Get_Device_ID(uint dnDevInst, byte[] Buffer, int BufferLen, int ulFlags);
+        [DllImport("setupapi.dll", CharSet = CharSet.Auto)]
+        public static extern CR CM_Get_Device_ID(uint dnDevInst, StringBuilder Buffer, int BufferLen, int ulFlags);
+        [DllImport("setupapi.dll", CharSet = CharSet.Auto)]
+        public static extern CR CM_Get_Device_ID_Size(out ulong size, uint dnDevInst, int ulFlags);
+
 
 
         /// <summary>
@@ -274,34 +502,30 @@ namespace WinApiNet
         [DllImport("setupapi.dll")]
         public static extern CR CM_Get_Parent(out IntPtr pdnDevInst, IntPtr dnDevInst, int ulFlags);
 
+        [DllImport("setupapi.dll", SetLastError = true, CharSet = CharSet.Auto)]
+        public static extern CR CM_Locate_DevNode(ref int pdnDevInst, string pDeviceID, int ulFlags);
+
+        [DllImport("setupapi.dll", SetLastError = true, CharSet = CharSet.Auto)]
+        public static extern CR CM_Reenumerate_DevNode(int devInst, SetupApi.CM flags);
+
+        [DllImport("setupapi.dll", SetLastError = true, CharSet = CharSet.Auto)]
+        public static extern CR CM_Request_Device_Eject(int devInst,IntPtr pVetoType,IntPtr  pszVetoName,uint ulNameLength,uint ulFlags);
+
+       [DllImport("setupapi.dll", SetLastError = true, CharSet = CharSet.Auto)]
+        public static extern CR CM_Get_DevNode_Status(out uint ulStatus,out uint pulProblemNumber,uint dnDevInst,uint ulFlags);
+
+        [DllImport("setupapi.dll", SetLastError = true, CharSet = CharSet.Auto)]
+        public static extern int CMP_WaitNoPendingInstallEvents(uint timeoutMs);
+
         [DllImport("setupapi.dll", CharSet = CharSet.Auto /*, SetLastError = true*/)]
         public static extern bool SetupDiDestroyDeviceInfoList(IntPtr hDevInfo);
 
         [DllImport("setupapi.dll", SetLastError = true)]
         public static extern bool SetupDiEnumDeviceInfo(IntPtr DeviceInfoSet, int MemberIndex, ref SP_DEVINFO_DATA DeviceInfoData);
 
-        /// <summary>
-        /// The SetupDiEnumDeviceInterfaces function enumerates the device interfaces that are contained in a device information set. 
-        /// </summary>
-        /// <param name="hDevInfo">A pointer to a device information set that contains the device interfaces for which to return information. This handle is typically returned by SetupDiGetClassDevs. </param>
-        /// <param name="devInfo">A pointer to an SP_DEVINFO_DATA structure that specifies a device information element in DeviceInfoSet. This parameter is optional and can be NULL. If this parameter is specified, SetupDiEnumDeviceInterfaces constrains the enumeration to the interfaces that are supported by the specified device. If this parameter is NULL, repeated calls to SetupDiEnumDeviceInterfaces return information about the interfaces that are associated with all the device information elements in DeviceInfoSet. This pointer is typically returned by SetupDiEnumDeviceInfo. </param>
-        /// <param name="interfaceClassGuid">A pointer to a GUID that specifies the device interface class for the requested interface. </param>
-        /// <param name="memberIndex">A zero-based index into the list of interfaces in the device information set. The caller should call this function first with MemberIndex set to zero to obtain the first interface. Then, repeatedly increment MemberIndex and retrieve an interface until this function fails and GetLastError returns ERROR_NO_MORE_ITEMS.  If DeviceInfoData specifies a particular device, the MemberIndex is relative to only the interfaces exposed by that device.</param>
-        /// <param name="deviceInterfaceData">A pointer to a caller-allocated buffer that contains, on successful return, a completed SP_DEVICE_INTERFACE_DATA structure that identifies an interface that meets the search parameters. The caller must set DeviceInterfaceData.cbSize to sizeof(SP_DEVICE_INTERFACE_DATA) before calling this function. </param>
-        /// <returns></returns>
-        [DllImport("setupapi.dll", CharSet = CharSet.Auto, SetLastError = true)]
-        public static extern Boolean SetupDiEnumDeviceInterfaces(IntPtr hDevInfo,
-                                                                 ref SP_DEVINFO_DATA devInfo,
-                                                                 ref Guid interfaceClassGuid,
-                                                                 UInt32 memberIndex,
-                                                                 ref SP_DEVICE_INTERFACE_DATA deviceInterfaceData);
+        [DllImport("setupapi.dll", SetLastError = true, CharSet = CharSet.Auto)]
+        internal static extern bool SetupDiGetDeviceProperty(IntPtr DeviceInfoSet,ref SP_DEVINFO_DATA DeviceInfoData,[In] DEVPROPKEY PropertyKey,out RegistryValueKind PropertyType,byte[] PropertyBuffer,int PropertyBufferSize,out int RequiredSize,int Flags);
 
-        [DllImport("setupapi.dll", CharSet = CharSet.Auto, SetLastError = true)]
-        public static extern Boolean SetupDiEnumDeviceInterfaces(IntPtr hDevInfo,
-                                                                 [MarshalAs(UnmanagedType.AsAny)] object devInfo,
-                                                                 ref Guid interfaceClassGuid,
-                                                                 UInt32 memberIndex,
-                                                                 ref SP_DEVICE_INTERFACE_DATA deviceInterfaceData);
 
         [DllImport("setupapi.dll", CharSet = CharSet.Auto, SetLastError = true)]
         public static extern bool SetupDiEnumDriverInfo(IntPtr DeviceInfoSet,
@@ -319,15 +543,6 @@ namespace WinApiNet
         /// <param name="Flags">A variable of type DWORD that specifies control options that filter the device information elements that are added to the device information set. This parameter can be a bitwise OR of zero or more of the following flags.</param>
         /// <returns></returns>
         [DllImport("setupapi.dll", CharSet = CharSet.Ansi, EntryPoint = "SetupDiGetClassDevsA")]
-        public static extern IntPtr SetupDiGetClassDevs(ref Guid ClassGuid,
-                                                        [MarshalAs(UnmanagedType.LPTStr)] string Enumerator,
-                                                        IntPtr hwndParent,
-                                                        DICFG Flags);
-
-        [DllImport("setupapi.dll", CharSet = CharSet.Ansi, EntryPoint = "SetupDiGetClassDevsA")]
-        public static extern IntPtr SetupDiGetClassDevs(ref Guid ClassGuid, int Enumerator, IntPtr hwndParent, DICFG Flags);
-
-        [DllImport("setupapi.dll", CharSet = CharSet.Ansi, EntryPoint = "SetupDiGetClassDevsA")]
         public static extern IntPtr SetupDiGetClassDevs(int ClassGuid, string Enumerator, IntPtr hwndParent, DICFG Flags);
 
         [DllImport("setupapi.dll", CharSet = CharSet.Auto, SetLastError = true)]
@@ -340,29 +555,6 @@ namespace WinApiNet
                                                                  int PropertyBufferSize,
                                                                  out int RequiredSize);
 
-        /// <summary>
-        /// The SetupDiGetDeviceInstanceId function retrieves the device instance ID that is associated with a device information element.
-        /// </summary>
-        /// <param name="DeviceInfoSet">A handle to the device information set that contains the device information element that represents the device for which to retrieve a device instance ID. </param>
-        /// <param name="DeviceInfoData">A pointer to an SP_DEVINFO_DATA structure that specifies the device information element in DeviceInfoSet. </param>
-        /// <param name="DeviceInstanceId">A pointer to the character buffer that will receive the NULL-terminated device instance ID for the specified device information element. For information about device instance IDs, see Device Identification Strings.</param>
-        /// <param name="DeviceInstanceIdSize">The size, in characters, of the DeviceInstanceId buffer. </param>
-        /// <param name="RequiredSize">A pointer to the variable that receives the number of characters required to store the device instance ID.</param>
-        /// <returns>The function returns TRUE if it is successful. Otherwise, it returns FALSE and the logged error can be retrieved with a call to GetLastError.</returns>
-        [DllImport("setupapi.dll", SetLastError = true, CharSet = CharSet.Ansi, EntryPoint = "SetupDiGetDeviceInstanceIdA")]
-        public static extern bool SetupDiGetDeviceInstanceId(IntPtr DeviceInfoSet,
-                                                             ref SP_DEVINFO_DATA DeviceInfoData,
-                                                             StringBuilder DeviceInstanceId,
-                                                             int DeviceInstanceIdSize,
-                                                             out int RequiredSize);
-
-        [DllImport(@"setupapi.dll", CharSet = CharSet.Auto, SetLastError = true)]
-        public static extern Boolean SetupDiGetDeviceInterfaceDetail(IntPtr hDevInfo,
-                                                                     ref SP_DEVICE_INTERFACE_DATA deviceInterfaceData,
-                                                                     DEVICE_INTERFACE_DETAIL_HANDLE deviceInterfaceDetailData,
-                                                                     UInt32 deviceInterfaceDetailDataSize,
-                                                                     out UInt32 requiredSize,
-                                                                     [MarshalAs(UnmanagedType.AsAny)] object deviceInfoData);
 
         /// <summary>
         /// The SetupDiGetDeviceRegistryProperty function retrieves the specified device property.
@@ -385,53 +577,53 @@ namespace WinApiNet
                                                                    int PropertyBufferSize,
                                                                    out int RequiredSize);
 
+        [DllImport("setupapi.dll", CharSet = CharSet.Auto, SetLastError = true)]
+        public static extern bool SetupDiGetDeviceRegistryProperty(IntPtr DeviceInfoSet,
+                                                                   ref SP_DEVINFO_DATA DeviceInfoData,
+                                                                   SPDRP Property,
+                                                                   out RegistryValueKind PropertyRegDataType,
+                                                                   uint[] PropertyBuffer,
+                                                                   int PropertyBufferSize,
+                                                                   out int RequiredSize);
+
+        [DllImport("setupapi.dll", CharSet = CharSet.Auto, SetLastError = true)]
+        public static extern bool SetupDiSetDeviceRegistryProperty(IntPtr DeviceInfoSet,
+                                                                   ref SP_DEVINFO_DATA DeviceInfoData,
+                                                                   SPDRP Property,
+                                                                   [MarshalAs(UnmanagedType.AsAny),In] object PropertyBuffer,
+                                                                   int PropertyBufferSize);
+
         /*BOOL  SetupDiRemoveDevice(IN HDEVINFO  DeviceInfoSet, IN OUT PSP_DEVINFO_DATA  DeviceInfoData); */
 
         [DllImport("setupapi.dll", SetLastError = true)]
         public static extern bool SetupDiRemoveDevice(IntPtr DeviceInfoSet, ref SP_DEVINFO_DATA DeviceInfoData);
 
-
-        public static int GetDevicePath(Guid InterfaceGuid, out String DevicePath)
+        [Flags]
+        public enum SUOI:uint
         {
-            bool bResult = false;
-            DevicePath = null;
-
-            IntPtr deviceInfo = IntPtr.Zero;
-
-            SP_DEVICE_INTERFACE_DATA interfaceData = SP_DEVICE_INTERFACE_DATA.Empty;
-            DeviceInterfaceDetailHelper detailHelper;
-
-            // [1]
-            deviceInfo = SetupDiGetClassDevs(ref InterfaceGuid, null, IntPtr.Zero, DICFG.PRESENT | DICFG.DEVICEINTERFACE);
-            if (deviceInfo != IntPtr.Zero)
-            {
-
-                bResult = SetupDiEnumDeviceInterfaces(deviceInfo, null, ref InterfaceGuid, 0, ref interfaceData);
-                if (bResult)
-                {
-                    uint length = 1024;
-                    detailHelper = new DeviceInterfaceDetailHelper(length);
-                    bResult = SetupDiGetDeviceInterfaceDetail(deviceInfo, ref interfaceData, detailHelper.Handle, length, out length, null);
-                    if (bResult)
-                    {
-                        DevicePath = detailHelper.DevicePath;
-                    }
-                }
-                SetupDiDestroyDeviceInfoList(deviceInfo);
-            }
-            if (!bResult)
-                return ShowWin32Error("GetDevicePath");
-
-            return 0;
+           FORCEDELETE=0x0001
         }
+        [DllImport("setupapi.dll", SetLastError = true, CharSet = CharSet.Auto)]
+        public static extern bool SetupUninstallOEMInf(string InfFileName, SUOI Flags, IntPtr Reserved);
 
-        public static bool SetupDiGetDeviceInterfaceDetailLength(IntPtr hDevInfo,
-                                                                 ref SP_DEVICE_INTERFACE_DATA deviceInterfaceData,
-                                                                 out uint requiredLength)
-        {
-            DEVICE_INTERFACE_DETAIL_HANDLE tmp = new DEVICE_INTERFACE_DETAIL_HANDLE();
-            return SetupDiGetDeviceInterfaceDetail(hDevInfo, ref deviceInterfaceData, tmp, 0, out requiredLength, null);
-        }
+        [DllImport("setupapi.dll", SetLastError = true, CharSet = CharSet.Auto)]
+        public static extern bool SetupCopyOEMInf([In] String SourceInfFileName, [In] String OEMSourceMediaLocation, SetupApi.SPOST OEMSourceMediaType, uint CopyStyle, [Out] StringBuilder DestinationInfFileName, uint DestinationInfFileNameSize, out uint RequiredSize, [Out] StringBuilder DestinationInfFileNameComponent);
+
+        [DllImport("Setupapi", CharSet = CharSet.Auto, SetLastError = true)]
+        public static extern IntPtr SetupDiOpenDevRegKey(IntPtr hDeviceInfoSet, ref SP_DEVINFO_DATA deviceInfoData, int scope, int hwProfile, DevKeyType keyType, int samDesired);
+
+        [DllImport("advapi32.dll", SetLastError = true, CharSet = CharSet.Auto)]
+        public static extern int RegEnumValue(IntPtr hKey,int index,StringBuilder lpValueName,ref int lpcValueName,IntPtr lpReserved,out RegistryValueKind lpType,byte[] data,ref int dataLength);
+
+        [DllImport("advapi32.dll", SetLastError = true, CharSet = CharSet.Auto)]
+        public static extern int RegEnumValue(IntPtr hKey, int index, StringBuilder lpValueName, ref int lpcValueName, IntPtr lpReserved, out RegistryValueKind lpType, StringBuilder data, ref int dataLength);
+
+        [DllImport("advapi32.dll", SetLastError = true, CharSet = CharSet.Auto)]
+        public static extern int RegCloseKey (IntPtr hKey);
+
+        [DllImport("newdev.dll", CharSet = CharSet.Auto, SetLastError = true)]
+        public static extern bool DiUninstallDevice(IntPtr hwndParent,IntPtr DeviceInfoSet,ref SP_DEVINFO_DATA DeviceInfoData,uint Flags,IntPtr pbNeedReboot);
+
 
         public static bool SetupDiGetDeviceRegistryProperty(out byte[] regBytes,
                                                             IntPtr DeviceInfoSet,
@@ -451,7 +643,23 @@ namespace WinApiNet
             Array.Copy(tmp, regBytes, regBytes.Length);
             return true;
         }
-
+        public static bool SetupDiGetDeviceRegistryProperty(out uint value,
+                                                    IntPtr DeviceInfoSet,
+                                                    ref SP_DEVINFO_DATA DeviceInfoData,
+                                                    SPDRP Property)
+        {
+            value = 0;
+            uint[] tmp = new uint[1];
+            int iReqSize;
+            RegistryValueKind regValueType;
+            if (!SetupDiGetDeviceRegistryProperty(DeviceInfoSet, ref DeviceInfoData, Property, out regValueType, tmp,tmp.Length*Marshal.SizeOf(typeof(uint)), out iReqSize))
+            {
+                //usb_error("usb_registry_match_no_hubs(): getting hardware id failed");
+                return false;
+            }
+            value = tmp[0];
+            return true;
+        }
         public static bool SetupDiGetDeviceRegistryProperty(out string regSZ, IntPtr DeviceInfoSet, ref SP_DEVINFO_DATA DeviceInfoData, SPDRP Property)
         {
             regSZ = null;

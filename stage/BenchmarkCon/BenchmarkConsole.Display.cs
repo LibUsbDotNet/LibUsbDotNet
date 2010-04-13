@@ -69,6 +69,12 @@ namespace LibUsbDotNet
             ConWriteLine(conType, "\tRetry Count     : {0}", mTimeoutRetryCount);
             ConWriteLine(conType, "\tDisplay Refresh : {0} (ms)", mDisplayUpdateInterval);
             ConWriteLine(conType, "\tTransfer Timeout: {0} (ms)", mTransferTimeout);
+
+            if (mEndpointID != 0x01)
+                ConWriteLine(conType, "\tEndpoints       : 0x{0:X2} 0x{1:X2}", (byte) WriteEndpoint, (byte) ReadEndpoint);
+            
+            if (mInterfaceID!=0x00)
+                ConWriteLine(conType, "\tInterface ID    : 0x{0:X2}", mInterfaceID);
         }
 
         private static void showRunningStatus(EndpointRunningStatus endpointStatus)

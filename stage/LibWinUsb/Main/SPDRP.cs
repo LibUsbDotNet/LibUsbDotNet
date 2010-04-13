@@ -101,5 +101,10 @@ namespace LibUsbDotNet.Main
         /// Windows XP and later.) Requests the device's installation state.
         /// </summary>
         InstallState = (0x00000022),
+        /// <summary>
+        /// Device Location Paths (R)
+        /// </summary>
+        LocationPaths=(0x00000023),
+
     }
 }

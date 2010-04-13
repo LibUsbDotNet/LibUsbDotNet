@@ -42,11 +42,7 @@ namespace LibUsbDotNet.Main
         internal LegacyUsbRegistry(UsbDevice usbDevice)
         {
             mUSBDevice = usbDevice;
-            if (Helper.IsLinux || !UsbRegistry.ForceSetupApi)
-                GetPropertiesSPDRP();
-            else if (!SetupApiRegistry.FillDeviceProperties(this, mUSBDevice))
-                GetPropertiesSPDRP();
-
+            GetPropertiesSPDRP();
         }
 
         /// <summary>
@@ -197,7 +193,7 @@ namespace LibUsbDotNet.Main
 
         internal static string GetRegistryHardwareID(ushort vid, ushort pid, ushort rev)
         {
-            return string.Format("Vid_{0}&Pid_{1}&Rev_{2}", vid.ToString("X4"), pid.ToString("X4"), rev.ToString("X4"));
+            return string.Format("Vid_{0:X4}&Pid_{1:X4}&Rev_{2}", vid, pid, rev.ToString("0000"));
         }
 
         /// <summary>

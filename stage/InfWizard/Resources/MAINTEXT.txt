@@ -1,1 +1,0 @@
-The LibUsbDotNet INF Wizard creates windows USB inf/setup packages for use with generic libusb-win32 or WinUSB devices.  This utility allows USB developers to quickly create a generic USB driver package that can be used the windows device manager/add new hardware wizard.

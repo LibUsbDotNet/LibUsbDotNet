@@ -8,13 +8,22 @@
     <Setting Name="Last_CreateDriverDirectory" Type="System.Boolean" Scope="User">
       <Value Profile="(Default)">True</Value>
     </Setting>
-    <Setting Name="Last_SpawnDriverFiles" Type="System.Boolean" Scope="User">
-      <Value Profile="(Default)">True</Value>
+    <Setting Name="DriverResourceUrl" Type="System.String" Scope="User">
+      <Value Profile="(Default)">http://sites.google.com/site/libusbdotnet/driver_resources/DriverResourceDownloads.xml?attredirects=0&amp;d=1</Value>
     </Setting>
-    <Setting Name="WinUsbSpawnDriverSourcePath" Type="System.String" Scope="User">
+    <Setting Name="UserDeviceManufacturers" Type="System.Collections.Specialized.StringCollection" Scope="User">
       <Value Profile="(Default)" />
     </Setting>
-    <Setting Name="LibUsbSpawnDriverSourcePath" Type="System.String" Scope="User">
+    <Setting Name="UserDeviceInterfaceGUIDs" Type="System.Collections.Specialized.StringCollection" Scope="User">
+      <Value Profile="(Default)" />
+    </Setting>
+    <Setting Name="UserDeviceDescriptions" Type="System.Collections.Specialized.StringCollection" Scope="User">
+      <Value Profile="(Default)" />
+    </Setting>
+    <Setting Name="UserSaveDirectorys" Type="System.Collections.Specialized.StringCollection" Scope="User">
+      <Value Profile="(Default)" />
+    </Setting>
+    <Setting Name="Last_DriverName" Type="System.String" Scope="User">
       <Value Profile="(Default)" />
     </Setting>
   </Settings>

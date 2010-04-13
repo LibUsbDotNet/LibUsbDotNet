@@ -21,7 +21,13 @@
 // 
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
+using System.Globalization;
+using System.Runtime.InteropServices;
+using System.Text;
+using System.Text.RegularExpressions;
 using LibUsbDotNet.Internal;
+using LibUsbDotNet.Internal.UsbRegex;
 using LibUsbDotNet.Main;
 using Microsoft.Win32;
 
@@ -31,6 +37,115 @@ namespace LibUsbDotNet.WinUsb
     /// </summary> 
     public class WinUsbRegistry : UsbRegistry
     {
+        private bool mIsDeviceIDParsed;
+
+        private string mDeviceID;
+
+        // Parsed out of the device ID
+        private byte mInterfaceID;
+        private ushort mVid;
+        private ushort mPid;
+
+        /// <summary>
+        /// Gets a list of WinUSB device paths for the specified interface guid.
+        /// </summary>
+        /// <param name="deviceInterfaceGuid">The DeviceInterfaceGUID to search for.</param>
+        /// <param name="devicePathList">A list of device paths associated with the <paramref name="deviceInterfaceGuid"/>.</param>
+        /// <returns>True of one or more device paths was found.</returns>
+        /// <remarks>
+        /// Each device path string in the <paramref name="devicePathList"/> represents a seperate WinUSB device (interface).
+        /// </remarks>
+        /// <seealso cref="GetWinUsbRegistryList"/>
+        public static bool GetDevicePathList(Guid deviceInterfaceGuid, out List<String> devicePathList)
+        {
+            devicePathList = new List<string>();
+            int devicePathIndex = 0;
+            SetupApi.SP_DEVICE_INTERFACE_DATA interfaceData = SetupApi.SP_DEVICE_INTERFACE_DATA.Empty;
+            SetupApi.DeviceInterfaceDetailHelper detailHelper;
+
+            IntPtr deviceInfo = SetupApi.SetupDiGetClassDevs(ref deviceInterfaceGuid, null, IntPtr.Zero, SetupApi.DICFG.PRESENT | SetupApi.DICFG.DEVICEINTERFACE);
+            if (deviceInfo != IntPtr.Zero)
+            {
+                while ((SetupApi.SetupDiEnumDeviceInterfaces(deviceInfo, null, ref deviceInterfaceGuid, devicePathIndex, ref interfaceData)))
+                {
+                    int length = 1024;
+                    detailHelper = new SetupApi.DeviceInterfaceDetailHelper(length);
+                    bool bResult = SetupApi.SetupDiGetDeviceInterfaceDetail(deviceInfo, ref interfaceData, detailHelper.Handle, length, out length, null);
+                    if (bResult) devicePathList.Add(detailHelper.DevicePath);
+
+                    devicePathIndex++;
+                }
+            }
+            if (devicePathIndex == 0)
+                UsbError.Error(ErrorCode.Win32Error, Marshal.GetLastWin32Error(), "GetDevicePathList", typeof(SetupApi));
+
+            if (deviceInfo != IntPtr.Zero)
+                SetupApi.SetupDiDestroyDeviceInfoList(deviceInfo);
+
+            return (devicePathIndex > 0);
+        }
+
+        /// <summary>
+        /// Gets a list of <see cref="WinUsbRegistry"/> classes for the specified interface guid.
+        /// </summary>
+        /// <param name="deviceInterfaceGuid">The DeviceInterfaceGUID to search for.</param>
+        /// <param name="deviceRegistryList">A list of device paths associated with the <paramref name="deviceInterfaceGuid"/>.</param>
+        /// <returns>True of one or more device paths was found.</returns>
+        /// <remarks>
+        /// Each <see cref="WinUsbRegistry"/> in the <paramref name="deviceRegistryList"/> represents a seperate WinUSB device (interface).
+        /// </remarks>
+        public static bool GetWinUsbRegistryList(Guid deviceInterfaceGuid, out List<WinUsbRegistry> deviceRegistryList)
+        {
+            deviceRegistryList = new List<WinUsbRegistry>();
+
+            int devicePathIndex = 0;
+            SetupApi.SP_DEVICE_INTERFACE_DATA interfaceData = SetupApi.SP_DEVICE_INTERFACE_DATA.Empty;
+            SetupApi.DeviceInterfaceDetailHelper detailHelper;
+
+            SetupApi.SP_DEVINFO_DATA devInfoData = SetupApi.SP_DEVINFO_DATA.Empty;
+
+            // [1]
+            IntPtr deviceInfo = SetupApi.SetupDiGetClassDevs(ref deviceInterfaceGuid, null, IntPtr.Zero, SetupApi.DICFG.PRESENT | SetupApi.DICFG.DEVICEINTERFACE);
+            if (deviceInfo != IntPtr.Zero)
+            {
+                while ((SetupApi.SetupDiEnumDeviceInterfaces(deviceInfo, null, ref deviceInterfaceGuid, devicePathIndex, ref interfaceData)))
+                {
+                    int length = 1024;
+                    detailHelper = new SetupApi.DeviceInterfaceDetailHelper(length);
+                    bool bResult = SetupApi.SetupDiGetDeviceInterfaceDetail(deviceInfo, ref interfaceData, detailHelper.Handle, length, out length, ref devInfoData);
+                    if (bResult)
+                    {
+                        WinUsbRegistry regInfo = new WinUsbRegistry();
+
+                        SetupApi.getSPDRPProperties(deviceInfo, ref devInfoData, regInfo.mDeviceProperties);
+
+                        // Use the actual winusb device path for SYMBOLIC_NAME_KEY. This will be used to open the device.
+                        regInfo.mDeviceProperties.Add(SYMBOLIC_NAME_KEY, detailHelper.DevicePath);
+
+                        Debug.WriteLine(detailHelper.DevicePath);
+
+                        regInfo.mDeviceInterfaceGuids = new Guid[] { deviceInterfaceGuid };
+
+                        StringBuilder sbDeviceID=new StringBuilder(1024);
+                        if (SetupApi.CM_Get_Device_ID(devInfoData.DevInst,sbDeviceID,sbDeviceID.Capacity,0)==SetupApi.CR.SUCCESS)
+                        {
+                            regInfo.mDeviceProperties[DEVICE_ID_KEY] = sbDeviceID.ToString();
+                        }
+                        deviceRegistryList.Add(regInfo);
+                    }
+
+                    devicePathIndex++;
+                }
+            }
+            if (devicePathIndex == 0)
+                UsbError.Error(ErrorCode.Win32Error, Marshal.GetLastWin32Error(), "GetDevicePathList", typeof(SetupApi));
+
+            if (deviceInfo != IntPtr.Zero)
+                SetupApi.SetupDiDestroyDeviceInfoList(deviceInfo);
+
+            return (devicePathIndex > 0);
+        }
+
         internal WinUsbRegistry() { }
 
         /// <summary>
@@ -99,6 +214,124 @@ namespace LibUsbDotNet.WinUsb
             }
         }
 
+
+        private void parseDeviceID()
+        {
+            if (mIsDeviceIDParsed) return;
+            
+            mIsDeviceIDParsed = true;
+
+            byte bTemp;
+            ushort uTemp;
+
+            MatchCollection matches = RegHardwareID.GlobalInstance.Matches(DeviceID);
+            foreach (Match match in matches)
+            {
+                foreach (NamedGroup namedGroup in RegHardwareID.NAMED_GROUPS)
+                {
+                    Group g = match.Groups[namedGroup.GroupNumber];
+                   if (g.Success)
+                   {
+                       switch ((RegHardwareID.ENamedGroups)namedGroup.GroupNumber)
+                       {
+                           case RegHardwareID.ENamedGroups.Vid:
+                               if (ushort.TryParse(g.Value, NumberStyles.HexNumber, null, out uTemp))
+                               {
+                                   mVid = uTemp;
+                                   break;
+                               }
+                               break;
+                           case RegHardwareID.ENamedGroups.Pid:
+                               if (ushort.TryParse(g.Value, NumberStyles.HexNumber, null, out uTemp))
+                               {
+                                   mPid = uTemp;
+                                   break;
+                               } 
+                               break;
+                           case RegHardwareID.ENamedGroups.Rev:
+                               break;
+                           case RegHardwareID.ENamedGroups.MI:
+                               if (Byte.TryParse(g.Value, NumberStyles.HexNumber, null, out bTemp))
+                               {
+                                   mInterfaceID = bTemp;
+                                   break;
+                               }
+                               break;
+                           default:
+                               throw new ArgumentOutOfRangeException();
+                       }
+                   }
+                }
+
+            }
+        }
+
+        /// <summary>
+        /// Gets the device instance id.
+        /// </summary>
+        /// <remarks>
+        /// For more information on device instance ids, see the <a href="http://msdn.microsoft.com/en-us/library/ff538405%28v=VS.85%29.aspx">CM_Get_Device_ID Function</a> at MSDN.
+        /// </remarks>
+        public string DeviceID
+        {
+            get
+            {
+                if (ReferenceEquals(mDeviceID,null))
+                {
+                    object oDeviceID;
+                    if (mDeviceProperties.TryGetValue(DEVICE_ID_KEY, out oDeviceID))
+                    {
+                        mDeviceID = oDeviceID.ToString();
+                    }
+                    else
+                    {
+                        mDeviceID = string.Empty;
+                    }
+                }
+                return mDeviceID;
+            }
+        }
+
+        /// <summary>
+        /// VendorID
+        /// </summary>
+        /// <remarks>This value is parsed out of the <see cref="DeviceID"/> field.</remarks>
+        public override int Vid
+        {
+            get
+            {
+                parseDeviceID();
+                return mVid;
+            }
+        }
+
+        /// <summary>
+        /// ProductID
+        /// </summary>
+        /// <remarks>This value is parsed out of the <see cref="DeviceID"/> field.</remarks>
+        public override int Pid
+        {
+            get
+            {
+                parseDeviceID();
+                return mPid;
+            }
+        }
+
+
+        ///<summary>
+        /// Gets the interface ID this WinUSB device (interface) is associated with.
+        ///</summary>
+        /// <remarks>This value is parsed out of the <see cref="DeviceID"/> field.</remarks>
+        public byte InterfaceID
+        {
+            get
+            {
+                parseDeviceID();
+                return (byte) mInterfaceID;
+            }
+        }
+
         /// <summary>
         /// Opens the USB device for communucation.
         /// </summary>
@@ -132,18 +365,22 @@ namespace LibUsbDotNet.WinUsb
             return false;
         }
 
-
+        /*
         private static bool WinUsbRegistryCallBack(IntPtr deviceInfoSet,
                                                    int deviceIndex,
                                                    ref SetupApi.SP_DEVINFO_DATA deviceInfoData,
                                                    object classEnumeratorCallbackParam1)
         {
+
             List<WinUsbRegistry> deviceList = (List<WinUsbRegistry>) classEnumeratorCallbackParam1;
 
             RegistryValueKind propertyType;
             byte[] propBuffer = new byte[256];
             int requiredSize;
-            bool bSuccess = SetupApi.SetupDiGetCustomDeviceProperty(deviceInfoSet,
+            bool isNew = true;
+            bool bSuccess;
+
+            bSuccess = SetupApi.SetupDiGetCustomDeviceProperty(deviceInfoSet,
                                                                     ref deviceInfoData,
                                                                     DEVICE_INTERFACE_GUIDS,
                                                                     SetupApi.DICUSTOMDEVPROP.NONE,
@@ -159,7 +396,7 @@ namespace LibUsbDotNet.WinUsb
                 {
                     Guid g = new Guid(devInterfaceGuid);
                     List<string> devicePaths;
-                    if (SetupApi.GetDevicePath(g, out devicePaths))
+                    if (SetupApi.GetDevicePathList(g, out devicePaths))
                     {
                         foreach (string devicePath in devicePaths)
                         {
@@ -174,6 +411,80 @@ namespace LibUsbDotNet.WinUsb
 
                             // Don't add duplicate devices (with the same device path)
                             WinUsbRegistry foundRegistry=null;
+                            foreach (WinUsbRegistry usbRegistry in deviceList)
+                            {
+                                if (usbRegistry.SymbolicName == regInfo.SymbolicName)
+                                {
+                                    foundRegistry = usbRegistry;
+                                    break;
+                                }
+                            }
+                            if (foundRegistry == null)
+                                deviceList.Add(regInfo);
+                            else
+                            {
+                                if (isNew)
+                                {
+                                    deviceList.Remove(foundRegistry);
+                                    deviceList.Add(regInfo);
+                                }
+                                else
+                                {
+
+                                    // If the device path already exists, add this compatible guid 
+                                    // to the foundRegstry guid list.
+                                    List<Guid> newGuidList = new List<Guid>(foundRegistry.mDeviceInterfaceGuids);
+                                    if (!newGuidList.Contains(g))
+                                    {
+                                        newGuidList.Add(g);
+                                        foundRegistry.mDeviceInterfaceGuids = newGuidList.ToArray();
+                                    }
+                                }
+                            }
+                            isNew = false;
+                        }
+                    }
+                }
+            }
+
+            return false;
+        }
+        */
+        private static bool WinUsbRegistryCallBack(IntPtr deviceInfoSet,
+                                           int deviceIndex,
+                                           ref SetupApi.SP_DEVINFO_DATA deviceInfoData,
+                                           object classEnumeratorCallbackParam1)
+        {
+
+            List<WinUsbRegistry> deviceList = (List<WinUsbRegistry>)classEnumeratorCallbackParam1;
+
+            RegistryValueKind propertyType;
+            byte[] propBuffer = new byte[256];
+            int requiredSize;
+            bool bSuccess;
+
+            bSuccess = SetupApi.SetupDiGetCustomDeviceProperty(deviceInfoSet,
+                                                                    ref deviceInfoData,
+                                                                    DEVICE_INTERFACE_GUIDS,
+                                                                    SetupApi.DICUSTOMDEVPROP.NONE,
+                                                                    out propertyType,
+                                                                    propBuffer,
+                                                                    propBuffer.Length,
+                                                                    out requiredSize);
+            if (bSuccess)
+            {
+                string[] devInterfaceGuids = GetAsStringArray(propBuffer, requiredSize);
+
+                foreach (String devInterfaceGuid in devInterfaceGuids)
+                {
+                    Guid g = new Guid(devInterfaceGuid);
+                    List<WinUsbRegistry> tempList;
+                    if (GetWinUsbRegistryList(g, out tempList))
+                    {
+                        foreach (WinUsbRegistry regInfo in tempList)
+                        {
+                            // Don't add duplicate devices (with the same device path)
+                            WinUsbRegistry foundRegistry = null;
                             foreach (WinUsbRegistry usbRegistry in deviceList)
                             {
                                 if (usbRegistry.SymbolicName == regInfo.SymbolicName)
@@ -202,5 +513,6 @@ namespace LibUsbDotNet.WinUsb
 
             return false;
         }
+
     }
 }

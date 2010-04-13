@@ -16,4 +16,5 @@ REM
 REM //////////////////////////////////////////////////////////////////////////
 .\Utility\RegexClean -d -r -m="\\(_ReSharper\.|obj$|Debug$)"
 .\Utility\RegexClean -r -m="\.(cod|cof|mcs|mptags|err|resharper|user|tagsrc|hex|ncb|pdb|pidb|suo|vshost\.exe)$"
+.\Utility\RegexClean -r -m="thumbs.db$"
 

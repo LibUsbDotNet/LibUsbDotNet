@@ -1,13 +1,17 @@
 LibUsbDotNet Benchmark Console Application
 
-USAGE: benchmark [pid=] [list] [read|write|loop] [vid=] [retry=] 
-                 [timeout=] [size=] [refresh=]
+USAGE: benchmark [pid=] [list] [read|write|loop] [notestselect] [vid=]
+                 [retry=] [timeout=] [size=] [refresh=] [ep=] [intf=] 
 Commands:
          list  : Display a list of connected devices before starting. 
                  Select the device to use for the test from the list.
          read  : Read from the device.
          write : Write to the device.
          loop  : [Default] Read and write to the device at the same time.
+         notestselect : Skips submitting the control transfers to get/set the
+                        test type.  This makes the application compatible
+                        with non-benchmark firmwared devices that have
+                        loopback endpoint(s).  (forces loop mode)
 Switches:
          pid     : Product id of device. (hex)
          vid     : Vendor id of device. (hex) (Default=0x04D8)
@@ -31,6 +35,9 @@ Switches:
                    and the device is a libusb-win32 device, the libusb-win32
                    driver will be used instead. On unix-like platforms this
                    switch has no effect.
+        ep       : The loopback endpoint to use. For example ep=0x01, would
+                   read from 0x81 and write to 0x01. (hex)
+        intf     : The interface id the loopback endpoint resides in.  
          
 WARNING:
           This example only works with custom usb hardware. Using this

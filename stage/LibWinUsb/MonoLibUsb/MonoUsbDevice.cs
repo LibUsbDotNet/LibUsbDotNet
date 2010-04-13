@@ -270,6 +270,16 @@ namespace LibUsbDotNet.LudnMonoLibUsb
         }
 
         /// <summary>
+        /// Gets the <see cref="MonoUsbProfile"/> for this usb device.
+        /// </summary>
+        public MonoUsbProfile Profile
+        {
+            get
+            {
+                return mMonoUSBProfile;
+            }
+        }
+        /// <summary>
         /// Opens an endpoint for reading
         /// </summary>
         /// <param name="readEndpointID">Endpoint number for read operations.</param>

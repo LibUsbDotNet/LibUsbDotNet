@@ -115,6 +115,19 @@ namespace LibUsbDotNet
                                 break;
                         }
                     }
+                    else if (match.Groups["Intf"].Success)
+                    {
+                        mInterfaceID = byte.Parse(match.Groups["Intf"].Value, NumberStyles.HexNumber);
+                    }
+                    else if (match.Groups["Ep"].Success)
+                    {
+                        mEndpointID = byte.Parse(match.Groups["Ep"].Value, NumberStyles.HexNumber);
+                    }
+                    else if (match.Groups["NoTestSelect"].Success)
+                    {
+                        mNoTestSelect = true;
+                    }
+                        
                     else if (match.Groups["SwitchName"].Success)
                     {
                         if (match.Groups["SwitchValue"].Success)

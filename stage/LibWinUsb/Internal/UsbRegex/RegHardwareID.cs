@@ -19,6 +19,7 @@
 // visit www.gnu.org.
 // 
 // 
+using System;
 using System.Text.RegularExpressions;
 
 namespace LibUsbDotNet.Internal.UsbRegex
@@ -35,6 +36,7 @@ namespace LibUsbDotNet.Internal.UsbRegex
             Vid = 1,
             Pid = 2,
             Rev = 3,
+            MI= 4
         }
 
         #endregion
@@ -43,19 +45,30 @@ namespace LibUsbDotNet.Internal.UsbRegex
             RegexOptions.CultureInvariant | RegexOptions.IgnorePatternWhitespace | RegexOptions.Singleline | RegexOptions.Compiled |
             RegexOptions.ExplicitCapture | RegexOptions.IgnoreCase;
 
-        private const string PATTERN = "(Vid_(?<Vid>[0-9A-F]{1,4}))|(Pid_(?<Pid>[0-9A-F]{1,4}))|(Rev_(?<Rev>[0-9]{1,4}))|(MI_(?<Pid>[0-9A-F]{1,2}))";
+        private const string PATTERN = "(Vid_(?<Vid>[0-9A-F]{1,4}))|(Pid_(?<Pid>[0-9A-F]{1,4}))|(Rev_(?<Rev>[0-9]{1,4}))|(MI_(?<MI>[0-9A-F]{1,2}))";
 
         public static readonly NamedGroup[] NAMED_GROUPS = new NamedGroup[]
                                                                {
                                                                    new NamedGroup(1, "Vid"), new NamedGroup(2, "Pid"), new NamedGroup(3, "Rev"),
-                                                                   new NamedGroup(3, "MI")
+                                                                   new NamedGroup(4, "MI")
                                                                };
 
         public RegHardwareID() : base(PATTERN, OPTIONS) { }
 
+        private static RegHardwareID __globalInstance;
+        public static RegHardwareID GlobalInstance
+        {
+            get 
+            { 
+                if (ReferenceEquals(__globalInstance,null))
+                    __globalInstance=new RegHardwareID();
+                return __globalInstance;
+            }
+        }
+
         public new string[] GetGroupNames() { return new string[] {"Vid", "Pid", "Rev", "MI"}; }
 
-        public new int[] GetGroupNumbers() { return new int[] {1, 2, 3}; }
+        public new int[] GetGroupNumbers() { return new int[] {1, 2, 3, 4}; }
 
         public new string GroupNameFromNumber(int GroupNumber)
         {

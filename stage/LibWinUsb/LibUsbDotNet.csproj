@@ -97,7 +97,6 @@
     <Compile Include="Main\SafeContextHandle.cs" />
     <Compile Include="Internal\SetupApi.cs" />
     <Compile Include="LibUsb\LibUsbKernelType.cs" />
-    <Compile Include="Main\SetupApiRegistry.cs" />
     <Compile Include="Main\UsbCtrlFlags.cs" />
     <Compile Include="Main\UsbEndpointDirection.cs" />
     <Compile Include="Main\UsbRequestRecipient.cs" />

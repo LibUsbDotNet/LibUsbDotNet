@@ -22,6 +22,7 @@
 using System;
 using System.Collections.Generic;
 using System.Runtime.InteropServices;
+using System.Text;
 using LibUsbDotNet.Descriptors;
 using LibUsbDotNet.Main;
 using MonoLibUsb.Descriptors;
@@ -1291,6 +1292,69 @@ namespace MonoLibUsb
             }
         }
 
+        #endregion
+
+        #region API LIBRARY - Windows Testing Only
+#if WINDOWS_TESTING
+        internal static internal_windows_device_priv GetWindowsPriv(MonoUsbProfileHandle profileHandle)
+        {
+            internal_windows_device_priv priv = new internal_windows_device_priv();
+            IntPtr pPriv = new IntPtr(profileHandle.DangerousGetHandle().ToInt64() + Marshal.SizeOf(typeof(internal_libusb_device)));
+            Marshal.PtrToStructure(pPriv, priv);
+            return priv;
+        }
+        [StructLayout(LayoutKind.Sequential,Pack=0)]
+        internal class internal_libusb_device
+        {
+            public readonly IntPtr mutexLock;
+            public readonly short refCnt;
+
+            public readonly IntPtr ctx;
+
+            public readonly byte busNumber;
+            public readonly byte deviceAddress;
+            public readonly byte numConfigurations;
+
+            public readonly internal_list_head list = new internal_list_head();
+            public readonly uint sessionData;
+        }
+
+        [StructLayout(LayoutKind.Sequential, Pack = 0)]
+        internal class internal_list_head
+        {
+            public readonly IntPtr prev;
+            public readonly IntPtr next;
+        }
+
+        internal struct internal_usb_interface
+        {
+		public readonly IntPtr path;                     // each interface needs a Windows device interface path,
+		public readonly IntPtr apib; // an API backend (multiple drivers support),
+		public readonly byte nb_endpoints;            // and a set of endpoint addresses (USB_MAXENDPOINTS)
+		public readonly IntPtr endpoint;
+            
+        }
+        [StructLayout(LayoutKind.Sequential, Pack = 0)]
+        internal class internal_windows_device_priv
+        {
+            public readonly IntPtr parent_dev;     // access to parent is required for usermode ops
+            public readonly uint connection_index;  // also required for some usermode ops
+            public readonly IntPtr path;            // path used by Windows to reference the USB node
+
+
+            public readonly IntPtr apib;
+            [MarshalAs(UnmanagedType.ByValArray, SizeConst = 32)]
+            public readonly internal_usb_interface[] usb_interfaces=new internal_usb_interface[32];
+
+            public readonly byte composite_api_flags;        // HID and composite devices require additional data
+            public readonly IntPtr hid;
+            public readonly byte active_config;
+            //USB_DEVICE_DESCRIPTOR dev_descriptor;
+            //unsigned char **config_descriptor;  // list of pointers to the cached config descriptors
+
+
+        }
+#endif
         #endregion
 
         /// <summary>

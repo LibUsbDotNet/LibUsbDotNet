@@ -21,8 +21,13 @@
 // 
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
+using System.Text;
 using LibUsbDotNet.Internal;
+using LibUsbDotNet.LudnMonoLibUsb;
 using Microsoft.Win32;
+using MonoLibUsb;
+using System.Runtime.InteropServices;
 
 namespace LibUsbDotNet.Main
 {
@@ -31,6 +36,7 @@ namespace LibUsbDotNet.Main
         private static readonly Object mLockSetupApiRegistry = new object();
         private static readonly MasterList mMasterSetupApiDeviceList = new MasterList();
         private static DateTime mLastRefreshTime = DateTime.MinValue;
+        public const string DEVICE_ID_KEY = "DeviceInstanceID";
 
         public static bool NeedsRefresh
         {
@@ -56,10 +62,13 @@ namespace LibUsbDotNet.Main
 
         public static bool FillDeviceProperties(UsbRegistry usbRegistry, UsbDevice usbDevice)
         {
-            if (NeedsRefresh) BuildMasterList();
 
             lock (mLockSetupApiRegistry)
             {
+                if (NeedsRefresh) BuildMasterList();
+                if (usbDevice is MonoUsbDevice && !Helper.IsLinux)
+                    return FillWindowsMonoUsbDeviceRegistry(usbRegistry, (MonoUsbDevice) usbDevice);
+                
                 string fakeHwId = LegacyUsbRegistry.GetRegistryHardwareID((ushort) usbDevice.Info.Descriptor.VendorID,
                                                                           (ushort) usbDevice.Info.Descriptor.ProductID,
                                                                           (ushort) usbDevice.Info.Descriptor.BcdDevice);
@@ -84,6 +93,34 @@ namespace LibUsbDotNet.Main
             }
         }
 
+        private static bool FillWindowsMonoUsbDeviceRegistry(UsbRegistry usbRegistry, MonoUsbDevice usbDevice) 
+        {
+            MonoLibUsb.MonoUsbApi.internal_windows_device_priv priv = MonoLibUsb.MonoUsbApi.GetWindowsPriv(usbDevice.Profile.ProfileHandle);
+            string path;
+            for (int i = 0; i < 32; i++)
+            {
+                if (priv.usb_interfaces[i].path == IntPtr.Zero) break;
+                path = Marshal.PtrToStringAnsi(priv.usb_interfaces[i].path);
+                Debug.Print("Intf:{0} Path:{1}",i,path);
+            }
+            path = Marshal.PtrToStringAnsi(priv.path);
+
+            bool bFound = false;
+
+            //System.Diagnostics.Debug.WriteLine(sb.ToString());
+            path = path.ToString().ToLower().Replace("#", "\\");
+            foreach (MasterItem masterItem in mMasterSetupApiDeviceList)
+            {
+                if (path.Contains(masterItem[DEVICE_ID_KEY].ToString().ToLower()))
+                {
+                    usbRegistry.mDeviceProperties = masterItem;
+                    bFound = true;
+                    break;
+                }
+            }
+            return bFound;
+        }
+
         public static void BuildMasterList()
         {
             lock (mLockSetupApiRegistry)
@@ -98,8 +135,14 @@ namespace LibUsbDotNet.Main
         {
             MasterList deviceList = userData as MasterList;
             MasterItem deviceItem = new MasterItem();
+            StringBuilder sb=new StringBuilder(256);
 
+            if (SetupApi.CM_Get_Device_ID(deviceInfoData.DevInst, sb, sb.Capacity, 0)!=SetupApi.CR.SUCCESS)
+                return false;
+
+            deviceItem.Add(DEVICE_ID_KEY,sb.ToString());
             deviceList.Add(deviceItem);
+
 
             RegistryValueKind propertyType;
             byte[] propBuffer = new byte[256];
@@ -121,7 +164,7 @@ namespace LibUsbDotNet.Main
                 {
                     Guid g = new Guid(s);
                     List<string> devicePathList;
-                    if (SetupApi.GetDevicePath(g, out devicePathList))
+                    if (WinUsb.WinUsbRegistry.GetDevicePath(g, out devicePathList))
                     {
                         deviceItem.DevicePaths.Add(g, devicePathList);
                     }
@@ -142,15 +185,6 @@ namespace LibUsbDotNet.Main
                     string[] devInterfaceGuids = UsbRegistry.GetAsStringArray(propBuffer, requiredSize);
 
                     deviceItem.Add(UsbRegistry.LIBUSB_INTERFACE_GUIDS, devInterfaceGuids);
-                    foreach (string s in devInterfaceGuids)
-                    {
-                        Guid g = new Guid(s);
-                        List<string> devicePathList;
-                        if (SetupApi.GetDevicePath(g, out devicePathList))
-                        {
-                            deviceItem.DevicePaths.Add(g, devicePathList);
-                        }
-                    }
                 }
             }
 

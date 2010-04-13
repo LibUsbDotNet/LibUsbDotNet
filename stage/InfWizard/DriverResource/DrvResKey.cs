@@ -1,7 +1,7 @@
-// Copyright © 2009 Travis Robinson. All rights reserved.
+// Copyright © 2006-2010 Travis Robinson. All rights reserved.
 // 
 // website: http://sourceforge.net/projects/libusbdotnet
-// e-mail:  trobinso@users.sourceforge.net
+// e-mail:  libusbdotnet@gmail.com
 // 
 // This program is free software; you can redistribute it and/or modify it
 // under the terms of the GNU General Public License as published by the
@@ -19,22 +19,13 @@
 // visit www.gnu.org.
 // 
 // 
-using System;
-using System.Windows.Forms;
-
 namespace InfWizard
 {
-    internal static class Program
+    internal enum DrvResKey
     {
-        /// <summary>
-        /// The main entry point for the application.
-        /// </summary>
-        [STAThread]
-        private static void Main()
-        {
-            Application.EnableVisualStyles();
-            Application.SetCompatibleTextRenderingDefault(false);
-            Application.Run(new InfWizardForm());
-        }
+        //Inf,
+        //Cat,
+        DisplayName,
+        Description,
     }
 }

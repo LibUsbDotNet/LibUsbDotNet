@@ -170,10 +170,20 @@ namespace LibUsbDotNet.Internal
 
         #endregion
 
+        [Flags]
+        public enum DevKeyType
+        {
+            DEV = 0x00000001,         // Open/Create/Delete device key
+            DRV = 0x00000002,         // Open/Create/Delete driver key
+            BOTH = 0x00000004,         // Delete both driver and Device key
+
+        }
         #endregion
 
         private const string STRUCT_END_MARK = "STRUCT_END_MARK";
 
+        public static readonly Guid GUID_DEVINTERFACE_USB_DEVICE = new Guid("f18a0e88-c30c-11d0-8815-00a0c906bed8");
+        
         public static bool Is64Bit
         {
             get { return (IntPtr.Size == 8); }
@@ -284,7 +294,15 @@ namespace LibUsbDotNet.Internal
                                                                      int deviceInterfaceDetailDataSize,
                                                                      out int requiredSize,
                                                                      [MarshalAs(UnmanagedType.AsAny)] object deviceInfoData);
-
+        [DllImport(@"setupapi.dll", CharSet = CharSet.Auto, SetLastError = true)]
+        public static extern Boolean SetupDiGetDeviceInterfaceDetail(IntPtr hDevInfo,
+                                                                     ref SP_DEVICE_INTERFACE_DATA deviceInterfaceData,
+                                                                     DEVICE_INTERFACE_DETAIL_HANDLE deviceInterfaceDetailData,
+                                                                     int deviceInterfaceDetailDataSize,
+                                                                     out int requiredSize,
+                                                                     ref SP_DEVINFO_DATA deviceInfoData);
+        
+        
         [DllImport("setupapi.dll", CharSet = CharSet.Auto)]
         public static extern bool SetupDiGetDeviceInterfacePropertyKeys(IntPtr DeviceInfoSet,
                                                                         ref SP_DEVICE_INTERFACE_DATA DeviceInterfaceData,
@@ -314,6 +332,20 @@ namespace LibUsbDotNet.Internal
                                                                    int PropertyBufferSize,
                                                                    out int RequiredSize);
 
+        [DllImport("setupapi.dll", CharSet = CharSet.Auto)]
+        public static extern CR CM_Get_Device_ID(uint dnDevInst, StringBuilder Buffer, int BufferLen, int ulFlags);
+
+        [DllImport("Setupapi", CharSet = CharSet.Auto, SetLastError = true)]
+        public static extern IntPtr SetupDiOpenDevRegKey(IntPtr hDeviceInfoSet, ref SP_DEVINFO_DATA deviceInfoData, int scope, int hwProfile, DevKeyType keyType, RegistryKeyPermissionCheck samDesired);
+
+        [DllImport("advapi32.dll", SetLastError = true, CharSet = CharSet.Auto)]
+        public static extern int RegEnumValue(IntPtr hKey, int index, StringBuilder lpValueName, ref int lpcValueName, IntPtr lpReserved, out RegistryValueKind lpType, byte[] data, ref int dataLength);
+
+        [DllImport("advapi32.dll", SetLastError = true, CharSet = CharSet.Auto)]
+        public static extern int RegEnumValue(IntPtr hKey, int index, StringBuilder lpValueName, ref int lpcValueName, IntPtr lpReserved, out RegistryValueKind lpType, StringBuilder data, ref int dataLength);
+
+        [DllImport("advapi32.dll", SetLastError = true, CharSet = CharSet.Auto)]
+        public static extern int RegCloseKey(IntPtr hKey);
 
         public static bool EnumClassDevs(string enumerator,
                                          DICFG flags,
@@ -344,41 +376,10 @@ namespace LibUsbDotNet.Internal
             return bSuccess;
         }
 
-        public static bool GetDevicePath(Guid InterfaceGuid, out List<String> DevicePath)
-        {
-            DevicePath = new List<string>();
-            int devicePathIndex = 0;
-            SP_DEVICE_INTERFACE_DATA interfaceData = SP_DEVICE_INTERFACE_DATA.Empty;
-            DeviceInterfaceDetailHelper detailHelper;
-
-            // [1]
-            IntPtr deviceInfo = SetupDiGetClassDevs(ref InterfaceGuid, null, IntPtr.Zero, DICFG.PRESENT | DICFG.DEVICEINTERFACE);
-            if (deviceInfo != IntPtr.Zero)
-            {
-                while ((SetupDiEnumDeviceInterfaces(deviceInfo, null, ref InterfaceGuid, devicePathIndex, ref interfaceData)))
-                {
-                    int length = 1024;
-                    detailHelper = new DeviceInterfaceDetailHelper(length);
-                    bool bResult = SetupDiGetDeviceInterfaceDetail(deviceInfo, ref interfaceData, detailHelper.Handle, length, out length, null);
-                    if (bResult) DevicePath.Add(detailHelper.DevicePath);
-
-                    devicePathIndex++;
-                }
-            }
-            if (devicePathIndex == 0)
-                UsbError.Error(ErrorCode.Win32Error,Marshal.GetLastWin32Error(), "GetDevicePath", typeof(SetupApi));
-
-            if (deviceInfo != IntPtr.Zero)
-                SetupDiDestroyDeviceInfoList(deviceInfo);
-
-            return (devicePathIndex > 0);
-        }
-
-
-        public static void getSPDRPProperties(IntPtr deviceInfoSet, ref SP_DEVINFO_DATA deviceInfoData, Dictionary<string,object> deviceProperties)
+        public static void getSPDRPProperties(IntPtr deviceInfoSet, ref SP_DEVINFO_DATA deviceInfoData, Dictionary<string, object> deviceProperties)
         {
             byte[] propBuffer = new byte[1024];
-            Dictionary<string, int> allProps = Helper.GetEnumData(typeof (SPDRP));
+            Dictionary<string, int> allProps = Helper.GetEnumData(typeof(SPDRP));
             foreach (KeyValuePair<string, int> prop in allProps)
             {
                 object oValue = String.Empty;
@@ -386,14 +387,14 @@ namespace LibUsbDotNet.Internal
                 RegistryValueKind regPropType;
                 bool bSuccess = SetupDiGetDeviceRegistryProperty(deviceInfoSet,
                                                                  ref deviceInfoData,
-                                                                 (SPDRP) prop.Value,
+                                                                 (SPDRP)prop.Value,
                                                                  out regPropType,
                                                                  propBuffer,
                                                                  propBuffer.Length,
                                                                  out iReturnBytes);
                 if (bSuccess)
                 {
-                    switch ((SPDRP) prop.Value)
+                    switch ((SPDRP)prop.Value)
                     {
                         case SPDRP.PhysicalDeviceObjectName:
                         case SPDRP.LocationInformation:
@@ -408,6 +409,7 @@ namespace LibUsbDotNet.Internal
                             break;
                         case SPDRP.HardwareId:
                         case SPDRP.CompatibleIds:
+                        case SPDRP.LocationPaths:
                             oValue = UsbRegistry.GetAsStringArray(propBuffer, iReturnBytes);
                             break;
                         case SPDRP.BusNumber:

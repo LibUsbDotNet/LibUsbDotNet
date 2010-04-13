@@ -15,8 +15,9 @@
     <OldToolsVersion>2.0</OldToolsVersion>
     <UpgradeBackupLocation>
     </UpgradeBackupLocation>
-    <ApplicationIcon>Untitled-1.ico</ApplicationIcon>
+    <ApplicationIcon>InfWizard.ico</ApplicationIcon>
     <TargetFrameworkVersion>v2.0</TargetFrameworkVersion>
+    <ApplicationManifest>app.manifest</ApplicationManifest>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <DebugSymbols>true</DebugSymbols>
@@ -45,44 +46,50 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="..\LibWinUsb\Internal\UsbRegex\BaseRegSymbolicName.cs" />
     <Compile Include="..\LibWinUsb\Internal\UsbRegex\NamedGroup.cs" />
     <Compile Include="..\LibWinUsb\Internal\UsbRegex\RegHardwareID.cs" />
-    <Compile Include="..\LibWinUsb\Internal\UsbRegex\RegSymbolicName.cs" />
-    <Compile Include="..\LibWinUsb\Main\UsbSymbolicName.cs" />
+    <Compile Include="DriverResource\DriverResManager.cs" />
+    <Compile Include="DriverResource\DriverResource.cs" />
+    <Compile Include="DriverResource\DriverResourceDownload.cs" />
+    <Compile Include="DriverResource\DriverResourceDownloader.cs" />
+    <Compile Include="DriverResource\DrvResKey.cs" />
     <Compile Include="DynamicProps\DynamicPropDescriptor.cs" />
     <Compile Include="DynamicProps\DynamicProps.cs" />
     <Compile Include="DynamicProps\DynamicPropWrapper.cs" />
     <Compile Include="DynamicProps\DynamicTypeDescriptor.cs" />
-    <Compile Include="FileDialogUITypeEditor.cs" />
-    <Compile Include="fSpawnDrivers.cs">
+    <Compile Include="FolderBrowserUITypeEditor.cs" />
+    <Compile Include="Properties\Settings1.Designer.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTimeSharedInput>True</DesignTimeSharedInput>
+      <DependentUpon>Settings.settings</DependentUpon>
+    </Compile>
+    <Compile Include="RtfSatusControl.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="RtfSatusControl.Designer.cs">
+      <DependentUpon>RtfSatusControl.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Settings.cs" />
+    <Compile Include="Wdi.cs">
+    </Compile>
+    <Compile Include="WaitForSetupForm.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="fSpawnDrivers.Designer.cs">
-      <DependentUpon>fSpawnDrivers.cs</DependentUpon>
+    <Compile Include="WaitForSetupForm.Designer.cs">
+      <DependentUpon>WaitForSetupForm.cs</DependentUpon>
     </Compile>
-    <Compile Include="InfWriters\InfBaseWriter.cs" />
-    <Compile Include="InfWriters\InfTagKeys.cs" />
-    <Compile Include="InfWriters\LibUsbInfWriter.cs" />
-    <Compile Include="InfWriters\LibUsbInfWriter.GetSpawnDrivers.cs" />
-    <Compile Include="InfWriters\WinUsbInfWriter.cs" />
-    <Compile Include="InfWriters\WinUsbInfWriter.GetSpawnDrivers.cs" />
-    <Compile Include="fRemoveDevice.cs">
+    <Compile Include="InfWizardStatus.cs" />
+    <Compile Include="InfWriter.cs" />
+    <Compile Include="RemoveDeviceForm.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="fRemoveDevice.Designer.cs">
-      <DependentUpon>fRemoveDevice.cs</DependentUpon>
+    <Compile Include="RemoveDeviceForm.Designer.cs">
+      <DependentUpon>RemoveDeviceForm.cs</DependentUpon>
     </Compile>
-    <Compile Include="Properties\Resources1.Designer.cs">
+    <Compile Include="resInfWizard.Designer.cs">
       <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>
-      <DependentUpon>Resources.resx</DependentUpon>
-    </Compile>
-    <Compile Include="resSpawnDriverLibusb.Designer.cs">
-      <DependentUpon>resSpawnDriverLibusb.resx</DependentUpon>
-    </Compile>
-    <Compile Include="resSpawnDriverWinusb.Designer.cs">
-      <DependentUpon>resSpawnDriverWinusb.resx</DependentUpon>
+      <DependentUpon>resInfWizard.resx</DependentUpon>
     </Compile>
     <Compile Include="SetupApi.cs" />
     <Compile Include="TagnReplace\TagNReplace.cs" />
@@ -92,8 +99,11 @@
     <Compile Include="TagnReplace\TagNReplaceList.cs" />
     <Compile Include="TagnReplace\TagNReplaceString.cs" />
     <Compile Include="TagnReplace\TagNReplaceString.FormatterCollection.cs" />
-    <Compile Include="WizardClassHelpers\DeviceItem.cs" />
-    <Compile Include="WizardClassHelpers\DeviceSelectionHelper.cs" />
+    <Compile Include="DeviceItem.cs" />
+    <Compile Include="DeviceSelectionHelper.cs" />
+    <Compile Include="InfWizardForm.DrvResDownload.cs">
+      <SubType>Form</SubType>
+    </Compile>
     <Compile Include="Wizard\Header.cs">
       <SubType>UserControl</SubType>
     </Compile>
@@ -116,28 +126,26 @@
       <SubType>Component</SubType>
     </Compile>
     <Compile Include="Wizard\WizardPageDesigner.cs" />
-    <Compile Include="fInfWizard.cs">
+    <Compile Include="InfWizardForm.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="fInfWizard.Designer.cs">
-      <DependentUpon>fInfWizard.cs</DependentUpon>
+    <Compile Include="InfWizardForm.Designer.cs">
+      <DependentUpon>InfWizardForm.cs</DependentUpon>
     </Compile>
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <EmbeddedResource Include="fSpawnDrivers.resx">
-      <DependentUpon>fSpawnDrivers.cs</DependentUpon>
-      <SubType>Designer</SubType>
+    <EmbeddedResource Include="RemoveDeviceForm.resx">
+      <DependentUpon>RemoveDeviceForm.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="fRemoveDevice.resx">
-      <DependentUpon>fRemoveDevice.cs</DependentUpon>
+    <EmbeddedResource Include="WaitForSetupForm.resx">
+      <DependentUpon>WaitForSetupForm.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="resSpawnDriverLibusb.resx">
-      <SubType>Designer</SubType>
+    <EmbeddedResource Include="resInfWizard.resx">
       <Generator>ResXFileCodeGenerator</Generator>
+      <LastGenOutput>resInfWizard.Designer.cs</LastGenOutput>
     </EmbeddedResource>
-    <EmbeddedResource Include="resSpawnDriverWinusb.resx">
-      <SubType>Designer</SubType>
-      <Generator>ResXFileCodeGenerator</Generator>
+    <EmbeddedResource Include="RtfSatusControl.resx">
+      <DependentUpon>RtfSatusControl.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Wizard\Header.resx">
       <DependentUpon>Header.cs</DependentUpon>
@@ -159,32 +167,29 @@
       <DependentUpon>WizardPage.cs</DependentUpon>
       <SubType>Designer</SubType>
     </EmbeddedResource>
-    <EmbeddedResource Include="fInfWizard.resx">
-      <DependentUpon>fInfWizard.cs</DependentUpon>
+    <EmbeddedResource Include="InfWizardForm.resx">
+      <DependentUpon>InfWizardForm.cs</DependentUpon>
       <SubType>Designer</SubType>
     </EmbeddedResource>
-    <EmbeddedResource Include="Properties\Resources.resx">
-      <SubType>Designer</SubType>
-      <Generator>ResXFileCodeGenerator</Generator>
-      <LastGenOutput>Resources1.Designer.cs</LastGenOutput>
-    </EmbeddedResource>
+    <None Include="app.manifest" />
     <None Include="Properties\Settings.settings">
       <Generator>SettingsSingleFileGenerator</Generator>
+      <LastGenOutput>Settings1.Designer.cs</LastGenOutput>
     </None>
-    <Compile Include="Properties\Settings.Designer.cs">
-      <DependentUpon>Settings.settings</DependentUpon>
-    </Compile>
     <None Include="app.config" />
-    <None Include="Resources\libusb_inf_body.txt" />
-    <None Include="Resources\LIBUSB_CAT_BODY.txt" />
-    <None Include="Resources\MAINTEXT.txt" />
-    <None Include="Resources\WINUSB_INF_BODY.txt" />
-    <None Include="Resources\WINUSB_CAT_BODY.txt" />
-    <None Include="Resources\REMOVE_DEVICE_WARNING.txt" />
-    <None Include="Resources\WINUSB2_INF_BODY.txt" />
+    <None Include="Resources\InfoImage.gif" />
+    <None Include="Resources\LUDN_48x48.png" />
+    <None Include="Resources\StopImage.gif" />
+    <None Include="Resources\YieldImage.gif" />
   </ItemGroup>
   <ItemGroup>
-    <Content Include="Untitled-1.ico" />
+    <None Include="Resources\SaveImage.gif" />
+    <None Include="Resources\RefreshImage.gif" />
+    <None Include="Resources\RightArrowImage.gif" />
+    <None Include="Resources\LeftArrowImage.gif" />
+    <None Include="Resources\OpenFolderImage.gif" />
+    <None Include="Resources\CloseFolderImage.gif" />
+    <Content Include="InfWizard.ico" />
     <Content Include="Wizard\Wizard.bmp" />
     <Content Include="Wizard\wizBigOnlineFolder.gif" />
   </ItemGroup>

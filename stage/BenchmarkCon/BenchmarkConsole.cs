@@ -31,9 +31,6 @@ namespace LibUsbDotNet
         #region Benchmark Device Configuration
 
         private const int MY_CONFIG = 1;
-        private const byte MY_EP_READ = 0x81;
-        private const byte MY_EP_WRITE = 0x01;
-        private const int MY_INTERFACE = 0;
         private const EndpointType MY_ENDPOINT_TYPE = EndpointType.Bulk;
 
         /// <summary>Custom vendor request implemented in the test firmware.</summary>
@@ -90,6 +87,11 @@ namespace LibUsbDotNet
         /// <summary>The benchmark usb device product id.</summary>
         private static ushort mVid = 0x04d8;
 
+        private static byte mEndpointID = 0x01;
+        private static byte mInterfaceID = 0x00;
+
+        private static bool mNoTestSelect;
+
         #endregion
 
         #region Internal Benchmark Fields 
@@ -107,7 +109,20 @@ namespace LibUsbDotNet
         private static Thread mWriteThread;
 
         #endregion
-
+        internal static ReadEndpointID ReadEndpoint
+        {
+            get
+            {
+                return (ReadEndpointID)(mEndpointID | 0x80);
+            }
+        }
+        internal static WriteEndpointID WriteEndpoint
+        {
+            get
+            {
+                return (WriteEndpointID)(mEndpointID);
+            }
+        }
         protected static bool IsTestRunning
         {
             get
@@ -151,6 +166,7 @@ namespace LibUsbDotNet
         {
             int transferred;
             byte[] dataBuffer = new byte[1];
+            mGetTestTypePacket.Index = mInterfaceID;
             bool success = mUsbDevice.ControlTransfer(ref mGetTestTypePacket, dataBuffer, dataBuffer.Length, out transferred);
             testType = dataBuffer[0];
 
@@ -166,6 +182,7 @@ namespace LibUsbDotNet
             byte[] dataBuffer = new byte[1];
 
             mSetTestTypePacket.Value = (short) testType;
+            mSetTestTypePacket.Index = mInterfaceID;
 
             bool success = mUsbDevice.ControlTransfer(ref mSetTestTypePacket, dataBuffer, dataBuffer.Length, out transferred);
             testType = (UsbTestType) dataBuffer[0];
@@ -188,6 +205,8 @@ namespace LibUsbDotNet
                 if (!parseArguments(args, out argErrors))
                     throw new BenchmarkArgumentException(argErrors);
 
+                if (mNoTestSelect)
+                    mTestMode = UsbTestType.Loop;
 
                 Thread.CurrentThread.Priority = mThreadPriority;
                 UsbRegistry deviceProfile = null;
@@ -205,6 +224,11 @@ namespace LibUsbDotNet
 
                     foreach (UsbRegistry availProfile in deviceProfiles)
                     {
+                        if (availProfile is WinUsb.WinUsbRegistry)
+                        {
+                            WinUsb.WinUsbRegistry winUSBRegistry = (WinUsb.WinUsbRegistry) availProfile;
+                            if (winUSBRegistry.InterfaceID != mInterfaceID) continue;
+                        }
                         if (availProfile.Open(out mUsbDevice))
                         {
                             deviceProfile = availProfile;
@@ -233,26 +257,27 @@ namespace LibUsbDotNet
                         throw new Exception(String.Format("Failed set configuration!\n{0}", UsbDevice.LastErrorString));
 
                     // Claim interface #0.
-                    if (!wholeUsbDevice.ClaimInterface(MY_INTERFACE))
+                    if (!wholeUsbDevice.ClaimInterface(mInterfaceID))
                         throw new Exception(String.Format("Failed claim interface!\n{0}", UsbDevice.LastErrorString));
                 }
-
-                byte testType;
-                if (!GetTestType(out testType))
-                    throw new BenchmarkException("Failed getting test type, {0:X4}:{1:X4} doesn't appear to be a benchmark device.\n{2}",
-                                                 mVid,
-                                                 mPid,
-                                                 UsbDevice.LastErrorString);
-
-                // Make sure the device is in loop mode.
-                if (testType != (byte) mTestMode)
-                    if (!SetTestType(ref mTestMode))
-                        throw new BenchmarkException("Failed setting test type, {0:X4}:{1:X4} may not be a benchmark device.\n{2}",
+                if (!mNoTestSelect)
+                {
+                    byte testType;
+                    if (!GetTestType(out testType))
+                        throw new BenchmarkException("Failed getting test type, {0:X4}:{1:X4} doesn't appear to be a benchmark device.\n{2}",
                                                      mVid,
                                                      mPid,
                                                      UsbDevice.LastErrorString);
 
+                    // Make sure the device is in loop mode.
+                    if (testType != (byte) mTestMode)
+                        if (!SetTestType(ref mTestMode))
+                            throw new BenchmarkException("Failed setting test type, {0:X4}:{1:X4} may not be a benchmark device.\n{2}",
+                                                         mVid,
+                                                         mPid,
+                                                         UsbDevice.LastErrorString);
 
+                }
                 showTestInfo(ConType.Info);
                 showBenchmarkStartTest();
 
@@ -267,12 +292,12 @@ namespace LibUsbDotNet
                 // Start the read/write threads
                 if (NeedsReadThread)
                 {
-                    mReader = mUsbDevice.OpenEndpointReader((ReadEndpointID)MY_EP_READ, mTestTransferSize, MY_ENDPOINT_TYPE);
+                    mReader = mUsbDevice.OpenEndpointReader(ReadEndpoint, mTestTransferSize, MY_ENDPOINT_TYPE);
                     mReadThread.Start();
                 }
                 if (NeedsWriteThread)
                 {
-                    mWriter = mUsbDevice.OpenEndpointWriter((WriteEndpointID)MY_EP_WRITE, MY_ENDPOINT_TYPE);
+                    mWriter = mUsbDevice.OpenEndpointWriter(WriteEndpoint, MY_ENDPOINT_TYPE);
                     mWriteThread.Start();
                 }
                 Thread.Sleep(10);

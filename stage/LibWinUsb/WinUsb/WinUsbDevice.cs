@@ -294,10 +294,10 @@ namespace LibUsbDotNet.WinUsb
         /// <summary>
         /// Gets a list a valid, connected WinUSB device inteface paths for the a given WinUSB device interface guid.
         /// </summary>
-        /// <param name="InterfaceGuid">A WinUSB DeviceInterfaceGUID.  This is set in the usb devices inf file when the drivers for it are installed.</param>
+        /// <param name="interfaceGuid">A WinUSB DeviceInterfaceGUID.  This is set in the usb devices inf file when the drivers for it are installed.</param>
         /// <param name="devicePathList">A list of connected WinUSB device inteface paths.</param>
         /// <returns>True if one or more device paths were found.  False if no devices are found or an error occured. <see cref="UsbDevice.UsbErrorEvent"/> </returns>
-        public static bool GetDevicePathList(Guid InterfaceGuid, out List<String> devicePathList) { return SetupApi.GetDevicePath(InterfaceGuid, out devicePathList); }
+        public static bool GetDevicePathList(Guid interfaceGuid, out List<String> devicePathList) { return WinUsbRegistry.GetDevicePathList(interfaceGuid, out devicePathList); }
 
         internal bool SetPowerPolicy(PowerPolicyType policyType, int valueLength, IntPtr pBuffer)
         {
