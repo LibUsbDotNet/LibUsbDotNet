@@ -5,6 +5,35 @@
       <bugs class="bullet">
         <bug>
           <bugaction>
+            <token>Updated</token>
+          </bugaction>
+          <bugentry>
+            The LibUsbDotNet InfWizard has been re-worked and includes many new features.
+            <para>
+              InfWizard no longer uses the 'Find Drivers' option.  Instead, it uses
+              driver resource packages that contain the drivers/coinstallers, inf/cat file
+              templates, and all other files that may be required by the installation.
+              Driver resource packages can be downloaded automatically by InfWizard
+              or from http://libusbdotnet.sourceforge.net/driver_resources. As of v$(Major).$(Minor).$(Build)
+              Winusb 1.9 and libusb-win32 0.1.12.2 packages are available.
+            </para>
+            <para>
+              InfWiard has an install now feature, thanks to Peter Batard and the Libusb-1.0 team.
+              After a driver package is created, it can be automatically installed.
+            </para>
+            <para>
+              InfWizard remove device function enhancements. The remove device function can remove usb 
+              devices by the device instance id or all devices matching the hardware id.
+            </para>
+            <para>
+              Detailed logging added. Most of the InfWizard pages have a log status rtf box which indicates
+              the current progress of an operation.  Al log status boxes can be saved, copied and cleared via
+              the context menu.
+            </para>
+          </bugentry>
+        </bug>
+        <bug>
+          <bugaction>
             <token>Added</token>
           </bugaction>
           <bugentry>

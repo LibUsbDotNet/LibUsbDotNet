@@ -279,7 +279,7 @@ NTSTATUS dispatch_ioctl(libusb_device_t *dev, IRP *irp)
       request->version.minor = VERSION_MINOR;
       request->version.micro = VERSION_MICRO;
       request->version.nano  = VERSION_NANO;
-      request->version.BcdLibUsbDotNetKernelMod = 41;
+      request->version.BcdLibUsbDotNetKernelMod = 46;
 
       ret = sizeof(libusb_request);
       break;
