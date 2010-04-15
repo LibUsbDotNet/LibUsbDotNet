@@ -140,14 +140,9 @@ namespace InfWizard
             SendKeys.Send("{TAB}");
         }
 
-        private void rbDeviceSelection_AllDevices_CheckedChanged(object sender, EventArgs e) { refreshDeviceSelectionView(); }
-
-        private void rbDeviceSelection_OnlyConnected_CheckedChanged(object sender, EventArgs e) { refreshDeviceSelectionView(); }
-
-
         private void rbDeviceSelection_New_CheckedChanged(object sender, EventArgs e)
         {
-            refreshDeviceSelectionView();
+
         }
         private void refreshDeviceConfigurationView(bool bInitial)
         {
@@ -169,9 +164,11 @@ namespace InfWizard
         private void refreshDeviceSelectionView()
         {
             DEIFlags flags = DEIFlags.DICFG_AllClasses;
-            bool driverLessOnly = rbDeviceSelection_Driverless.Checked;
+            
+            bool driverLessOnly = deviceSelection_DriverlessOnlyCheckBox.Checked;
+            bool connnectedOnly = deviceSelection_ConnectedOnlyCheckBox.Checked;
 
-            if (rbDeviceSelection_OnlyConnected.Checked || driverLessOnly)
+            if (connnectedOnly)
                 flags = flags | DEIFlags.DICFG_Present;
             
             if (driverLessOnly)
@@ -180,15 +177,17 @@ namespace InfWizard
 #if DEBUG
             flags |= DEIFlags.IncludeWindowsServices;
 #endif
+            cmdRemoveDevice.Enabled = false;
             gridDeviceSelection.Rows.Clear();
 
-            if (rbDeviceSelection_New.Checked)
+            if (deviceSelection_CreateNewRadio.Checked)
             {
                 mCurrentDeviceItem = new DeviceItem();
                 wizMain.NextEnabled = true;
-                cmdRemoveDevice.Enabled = false;
+                deviceSelection_RefreshButton.Enabled = false;
                 return;
             }
+            deviceSelection_RefreshButton.Enabled = true;
 
             DeviceEnumeratorInfo deInfo = new DeviceEnumeratorInfo(flags, Handle);
             mDeviceList = deInfo.DeviceList;
@@ -213,7 +212,7 @@ namespace InfWizard
 
         private void cmdRemoveDevice_Click(object sender, EventArgs e)
         {
-            RemoveDeviceForm f = new RemoveDeviceForm(mCurrentDeviceItem, rbDeviceSelection_OnlyConnected.Checked);
+            RemoveDeviceForm f = new RemoveDeviceForm(mCurrentDeviceItem, deviceSelection_ConnectedOnlyCheckBox.Checked);
             if (f.ShowDialog(this) == DialogResult.OK)
             {
                 refreshDeviceSelectionView();
@@ -303,7 +302,7 @@ namespace InfWizard
 
         private void gridDeviceSelection_SelectionChanged(object sender, EventArgs e)
         {
-            if (gridDeviceSelection.CurrentRow != null)
+            if (gridDeviceSelection.SelectedRows.Count>0)
             {
                 mCurrentDeviceItem = (DeviceItem) gridDeviceSelection.CurrentRow.Tag;
                 wizMain.NextEnabled = true;
@@ -637,6 +636,33 @@ namespace InfWizard
            }
         }
 
+        private void deviceSelection_ConnectedOnlyCheckBox_CheckedChanged(object sender, EventArgs e)
+        {
+            deviceSelection_CreateNewRadio.CheckedChanged -= deviceSelection_CreateNewRadio_CheckedChanged;
+            deviceSelection_CreateNewRadio.Checked = false;
+            deviceSelection_CreateNewRadio.CheckedChanged += deviceSelection_CreateNewRadio_CheckedChanged;
+            
+            refreshDeviceSelectionView();
+        }
+
+        private void deviceSelection_DriverlessOnlyCheckBox_CheckedChanged(object sender, EventArgs e)
+        {
+            deviceSelection_CreateNewRadio.CheckedChanged -= deviceSelection_CreateNewRadio_CheckedChanged;
+            deviceSelection_CreateNewRadio.Checked = false;
+            deviceSelection_CreateNewRadio.CheckedChanged += deviceSelection_CreateNewRadio_CheckedChanged;
+
+            refreshDeviceSelectionView();
+        }
+
+        private void deviceSelection_CreateNewRadio_CheckedChanged(object sender, EventArgs e)
+        {
+            refreshDeviceSelectionView();
+        }
+
+        private void deviceSelection_RefreshButton_Click(object sender, EventArgs e)
+        {
+            refreshDeviceSelectionView();
+        }
 
     }
 }

@@ -120,6 +120,49 @@
   <metadata name="toolTip1.TrayLocation" type="System.Drawing.Point, System.Drawing, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a">
     <value>17, 17</value>
   </metadata>
+  <metadata name="folderBrowserDriverResources.TrayLocation" type="System.Drawing.Point, System.Drawing, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a">
+    <value>109, 17</value>
+  </metadata>
+  <metadata name="colVid.UserAddedColumn" type="System.Boolean, mscorlib, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089">
+    <value>True</value>
+  </metadata>
+  <metadata name="colPid.UserAddedColumn" type="System.Boolean, mscorlib, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089">
+    <value>True</value>
+  </metadata>
+  <metadata name="colDescription.UserAddedColumn" type="System.Boolean, mscorlib, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089">
+    <value>True</value>
+  </metadata>
+  <metadata name="colManufacturer.UserAddedColumn" type="System.Boolean, mscorlib, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089">
+    <value>True</value>
+  </metadata>
+  <metadata name="colDriverless.UserAddedColumn" type="System.Boolean, mscorlib, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089">
+    <value>True</value>
+  </metadata>
+  <metadata name="colDeviceId.UserAddedColumn" type="System.Boolean, mscorlib, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089">
+    <value>True</value>
+  </metadata>
+  <assembly alias="System.Drawing" name="System.Drawing, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a" />
+  <data name="pictureBoxInstallDriver.Image" type="System.Drawing.Bitmap, System.Drawing" mimetype="application/x-microsoft.net.object.bytearray.base64">
+    <value>
+        R0lGODlhDwAPAPcAAAAAAP////z7/NjW2f39/hcyqjtSuSZCpTxbvExktTdawubq9j9it0hntSlPpSxQ
+        orG1vi9duU90vLm/y7i8xPr7/fj5+zltx1d5tVt9uEpllHag6lNvoGqLxoWi1YWg0XmPuXqQtoCWvoui
+        y4qfxHWGpJerzoiZt6W32K2817nE2eDq/DRmuy1Ogy9QhTtajGSQ2kFejkJfj2aQ1Udkk0ZikW6Z3muV
+        2WSKyklllFh5sUpmlUhjkUhkkUxol0pmlEtnlGOGwktmk3Kc3lBsmn+n6nuj4lJsl1JrllVvm1hynVVv
+        mFp0oFlznmJ8qG6KuGR7oW2FrnKLtXSMtWl+n42ky4qfw5Spy6/B38bU6sDN4qeuut7n9uvu82mT1Eto
+        lXKf33ea0F54n5Kz4n6QrJ2sw6e2zdDb6+ft9unt842z59rn+fD1/L/CxvH0+KnH7MvY6MTc9tDc6tbh
+        7eTr8u/1+8nN0d7n7+Pt8vH19+Pr7ujv8eTo6Pz///v8/PLz8/P59vT57v//9/T07P//+P//+v39/NjY
+        1/fz5f/88fDs4Pbx5PPx7Pby6fny5Pf18f/36P358/z48+3r6fPt6OTg3vr5+f///wAAAAAAAAAAAAAA
+        AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
+        AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
+        AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
+        AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
+        AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
+        ACH5BAEAAJcALAAAAAAPAA8AAAjUAC8JvGTDSJENMDqAGDjwBhg1cdas4KKFBAcnA2cMedMnQAA2dQK4
+        MUOEiUAvYzwGQHOBRRePZXYowRHmjsoKHj5Y8EgIypcgI1QGWHCGjkdLgib80HFFKJYIEtIEECBpABIM
+        JoTCUcBATwBDjyotyVCFgEo5CBrsCeCH0aEjT0RUUDnHQAJAAf40okDDyhQVKrMUOIAnwKRFVGhckhIi
+        j0cUDh6kSARpi4wkAqOc4FMoUqBBlBxB6JGDYRMxZOwgUtSmBA8gDAX60PCihYsYQmoMDAgAOw==
+</value>
+  </data>
   <data name="buttonInstallDriver.ToolTip" xml:space="preserve">
     <value>If this device is connected and has no other drivers are controlling it (driverless), 
 this will install the driver making the device ready for immediate use. If the
@@ -131,7 +174,6 @@ use the next time it is attached.</value>
 After downloading driver resources, they must be copied to the working directory or the
 directory where InfWizard.exe resides.</value>
   </data>
-  <assembly alias="System.Drawing" name="System.Drawing, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a" />
   <data name="buttonCancelDownload.Image" type="System.Drawing.Bitmap, System.Drawing" mimetype="application/x-microsoft.net.object.bytearray.base64">
     <value>
         R0lGODlhDgAOAPYAAAAAAP///zoEBvz+/P22nf3Fsf3Gsvo9APY9APQ8AO87AO06AOc5AOI3AOA3AN02
@@ -146,8 +188,11 @@ directory where InfWizard.exe resides.</value>
         Y2teVx0OGjiAEIGCPidp2LTRUoXDBAoV9FlwYkYAIzFgpkC5gOHJmDQWGbUJQ6bMGTRq1igUFAgAOw==
 </value>
   </data>
-  <metadata name="folderBrowserDriverResources.TrayLocation" type="System.Drawing.Point, System.Drawing, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a">
-    <value>109, 17</value>
+  <metadata name="coDriverResourceName.UserAddedColumn" type="System.Boolean, mscorlib, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089">
+    <value>True</value>
+  </metadata>
+  <metadata name="colDriverResourceDescription.UserAddedColumn" type="System.Boolean, mscorlib, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089">
+    <value>True</value>
   </metadata>
   <data name="lMainText.Text" xml:space="preserve">
     <value>LibUsbDotNet INF Wizard creates complete windows USB inf/setup packages for usb devices.  Currently driver resources are available for both WinUSB and libusb-win32.  Driver resource packages contain inf information and windows drivers/coinstallers needed for usb device installation.</value>
@@ -208,68 +253,6 @@ directory where InfWizard.exe resides.</value>
         QyHZQyM5BiVJkh2pkSnJBgkAADs=
 </value>
   </data>
-  <data name="pictureBoxInstallDriver.Image" type="System.Drawing.Bitmap, System.Drawing" mimetype="application/x-microsoft.net.object.bytearray.base64">
-    <value>
-        R0lGODlhDwAPAPcAAAAAAP////z7/NjW2f39/hcyqjtSuSZCpTxbvExktTdawubq9j9it0hntSlPpSxQ
-        orG1vi9duU90vLm/y7i8xPr7/fj5+zltx1d5tVt9uEpllHag6lNvoGqLxoWi1YWg0XmPuXqQtoCWvoui
-        y4qfxHWGpJerzoiZt6W32K2817nE2eDq/DRmuy1Ogy9QhTtajGSQ2kFejkJfj2aQ1Udkk0ZikW6Z3muV
-        2WSKyklllFh5sUpmlUhjkUhkkUxol0pmlEtnlGOGwktmk3Kc3lBsmn+n6nuj4lJsl1JrllVvm1hynVVv
-        mFp0oFlznmJ8qG6KuGR7oW2FrnKLtXSMtWl+n42ky4qfw5Spy6/B38bU6sDN4qeuut7n9uvu82mT1Eto
-        lXKf33ea0F54n5Kz4n6QrJ2sw6e2zdDb6+ft9unt842z59rn+fD1/L/CxvH0+KnH7MvY6MTc9tDc6tbh
-        7eTr8u/1+8nN0d7n7+Pt8vH19+Pr7ujv8eTo6Pz///v8/PLz8/P59vT57v//9/T07P//+P//+v39/NjY
-        1/fz5f/88fDs4Pbx5PPx7Pby6fny5Pf18f/36P358/z48+3r6fPt6OTg3vr5+f///wAAAAAAAAAAAAAA
-        AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
-        AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
-        AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
-        AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
-        AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
-        ACH5BAEAAJcALAAAAAAPAA8AAAjUAC8JvGTDSJENMDqAGDjwBhg1cdas4KKFBAcnA2cMedMnQAA2dQK4
-        MUOEiUAvYzwGQHOBRRePZXYowRHmjsoKHj5Y8EgIypcgI1QGWHCGjkdLgib80HFFKJYIEtIEECBpABIM
-        JoTCUcBATwBDjyotyVCFgEo5CBrsCeCH0aEjT0RUUDnHQAJAAf40okDDyhQVKrMUOIAnwKRFVGhckhIi
-        j0cUDh6kSARpi4wkAqOc4FMoUqBBlBxB6JGDYRMxZOwgUtSmBA8gDAX60PCihYsYQmoMDAgAOw==
-</value>
-  </data>
-  <data name="label1.Image" type="System.Drawing.Bitmap, System.Drawing" mimetype="application/x-microsoft.net.object.bytearray.base64">
-    <value>
-        iVBORw0KGgoAAAANSUhEUgAAABAAAAAQCAYAAAAf8/9hAAAAAXNSR0IArs4c6QAAAARnQU1BAACxjwv8
-        YQUAAAAgY0hSTQAAeiYAAICEAAD6AAAAgOgAAHUwAADqYAAAOpgAABdwnLpRPAAAAAlwSFlzAAALEwAA
-        CxMBAJqcGAAAAnJJREFUOE+dkU9MknEYx99Tx0517dLFDtWNLnVws3Xo36nppnlQ2CrXaP1vbW21Feks
-        28BctlarxGZDlhgwN+ZfQqBAXLygoTT+I8ibAoEpfXt+L/kKqy79toff73l4vp/nz8sB4CotEF6CkP1O
-        oa2TK65j0ulngapc5kuBWGoF+dyqpLK7fKirbYH+vVWK/aSXdzFRBRIBoXgawvJyVdUT9Q8Jfxo1h3ur
-        4szRWTwSRAREoxEx6QdZdr2cz97a6TVkWFk6iTwgsODvo+rRixBu+nMQQq6ANfLSNDq77XMx3FEb0Ns3
-        gleDEyhSLJwDAhkgRZAN8ocdIVy81QPOYptBMl9CirJitAKhBMzHBOw61El4BXYf7ARrYuEbwKeAOYJE
-        CWJfXC0DTBNufCUVq7AoUBVKZGdgnCfANcgatGIHXlrRTBKYTROECo350mg6dw/c4Kgb3ngRQQLw9Cez
-        LAk0+k8EuAxZfR9WyHfT8h1RupcAD3Wid0QIcB/ciyErbF8S8FFlRnfFAfY9uofcBFDiQMNrsKbsFP9A
-        ADsBrOENtHXocP7qI3AvzU4RMO7PwEMjuGnGEAlabg8T4Aa27evCVLQAJ1EnCWLy5fHUMo8dexvLX4H9
-        9BvtIsRMg36k9kx8EScvjKG1O4mmBwu4qQ2K4nd8DhqjD3uOXIJC2b4FYJBn/SNg9sQ4izeOOEYjJdho
-        aR7aoIHPQ232Q96uw879zWg+e1cUSx1sOuxWXFHjmLxDhBgCJCaTq/TYXnMKsrozVeK/AjZhR9seQzXg
-        wFQBqG3V/CH8ZweV3TCI8rkLx6+//T8Ag7F5G5Vd0syVBdj7F1oqNDbv5nS1AAAAAElFTkSuQmCC
-</value>
-  </data>
-  <metadata name="colVid.UserAddedColumn" type="System.Boolean, mscorlib, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089">
-    <value>True</value>
-  </metadata>
-  <metadata name="colPid.UserAddedColumn" type="System.Boolean, mscorlib, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089">
-    <value>True</value>
-  </metadata>
-  <metadata name="colDescription.UserAddedColumn" type="System.Boolean, mscorlib, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089">
-    <value>True</value>
-  </metadata>
-  <metadata name="colManufacturer.UserAddedColumn" type="System.Boolean, mscorlib, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089">
-    <value>True</value>
-  </metadata>
-  <metadata name="colDriverless.UserAddedColumn" type="System.Boolean, mscorlib, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089">
-    <value>True</value>
-  </metadata>
-  <metadata name="colDeviceId.UserAddedColumn" type="System.Boolean, mscorlib, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089">
-    <value>True</value>
-  </metadata>
-  <metadata name="coDriverResourceName.UserAddedColumn" type="System.Boolean, mscorlib, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089">
-    <value>True</value>
-  </metadata>
-  <metadata name="colDriverResourceDescription.UserAddedColumn" type="System.Boolean, mscorlib, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089">
-    <value>True</value>
-  </metadata>
   <data name="infoPageMain.Image" type="System.Drawing.Bitmap, System.Drawing" mimetype="application/x-microsoft.net.object.bytearray.base64">
     <value>
         R0lGODlhpACDAfIAAAAAAP///wAAgMDAwICAgP///wAAAAAAACH5BAEAAAUALAAAAACkAIMBAAP/CKK8

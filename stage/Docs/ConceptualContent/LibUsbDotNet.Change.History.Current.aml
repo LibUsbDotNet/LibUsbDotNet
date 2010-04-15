@@ -27,7 +27,7 @@
             </para>
             <para>
               Detailed logging added. Most of the InfWizard pages have a log status rtf box which indicates
-              the current progress of an operation.  Al log status boxes can be saved, copied and cleared via
+              the current progress of an operation.  All log status boxes can be saved, copied and cleared via
               the context menu.
             </para>
           </bugentry>

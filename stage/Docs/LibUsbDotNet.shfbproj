@@ -1,4 +1,4 @@
-<Project DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003" ToolsVersion="3.5">
+﻿<Project DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003" ToolsVersion="3.5">
   <PropertyGroup>
     <!-- The configuration and platform will be used to determine which
          assemblies to include from solution and project documentation
@@ -181,41 +181,10 @@
     <None Include="ConceptualContent\MonoLibUsb.Example.ShowConfig.aml" />
     <None Include="ConceptualContent\MonoLibUsb.Example.AsyncControlIO.aml" />
     <None Include="ConceptualContent\LibUsbDotNet.Async.Transfer.aml" />
+    <None Include="ConceptualContent\LibUsbDotNet.InfWizard.aml" />
   </ItemGroup>
   <ItemGroup>
     <ContentLayout Include="LibUsbDotNet.content" />
-  </ItemGroup>
-  <ItemGroup>
-    <Image Include="Images\InfWizard.Package.3.png">
-      <ImageId>InfWizard.Package.3</ImageId>
-      <AlternateText>InfWizard:Device Configuration</AlternateText>
-    </Image>
-    <Image Include="Images\InfWizard.Package.1.png">
-      <ImageId>InfWizard.Package.1</ImageId>
-      <AlternateText>InfWizard:Welcome</AlternateText>
-    </Image>
-    <Image Include="Images\InfWizard.Package.2.png">
-      <ImageId>InfWizard.Package.2</ImageId>
-      <AlternateText>InfWizard:Device Selection</AlternateText>
-    </Image>
-    <Image Include="Images\InfWizard.Package.3.1.png">
-      <ImageId>InfWizard.Package.3.1</ImageId>
-      <AlternateText>InfWizard:Find Drivers</AlternateText>
-    </Image>
-  </ItemGroup>
-  <ItemGroup>
-    <Image Include="Images\InfWizard.Remove.1.png">
-      <ImageId>InfWizard.Remove.1</ImageId>
-      <AlternateText>InfWizard: Select Device For Removal</AlternateText>
-    </Image>
-    <Image Include="Images\InfWizard.Remove.1.1.png">
-      <AlternateText>InfWizard: Device Removal Settings</AlternateText>
-      <ImageId>InfWizard.Remove.1.1</ImageId>
-    </Image>
-    <Image Include="Images\InfWizard.Remove.1.2.png">
-      <ImageId>InfWizard.Remove.1.2</ImageId>
-      <AlternateText>InfWizard:Confirm Inf File Removal</AlternateText>
-    </Image>
   </ItemGroup>
   <ItemGroup>
     <Image Include="Images\golddivider.gif">
@@ -223,9 +192,53 @@
     </Image>
   </ItemGroup>
   <ItemGroup>
-    <Image Include="Images\InfWizard.Package.Output.1.png">
-      <ImageId>InfWizard.Package.Output.1</ImageId>
-      <AlternateText>InfWizard output files</AlternateText>
+    <Image Include="Images\InfWizard.Welcome.png">
+      <AlternateText>InfWizard Welcome page.</AlternateText>
+      <ImageId>InfWizard.Welcome</ImageId>
+    </Image>
+    <Image Include="Images\InfWizard.Config.Device.1.png">
+      <AlternateText>Configure the device.</AlternateText>
+      <ImageId>InfWizard.Config.Device.1</ImageId>
+    </Image>
+    <Image Include="Images\InfWizard.Download.Drivers.1.png">
+      <AlternateText>Prepare to download driver resource package(s).</AlternateText>
+      <ImageId>InfWizard.Download.Drivers.1</ImageId>
+    </Image>
+    <Image Include="Images\InfWizard.Download.Drivers.2.png">
+      <AlternateText>Select driver resource packages to download.</AlternateText>
+      <ImageId>InfWizard.Download.Drivers.2</ImageId>
+    </Image>
+    <Image Include="Images\InfWizard.Download.Drivers.3.png">
+      <AlternateText>Driver resource download complete.</AlternateText>
+      <ImageId>InfWizard.Download.Drivers.3</ImageId>
+    </Image>
+    <Image Include="Images\InfWizard.Finished.1.png">
+      <AlternateText>Setup package generation finished.</AlternateText>
+      <ImageId>InfWizard.Finished.1</ImageId>
+    </Image>
+    <Image Include="Images\InfWizard.Finished.2.png">
+      <AlternateText>Setup package installed successfully.</AlternateText>
+      <ImageId>InfWizard.Finished.2</ImageId>
+    </Image>
+    <Image Include="Images\InfWizard.Remove.Device.1.png">
+      <AlternateText>Remove device configuration.</AlternateText>
+      <ImageId>InfWizard.Remove.Device.1</ImageId>
+    </Image>
+    <Image Include="Images\InfWizard.Remove.Device.2.png">
+      <AlternateText>Remove device complete</AlternateText>
+      <ImageId>InfWizard.Remove.Device.2</ImageId>
+    </Image>
+    <Image Include="Images\InfWizard.Select.Device.1.png">
+      <AlternateText>Select a device.</AlternateText>
+      <ImageId>InfWizard.Select.Device.1</ImageId>
+    </Image>
+    <Image Include="Images\InfWizard.WaitFor.PendingInstall.png">
+      <AlternateText>This window is shown when there is another pending device installation in progress.</AlternateText>
+      <ImageId>InfWizard.WaitFor.PendingInstall</ImageId>
+    </Image>
+    <Image Include="Images\InfWizard.Welcome.NoDrivers.png">
+      <AlternateText>Welcome page displayed when driver resource(s) are needed.</AlternateText>
+      <ImageId>InfWizard.Welcome.NoDrivers</ImageId>
     </Image>
   </ItemGroup>
   <!-- Import the SHFB build targets -->

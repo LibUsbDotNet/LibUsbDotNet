@@ -111,4 +111,9 @@
           </ddue:list></item>
   <item id="Removed"><ddue:legacyBold xmlns:ddue="http://ddue.schemas.microsoft.com/authoring/2003/5">Removed</ddue:legacyBold></item>
   <item id="Updated"><ddue:legacyBold xmlns:ddue="http://ddue.schemas.microsoft.com/authoring/2003/5">Updated</ddue:legacyBold></item>
+  <item id="DriverResourceLink"><ddue:externalLink>
+  <ddue:linkText>LibUsbDotNet Driver Resource Page</ddue:linkText>
+  <ddue:linkAlternateText>LibUsbDotNet InfWizard driver resource download page</ddue:linkAlternateText>
+  <ddue:linkUri>http://libusbdotnet.sourceforge.net/driver_resources</ddue:linkUri>
+</ddue:externalLink></item>
 </content>

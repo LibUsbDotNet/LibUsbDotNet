@@ -8,18 +8,16 @@
     -->
     <introduction>
       <para>
-        The InfWizard can be used to remove and clean usb install packages.
-
+        The InfWizard can be used to remove/clean up usb install packages.
       </para>
     </introduction>
     <alert class="warning">
       <list>
         <listItem>
-          Users should only remove devices that were installed with the InfWizard setup packages.
           Removing unknown devices can irreparably damage the operating system.
         </listItem>
         <listItem>
-          Windows 7/Vista users must run the InfWizard utility as administrator to remove device drivers.
+          Windows 7/Vista users must run the InfWizard utility as administrator.
         </listItem>
       </list>
     </alert>
@@ -35,7 +33,7 @@
             </para>
             <mediaLink>
               <caption placement="after" lead="InfWizard">Welcome</caption>
-              <image placement="left" xlink:href="InfWizard.Package.1" />
+              <image placement="left" xlink:href="InfWizard.Welcome" />
             </mediaLink>
             <mediaLink>
               <image placement="left" xlink:href="GoldDivider" />
@@ -45,11 +43,11 @@
         <step>
           <content>
             <para>
-              Select the usb device to remove and click <userInput>Remove Device</userInput>.
+              Select the usb device to remove and click <userInput>Remove Device</userInput> to display the InfWizard Remove Device window.
             </para>
             <mediaLink>
               <caption placement="after" lead="InfWizard">Device Selection</caption>
-              <image placement="left" xlink:href="InfWizard.Remove.1" />
+              <image placement="left" xlink:href="InfWizard.Remove.Device.1" />
             </mediaLink>
             <mediaLink>
               <image placement="left" xlink:href="GoldDivider" />
@@ -59,14 +57,19 @@
         <step>
           <content>
             <para>
-              The device removal function first calls the windows api function <externalLink>
+              The device removal function first calls the windows api function
+              <externalLink>
                 <linkText>SetupDiRemoveDevice</linkText>
                 <linkAlternateText>SetupDiRemoveDevice on MSDN</linkAlternateText>
-                <linkUri>http://msdn.microsoft.com/en-us/library/ms792970.aspx</linkUri>
+                <linkUri>http://msdn.microsoft.com/en-us/library/ff552097.aspx</linkUri>
                 <linkTarget>_blank</linkTarget>
-              </externalLink>.
-              Next, it checks if there is an <localUri>[Windows]\Inf\oemXX.inf</localUri> file 
-              associated with this device. If the file is found it is deleted.
+              </externalLink> and then
+              <externalLink>
+              <linkText>SetupUninstallOEMInf</linkText>
+              <linkAlternateText>SetupUninstallOEMInf on MSDN</linkAlternateText>
+              <linkUri>http://msdn.microsoft.com/en-us/library/aa377446%28v=VS.85%29.aspx</linkUri>
+              <linkTarget>_blank</linkTarget>
+            </externalLink>.
             </para>
             <para>
               If the <userInput>DeepClean</userInput> property was set to true, the remove 
@@ -77,24 +80,20 @@
             </para>
 
             <mediaLink>
-              <caption placement="after" lead="InfWizard">Remove USB Device Settings</caption>
-              <image placement="left" xlink:href="InfWizard.Remove.1.1" />
+              <caption placement="after" lead="InfWizard">Remove USB Device</caption>
+              <image placement="left" xlink:href="InfWizard.Remove.Device.2" />
             </mediaLink>
             <mediaLink>
               <image placement="left" xlink:href="GoldDivider" />
             </mediaLink>
-
-            <mediaLink>
-              <caption placement="after" lead="InfWizard">DeepClean Remove Confirmation</caption>
-              <image placement="left" xlink:href="InfWizard.Remove.1.2" />
-            </mediaLink>
-            <mediaLink>
-              <image placement="left" xlink:href="GoldDivider" />
-            </mediaLink>
-
           </content>
         </step>
 
+        <step>
+          <content>
+            <para>The dialog remains open after the device is removed so status can be reviewed.</para>
+          </content>
+        </step>
       </steps>
       <!-- <conclusion>Optional conclusion</conclusion> -->
     </procedure>

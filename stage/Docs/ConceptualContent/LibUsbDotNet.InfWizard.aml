@@ -1,0 +1,118 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<topic id="821ec2e3-4f3d-4388-a3ee-de6fce15eab7" revisionNumber="1">
+  <developerHowToDocument xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5" xmlns:xlink="http://www.w3.org/1999/xlink">
+    <!--
+    <summary>
+      <para>Optional summary abstract</para>
+    </summary>
+    -->
+    <introduction>
+      <para>LibUsbDotNet INF Wizard creates complete windows USB inf/setup packages for usb devices.
+      Currently driver resources are available for both WinUSB and libusb-win32.  
+      </para>
+    </introduction>
+
+    <foldSection address="InfWizard.Features">
+      <title>Features</title>
+      <content>
+        <list class="bullet">
+          <listItem>Creates USB installation packages</listItem>
+          <listItem>Removes USB devices</listItem>
+          <listItem>Installs USB device drivers</listItem>
+          <listItem>Uses configurable driver resource packages</listItem>
+        </list>
+       </content>
+    </foldSection>
+    
+    <foldSection address="InfWizard.Driver.Resources">
+      <title>Getting Driver Resource Packages</title>
+      <content>
+        <para>
+          The InfWizard utility requires one or more driver resource packages to operate. 
+          A driver resource package contains the driver and inf file templates needed to 
+          build a usb setup package. InfWizard can download these automatically or they 
+          can be downloaded manually from the <token>DriverResourceLink</token>
+        </para>
+        <alert class="note">
+          Driver resources that are downloaded manually must be placed in the working directory
+          or the InfWizard.exe path directory.
+        </alert>
+        <para>
+          A driver resource package is a standard .NET resource file.  Users can modify existing packages
+          or create new ones from scratch and use them with InfWizard to generate custom-tailored 
+          device installations.
+        </para>
+      </content>
+    </foldSection>
+
+    <!-- Optional procedures followed by optional code example but must have
+         at least one procedure or code example 
+    <procedure>
+      <title>InfWizard Driver Resources</title>
+      <steps class="ordered">
+        <step>
+          <content>
+            <para>First step</para>
+          </content>
+        </step>
+        <step>
+          <content>
+            <para>Second step</para>
+          </content>
+        </step>
+      </steps>
+      <conclusion>Optional conclusion</conclusion>
+    </procedure>
+    -->
+    <!-- <codeExample>Optional code example</codeExample> -->
+    <!-- <buildInstructions>Optional instructions for building a
+         code example.</buildInstructions> -->
+    <!-- <robustProgramming>Optional discussion of error handling and other
+         issues related to writing solid code.</robustProgramming> -->
+    <!-- <security>Optional discussion of security issues.</security> -->
+    <relatedTopics>
+      <link xlink:href="c7ed5d69-c342-471d-9122-ab50a5ea21b7">Creating a USB Install Package</link>
+      <link xlink:href="588bcacc-c42e-4e5c-ac00-a6c5be7aba87">Removing a USB Install Package</link>
+      <!-- One or more of the following:
+           - A local link
+           - An external link
+           - A code entity reference
+
+      <link xlink:href="Other Topic's ID">Link text</link>
+      <externalLink>
+          <linkText>Link text</linkText>
+          <linkAlternateText>Optional alternate link text</linkAlternateText>
+          <linkUri>URI</linkUri>
+      </externalLink>
+      <codeEntityReference>API member ID</codeEntityReference>
+
+      Examples:
+
+      <link xlink:href="00e97994-e9e6-46e0-b420-5be86b2f8278">Some other topic</link>
+
+      <externalLink>
+          <linkText>SHFB on CodePlex</linkText>
+          <linkAlternateText>Go to CodePlex</linkAlternateText>
+          <linkUri>http://shfb.codeplex.com</linkUri>
+      </externalLink>
+
+      <codeEntityReference>T:TestDoc.TestClass</codeEntityReference>
+      <codeEntityReference>P:TestDoc.TestClass.SomeProperty</codeEntityReference>
+      <codeEntityReference>M:TestDoc.TestClass.#ctor</codeEntityReference>
+      <codeEntityReference>M:TestDoc.TestClass.#ctor(System.String,System.Int32)</codeEntityReference>
+      <codeEntityReference>M:TestDoc.TestClass.ToString</codeEntityReference>
+      <codeEntityReference>M:TestDoc.TestClass.FirstMethod</codeEntityReference>
+      <codeEntityReference>M:TestDoc.TestClass.SecondMethod(System.Int32,System.String)</codeEntityReference>
+      -->
+      
+      <!--
+    <foldSection address="ProjectFeatures">
+      <title>Features</title>
+      <content>
+        <token>ProjectFeatures</token>
+      </content>
+    </foldSection>
+      -->
+    </relatedTopics>
+  </developerHowToDocument>
+</topic>
