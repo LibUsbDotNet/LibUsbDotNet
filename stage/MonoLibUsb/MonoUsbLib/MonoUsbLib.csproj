@@ -50,8 +50,20 @@
     <Compile Include="..\..\LibWinUsb\Main\SafeContextHandle.cs">
       <Link>LibUsbDotNet Shared\SafeContextHandle.cs</Link>
     </Compile>
+    <Compile Include="..\..\LibWinUsb\Main\UsbConstants.cs">
+      <Link>LibUsbDotNet Shared\UsbConstants.cs</Link>
+    </Compile>
+    <Compile Include="..\..\LibWinUsb\Main\UsbCtrlFlags.cs">
+      <Link>LibUsbDotNet Shared\UsbCtrlFlags.cs</Link>
+    </Compile>
+    <Compile Include="..\..\LibWinUsb\Main\UsbEndpointDirection.cs">
+      <Link>LibUsbDotNet Shared\UsbEndpointDirection.cs</Link>
+    </Compile>
     <Compile Include="..\..\LibWinUsb\Main\UsbException.cs">
       <Link>LibUsbDotNet Shared\UsbException.cs</Link>
+    </Compile>
+    <Compile Include="..\..\LibWinUsb\Main\UsbRequestRecipient.cs">
+      <Link>LibUsbDotNet Shared\UsbRequestRecipient.cs</Link>
     </Compile>
     <Compile Include="..\..\libwinusb\main\UsbRequestType.cs">
       <Link>LibUsbDotNet Shared\UsbRequestType.cs</Link>
