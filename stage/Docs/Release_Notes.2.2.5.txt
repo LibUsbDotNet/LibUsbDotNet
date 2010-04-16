@@ -1,6 +1,6 @@
 LibUsbDotNet Version History
 
-V2.2.5 (04/13/2010)
+V2.2.5 (04/15/2010)
 ====================
   * [Updated] The LibUsbDotNet InfWizard has been re-worked and includes many 
     new features. 
@@ -17,17 +17,23 @@ V2.2.5 (04/13/2010)
     
     InfWizard remove device function enhancements. The remove device function 
     can remove usb devices by the device instance id or all devices matching 
-    the hardware id. 
+    the hardware id. It now calls SetupDiUnintallOEMInf as well as 
+    SetupDIRemoveDevice. 
     
     Detailed logging added. Most of the InfWizard pages have a log status rtf 
-    box which indicates the current progress of an operation. Al log status 
+    box which indicates the current progress of an operation. All log status 
     boxes can be saved, copied and cleared via the context menu. 
+
+  * [Updated] WinUsbRegistry class 
+    Improved support for composite devices.
 
   * [Added] EndpointType parameter to OpenEndpointReader and 
     OpenEndpointWriter methods. 
     The endpoint type must be specified for linux Libusb-1.0 compatibility.
 
-  * [Added] Benchmark Console application.
+  * [Added] Benchmark Console application. 
+    Thank Xiaofan (http://mcuee.blogspot.com) for helping debug this 
+    application and getting it ready for release.
 
   * [Fixed] Usb devices runnning benchmark firmware do not work correctly if 
     plugged in while booting under linux.

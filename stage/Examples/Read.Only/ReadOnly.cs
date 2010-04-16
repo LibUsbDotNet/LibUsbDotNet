@@ -93,6 +93,10 @@ namespace Examples
                         MyUsbDevice.Close();
                     }
                     MyUsbDevice = null;
+
+                    // Free usb resources
+                    UsbDevice.Exit();
+
                 }
 
                 // Wait for user input..

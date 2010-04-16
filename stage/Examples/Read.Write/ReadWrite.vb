@@ -10,7 +10,7 @@ Namespace Examples
 
 		#Region "SET YOUR USB Vendor and Product ID!"
 
-		Public Shared MyUsbFinder As New UsbDeviceFinder(&H4d8, &Hf0)
+		Public Shared MyUsbFinder As New UsbDeviceFinder(&H4d8, &H53)
 
 		#End Region
 
@@ -84,10 +84,11 @@ Namespace Examples
 			Finally
 				If MyUsbDevice IsNot Nothing Then
 					If MyUsbDevice.IsOpen Then
-						' If this is a "whole" usb device (libusb-win32, linux libusb)
-						' it will have an IUsbDevice interface. If not (WinUSB) the 
-						' variable will be null indicating this is an interface of a 
-						' device.
+						' If this is a "whole" usb device (libusb-win32, linux libusb-1.0)
+						' it exposes an IUsbDevice interface. If not (WinUSB) the 
+						' 'wholeUsbDevice' variable will be null indicating this is 
+						' an interface of a device; it does not require or support 
+						' configuration and interface selection.
 						Dim wholeUsbDevice As IUsbDevice = TryCast(MyUsbDevice, IUsbDevice)
 						If Not ReferenceEquals(wholeUsbDevice, Nothing) Then
 							' Release interface #0.
@@ -96,8 +97,11 @@ Namespace Examples
 
 						MyUsbDevice.Close()
 					End If
-
 					MyUsbDevice = Nothing
+
+					' Free usb resources
+
+					UsbDevice.[Exit]()
 				End If
 
 				' Wait for user input..

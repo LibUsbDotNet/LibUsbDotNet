@@ -19,7 +19,7 @@
     <!--    DO NOT REMOVE    -->
     <!-- CurrentReleaseNotes -->
   <releaseNotes address="LibUsbDotNet_Changes_v2.2.5">
-    <title>v2.2.5 (04/13/2010)</title>
+    <title>v2.2.5 (04/15/2010)</title>
     <content>
       <bugs class="bullet">
         <bug>
@@ -33,8 +33,8 @@
               driver resource packages that contain the drivers/coinstallers, inf/cat file
               templates, and all other files that may be required by the installation.
               Driver resource packages can be downloaded automatically by InfWizard
-              or from http://libusbdotnet.sourceforge.net/driver_resources. As of v2.2.5
-              Winusb 1.9 and libusb-win32 0.1.12.2 packages are available.
+              or from http://libusbdotnet.sourceforge.net/driver_resources. 
+              As of v2.2.5 Winusb 1.9 and libusb-win32 0.1.12.2 packages are available.
             </para>
             <para>
               InfWiard has an install now feature, thanks to Peter Batard and the Libusb-1.0 team.
@@ -42,13 +42,23 @@
             </para>
             <para>
               InfWizard remove device function enhancements. The remove device function can remove usb 
-              devices by the device instance id or all devices matching the hardware id.
+              devices by the device instance id or all devices matching the hardware id. It now calls 
+              SetupDiUnintallOEMInf as well as SetupDIRemoveDevice.
             </para>
             <para>
               Detailed logging added. Most of the InfWizard pages have a log status rtf box which indicates
-              the current progress of an operation.  Al log status boxes can be saved, copied and cleared via
+              the current progress of an operation.  All log status boxes can be saved, copied and cleared via
               the context menu.
             </para>
+          </bugentry>
+        </bug>
+        <bug>
+          <bugaction>
+            <token>Updated</token>
+          </bugaction>
+          <bugentry>
+            <CREF>T:LibUsbDotNet.WinUsb.WinUsbRegistry</CREF> class
+            <para>Improved support for composite devices.</para>
           </bugentry>
         </bug>
         <bug>
@@ -56,7 +66,7 @@
             <token>Added</token>
           </bugaction>
           <bugentry>
-            <CREF>LibUsbDotNet.Main.EndpointType</CREF> parameter to OpenEndpointReader and OpenEndpointWriter methods.
+            <CREF>T:LibUsbDotNet.Main.EndpointType</CREF> parameter to OpenEndpointReader and OpenEndpointWriter methods.
             <para>The endpoint type must be specified for linux Libusb-1.0 compatibility.</para>
           </bugentry>
         </bug>
@@ -66,6 +76,7 @@
           </bugaction>
           <bugentry>
             Benchmark Console application.
+            <para>Thank Xiaofan (http://mcuee.blogspot.com) for helping debug this application and getting it ready for release.</para>
           </bugentry>
         </bug>
         <bug>

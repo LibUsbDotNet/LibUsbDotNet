@@ -1,6 +1,11 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <content xml:space="preserve" xmlns:ddue="http://ddue.schemas.microsoft.com/authoring/2003/5" xmlns:xlink="http://www.w3.org/1999/xlink">
   <item id="Added"><ddue:legacyBold xmlns:ddue="http://ddue.schemas.microsoft.com/authoring/2003/5">Added</ddue:legacyBold></item>
+  <item id="DriverResourceLink"><ddue:externalLink xmlns:ddue="http://ddue.schemas.microsoft.com/authoring/2003/5">
+  <ddue:linkText>LibUsbDotNet Driver Resource Page</ddue:linkText>
+  <ddue:linkAlternateText>LibUsbDotNet InfWizard driver resource download page</ddue:linkAlternateText>
+  <ddue:linkUri>http://libusbdotnet.sourceforge.net/driver_resources</ddue:linkUri>
+</ddue:externalLink></item>
   <item id="Fixed"><ddue:legacyBold xmlns:ddue="http://ddue.schemas.microsoft.com/authoring/2003/5">Fixed</ddue:legacyBold></item>
   <item id="Libusb-1.0"><ddue:externalLink xmlns:ddue="http://ddue.schemas.microsoft.com/authoring/2003/5">
 <ddue:linkText>Official Libusb-1.0 API Reference</ddue:linkText>
@@ -10,59 +15,65 @@
 </ddue:externalLink></item>
   <item id="Note"><command><legacyBold>Note</legacyBold></command></item>
   <item id="ProjectFeatures"><ddue:list class="bullet" xmlns:ddue="http://ddue.schemas.microsoft.com/authoring/2003/5">
-      <ddue:listItem>
-        <ddue:para>Supports Microsofts generic user-mode usb driver, WinUsb.  Extended kernel level support for libusb-win32.</ddue:para>
-      </ddue:listItem>
-      <ddue:listItem>
-        <ddue:para>
-          Supports unix-like operating systems using
-          <ddue:externalLink>
-            <ddue:linkText>mono</ddue:linkText>
-            <ddue:linkAlternateText>www.mono-project</ddue:linkAlternateText>
-            <ddue:linkUri>http://www.mono-project.com</ddue:linkUri>
-            <ddue:linkTarget>_blank</ddue:linkTarget>
-          </ddue:externalLink>
-          .NET and
-          <ddue:externalLink>
-            <ddue:linkText>Libusb-1.0</ddue:linkText>
-            <ddue:linkAlternateText>Libusb-1.0</ddue:linkAlternateText>
-            <ddue:linkUri>http://sourceforge.net/projects/libusb/files/libusb-1.0/</ddue:linkUri>
-            <ddue:linkTarget>_blank</ddue:linkTarget>
-          </ddue:externalLink>.
-        </ddue:para>
-      </ddue:listItem>
-      <ddue:listItem>
-        <ddue:para>Code can be universally written to support all drivers and platforms.</ddue:para>
-      </ddue:listItem>
-      <ddue:listItem>
-        <ddue:para>Includes a InfWizard utility (windows only)for creating generic INF/CAT files as well as spawning all the appropriate driver files (x86,x64, and ia64) for libusb-win32 and WinUSB.</ddue:para>
-      </ddue:listItem>
-      <ddue:listItem>
-        <ddue:para>Sandcastle documentation available in html and Microsoft Help 1.x (.chm) format.</ddue:para>
-      </ddue:listItem>
-      <ddue:listItem>
-        <ddue:para>
-          Device discovery using any or all of the folowing criteria:
-          <ddue:list class="bullet">
-            <ddue:listItem>
-              <ddue:para>VendorID</ddue:para>
-            </ddue:listItem>
-            <ddue:listItem>
-              <ddue:para>ProductID</ddue:para>
-            </ddue:listItem>
-            <ddue:listItem>
-              <ddue:para>Revision Code</ddue:para>
-            </ddue:listItem>
-            <ddue:listItem>
-              <ddue:para>Serial Number</ddue:para>
-            </ddue:listItem>
-            <ddue:listItem>
-              <ddue:para>Device Interface GUID</ddue:para>
-            </ddue:listItem>
-          </ddue:list>
-        </ddue:para>
-      </ddue:listItem>
-    </ddue:list></item>
+  <ddue:listItem>
+    <ddue:para>Full support for WinUSB. All WinUSB interfaces are treated as seperate devices. IE each interface can be used by a different application.</ddue:para>
+    <ddue:para>
+      <ddue:legacyItalic>NOTE: Libusb-1.0 does not share a device with other applications.  Keep this in mind when using a composite device and multi-platform support is required.</ddue:legacyItalic>
+    </ddue:para>
+  </ddue:listItem>
+  <ddue:listItem>
+    <ddue:para>Extended kernel level support for libusb-win32.</ddue:para>
+  </ddue:listItem>
+  <ddue:listItem>
+    <ddue:para>
+      Supports unix-like operating systems using
+      <ddue:externalLink>
+        <ddue:linkText>mono</ddue:linkText>
+        <ddue:linkAlternateText>www.mono-project</ddue:linkAlternateText>
+        <ddue:linkUri>http://www.mono-project.com</ddue:linkUri>
+        <ddue:linkTarget>_blank</ddue:linkTarget>
+      </ddue:externalLink>
+      .NET and
+      <ddue:externalLink>
+        <ddue:linkText>Libusb-1.0</ddue:linkText>
+        <ddue:linkAlternateText>Libusb-1.0</ddue:linkAlternateText>
+        <ddue:linkUri>http://sourceforge.net/projects/libusb/files/libusb-1.0/</ddue:linkUri>
+        <ddue:linkTarget>_blank</ddue:linkTarget>
+      </ddue:externalLink>.
+    </ddue:para>
+  </ddue:listItem>
+  <ddue:listItem>
+    <ddue:para>Common device classes allow for a single code base to support multiple drivers and platforms.</ddue:para>
+  </ddue:listItem>
+  <ddue:listItem>
+    <ddue:para>Includes a Usb InfWizard utility (windows only) for generating usb installation packages, removing devices, and installing drivers.</ddue:para>
+  </ddue:listItem>
+  <ddue:listItem>
+    <ddue:para>
+      Device discovery using any or all of the folowing criteria:
+      <ddue:list class="bullet">
+        <ddue:listItem>
+          <ddue:para>VendorID</ddue:para>
+        </ddue:listItem>
+        <ddue:listItem>
+          <ddue:para>ProductID</ddue:para>
+        </ddue:listItem>
+        <ddue:listItem>
+          <ddue:para>Revision Code</ddue:para>
+        </ddue:listItem>
+        <ddue:listItem>
+          <ddue:para>Serial Number</ddue:para>
+        </ddue:listItem>
+        <ddue:listItem>
+          <ddue:para>Device Interface GUID</ddue:para>
+        </ddue:listItem>
+      </ddue:list>
+    </ddue:para>
+  </ddue:listItem>
+  <ddue:listItem>
+    <ddue:para>Source package includes many small example applications.</ddue:para>
+  </ddue:listItem>
+</ddue:list></item>
   <item id="ProjectLinks"><ddue:list class="bullet" xmlns:ddue="http://ddue.schemas.microsoft.com/authoring/2003/5">
             <ddue:listItem>
               <ddue:para>
@@ -111,9 +122,4 @@
           </ddue:list></item>
   <item id="Removed"><ddue:legacyBold xmlns:ddue="http://ddue.schemas.microsoft.com/authoring/2003/5">Removed</ddue:legacyBold></item>
   <item id="Updated"><ddue:legacyBold xmlns:ddue="http://ddue.schemas.microsoft.com/authoring/2003/5">Updated</ddue:legacyBold></item>
-  <item id="DriverResourceLink"><ddue:externalLink>
-  <ddue:linkText>LibUsbDotNet Driver Resource Page</ddue:linkText>
-  <ddue:linkAlternateText>LibUsbDotNet InfWizard driver resource download page</ddue:linkAlternateText>
-  <ddue:linkUri>http://libusbdotnet.sourceforge.net/driver_resources</ddue:linkUri>
-</ddue:externalLink></item>
 </content>

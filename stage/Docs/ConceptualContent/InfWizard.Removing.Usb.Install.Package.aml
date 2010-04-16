@@ -46,7 +46,7 @@
               Select the usb device to remove and click <userInput>Remove Device</userInput> to display the InfWizard Remove Device window.
             </para>
             <mediaLink>
-              <caption placement="after" lead="InfWizard">Device Selection</caption>
+              <caption placement="after" lead="InfWizard">Remove Device Options</caption>
               <image placement="left" xlink:href="InfWizard.Remove.Device.1" />
             </mediaLink>
             <mediaLink>

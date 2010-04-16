@@ -44,7 +44,7 @@ namespace LibUsbDotNet
         #region Enumerations
 
         /// <summary>
-        /// Kernel driver modes supported by LibUsbDotNet.
+        /// Driver modes enumeration. See the UsbDevice.<see cref="UsbDevice.DriverMode"/> property.
         /// </summary>
         public enum DriverModeType
         {

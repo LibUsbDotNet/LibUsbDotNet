@@ -199,7 +199,7 @@ namespace Test_Bulk
         private void fTestBulk_FormClosing(object sender, FormClosingEventArgs e)
         {
             closeDevice();
-            MonoUsbDevice.Exit();
+            UsbDevice.Exit();
             CloseLogFile();
         }
 

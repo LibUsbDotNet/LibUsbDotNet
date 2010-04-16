@@ -316,7 +316,7 @@ namespace Test_Info
 
         private void fTestInfo_FormClosing(object sender, FormClosingEventArgs e)
         {
-            MonoUsbDevice.Exit();
+            UsbDevice.Exit();
         }
     }
 }

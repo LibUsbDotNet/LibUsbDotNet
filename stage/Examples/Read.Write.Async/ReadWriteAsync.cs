@@ -123,12 +123,13 @@ namespace Examples
                         MyUsbDevice.Close();
                     }
                     MyUsbDevice = null;
-                    MonoUsbDevice.Exit();
+
+                    // Free usb resources
+                    UsbDevice.Exit();
                 }
 
                 // Wait for user input..
                 Console.ReadKey();
-                MonoUsbDevice.Exit();
             }
         }
     }

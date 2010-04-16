@@ -13,9 +13,9 @@ namespace MonoLibUsb
     /// <para>The concept of individual Libusb-1.0 sessions allows for your program to use two libraries 
     /// (or dynamically load two modules) which both independently use libusb. This will prevent interference between the 
     /// individual libusb users - for example <see cref="MonoUsbApi.SetDebug"/> will not affect the other 
-    /// user of the library, and <see cref="MonoUsbApi.Exit"/> will not destroy resources that the 
+    /// user of the library, and <see cref="SafeHandle.Close"/> will not destroy resources that the 
     /// other user is still using.</para>
-    /// <para>Sessions are created by <see cref="MonoUsbApi.Init"/> and destroyed through <see cref="MonoUsbApi.Exit"/>.</para>
+    /// <para>Sessions are created when a new <see cref="MonoUsbSessionHandle"/> instance is created and destroyed through <see cref="SafeHandle.Close"/>.</para>
     /// <para>A <see cref="MonoUsbSessionHandle"/> instance must be created before calling any other <a href="http://libusb.sourceforge.net/api-1.0/index.html">Libusb-1.0 API</a> function.</para>
     /// <para>Session handles are equivalent to a <a href="http://libusb.sourceforge.net/api-1.0/group__lib.html#ga4ec088aa7b79c4a9599e39bf36a72833">libusb_context</a>.</para>
     /// </remarks>

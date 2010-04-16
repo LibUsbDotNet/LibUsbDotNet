@@ -74,6 +74,9 @@ namespace Examples
             // When a UsbDevice class is closed, it is disposed and all resources 
             // are freed. It cannot be re-open; you must create a new instance.
             MyUsbDevice.Close();
+            
+            // Free usb resources
+            UsbDevice.Exit();
 
             // Wait for user input..
             Console.ReadKey();

@@ -108,6 +108,9 @@ namespace Examples
                 }
                 MyUsbDevice = null;
 
+                // Free usb resources
+                UsbDevice.Exit();
+
                 // Wait for user input..
                 Console.ReadKey();
             }

@@ -89,7 +89,8 @@
       </steps>
     </procedure>
     <codeExample>
-      <code source="..\MonoLibUsb\MonoUsb.ShowConfig\ShowConfig.cs" lang="cs" outlining="true" />
+      <code source="..\MonoLibUsb\MonoUsb.ShowConfig\ShowConfig.cs" lang="cs"/>
+      <code source="..\MonoLibUsb\MonoUsb.ShowConfig\ShowConfig.vb" lang="vb"/>
     </codeExample>
     <buildInstructions>
       <list class="ordered">

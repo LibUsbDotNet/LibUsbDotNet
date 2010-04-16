@@ -198,7 +198,7 @@ namespace Benchmark
         {
             if (!ReferenceEquals(null, mUsbDevice))
                 closeTestDevice(mUsbDevice);
-            MonoUsbDevice.Exit();
+            UsbDevice.Exit();
         }
 
         private void Form1_Load(object sender, EventArgs e)

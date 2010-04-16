@@ -168,7 +168,7 @@ namespace MonoLibUsb.Profile
         }
 
         /// <summary>
-        /// Usb device arrival/removal notifaction handler. 
+        /// Usb device arrival/removal notification handler. 
         /// This event only reports when the <see cref="Refresh"/> method is called.
         /// </summary>
         /// <remarks>

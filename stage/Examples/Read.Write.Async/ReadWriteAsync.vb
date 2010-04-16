@@ -6,7 +6,7 @@ Imports System.Threading
 Imports LibUsbDotNet
 Imports LibUsbDotNet.Internal
 Imports LibUsbDotNet.Main
-Imports LibUsbDotNet.MonoLibUsb
+Imports LibUsbDotNet.LudnMonoLibUsb
 
 Namespace Examples
 	Friend Class ReadWriteAsync
@@ -23,7 +23,7 @@ Namespace Examples
 			Try
 				' Find and open the usb device.
 				'MyUsbDevice = UsbDevice.OpenUsbDevice(MyUsbFinder);
-				MyUsbDevice = MonoUsbDevice.MonoUsbDeviceList.Find(MyUsbFinder.Check)
+				MyUsbDevice = MonoUsbDevice.MonoUsbDeviceList.Find(AddressOf MyUsbFinder.Check)
 				' If the device is open and ready
 				If MyUsbDevice Is Nothing Then
 					Throw New Exception("Device Not Found.")
@@ -101,7 +101,7 @@ Namespace Examples
 				Console.WriteLine(vbCr & vbLf & "Done!" & vbCr & vbLf)
 			Catch ex As Exception
 				Console.WriteLine()
-				Console.WriteLine((If(ec <> ErrorCode.None, ec & ":", [String].Empty)) & ex.Message)
+				Console.WriteLine((If(ec <> ErrorCode.None, Convert.ToString(ec) & ":", [String].Empty)) & ex.Message)
 			Finally
 				If MyUsbDevice IsNot Nothing Then
 					If MyUsbDevice.IsOpen Then
@@ -119,12 +119,13 @@ Namespace Examples
 						MyUsbDevice.Close()
 					End If
 					MyUsbDevice = Nothing
-					MonoUsbDevice.[Exit]()
+
+					' Free usb resources
+					UsbDevice.[Exit]()
 				End If
 
 				' Wait for user input..
 				Console.ReadKey()
-				MonoUsbDevice.[Exit]()
 			End Try
 		End Sub
 	End Class
