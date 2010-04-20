@@ -161,7 +161,7 @@ NTSTATUS reg_get_custom_property(libusb_device_t *dev, char *pBuffer, unsigned i
     {
         return STATUS_INVALID_PARAMETER;
     }
-    status = IoOpenDeviceRegistryKey(dev->physical_device_object, PLUGPLAY_REGKEY_DEVICE, STANDARD_RIGHTS_ALL, &key);
+    status = IoOpenDeviceRegistryKey(dev->physical_device_object, PLUGPLAY_REGKEY_DEVICE, KEY_READ, &key);
     if (NT_SUCCESS(status))
     {
         RtlInitUnicodeString(&name, (WCHAR*)(&pBuffer[nameOffset]));
