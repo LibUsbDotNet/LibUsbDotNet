@@ -92,8 +92,8 @@ namespace Test_Bulk
             // tsNumDevices
             // 
             this.tsNumDevices.Name = "tsNumDevices";
-            this.tsNumDevices.Size = new System.Drawing.Size(13, 17);
-            this.tsNumDevices.Text = "0";
+            this.tsNumDevices.Size = new System.Drawing.Size(51, 17);
+            this.tsNumDevices.Text = "Unknown";
             // 
             // tsRefresh
             // 
@@ -103,7 +103,7 @@ namespace Test_Bulk
             // tsStatus
             // 
             this.tsStatus.Name = "tsStatus";
-            this.tsStatus.Size = new System.Drawing.Size(443, 17);
+            this.tsStatus.Size = new System.Drawing.Size(405, 17);
             this.tsStatus.Spring = true;
             this.tsStatus.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
             // 

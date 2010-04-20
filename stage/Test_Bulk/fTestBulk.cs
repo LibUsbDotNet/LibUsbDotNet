@@ -331,7 +331,6 @@ namespace Test_Bulk
             // Get a new device list each time the device dropdown is opened
             cboDevices.Items.Clear();
             mRegDevices = UsbDevice.AllDevices;
-            GC.Collect();
 
             foreach (UsbRegistry regDevice in mRegDevices)
             {
@@ -344,6 +343,7 @@ namespace Test_Bulk
                                              regDevice.FullName);
                 cboDevices.Items.Add(sItem);
             }
+            tsNumDevices.Text = cboDevices.Items.Count.ToString();
         }
 
         private void chkLogToFile_CheckedChanged(object sender, EventArgs e)
