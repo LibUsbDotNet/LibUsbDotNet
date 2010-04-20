@@ -46,11 +46,12 @@ namespace InfWizard
             // try loading resources from the working directory.
             try
             {
+
+                if (!Directory.Exists(path)) return;
+
 #if DEBUG
                 InfWizardStatus.Log(CategoryType.DriverResource, StatusType.Info, "loading resource(s) from {0}", path);
 #endif
-                if (!Directory.Exists(path)) return;
-
                 string[] files = Directory.GetFiles(path, "*.driver.resources");
                 foreach (string file in files)
                 {
@@ -113,17 +114,23 @@ namespace InfWizard
         {
             mDriverResourceList = new DriverResourceList();
 
-            string appPath = Path.GetDirectoryName(Application.ExecutablePath);
+            DirectoryInfo diApp = new DirectoryInfo(Path.GetDirectoryName(Application.ExecutablePath));
+            DirectoryInfo diCurrent = new DirectoryInfo(Environment.CurrentDirectory);
+            System.Collections.Generic.List<String> tempResPathList = new System.Collections.Generic.List<string>();
 
-            string[] tempResPathList = {
-                                           Environment.CurrentDirectory, Environment.CurrentDirectory + Path.DirectorySeparatorChar + "DriverResources", appPath,
-                                           appPath + Path.DirectorySeparatorChar + "DriverResources"
-                                       };
-
-            loadResourcesFromAssembly(Assembly.GetExecutingAssembly());
+            tempResPathList.Add(diApp.FullName);
+            tempResPathList.Add(diApp.FullName + Path.DirectorySeparatorChar + "DriverResources");
+            if (diApp.FullName != diCurrent.FullName)
+            {
+                tempResPathList.Add(diCurrent.FullName);
+                tempResPathList.Add(diCurrent.FullName + Path.DirectorySeparatorChar + "DriverResources");
+            }
 
             foreach (string resPath in tempResPathList)
                 loadResourcesFromPath(resPath);
+
+            loadResourcesFromAssembly(Assembly.GetExecutingAssembly());
+
 
             if (mDriverResourceList.Count == 0)
             {

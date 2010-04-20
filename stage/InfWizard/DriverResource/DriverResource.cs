@@ -83,11 +83,36 @@ namespace InfWizard
     {
         public new bool Add(DriverResource driverResource)
         {
+            bool isEqual = false;
+
             foreach (DriverResource resource in this)
             {
+                Dictionary<String,String> origResString = resource.Strings;
+                Dictionary<String,String> newResString = resource.Strings;
+
                 if (resource.DisplayName == driverResource.DisplayName)
-                    return false;
+                {
+                    isEqual = true;
+                    foreach (string key in origResString.Keys)
+                    {
+                        string newValue;
+                        if (!newResString.TryGetValue(key, out newValue))
+                        {
+                            isEqual = false;
+                            break;
+                        }
+                        if (origResString[key] != newValue)
+                        {
+                            isEqual = false;
+                            break;
+                        }
+                    }
+                    if (isEqual) break;
+                }
             }
+
+            if (isEqual) return false;
+
             base.Add(driverResource);
             return true;
         }
