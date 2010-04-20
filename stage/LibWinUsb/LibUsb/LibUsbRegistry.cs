@@ -50,7 +50,6 @@ namespace LibUsbDotNet.LibUsb
             }
 
             // If the SymbolicName key does not exists, use the first HardwareID string.
-            // Note: A unique name/id or SymbolicName is required of every USB device for propper operation of LibUsbDotNet.
             if (!mDeviceProperties.ContainsKey(SYMBOLIC_NAME_KEY) || String.IsNullOrEmpty(symbolicName))
             {
                 string[] saHardwareIds = mDeviceProperties[SPDRP.HardwareId.ToString()] as string[];
@@ -58,12 +57,7 @@ namespace LibUsbDotNet.LibUsb
                 {
                     mDeviceProperties.Add(SYMBOLIC_NAME_KEY, saHardwareIds[0]);
                 }
-                //else 
-                //    throw new UsbException(typeof(LibUsbRegistry), "Symbolic name not found.");
             }
-            //else 
-            //    throw new UsbException(typeof(LibUsbRegistry), "Symbolic name not found.");
-
 
             string deviceInterfaceGuids;
             if (GetCustomDeviceKeyValue(usbHandle, LIBUSB_INTERFACE_GUIDS, out deviceInterfaceGuids, 512) == ErrorCode.None)

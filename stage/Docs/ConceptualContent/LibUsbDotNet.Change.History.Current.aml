@@ -39,7 +39,7 @@
           </bugaction>
           <bugentry>
             <CREF>T:LibUsbDotNet.WinUsb.WinUsbRegistry</CREF> class
-            <para>Improved support for composite devices.</para>
+            <para>Improved support for composite devices. Added <CREF>P:LibUsbDotNet.WinUsb.WinUsbRegistry.DeviceID</CREF> and <CREF>P:LibUsbDotNet.WinUsb.WinUsbRegistry.InterfaceID</CREF> property</para>
           </bugentry>
         </bug>
         <bug>

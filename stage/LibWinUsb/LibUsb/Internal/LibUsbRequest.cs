@@ -63,6 +63,7 @@ namespace LibUsbDotNet.Internal.LibUsb
 
         [FieldOffset(sizeof (int))] public DeviceRegKey DeviceRegKey;
 
+        [FieldOffset(sizeof (int))] public BusQueryID BusQueryID;
         #endregion
 
         public Byte[] Bytes
@@ -189,4 +190,11 @@ namespace LibUsbDotNet.Internal.LibUsb
         public int ValueOffset;
         public int ValueLength;
     } ;
+
+    [StructLayout(LayoutKind.Sequential, Pack = 1)]
+    internal struct BusQueryID
+    {
+        public ushort IDType;
+    } ;
+    
 }

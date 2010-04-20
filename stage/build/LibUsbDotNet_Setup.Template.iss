@@ -37,7 +37,9 @@ Name: english; MessagesFile: compiler:Default.isl
 Name: {group}\libUsb-win32\Enable filter service; Filename: {app}\libusb-win32\install-filter.exe; Parameters: -i; WorkingDir: {app}\libusb-win32; Flags: createonlyiffileexists
 Name: {group}\libUsb-win32\Disable filter service; Filename: {app}\libusb-win32\install-filter.exe; Parameters: -u; WorkingDir: {app}\libusb-win32; Flags: createonlyiffileexists
 Name: {group}\LibUsbDotNet Help; Filename: {app}\LibUsbHelp.chm; WorkingDir: {app}\Docs; Flags: createonlyiffileexists
-Name: {group}\USB Inf Creation Wizard; Filename: {app}\InfWizard.exe; WorkingDir: {app}\release; Flags: createonlyiffileexists
+Name: {group}\USB InfWizard; Filename: {app}\InfWizard.exe; WorkingDir: {app}; Flags: createonlyiffileexists
+Name: {group}\Test Info; Filename: {app}\Test_Info.exe; WorkingDir: {app}; Flags: createonlyiffileexists
+Name: {group}\Test Device Notify; Filename: {app}\Test_DeviceNotify.exe; WorkingDir: {app}; Flags: createonlyiffileexists
 Name: {group}\Uninstall LibUsbDotNet; Filename: {uninstallexe}; WorkingDir: {app}; Flags: createonlyiffileexists
 
 [Code]

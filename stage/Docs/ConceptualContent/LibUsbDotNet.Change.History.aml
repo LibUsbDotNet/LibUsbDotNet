@@ -19,7 +19,7 @@
     <!--    DO NOT REMOVE    -->
     <!-- CurrentReleaseNotes -->
   <releaseNotes address="LibUsbDotNet_Changes_v2.2.5">
-    <title>v2.2.5 (04/15/2010)</title>
+    <title>v2.2.5 (04/16/2010)</title>
     <content>
       <bugs class="bullet">
         <bug>
@@ -58,7 +58,7 @@
           </bugaction>
           <bugentry>
             <CREF>T:LibUsbDotNet.WinUsb.WinUsbRegistry</CREF> class
-            <para>Improved support for composite devices.</para>
+            <para>Improved support for composite devices. Added <CREF>P:LibUsbDotNet.WinUsb.WinUsbRegistry.DeviceID</CREF> and <CREF>P:LibUsbDotNet.WinUsb.WinUsbRegistry.InterfaceID</CREF> property</para>
           </bugentry>
         </bug>
         <bug>

@@ -1,6 +1,6 @@
 LibUsbDotNet Version History
 
-V2.2.5 (04/15/2010)
+V2.2.5 (04/16/2010)
 ====================
   * [Updated] The LibUsbDotNet InfWizard has been re-worked and includes many 
     new features. 
@@ -25,7 +25,8 @@ V2.2.5 (04/15/2010)
     boxes can be saved, copied and cleared via the context menu. 
 
   * [Updated] WinUsbRegistry class 
-    Improved support for composite devices.
+    Improved support for composite devices. Added DeviceID and InterfaceID 
+    property
 
   * [Added] EndpointType parameter to OpenEndpointReader and 
     OpenEndpointWriter methods. 
