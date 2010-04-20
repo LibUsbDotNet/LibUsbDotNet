@@ -250,17 +250,7 @@ namespace InfWizard
 
         private void cmdLoadProfile_Click(object sender, EventArgs e)
         {
-            OpenFileDialog d = new OpenFileDialog();
-            d.SupportMultiDottedExtensions = true;
-            d.DefaultExt = "Bin.UsbWiz";
-            d.Filter = "USB Wizard device profile (*.Bin.UsbWiz)|*.Bin.UsbWizard|All files (*.*)|*.*";
-            d.AddExtension = true;
-            d.CheckFileExists = true;
 
-            if (d.ShowDialog(this) == DialogResult.OK)
-            {
-                loadProfile(d.FileName);
-            }
         }
 
         private void loadProfile(string fileName) { loadProfile(fileName, false); }
@@ -385,8 +375,6 @@ namespace InfWizard
 
         private void buttonJumpToLocateDriverResources_Click(object sender, EventArgs e)
         {
-            mSkipToDriverResourceLocator = true;
-            wizMain.Next();
         }
 
         private void linkToLudnDriverResources_LinkClicked(object sender, LinkLabelLinkClickedEventArgs e)
@@ -662,6 +650,27 @@ namespace InfWizard
         private void deviceSelection_RefreshButton_Click(object sender, EventArgs e)
         {
             refreshDeviceSelectionView();
+        }
+
+        private void linkLoadProfile_Click(object sender, EventArgs e)
+        {
+            OpenFileDialog d = new OpenFileDialog();
+            d.SupportMultiDottedExtensions = true;
+            d.DefaultExt = "Bin.UsbWiz";
+            d.Filter = "USB Wizard device profile (*.Bin.UsbWiz)|*.Bin.UsbWizard|All files (*.*)|*.*";
+            d.AddExtension = true;
+            d.CheckFileExists = true;
+
+            if (d.ShowDialog(this) == DialogResult.OK)
+            {
+                loadProfile(d.FileName);
+            }
+        }
+
+        private void linkJumpToDownloadDriverResources_Click(object sender, EventArgs e)
+        {
+            mSkipToDriverResourceLocator = true;
+            wizMain.Next();
         }
 
     }

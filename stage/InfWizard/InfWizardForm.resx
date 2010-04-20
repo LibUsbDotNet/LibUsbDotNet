@@ -123,6 +123,63 @@
   <metadata name="folderBrowserDriverResources.TrayLocation" type="System.Drawing.Point, System.Drawing, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a">
     <value>109, 17</value>
   </metadata>
+  <assembly alias="System.Drawing" name="System.Drawing, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a" />
+  <data name="infoPageMain.Image" type="System.Drawing.Bitmap, System.Drawing" mimetype="application/x-microsoft.net.object.bytearray.base64">
+    <value>
+        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
+        QyHZQyM5BiVJkh2pkSnJBgkAADs=
+</value>
+  </data>
   <metadata name="colVid.UserAddedColumn" type="System.Boolean, mscorlib, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089">
     <value>True</value>
   </metadata>
@@ -141,34 +198,24 @@
   <metadata name="colDeviceId.UserAddedColumn" type="System.Boolean, mscorlib, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089">
     <value>True</value>
   </metadata>
-  <assembly alias="System.Drawing" name="System.Drawing, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a" />
-  <data name="pictureBoxInstallDriver.Image" type="System.Drawing.Bitmap, System.Drawing" mimetype="application/x-microsoft.net.object.bytearray.base64">
-    <value>
-        R0lGODlhDwAPAPcAAAAAAP////z7/NjW2f39/hcyqjtSuSZCpTxbvExktTdawubq9j9it0hntSlPpSxQ
-        orG1vi9duU90vLm/y7i8xPr7/fj5+zltx1d5tVt9uEpllHag6lNvoGqLxoWi1YWg0XmPuXqQtoCWvoui
-        y4qfxHWGpJerzoiZt6W32K2817nE2eDq/DRmuy1Ogy9QhTtajGSQ2kFejkJfj2aQ1Udkk0ZikW6Z3muV
-        2WSKyklllFh5sUpmlUhjkUhkkUxol0pmlEtnlGOGwktmk3Kc3lBsmn+n6nuj4lJsl1JrllVvm1hynVVv
-        mFp0oFlznmJ8qG6KuGR7oW2FrnKLtXSMtWl+n42ky4qfw5Spy6/B38bU6sDN4qeuut7n9uvu82mT1Eto
-        lXKf33ea0F54n5Kz4n6QrJ2sw6e2zdDb6+ft9unt842z59rn+fD1/L/CxvH0+KnH7MvY6MTc9tDc6tbh
-        7eTr8u/1+8nN0d7n7+Pt8vH19+Pr7ujv8eTo6Pz///v8/PLz8/P59vT57v//9/T07P//+P//+v39/NjY
-        1/fz5f/88fDs4Pbx5PPx7Pby6fny5Pf18f/36P358/z48+3r6fPt6OTg3vr5+f///wAAAAAAAAAAAAAA
-        AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
-        AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
-        AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
-        AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
-        AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
-        ACH5BAEAAJcALAAAAAAPAA8AAAjUAC8JvGTDSJENMDqAGDjwBhg1cdas4KKFBAcnA2cMedMnQAA2dQK4
-        MUOEiUAvYzwGQHOBRRePZXYowRHmjsoKHj5Y8EgIypcgI1QGWHCGjkdLgib80HFFKJYIEtIEECBpABIM
-        JoTCUcBATwBDjyotyVCFgEo5CBrsCeCH0aEjT0RUUDnHQAJAAf40okDDyhQVKrMUOIAnwKRFVGhckhIi
-        j0cUDh6kSARpi4wkAqOc4FMoUqBBlBxB6JGDYRMxZOwgUtSmBA8gDAX60PCihYsYQmoMDAgAOw==
-</value>
-  </data>
-  <data name="buttonInstallDriver.ToolTip" xml:space="preserve">
-    <value>If this device is connected and has no other drivers are controlling it (driverless), 
-this will install the driver making the device ready for immediate use. If the
-device is not connected the driver is pre-installed making the device ready for
-use the next time it is attached.</value>
-  </data>
+  <metadata name="colVid.UserAddedColumn" type="System.Boolean, mscorlib, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089">
+    <value>True</value>
+  </metadata>
+  <metadata name="colPid.UserAddedColumn" type="System.Boolean, mscorlib, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089">
+    <value>True</value>
+  </metadata>
+  <metadata name="colDescription.UserAddedColumn" type="System.Boolean, mscorlib, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089">
+    <value>True</value>
+  </metadata>
+  <metadata name="colManufacturer.UserAddedColumn" type="System.Boolean, mscorlib, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089">
+    <value>True</value>
+  </metadata>
+  <metadata name="colDriverless.UserAddedColumn" type="System.Boolean, mscorlib, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089">
+    <value>True</value>
+  </metadata>
+  <metadata name="colDeviceId.UserAddedColumn" type="System.Boolean, mscorlib, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089">
+    <value>True</value>
+  </metadata>
   <data name="linkToLudnDriverResources.ToolTip" xml:space="preserve">
     <value>Open a web browser to the LibUsbDotNet driver resource download page at sourceforge.net.
 After downloading driver resources, they must be copied to the working directory or the
@@ -194,9 +241,12 @@ directory where InfWizard.exe resides.</value>
   <metadata name="colDriverResourceDescription.UserAddedColumn" type="System.Boolean, mscorlib, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089">
     <value>True</value>
   </metadata>
-  <data name="lMainText.Text" xml:space="preserve">
-    <value>LibUsbDotNet INF Wizard creates complete windows USB inf/setup packages for usb devices.  Currently driver resources are available for both WinUSB and libusb-win32.  Driver resource packages contain inf information and windows drivers/coinstallers needed for usb device installation.</value>
-  </data>
+  <metadata name="coDriverResourceName.UserAddedColumn" type="System.Boolean, mscorlib, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089">
+    <value>True</value>
+  </metadata>
+  <metadata name="colDriverResourceDescription.UserAddedColumn" type="System.Boolean, mscorlib, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089">
+    <value>True</value>
+  </metadata>
   <data name="infoMain.Image" type="System.Drawing.Bitmap, System.Drawing" mimetype="application/x-microsoft.net.object.bytearray.base64">
     <value>
         R0lGODlhpACDAfIAAAAAAP///wAAgMDAwICAgP///wAAAAAAACH5BAEAAAUALAAAAACkAIMBAAP/CKK8
@@ -253,61 +303,35 @@ directory where InfWizard.exe resides.</value>
         QyHZQyM5BiVJkh2pkSnJBgkAADs=
 </value>
   </data>
-  <data name="infoPageMain.Image" type="System.Drawing.Bitmap, System.Drawing" mimetype="application/x-microsoft.net.object.bytearray.base64">
+  <data name="lMainText.Text" xml:space="preserve">
+    <value>LibUsbDotNet INF Wizard creates complete windows USB inf/setup packages for usb devices.  Currently driver resources are available for both WinUSB and libusb-win32.  Driver resource packages contain inf information and windows drivers/coinstallers needed for usb device installation.</value>
+  </data>
+  <data name="pictureBoxInstallDriver.Image" type="System.Drawing.Bitmap, System.Drawing" mimetype="application/x-microsoft.net.object.bytearray.base64">
     <value>
-        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
-        QyHZQyM5BiVJkh2pkSnJBgkAADs=
+        R0lGODlhDwAPAPcAAAAAAP////z7/NjW2f39/hcyqjtSuSZCpTxbvExktTdawubq9j9it0hntSlPpSxQ
+        orG1vi9duU90vLm/y7i8xPr7/fj5+zltx1d5tVt9uEpllHag6lNvoGqLxoWi1YWg0XmPuXqQtoCWvoui
+        y4qfxHWGpJerzoiZt6W32K2817nE2eDq/DRmuy1Ogy9QhTtajGSQ2kFejkJfj2aQ1Udkk0ZikW6Z3muV
+        2WSKyklllFh5sUpmlUhjkUhkkUxol0pmlEtnlGOGwktmk3Kc3lBsmn+n6nuj4lJsl1JrllVvm1hynVVv
+        mFp0oFlznmJ8qG6KuGR7oW2FrnKLtXSMtWl+n42ky4qfw5Spy6/B38bU6sDN4qeuut7n9uvu82mT1Eto
+        lXKf33ea0F54n5Kz4n6QrJ2sw6e2zdDb6+ft9unt842z59rn+fD1/L/CxvH0+KnH7MvY6MTc9tDc6tbh
+        7eTr8u/1+8nN0d7n7+Pt8vH19+Pr7ujv8eTo6Pz///v8/PLz8/P59vT57v//9/T07P//+P//+v39/NjY
+        1/fz5f/88fDs4Pbx5PPx7Pby6fny5Pf18f/36P358/z48+3r6fPt6OTg3vr5+f///wAAAAAAAAAAAAAA
+        AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
+        AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
+        AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
+        AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
+        AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
+        ACH5BAEAAJcALAAAAAAPAA8AAAjUAC8JvGTDSJENMDqAGDjwBhg1cdas4KKFBAcnA2cMedMnQAA2dQK4
+        MUOEiUAvYzwGQHOBRRePZXYowRHmjsoKHj5Y8EgIypcgI1QGWHCGjkdLgib80HFFKJYIEtIEECBpABIM
+        JoTCUcBATwBDjyotyVCFgEo5CBrsCeCH0aEjT0RUUDnHQAJAAf40okDDyhQVKrMUOIAnwKRFVGhckhIi
+        j0cUDh6kSARpi4wkAqOc4FMoUqBBlBxB6JGDYRMxZOwgUtSmBA8gDAX60PCihYsYQmoMDAgAOw==
 </value>
+  </data>
+  <data name="buttonInstallDriver.ToolTip" xml:space="preserve">
+    <value>If this device is connected and has no other drivers are controlling it (driverless), 
+this will install the driver making the device ready for immediate use. If the
+device is not connected the driver is pre-installed making the device ready for
+use the next time it is attached.</value>
   </data>
   <data name="$this.Icon" type="System.Drawing.Icon, System.Drawing" mimetype="application/x-microsoft.net.object.bytearray.base64">
     <value>
