@@ -25,6 +25,11 @@ on_power_state_complete(DEVICE_OBJECT *device_object,
                         IRP           *irp,
                         void          *context);
 
+static NTSTATUS DDKAPI
+on_filter_power_state_complete(DEVICE_OBJECT *device_object,
+                        IRP           *irp,
+                        void          *context);
+
 static void DDKAPI 
 on_power_set_device_state_complete(DEVICE_OBJECT *device_object,
                                    UCHAR minor_function,
@@ -32,11 +37,15 @@ on_power_set_device_state_complete(DEVICE_OBJECT *device_object,
                                    void *context,
                                    IO_STATUS_BLOCK *io_status);
 
+/* [trobinso MOD 4/16/2010]
+ * If running as a filter, do not act as power policy owner.
+ */
 NTSTATUS dispatch_power(libusb_device_t *dev, IRP *irp)
 {
   IO_STACK_LOCATION *stack_location = IoGetCurrentIrpStackLocation(irp);
   POWER_STATE power_state;
   NTSTATUS status;
+  bool_t isPDO;
 
   status = remove_lock_acquire(dev);;
 
@@ -47,6 +56,8 @@ NTSTATUS dispatch_power(libusb_device_t *dev, IRP *irp)
       IoCompleteRequest(irp, IO_NO_INCREMENT);
       return status;
     }
+
+  isPDO = accept_irp(dev,irp);
 
   if(stack_location->MinorFunction == IRP_MN_SET_POWER) 
     {     
@@ -62,7 +73,7 @@ NTSTATUS dispatch_power(libusb_device_t *dev, IRP *irp)
           DEBUG_MESSAGE("dispatch_power(): IRP_MN_SET_POWER: D%d", 
                         power_state.DeviceState - PowerDeviceD0);
 
-          if(power_state.DeviceState > dev->power_state.DeviceState)
+          if(power_state.DeviceState > dev->power_state.DeviceState && isPDO)
             {
               /* device is powered down, report device state to the */
               /* Power Manager before sending the IRP down */
@@ -76,13 +87,24 @@ NTSTATUS dispatch_power(libusb_device_t *dev, IRP *irp)
       PoStartNextPowerIrp(irp); 
 
       IoCopyCurrentIrpStackLocationToNext(irp);
-      IoSetCompletionRoutine(irp,
-                             on_power_state_complete,
-                             dev,
-                             TRUE, /* on success */
-                             TRUE, /* on error   */
-                             TRUE);/* on cancel  */
-      
+	  if (isPDO)
+	  {
+		  IoSetCompletionRoutine(irp,
+								 on_power_state_complete,
+								 dev,
+								 TRUE, /* on success */
+								 TRUE, /* on error   */
+								 TRUE);/* on cancel  */
+	  }
+	  else
+	  {
+		  IoSetCompletionRoutine(irp,
+								 on_filter_power_state_complete,
+								 dev,
+								 TRUE, /* on success */
+								 TRUE, /* on error   */
+								 TRUE);/* on cancel  */
+	  }
       return PoCallDriver(dev->next_stack_device, irp);
     }
   else
@@ -132,7 +154,7 @@ on_power_state_complete(DEVICE_OBJECT *device_object,
           dev_power_state = dev->device_power_states[power_state.SystemState];
 
           /* set the device power state, but don't block the thread */
-          power_set_device_state(dev, dev_power_state, FALSE);
+		  power_set_device_state(dev, dev_power_state, FALSE);
         }
       else /* DevicePowerState */
         {
@@ -160,6 +182,44 @@ on_power_state_complete(DEVICE_OBJECT *device_object,
   return STATUS_SUCCESS;
 }
 
+static NTSTATUS DDKAPI
+on_filter_power_state_complete(DEVICE_OBJECT *device_object,
+                        IRP           *irp,
+                        void          *context)
+{
+  libusb_device_t *dev = context;
+  IO_STACK_LOCATION *stack_location = IoGetCurrentIrpStackLocation(irp);
+  POWER_STATE power_state = stack_location->Parameters.Power.State;
+  
+  if(NT_SUCCESS(irp->IoStatus.Status))
+    {
+      if(stack_location->Parameters.Power.Type == SystemPowerState)
+        {
+          DEBUG_MESSAGE("on_power_state_complete(): S%d",
+                        power_state.SystemState - PowerSystemWorking);
+
+          /* save current system state */
+          dev->power_state.SystemState = power_state.SystemState;
+
+        }
+      else /* DevicePowerState */
+        {
+          DEBUG_MESSAGE("on_power_state_complete(): D%d", 
+                        power_state.DeviceState - PowerDeviceD0);
+
+		  /* save current device state */
+          dev->power_state.DeviceState = power_state.DeviceState;
+        }
+    }
+  else
+    {
+      DEBUG_MESSAGE("on_power_state_complete(): failed");
+    }
+
+  remove_lock_release(dev);
+
+  return STATUS_SUCCESS;
+}
 
 static void DDKAPI 
 on_power_set_device_state_complete(DEVICE_OBJECT *device_object,

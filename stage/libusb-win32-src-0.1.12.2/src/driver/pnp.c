@@ -40,6 +40,7 @@ NTSTATUS dispatch_pnp(libusb_device_t *dev, IRP *irp)
   IO_STACK_LOCATION *stack_location = IoGetCurrentIrpStackLocation(irp);
   UNICODE_STRING symbolic_link_name;
   WCHAR tmp_name[128];
+  bool_t isPDO;
 
   status = remove_lock_acquire(dev);
   
@@ -47,6 +48,8 @@ NTSTATUS dispatch_pnp(libusb_device_t *dev, IRP *irp)
     { 
       return complete_irp(irp, status, 0);
     }
+
+  isPDO = accept_irp(dev,irp);
 
   DEBUG_PRINT_NL();
 
@@ -96,7 +99,8 @@ NTSTATUS dispatch_pnp(libusb_device_t *dev, IRP *irp)
 
       /* report device state to Power Manager */
       /* power_state.DeviceState has been set to D0 by add_device() */
-      PoSetPowerState(dev->self, DevicePowerState, dev->power_state);
+	  if (isPDO)
+		PoSetPowerState(dev->self, DevicePowerState, dev->power_state);
 
       return pass_irp_down(dev, irp, on_start_complete, NULL);
 
