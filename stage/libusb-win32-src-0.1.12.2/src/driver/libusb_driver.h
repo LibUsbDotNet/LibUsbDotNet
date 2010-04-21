@@ -232,10 +232,8 @@ find_interface_desc(USB_CONFIGURATION_DESCRIPTOR *config_desc,
                     unsigned int size, int interface_number, int altsetting);
 
 
-bool_t reg_get_property_ex(DEVICE_OBJECT *physical_device_object, int property, char *data, int size, int* pReturnBytesCount);
+bool_t reg_get_device_property(DEVICE_OBJECT *physical_device_object, int property, char *data, int size, int* pReturnBytesCount);
 NTSTATUS reg_get_custom_property(libusb_device_t *dev, char *pBuffer, unsigned int bufferSize, unsigned int nameOffset, int* pReturnBytesCount);
-NTSTATUS reg_set_custom_property(libusb_device_t *dev, char* pBuffer, unsigned int keyType, unsigned int nameOffset, unsigned int valueOffset, unsigned int valueLength);
-
 NTSTATUS control_transfer(libusb_device_t *dev,libusb_request *pRequest, unsigned char *pTransferBuffer, int transferBufferSize, int *ret);
 
 #endif

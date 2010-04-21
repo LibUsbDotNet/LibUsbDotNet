@@ -323,29 +323,14 @@ NTSTATUS dispatch_ioctl(libusb_device_t *dev, IRP *irp)
                       request->endpoint.packet_size, transfer_buffer_mdl, 
                       transfer_buffer_length);
 
-    case LIBUSB_IOCTL_CONTROL_TRANSFER:
-        if (USB_ENDPOINT_DIRECTION_IN(request->control.requestType))
-        {
-            status = control_transfer(dev, request,output_buffer, output_buffer_length, &ret);
-        }
-        else
-        {
-            status = control_transfer(
-                         dev,
-                         request,
-                         input_buffer_length == sizeof(libusb_request) ? NULL : input_buffer + sizeof(libusb_request),
-                         input_buffer_length - sizeof(libusb_request), &ret);
-        }
-        break;
-
-     case LIBUSB_IOCTL_GET_REG_PROPERTY:
+     case LIBUSB_IOCTL_GET_DEVICE_PROPERTY:
         if (!request || output_buffer_length < sizeof(libusb_request))
         {
-            DEBUG_ERROR("dispatch_ioctl(), LIBUSB_IOCTL_GET_REG_PROPERTY: invalid output buffer");
+            DEBUG_ERROR("dispatch_ioctl(), LIBUSB_IOCTL_GET_DEVICE_PROPERTY: invalid output buffer");
             status = STATUS_INVALID_PARAMETER;
             break;
         }
-        if (!reg_get_property_ex(dev->physical_device_object, request->deviceProperty.propertyId, output_buffer, output_buffer_length, &ret))
+        if (!reg_get_device_property(dev->physical_device_object, request->deviceProperty.propertyId, output_buffer, output_buffer_length, &ret))
             status = STATUS_INVALID_PARAMETER;
         break;
 
@@ -359,16 +344,6 @@ NTSTATUS dispatch_ioctl(libusb_device_t *dev, IRP *irp)
         status=reg_get_custom_property(dev, input_buffer, output_buffer_length, request->deviceKeySet.nameOffset, &ret);
         break;
 
-    case LIBUSB_IOCTL_SET_CUSTOM_REG_PROPERTY:
-        if (!input_buffer || (input_buffer_length < sizeof(libusb_request)))
-        {
-            DEBUG_ERROR("dispatch_ioctl(), LIBUSB_IOCTL_SET_CUSTOM_REG_PROPERTY: invalid buffer");
-            status = STATUS_INVALID_PARAMETER;
-            break;
-        }
-        status=reg_set_custom_property(dev, input_buffer, request->deviceKeySet.keyType, request->deviceKeySet.nameOffset, request->deviceKeySet.valueOffset, request->deviceKeySet.valueLength);
-        break;
-	
 	default:
       
       status = STATUS_INVALID_PARAMETER;

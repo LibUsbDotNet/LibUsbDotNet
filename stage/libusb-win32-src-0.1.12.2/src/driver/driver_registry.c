@@ -132,7 +132,7 @@ bool_t reg_get_hardware_id(DEVICE_OBJECT *physical_device_object,
                           data, size);
 }
 
-bool_t reg_get_property_ex(DEVICE_OBJECT *physical_device_object, int property, char *data, int size, int* pReturnBytesCount)
+bool_t reg_get_device_property(DEVICE_OBJECT *physical_device_object, int property, char *data, int size, int* pReturnBytesCount)
 {
     ULONG ret;
     ULONG i;
@@ -179,29 +179,6 @@ NTSTATUS reg_get_custom_property(libusb_device_t *dev, char *pBuffer, unsigned i
             }
             ExFreePool(info);
         }
-        ZwClose(key);
-    }
-    return status;
-}
-
-NTSTATUS reg_set_custom_property(libusb_device_t *dev, char* pBuffer, unsigned int keyType, unsigned int nameOffset, unsigned int valueOffset, unsigned int valueLength)
-{
-    HANDLE key = NULL;
-    NTSTATUS status;
-    UNICODE_STRING name;
-    WCHAR* pKeyName = NULL;
-    char* pKeyValue;
-    if (!dev->physical_device_object)
-    {
-        return STATUS_INVALID_PARAMETER;
-    }
-    status = IoOpenDeviceRegistryKey(dev->physical_device_object, PLUGPLAY_REGKEY_DEVICE, STANDARD_RIGHTS_ALL, &key);
-    if (NT_SUCCESS(status))
-    {
-        pKeyName=(WCHAR*)(pBuffer+nameOffset);
-        pKeyValue=(char*)(pBuffer+valueOffset);
-        RtlInitUnicodeString(&name, pKeyName);
-        status = ZwSetValueKey(key, &name, 0,keyType, pKeyValue, valueLength);
         ZwClose(key);
     }
     return status;
