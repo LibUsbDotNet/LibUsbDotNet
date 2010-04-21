@@ -17,9 +17,6 @@
   <item id="ProjectFeatures"><ddue:list class="bullet" xmlns:ddue="http://ddue.schemas.microsoft.com/authoring/2003/5">
   <ddue:listItem>
     <ddue:para>Full support for WinUSB. All WinUSB interfaces are treated as seperate devices. IE each interface can be used by a different application.</ddue:para>
-    <ddue:para>
-      <ddue:legacyItalic>NOTE: Libusb-1.0 does not share a device with other applications.  Keep this in mind when using a composite device and multi-platform support is required.</ddue:legacyItalic>
-    </ddue:para>
   </ddue:listItem>
   <ddue:listItem>
     <ddue:para>Extended kernel level support for libusb-win32.</ddue:para>

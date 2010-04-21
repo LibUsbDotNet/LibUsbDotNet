@@ -53,6 +53,21 @@
       </para>
     </alert>
 
+    <foldSection address="Forcing Libusb-1.0">
+      <title>Forcing Libusb-1.0 Usage On Windows</title>
+          <content>
+            <para>
+              LibUsbDotNet can be forced to use the Libusb-1.0 API on windows by setting the static <CREF>F:LibUsbDotNet.UsbDevice.ForceLibWinBack</CREF> to true.
+              With this field set, all custom HID devices and WinUSB devices are present in the device list. 
+            </para>
+            <para>
+              <legacyItalic>NOTE: Libusb-1.0 does not treat multiple WinUSB interfaces as seperate devices.  Keep this in mind when using a composite device and multi-platform support is required.</legacyItalic>
+            </para>
+          </content>
+ 
+      <!-- <conclusion>Optional conclusion</conclusion> -->
+    </foldSection>
+
     <!-- <codeExample>Optional code example</codeExample> -->
     <!-- <buildInstructions>Optional instructions for building a
          code example.</buildInstructions> -->
