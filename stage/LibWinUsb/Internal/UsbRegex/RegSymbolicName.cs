@@ -63,21 +63,21 @@ namespace LibUsbDotNet.Internal.UsbRegex
 
         public new int GroupNumberFromName(string groupName)
         {
-            switch (groupName)
+            switch (groupName.ToLower())
             {
-                case "Vid":
+                case "vid":
                     return 1;
 
-                case "Pid":
+                case "pid":
                     return 2;
 
-                case "Rev":
+                case "rev":
                     return 3;
 
-                case "ClassGuid":
+                case "classguid":
                     return 4;
 
-                case "String":
+                case "string":
                     return 5;
             }
             return -1;
