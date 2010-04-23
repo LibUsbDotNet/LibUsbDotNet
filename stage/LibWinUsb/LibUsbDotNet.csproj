@@ -94,6 +94,7 @@
     <Compile Include="Info\UsbDeviceInfo.cs" />
     <Compile Include="Info\UsbEndpointInfo.cs" />
     <Compile Include="Info\UsbInterfaceInfo.cs" />
+    <Compile Include="Main\DataReceivedEnabledChangedEventArgs.cs" />
     <Compile Include="Main\SafeContextHandle.cs" />
     <Compile Include="Internal\SetupApi.cs" />
     <Compile Include="LibUsb\LibUsbKernelType.cs" />

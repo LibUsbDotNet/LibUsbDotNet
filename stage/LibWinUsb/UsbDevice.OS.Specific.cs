@@ -40,7 +40,7 @@ namespace LibUsbDotNet
         private static readonly bool ForceLegacyLibUsb = IsLinux;
 
         /// <summary>
-        /// Setting this field to <see langword="true"/> will force <see cref="LibUsbDotNet"/> to use the <a href="http://www.libusb.org/wiki/windows_backend">Libusb-1.0 Windows-backend driver.</a>  On platforms other that windows this setting has no effect.
+        /// Setting this field to <see langword="true"/> will force <see cref="LibUsbDotNet"/> to use the <a href="http://www.libusb.org/wiki/windows_backend">Libusb-1.0 Windows-backend driver.</a>  For platforms other than windows, this setting has no effect.
         /// </summary>
         /// <remarks>
         /// If this is <see langword="true"/>, <see cref="AllDevices"/> will return only <see cref="MonoUsbDevice"/>s in the list.

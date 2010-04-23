@@ -379,7 +379,7 @@ namespace InfWizard
 
         private void linkToLudnDriverResources_LinkClicked(object sender, LinkLabelLinkClickedEventArgs e)
         {
-            Process.Start("http://libusbdotnet.sourceforge.net/driver_resources");
+            Process.Start("http://sites.google.com/site/libusbdotnet/driver_resources");
         }
 
         #region WIZARD PAGES SHOW/CLOSE
