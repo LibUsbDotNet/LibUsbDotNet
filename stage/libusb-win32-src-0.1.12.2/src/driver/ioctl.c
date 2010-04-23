@@ -279,7 +279,7 @@ NTSTATUS dispatch_ioctl(libusb_device_t *dev, IRP *irp)
       request->version.minor = VERSION_MINOR;
       request->version.micro = VERSION_MICRO;
       request->version.nano  = VERSION_NANO;
-      request->version.BcdLibUsbDotNetKernelMod = 49;
+      request->version.BcdLibUsbDotNetKernelMod = 59;
 
       ret = sizeof(libusb_request);
       break;
@@ -343,7 +343,7 @@ NTSTATUS dispatch_ioctl(libusb_device_t *dev, IRP *irp)
         }
         status=reg_get_custom_property(dev, input_buffer, output_buffer_length, request->deviceKeySet.nameOffset, &ret);
         break;
-	
+
 	default:
       
       status = STATUS_INVALID_PARAMETER;

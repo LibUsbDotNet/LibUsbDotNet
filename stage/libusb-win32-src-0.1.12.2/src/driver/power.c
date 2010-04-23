@@ -45,7 +45,7 @@ NTSTATUS dispatch_power(libusb_device_t *dev, IRP *irp)
   IO_STACK_LOCATION *stack_location = IoGetCurrentIrpStackLocation(irp);
   POWER_STATE power_state;
   NTSTATUS status;
-  bool_t isPDO;
+  bool_t isFilter;
 
   status = remove_lock_acquire(dev);;
 
@@ -57,7 +57,7 @@ NTSTATUS dispatch_power(libusb_device_t *dev, IRP *irp)
       return status;
     }
 
-  isPDO = accept_irp(dev,irp);
+  isFilter = !accept_irp(dev,irp);
 
   if(stack_location->MinorFunction == IRP_MN_SET_POWER) 
     {     
@@ -73,7 +73,7 @@ NTSTATUS dispatch_power(libusb_device_t *dev, IRP *irp)
           DEBUG_MESSAGE("dispatch_power(): IRP_MN_SET_POWER: D%d", 
                         power_state.DeviceState - PowerDeviceD0);
 
-          if(power_state.DeviceState > dev->power_state.DeviceState && isPDO)
+          if(power_state.DeviceState > dev->power_state.DeviceState && !isFilter)
             {
               /* device is powered down, report device state to the */
               /* Power Manager before sending the IRP down */
@@ -87,7 +87,7 @@ NTSTATUS dispatch_power(libusb_device_t *dev, IRP *irp)
       PoStartNextPowerIrp(irp); 
 
       IoCopyCurrentIrpStackLocationToNext(irp);
-	  if (isPDO)
+	  if (!isFilter)
 	  {
 		  IoSetCompletionRoutine(irp,
 								 on_power_state_complete,
