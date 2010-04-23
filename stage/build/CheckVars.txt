@@ -3,8 +3,8 @@ BaseDir=Z:\PROJECTS\LibUsbDotNet\
 Major=2
 Minor=2
 Build=5
-Revision=59
-Version=2.2.5.59
+Revision=61
+Version=2.2.5.61
 Sln=Z:\PROJECTS\LibUsbDotNet\LibUsbDotNet.sln
 ToolPath=Z:\PROJECTS\LibUsbDotNet\Utility\
 SHFBConsole=C:\WINDOWS\Microsoft.NET\Framework3.5\MSBuild.exe

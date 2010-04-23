@@ -19,9 +19,20 @@
     <!--    DO NOT REMOVE    -->
     <!-- CurrentReleaseNotes -->
   <releaseNotes address="LibUsbDotNet_Changes_v2.2.5">
-    <title>v2.2.5 (04/16/2010)</title>
+    <title>v2.2.5 (04/22/2010)</title>
     <content>
       <bugs class="bullet">
+        <bug>
+          <bugaction>
+            <token>Added</token>
+          </bugaction>
+          <bugentry>
+            <CREF>E:LibUsbDotNet.UsbEndpointReader.DataReceivedEnabledChanged</CREF> event
+            <para>
+              This event is fired on the <CREF>P:LibUsbDotNet.UsbEndpointReader.DataReceivedEnabled</CREF> property changes state.
+            </para>
+          </bugentry>
+        </bug>        
         <bug>
           <bugaction>
             <token>Updated</token>
@@ -33,7 +44,7 @@
               driver resource packages that contain the drivers/coinstallers, inf/cat file
               templates, and all other files that may be required by the installation.
               Driver resource packages can be downloaded automatically by InfWizard
-              or from http://libusbdotnet.sourceforge.net/driver_resources. 
+              or from http://sites.google.com/site/libusbdotnet/driver_resources.
               As of v2.2.5 Winusb 1.9 and libusb-win32 0.1.12.2 packages are available.
             </para>
             <para>

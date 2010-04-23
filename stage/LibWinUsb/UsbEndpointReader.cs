@@ -187,6 +187,12 @@ namespace LibUsbDotNet
             UsbTransfer overlappedTransferContext = (UsbTransfer) context;
             UsbEndpointReader reader = (UsbEndpointReader) overlappedTransferContext.EndpointBase;
             reader.mDataReceivedEnabled = true;
+            EventHandler<DataReceivedEnabledChangedEventArgs> dataReceivedEnabledChangedEvent;
+
+            dataReceivedEnabledChangedEvent = reader.DataReceivedEnabledChanged;
+            if (!ReferenceEquals(dataReceivedEnabledChangedEvent,null))
+                dataReceivedEnabledChangedEvent(reader, new DataReceivedEnabledChangedEventArgs(reader.mDataReceivedEnabled));
+
             overlappedTransferContext.Reset();
 
             byte[] buf = new byte[reader.mReadBufferSize];
@@ -216,6 +222,11 @@ namespace LibUsbDotNet
             {
                 reader.Abort();
                 reader.mDataReceivedEnabled = false;
+
+                dataReceivedEnabledChangedEvent = reader.DataReceivedEnabledChanged;
+                if (!ReferenceEquals(dataReceivedEnabledChangedEvent, null))
+                    dataReceivedEnabledChangedEvent(reader, new DataReceivedEnabledChangedEventArgs(reader.mDataReceivedEnabled));
+
             }
         }
 
@@ -268,6 +279,11 @@ namespace LibUsbDotNet
         /// </summary>
         /// <remarks>To use the DataReceived event, <see cref="DataReceivedEnabled"/> must be set to truw.</remarks>
         public virtual event EventHandler<EndpointDataEventArgs> DataReceived;
+       
+        /// <summary>
+        /// The <see cref="DataReceivedEnabledChanged"/> Event is fired when the <see cref="DataReceived"/> event is started or stopped.
+        /// </summary>
+        public virtual event EventHandler<DataReceivedEnabledChangedEventArgs> DataReceivedEnabledChanged;
 
         internal override UsbTransfer CreateTransferContext() { return new OverlappedTransferContext(this); }
     }

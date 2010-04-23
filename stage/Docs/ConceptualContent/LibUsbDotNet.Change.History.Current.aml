@@ -5,6 +5,17 @@
       <bugs class="bullet">
         <bug>
           <bugaction>
+            <token>Added</token>
+          </bugaction>
+          <bugentry>
+            <CREF>E:LibUsbDotNet.UsbEndpointReader.DataReceivedEnabledChanged</CREF> event
+            <para>
+              This event is fired on the <CREF>P:LibUsbDotNet.UsbEndpointReader.DataReceivedEnabled</CREF> property changes state.
+            </para>
+          </bugentry>
+        </bug>        
+        <bug>
+          <bugaction>
             <token>Updated</token>
           </bugaction>
           <bugentry>
@@ -14,7 +25,7 @@
               driver resource packages that contain the drivers/coinstallers, inf/cat file
               templates, and all other files that may be required by the installation.
               Driver resource packages can be downloaded automatically by InfWizard
-              or from http://libusbdotnet.sourceforge.net/driver_resources. 
+              or from http://sites.google.com/site/libusbdotnet/driver_resources.
               As of v$(Major).$(Minor).$(Build) Winusb 1.9 and libusb-win32 0.1.12.2 packages are available.
             </para>
             <para>
