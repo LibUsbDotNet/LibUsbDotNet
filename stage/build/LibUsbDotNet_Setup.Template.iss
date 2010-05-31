@@ -34,8 +34,8 @@ ArchitecturesInstallIn64BitMode=x64 ia64
 Name: english; MessagesFile: compiler:Default.isl
 
 [Icons]
-Name: {group}\libUsb-win32\Enable filter service; Filename: {app}\libusb-win32\install-filter.exe; Parameters: -i; WorkingDir: {app}\libusb-win32; Flags: createonlyiffileexists
-Name: {group}\libUsb-win32\Disable filter service; Filename: {app}\libusb-win32\install-filter.exe; Parameters: -u; WorkingDir: {app}\libusb-win32; Flags: createonlyiffileexists
+Name: {group}\libUsb-win32\Enable filter (admin only); Filename: {app}\libusb-win32\install-filter.exe; Parameters: -i; WorkingDir: {app}\libusb-win32; Flags: createonlyiffileexists
+Name: {group}\libUsb-win32\Disable filter (admin only); Filename: {app}\libusb-win32\install-filter.exe; Parameters: -u; WorkingDir: {app}\libusb-win32; Flags: createonlyiffileexists
 Name: {group}\LibUsbDotNet Help; Filename: {app}\LibUsbHelp.chm; WorkingDir: {app}\Docs; Flags: createonlyiffileexists
 Name: {group}\USB InfWizard; Filename: {app}\InfWizard.exe; WorkingDir: {app}; Flags: createonlyiffileexists
 Name: {group}\Test Info; Filename: {app}\Test_Info.exe; WorkingDir: {app}; Flags: createonlyiffileexists
@@ -99,4 +99,9 @@ Source: .\src\*; DestDir: {app}\Src; Flags: ignoreversion recursesubdirs createa
 
 [Run]
 Filename: {app}\libusb-win32\install-filter.exe; Parameters: -i; StatusMsg: Creating kernel service (this may take a few seconds) ...; Tasks: tasklibusb\insfilter; Flags: skipifdoesntexist
+
+[UninstallRun]
+Filename: "{app}\bin\install-filter.exe"; Parameters: "-u" StatusMsg: Removing kernel services (this may take a few seconds) ... Flags: skipifdoesntexist
+
+
 ; NOTE: Don't use "Flags: ignoreversion" on any shared system files

@@ -76,9 +76,12 @@ namespace LibUsbDotNet.Internal.LibUsb
                 if (iError != ERROR_IO_PENDING)
                 {
                     // Don't log errors for these control codes.
-                    if (code != LibUsbIoCtl.GET_WIN_PROPERTY && code != LibUsbIoCtl.SET_CUSTOM_REG_PROPERTY &&
-                        code != LibUsbIoCtl.GET_CUSTOM_REG_PROPERTY)
-                        UsbError.Error(ErrorCode.Win32Error, iError, "DeviceIoControl failed.\nIoCtlCode:" + code, typeof(LibUsbDriverIO));
+                    do
+                    {
+                        if (code == LibUsbIoCtl.GET_REG_PROPERTY) break;
+                        if (code == LibUsbIoCtl.GET_CUSTOM_REG_PROPERTY) break;
+                        UsbError.Error(ErrorCode.Win32Error, iError, String.Format("DeviceIoControl code {0:X8} failed:{1}", code, Kernel32.FormatSystemMessage(iError)), typeof(LibUsbDriverIO));
+                    } while (false);
 
                     hEvent.Close();
                     return false;

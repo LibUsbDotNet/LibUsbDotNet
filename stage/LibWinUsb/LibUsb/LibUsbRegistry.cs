@@ -244,7 +244,8 @@ namespace LibUsbDotNet.LibUsb
             else
             {
                 eReturn = ErrorCode.GetDeviceKeyValueFailed;
-                UsbError.Error(eReturn,0, "Failed getting device registry Key:" + key, this);
+                // dont log this as an error; 
+                //UsbError.Error(eReturn,0, "Failed getting device registry Key:" + key, this);
             }
             return eReturn;
         }
@@ -263,7 +264,7 @@ namespace LibUsbDotNet.LibUsb
                 req.DeviceProperty.ID = prop.Value;
                 int iReturnBytes;
                 bool bSuccess = LibUsbDriverIO.UsbIOSync(usbHandle,
-                                                         LibUsbIoCtl.GET_WIN_PROPERTY,
+                                                         LibUsbIoCtl.GET_REG_PROPERTY,
                                                          req,
                                                          LibUsbRequest.Size,
                                                          gcPropBuffer.AddrOfPinnedObject(),

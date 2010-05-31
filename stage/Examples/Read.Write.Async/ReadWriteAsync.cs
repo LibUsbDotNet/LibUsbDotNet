@@ -26,11 +26,10 @@ namespace Examples
             try
             {
                 // Find and open the usb device.
-                //MyUsbDevice = UsbDevice.OpenUsbDevice(MyUsbFinder);
-                MyUsbDevice = MonoUsbDevice.MonoUsbDeviceList.Find(MyUsbFinder.Check);
+                MyUsbDevice = UsbDevice.OpenUsbDevice(MyUsbFinder);
+                
                 // If the device is open and ready
                 if (MyUsbDevice == null) throw new Exception("Device Not Found.");
-                if (!MyUsbDevice.Open()) throw new Exception("Open Device Failed.");
 
                 // If this is a "whole" usb device (libusb-win32, linux libusb)
                 // it will have an IUsbDevice interface. If not (WinUSB) the 
