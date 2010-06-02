@@ -355,24 +355,24 @@ namespace LibUsbDotNet.Main
             mIsDisposed = true;
         }
 
-        private int ReadPipe(IntPtr pBuffer, int bufferLength, out int lengthTransferred, IntPtr pOverlapped)
+        private int ReadPipe(IntPtr pBuffer, int bufferLength, out int lengthTransferred, int isoPacketSize, IntPtr pOverlapped)
         {
-            bool bSuccess = mUsbApi.ReadPipe(this, pBuffer, bufferLength, out lengthTransferred, pOverlapped);
+            bool bSuccess = mUsbApi.ReadPipe(this, pBuffer, bufferLength, out lengthTransferred, isoPacketSize, pOverlapped);
             if (!bSuccess) return Marshal.GetLastWin32Error();
             return 0;
         }
 
 
-        private int WritePipe(IntPtr pBuffer, int bufferLength, out int lengthTransferred, IntPtr pOverlapped)
+        private int WritePipe(IntPtr pBuffer, int bufferLength, out int lengthTransferred, int isoPacketSize, IntPtr pOverlapped)
         {
-            bool bSuccess = mUsbApi.WritePipe(this, pBuffer, bufferLength, out lengthTransferred, pOverlapped);
+            bool bSuccess = mUsbApi.WritePipe(this, pBuffer, bufferLength, out lengthTransferred, isoPacketSize, pOverlapped);
             if (!bSuccess) return Marshal.GetLastWin32Error();
             return 0;
         }
 
         #region Nested type: TransferDelegate
 
-        internal delegate int TransferDelegate(IntPtr pBuffer, int bufferLength, out int lengthTransferred, IntPtr pOverlapped);
+        internal delegate int TransferDelegate(IntPtr pBuffer, int bufferLength, out int lengthTransferred, int isoPacketSize, IntPtr pOverlapped);
 
         #endregion
     }

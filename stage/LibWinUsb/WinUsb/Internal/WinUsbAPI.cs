@@ -179,30 +179,34 @@ namespace LibUsbDotNet.WinUsb.Internal
 
         public override bool GetOverlappedResult(SafeHandle InterfaceHandle, IntPtr pOVERLAPPED, out int numberOfBytesTransferred, bool Wait) { return WinUsb_GetOverlappedResult(InterfaceHandle, pOVERLAPPED, out numberOfBytesTransferred, Wait); }
 
-        public override bool ReadPipe(UsbEndpointBase endPointBase,
-                                      byte[] Buffer,
-                                      int BufferLength,
-                                      out int LengthTransferred,
-                                      IntPtr pOVERLAPPED) { return WinUsb_ReadPipe(endPointBase.Device.Handle, endPointBase.EpNum, Buffer, BufferLength, out LengthTransferred, pOVERLAPPED); }
+        //public override bool ReadPipe(UsbEndpointBase endPointBase,
+        //                              byte[] Buffer,
+        //                              int BufferLength,
+        //                              out int LengthTransferred,
+        //                              int isoPacketSize,
+        //                              IntPtr pOVERLAPPED) { return WinUsb_ReadPipe(endPointBase.Device.Handle, endPointBase.EpNum, Buffer, BufferLength, out LengthTransferred, pOVERLAPPED); }
 
         public override bool ReadPipe(UsbEndpointBase endPointBase,
                                       IntPtr pBuffer,
                                       int BufferLength,
                                       out int LengthTransferred,
+                                      int isoPacketSize,
                                       IntPtr pOVERLAPPED) { return WinUsb_ReadPipe(endPointBase.Device.Handle, endPointBase.EpNum, pBuffer, BufferLength, out LengthTransferred, pOVERLAPPED); }
 
         public override bool ResetPipe(SafeHandle InterfaceHandle, byte PipeID) { return WinUsb_ResetPipe(InterfaceHandle, PipeID); }
 
-        public override bool WritePipe(UsbEndpointBase endPointBase,
-                                       byte[] Buffer,
-                                       int BufferLength,
-                                       out int LengthTransferred,
-                                       IntPtr pOVERLAPPED) { return WinUsb_WritePipe(endPointBase.Device.Handle, endPointBase.EpNum, Buffer, BufferLength, out LengthTransferred, pOVERLAPPED); }
+        //public override bool WritePipe(UsbEndpointBase endPointBase,
+        //                               byte[] Buffer,
+        //                               int BufferLength,
+        //                               out int LengthTransferred,
+        //                               int isoPacketSize,
+        //                               IntPtr pOVERLAPPED) { return WinUsb_WritePipe(endPointBase.Device.Handle, endPointBase.EpNum, Buffer, BufferLength, out LengthTransferred, pOVERLAPPED); }
 
         public override bool WritePipe(UsbEndpointBase endPointBase,
                                        IntPtr pBuffer,
                                        int BufferLength,
                                        out int LengthTransferred,
+                                       int isoPacketSize,
                                        IntPtr pOVERLAPPED) { return WinUsb_WritePipe(endPointBase.Device.Handle, endPointBase.EpNum, pBuffer, BufferLength, out LengthTransferred, pOVERLAPPED); }
 
         internal static bool OpenDevice(out SafeFileHandle sfhDevice, string DevicePath)

@@ -30,18 +30,15 @@ namespace LibUsbDotNet.LudnMonoLibUsb.Internal
 {
     internal class MonoUsbTransferContext : UsbTransfer, IDisposable
     {
-        private static object mSubmitLOCK = new object();
-
         private bool mOwnsTransfer;
 
         private static readonly MonoUsbTransferDelegate mMonoUsbTransferCallbackDelegate = TransferCallback;
-        private GCHandle gcCompleteEvent = new GCHandle();
+        private GCHandle mCompleteEventHandle;
         private MonoUsbTransfer mTransfer;
 
         public MonoUsbTransferContext(UsbEndpointBase endpointBase)
             : base(endpointBase)
         {
-            allocTransfer(endpointBase, true);
         }
 
         #region IDisposable Members
@@ -52,18 +49,22 @@ namespace LibUsbDotNet.LudnMonoLibUsb.Internal
         }
 
         #endregion
-        private void allocTransfer(UsbEndpointBase endpointBase, bool ownsTransfer)
+        private void allocTransfer(UsbEndpointBase endpointBase, bool ownsTransfer, int isoPacketSize, int count)
         {
+            int numIsoPackets = count/isoPacketSize;
             freeTransfer();
-            mTransfer =MonoUsbTransfer.Alloc(0);
+            mTransfer = MonoUsbTransfer.Alloc(numIsoPackets);
             mOwnsTransfer = ownsTransfer;
             mTransfer.Type = endpointBase.Type;
             mTransfer.Endpoint = endpointBase.EpNum;
+            mTransfer.NumIsoPackets = numIsoPackets;
 
-            if (!gcCompleteEvent.IsAllocated)
-                gcCompleteEvent = GCHandle.Alloc(mTransferCompleteEvent);
-
-            mTransfer.PtrUserData = GCHandle.ToIntPtr(gcCompleteEvent);
+            if (!mCompleteEventHandle.IsAllocated)
+                mCompleteEventHandle = GCHandle.Alloc(mTransferCompleteEvent);
+            mTransfer.PtrUserData = GCHandle.ToIntPtr(mCompleteEventHandle);
+            
+            if (numIsoPackets > 0)
+                mTransfer.SetIsoPacketLengths(isoPacketSize);
 
 
         }
@@ -75,9 +76,18 @@ namespace LibUsbDotNet.LudnMonoLibUsb.Internal
             mTransfer.Free();
            
         }
+
+        /// <summary>
+        /// Fills the transfer with the data to <see cref="UsbTransfer.Submit"/>.
+        /// </summary>
+        /// <param name="buffer">The buffer.</param>
+        /// <param name="offset">The offset on the buffer where the transfer should read/write.</param>
+        /// <param name="count">The number of bytes to transfer.</param>
+        /// <param name="timeout">Time (milliseconds) to wait before the transfer times out.</param>
         public override void Fill(IntPtr buffer, int offset, int count, int timeout)
         {
-//            allocTransfer(EndpointBase, true);
+            allocTransfer(EndpointBase, true, 0, count);
+
             base.Fill(buffer, offset, count, timeout);
 
             mTransfer.Timeout =  timeout;
@@ -93,11 +103,46 @@ namespace LibUsbDotNet.LudnMonoLibUsb.Internal
             mTransfer.Flags = MonoUsbTransferFlags.None;
         }
 
+        /// <summary>
+        /// Fills the transfer with the data to <see cref="UsbTransfer.Submit"/> an isochronous transfer.
+        /// </summary>
+        /// <param name="buffer">The buffer.</param>
+        /// <param name="offset">The offset on the buffer where the transfer should read/write.</param>
+        /// <param name="count">The number of bytes to transfer.</param>
+        /// <param name="timeout">Time (milliseconds) to wait before the transfer times out.</param>
+        /// <param name="isoPacketSize">Size of each isochronous packet.</param>
+        public override void Fill(IntPtr buffer, int offset, int count, int timeout, int isoPacketSize)
+        {
+            allocTransfer(EndpointBase, true, isoPacketSize, count);
 
+            base.Fill(buffer, offset, count, timeout, isoPacketSize);
+
+            mTransfer.Timeout = timeout;
+            mTransfer.PtrDeviceHandle = EndpointBase.Handle.DangerousGetHandle();
+
+            mTransfer.PtrCallbackFn = Marshal.GetFunctionPointerForDelegate(mMonoUsbTransferCallbackDelegate);
+
+            mTransfer.Type = EndpointBase.Type;
+            mTransfer.Endpoint = EndpointBase.EpNum;
+
+            mTransfer.ActualLength = 0;
+            mTransfer.Status = 0;
+            mTransfer.Flags = MonoUsbTransferFlags.None;
+        }
         // Clean up the globally allocated memory. 
 
         ~MonoUsbTransferContext() { Dispose(); }
 
+        /// <summary>
+        /// Submits the transfer.
+        /// </summary>
+        /// <remarks>
+        /// This functions submits the USB transfer and return immediately.
+        /// </remarks>
+        /// <returns>
+        /// <see cref="ErrorCode.Success"/> if the submit succeeds, 
+        /// otherwise one of the other <see cref="ErrorCode"/> codes.
+        /// </returns>
         public override ErrorCode Submit()
         {
             if (mTransferCancelEvent.WaitOne(0, false)) return ErrorCode.IoCancelled;
@@ -120,6 +165,11 @@ namespace LibUsbDotNet.LudnMonoLibUsb.Internal
             return ErrorCode.Success;
         }
 
+        /// <summary>
+        /// Wait for the transfer to complete, timeout, or get cancelled.
+        /// </summary>
+        /// <param name="transferredCount">The number of bytes transferred on <see cref="ErrorCode.Success"/>.</param>
+        /// <returns><see cref="ErrorCode.Success"/> if the transfer completes successfully, otherwise one of the other <see cref="ErrorCode"/> codes.</returns>
         public override ErrorCode Wait(out int transferredCount)
         {
             transferredCount = 0;

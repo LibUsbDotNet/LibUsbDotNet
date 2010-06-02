@@ -88,51 +88,21 @@ namespace LibUsbDotNet.Internal.LibUsb
 
         public override bool GetOverlappedResult(SafeHandle interfaceHandle, IntPtr pOverlapped, out int numberOfBytesTransferred, bool wait) { return Kernel32.GetOverlappedResult(interfaceHandle, pOverlapped, out numberOfBytesTransferred, wait); }
 
-        public override bool ReadPipe(UsbEndpointBase endPointBase,
-                                      byte[] buffer,
-                                      int bufferLength,
-                                      out int lengthTransferred,
-                                      IntPtr pOverlapped)
-        {
-            LibUsbRequest req = new LibUsbRequest();
-            req.Endpoint.ID = endPointBase.EpNum;
-            req.Timeout = UsbConstants.DEFAULT_TIMEOUT;
-            int cltCode;
-            //if (endPointBase.Type == EndpointType.Isochronous)
-            //{
-            //    cltCode = LibUsbIoCtl.ISOCHRONOUS_READ;
-            //    req.Endpoint.PacketSize = 1;
-            //}
-            //else
-                cltCode = LibUsbIoCtl.INTERRUPT_OR_BULK_READ; 
-            
-            return Kernel32.DeviceIoControl(endPointBase.Handle,
-                                            cltCode,
-                                            req,
-                                            LibUsbRequest.Size,
-                                            buffer,
-                                            bufferLength,
-                                            out lengthTransferred,
-                                            pOverlapped);
-        }
 
         public override bool ReadPipe(UsbEndpointBase endPointBase,
                                       IntPtr buffer,
                                       int bufferLength,
                                       out int lengthTransferred,
+                                      int isoPacketSize,
                                       IntPtr pOverlapped)
         {
             LibUsbRequest req = new LibUsbRequest();
             req.Endpoint.ID = endPointBase.EpNum;
+            req.Endpoint.PacketSize = isoPacketSize;
             req.Timeout = UsbConstants.DEFAULT_TIMEOUT;
-            int cltCode;
-            //if (endPointBase.Type == EndpointType.Isochronous)
-            //{
-            //    cltCode = LibUsbIoCtl.ISOCHRONOUS_READ;
-            //    req.Endpoint.PacketSize = 1;
-            //}
-            //else
-                cltCode = LibUsbIoCtl.INTERRUPT_OR_BULK_READ; 
+
+            int cltCode = endPointBase.Type == EndpointType.Isochronous ? LibUsbIoCtl.ISOCHRONOUS_READ : LibUsbIoCtl.INTERRUPT_OR_BULK_READ; 
+
 
             return Kernel32.DeviceIoControl(endPointBase.Device.Handle,
                                             cltCode,
@@ -154,51 +124,19 @@ namespace LibUsbDotNet.Internal.LibUsb
             return LibUsbDriverIO.UsbIOSync(interfaceHandle, LibUsbIoCtl.RESET_ENDPOINT, req, LibUsbRequest.Size, IntPtr.Zero, 0, out ret);
         }
 
-        public override bool WritePipe(UsbEndpointBase endPointBase,
-                                       byte[] buffer,
-                                       int bufferLength,
-                                       out int lengthTransferred,
-                                       IntPtr pOverlapped)
-        {
-            LibUsbRequest req = new LibUsbRequest();
-            req.Endpoint.ID = endPointBase.EpNum;
-            req.Timeout = UsbConstants.DEFAULT_TIMEOUT;
-            int cltCode;
-            //if (endPointBase.Type == EndpointType.Isochronous)
-            //{
-            //    cltCode = LibUsbIoCtl.ISOCHRONOUS_WRITE;
-            //    req.Endpoint.PacketSize = 1;
-            //}
-            //else
-                cltCode = LibUsbIoCtl.INTERRUPT_OR_BULK_WRITE;
-
-            return Kernel32.DeviceIoControl(endPointBase.Handle,
-                                            cltCode,
-                                            req,
-                                            LibUsbRequest.Size,
-                                            buffer,
-                                            bufferLength,
-                                            out lengthTransferred,
-                                            pOverlapped);
-        }
-
+  
         public override bool WritePipe(UsbEndpointBase endPointBase,
                                        IntPtr buffer,
                                        int bufferLength,
                                        out int lengthTransferred,
+                                       int isoPacketSize,
                                        IntPtr pOverlapped)
         {
             LibUsbRequest req = new LibUsbRequest();
             req.Endpoint.ID = endPointBase.EpNum;
+            req.Endpoint.PacketSize = isoPacketSize;
             req.Timeout = UsbConstants.DEFAULT_TIMEOUT;
-            int cltCode;
-            //if (endPointBase.Type == EndpointType.Isochronous)
-            //{
-            //    cltCode = LibUsbIoCtl.ISOCHRONOUS_WRITE;
-            //    req.Endpoint.PacketSize = 1;
-            //}
-            //else
-                cltCode = LibUsbIoCtl.INTERRUPT_OR_BULK_WRITE;
+            int cltCode = endPointBase.Type == EndpointType.Isochronous ? LibUsbIoCtl.ISOCHRONOUS_WRITE : LibUsbIoCtl.INTERRUPT_OR_BULK_WRITE; 
 
             return Kernel32.DeviceIoControl(endPointBase.Handle,
                                             cltCode,

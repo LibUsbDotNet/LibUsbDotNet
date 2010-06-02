@@ -48,30 +48,34 @@ namespace LibUsbDotNet.Internal
 
         public abstract bool GetOverlappedResult(SafeHandle interfaceHandle, IntPtr pOverlapped, out int numberOfBytesTransferred, bool wait);
 
-        public abstract bool ReadPipe(UsbEndpointBase endPointBase, 
-                                      Byte[] buffer,
-                                      int bufferLength,
-                                      out int lengthTransferred,
-                                      IntPtr pOverlapped);
+        //public abstract bool ReadPipe(UsbEndpointBase endPointBase, 
+        //                              Byte[] buffer,
+        //                              int bufferLength,
+        //                              out int lengthTransferred,
+        //                              int isoPacketSize,
+        //                              IntPtr pOverlapped);
 
         public abstract bool ReadPipe(UsbEndpointBase endPointBase,
                                       IntPtr pBuffer,
                                       int bufferLength,
                                       out int lengthTransferred,
-                                      IntPtr pOverlapped);
+                                      int isoPacketSize,
+                                     IntPtr pOverlapped);
 
         public abstract bool ResetPipe(SafeHandle interfaceHandle, byte pipeID);
 
-        public abstract bool WritePipe(UsbEndpointBase endPointBase,
-                                       Byte[] buffer,
-                                       int bufferLength,
-                                       out int lengthTransferred,
-                                       IntPtr pOverlapped);
+        //public abstract bool WritePipe(UsbEndpointBase endPointBase,
+        //                               Byte[] buffer,
+        //                               int bufferLength,
+        //                               out int lengthTransferred,
+        //                               int isoPacketSize,
+        //                               IntPtr pOverlapped);
 
         public abstract bool WritePipe(UsbEndpointBase endPointBase,
                                        IntPtr pBuffer,
                                        int bufferLength,
                                        out int lengthTransferred,
+                                       int isoPacketSize,
                                        IntPtr pOverlapped);
     }
 }

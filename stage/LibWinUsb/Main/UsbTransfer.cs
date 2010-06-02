@@ -37,6 +37,9 @@ namespace LibUsbDotNet.Main
         private int mCurrentTransmitted;
 
         /// <summary></summary>
+        protected int mIsoPacketSize;
+
+        /// <summary></summary>
         protected int mOriginalCount;
         /// <summary></summary>
         protected int mOriginalOffset;
@@ -103,6 +106,16 @@ namespace LibUsbDotNet.Main
             get { return mTransferCancelEvent; }
         }
 
+        /// <summary>
+        /// Gets the size of each isochronous packet.
+        /// </summary>
+        /// <remarks>
+        /// To change the packet size see <see cref="Fill(System.IntPtr,int,int,int,int)"/>
+        /// </remarks>
+        public int IsoPacketSize
+        {
+            get { return mIsoPacketSize; }
+        }
 
 
         #region IDisposable Members
@@ -163,6 +176,20 @@ namespace LibUsbDotNet.Main
             Fill(mPinnedHandle.Handle, offset, count, timeout);
         }
         /// <summary>
+        /// Fills the transfer with the data to <see cref="Submit"/> an isochronous transfer.
+        /// </summary>
+        /// <param name="buffer">The buffer; See <see cref="PinnedHandle"/> for more details.</param>
+        /// <param name="offset">The offset on the buffer where the transfer should read/write.</param>
+        /// <param name="count">The number of bytes to transfer.</param>
+        /// <param name="timeout">Time (milliseconds) to wait before the transfer times out.</param>
+        /// <param name="isoPacketSize">Size of each isochronous packet.</param>
+        public virtual void Fill(object buffer, int offset, int count, int timeout, int isoPacketSize)
+        {
+            if (mPinnedHandle != null) mPinnedHandle.Dispose();
+            mPinnedHandle = new PinnedHandle(buffer);
+            Fill(mPinnedHandle.Handle, offset, count, timeout, isoPacketSize);
+        }
+        /// <summary>
         /// Fills the transfer with the data to <see cref="Submit"/>.
         /// </summary>
         /// <param name="buffer">The buffer.</param>
@@ -178,7 +205,24 @@ namespace LibUsbDotNet.Main
             mTimeout = timeout;
             Reset();
         }
+        /// <summary>
+        /// Fills the transfer with the data to <see cref="Submit"/> an isochronous transfer.
+        /// </summary>
+        /// <param name="buffer">The buffer.</param>
+        /// <param name="offset">The offset on the buffer where the transfer should read/write.</param>
+        /// <param name="count">The number of bytes to transfer.</param>
+        /// <param name="timeout">Time (milliseconds) to wait before the transfer times out.</param>
+        /// <param name="isoPacketSize">Size of each isochronous packet.</param>
+        public virtual void Fill(IntPtr buffer, int offset, int count, int timeout, int isoPacketSize)
+        {
+            mBuffer = buffer;
 
+            mOriginalOffset = offset;
+            mOriginalCount = count;
+            mTimeout = timeout;
+            mIsoPacketSize = isoPacketSize;
+            Reset();
+        }
         internal static ErrorCode SyncTransfer(UsbTransfer transferContext,
                                                IntPtr buffer,
                                                int offset,

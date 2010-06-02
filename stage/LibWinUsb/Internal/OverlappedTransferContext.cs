@@ -52,6 +52,7 @@ namespace LibUsbDotNet.Internal
             int ret = EndpointBase.PipeTransferSubmit(NextBufPtr,
                                                       RequestCount,
                                                       out iTransferred,
+                                                      mIsoPacketSize,
                                                       Overlapped.GlobalOverlapped);
             if (ret != 0 && ret != (int) UsbStatusClodes.ErrorIoPending)
             {
