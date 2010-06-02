@@ -93,7 +93,10 @@ namespace LibUsbDotNet.Main
             get { return mIsDisposed; }
         }
 
-        internal UsbDevice Device
+        /// <summary>
+        /// Gets the <see cref="UsbDevice"/> class this endpoint belongs to.
+        /// </summary>
+        public UsbDevice Device
         {
             get { return mUsbDevice; }
         }
