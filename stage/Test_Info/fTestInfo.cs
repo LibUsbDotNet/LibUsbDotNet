@@ -42,54 +42,6 @@ namespace Test_Info
         public fTestInfo() { InitializeComponent(); }
 
         #region STATIC Members
-        private static StringBuilder getDescriptorReport_phpBB(UsbRegistry usbRegistry)
-        {
-            UsbDevice usbDevice;
-            StringBuilder sbReport = new StringBuilder();
-            if (!usbRegistry.Open(out usbDevice)) return sbReport;
-
-            sbReport.AppendLine(string.Format("[b]{0}[/b] [size=85]OSVersion:{1} LibUsbDotNet Version:{2} DriverMode:{3}[/size]", usbRegistry.FullName, UsbDevice.OSVersion, LibUsbDotNetVersion, usbDevice.DriverMode));
-            sbReport.AppendLine(usbDevice.Info.ToString("[i]",
-                                                        "[/i]" + UsbDescriptor.ToStringParamValueSeperator + "[color=#4000BF]",
-                                                        "[/color]" + UsbDescriptor.ToStringFieldSeperator));
-
-            foreach (UsbConfigInfo cfgInfo in usbDevice.Configs)
-            {
-                sbReport.AppendLine("[list]");
-                sbReport.AppendLine(string.Format("[*][b]CONFIG #{1}[/b]\r\n{0}",
-                                                  cfgInfo.ToString("[*][i]",
-                                                                   "[/i]" + UsbDescriptor.ToStringParamValueSeperator + "[color=#4000BF]",
-                                                                   "[/color]" + UsbDescriptor.ToStringFieldSeperator),
-                                                  cfgInfo.Descriptor.ConfigID));
-                foreach (UsbInterfaceInfo interfaceInfo in cfgInfo.InterfaceInfoList)
-                {
-                    sbReport.AppendLine("[list]");
-                    sbReport.AppendLine(string.Format("[*][b]INTERFACE ({1},{2})[/b]\r\n{0}",
-                                                      interfaceInfo.ToString("[*][i]",
-                                                                             "[/i]" + UsbDescriptor.ToStringParamValueSeperator + "[color=#4000BF]",
-                                                                             "[/color]" + UsbDescriptor.ToStringFieldSeperator),
-                                                      interfaceInfo.Descriptor.InterfaceID,
-                                                      interfaceInfo.Descriptor.AlternateID));
-
-                    foreach (UsbEndpointInfo endpointInfo in interfaceInfo.EndpointInfoList)
-                    {
-                        sbReport.AppendLine("[list]");
-                        sbReport.AppendLine(string.Format("[*][b]ENDPOINT 0x{1:X2}[/b]\r\n{0}",
-                                                          endpointInfo.ToString("[*][i]",
-                                                                                "[/i]" + UsbDescriptor.ToStringParamValueSeperator + "[color=#4000BF]",
-                                                                                "[/color]" + UsbDescriptor.ToStringFieldSeperator),
-                                                          endpointInfo.Descriptor.EndpointID));
-                    }
-                    sbReport.AppendLine("[/list]");
-                }
-                sbReport.AppendLine("[/list]");
-            }
-            sbReport.AppendLine("[/list]");
-
-            usbDevice.Close();
-
-            return sbReport;
-        }
         private static StringBuilder getDescriptorReport(UsbRegistry usbRegistry)
         {
             UsbDevice usbDevice;
@@ -184,7 +136,6 @@ namespace Test_Info
             {
                 tvInfo.Nodes.Clear();
                 addDevice(mDevList[cboDevices.SelectedIndex], cboDevices.Text);
-                copyAsPhpBBCodeToolStripMenuItem.Enabled = true;
                 copyAsPlainTextToolStripMenuItem.Enabled = true;
 
             }
@@ -290,17 +241,6 @@ namespace Test_Info
         {
             refreshDeviceList();
             UsbDevice.UsbErrorEvent += OnUsbError;
-        }
-
-        private void savePhpBBReportToolStripMenuItem_Click(object sender, EventArgs e)
-        {
-            if (cboDevices.SelectedIndex >= 0)
-            {
-                StringBuilder sb = getDescriptorReport_phpBB(mDevList[cboDevices.SelectedIndex]);
-                Clipboard.SetText(sb.ToString());
-
-                MessageBox.Show("Descriptor report copied to clipboard.", "Descriptor Report Saved", MessageBoxButtons.OK);
-            }
         }
 
         private void copyAsPlainTextToolStripMenuItem_Click(object sender, EventArgs e)

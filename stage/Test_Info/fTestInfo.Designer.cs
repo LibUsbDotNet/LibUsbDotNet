@@ -40,7 +40,6 @@ namespace Test_Info
             this.menuStrip1 = new System.Windows.Forms.MenuStrip();
             this.fileToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.exitToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.copyAsPhpBBCodeToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.copyAsPlainTextToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.tabDevice = new System.Windows.Forms.TabControl();
             this.tabPage1 = new System.Windows.Forms.TabPage();
@@ -148,7 +147,6 @@ namespace Test_Info
             // 
             this.fileToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.exitToolStripMenuItem,
-            this.copyAsPhpBBCodeToolStripMenuItem,
             this.copyAsPlainTextToolStripMenuItem});
             this.fileToolStripMenuItem.Name = "fileToolStripMenuItem";
             this.fileToolStripMenuItem.Size = new System.Drawing.Size(35, 20);
@@ -157,24 +155,16 @@ namespace Test_Info
             // exitToolStripMenuItem
             // 
             this.exitToolStripMenuItem.Name = "exitToolStripMenuItem";
-            this.exitToolStripMenuItem.Size = new System.Drawing.Size(185, 22);
+            this.exitToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
             this.exitToolStripMenuItem.Text = "&Exit";
             this.exitToolStripMenuItem.Click += new System.EventHandler(this.exitToolStripMenuItem_Click);
-            // 
-            // copyAsPhpBBCodeToolStripMenuItem
-            // 
-            this.copyAsPhpBBCodeToolStripMenuItem.Enabled = false;
-            this.copyAsPhpBBCodeToolStripMenuItem.Name = "copyAsPhpBBCodeToolStripMenuItem";
-            this.copyAsPhpBBCodeToolStripMenuItem.Size = new System.Drawing.Size(185, 22);
-            this.copyAsPhpBBCodeToolStripMenuItem.Text = "Copy as phpBB Code";
-            this.copyAsPhpBBCodeToolStripMenuItem.Click += new System.EventHandler(this.savePhpBBReportToolStripMenuItem_Click);
             // 
             // copyAsPlainTextToolStripMenuItem
             // 
             this.copyAsPlainTextToolStripMenuItem.Enabled = false;
             this.copyAsPlainTextToolStripMenuItem.Name = "copyAsPlainTextToolStripMenuItem";
-            this.copyAsPlainTextToolStripMenuItem.Size = new System.Drawing.Size(185, 22);
-            this.copyAsPlainTextToolStripMenuItem.Text = "Copy as plain text";
+            this.copyAsPlainTextToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
+            this.copyAsPlainTextToolStripMenuItem.Text = "&Copy";
             this.copyAsPlainTextToolStripMenuItem.Click += new System.EventHandler(this.copyAsPlainTextToolStripMenuItem_Click);
             // 
             // tabDevice
@@ -301,7 +291,6 @@ namespace Test_Info
         private System.Windows.Forms.TabPage tabVersionInfo;
         private System.Windows.Forms.RichTextBox rtfVersionInfo;
         private System.Windows.Forms.TreeView tvInfo;
-        private System.Windows.Forms.ToolStripMenuItem copyAsPhpBBCodeToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem copyAsPlainTextToolStripMenuItem;
     }
 }
