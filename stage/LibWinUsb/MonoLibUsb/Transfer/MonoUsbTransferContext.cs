@@ -170,7 +170,7 @@ namespace LibUsbDotNet.LudnMonoLibUsb.Internal
         /// </summary>
         /// <param name="transferredCount">The number of bytes transferred on <see cref="ErrorCode.Success"/>.</param>
         /// <returns><see cref="ErrorCode.Success"/> if the transfer completes successfully, otherwise one of the other <see cref="ErrorCode"/> codes.</returns>
-        public override ErrorCode Wait(out int transferredCount)
+        public override ErrorCode Wait(out int transferredCount, bool cancel)
         {
             transferredCount = 0;
             int ret = 0;

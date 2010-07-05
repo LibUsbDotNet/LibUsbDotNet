@@ -70,9 +70,6 @@ CALL :BuildDotNetSln "!CMDVAR_SLN!" /rebuild
 CALL :Status "Building SHFB Documentation"
 CALL :BuildSHFB_Docs
 
-CALL :Status "Building LibUsb"
-CALL :Build_LibUsb
-
 CALL :Status "Packaging !CMDVAR_FULLNAME! Bin Files"
 CALL :Package_Bin
 
@@ -104,7 +101,6 @@ EXIT
 	CALL :ToAbsoutePaths CMDVAR_DEVENV "!CMDVAR_DEVENV!"
 	CALL :ToAbsoutePaths CMDVAR_SHFBPROJECTDIR "!CMDVAR_SHFBPROJECTDIR!"
 	CALL :ToAbsoutePaths CMDVAR_SHFBHELPFILE "!CMDVAR_SHFBHELPFILE!"
-	CALL :ToAbsoutePaths CMDVAR_LIBUSBPATH "!CMDVAR_LIBUSBPATH!"
 
 	IF "!CMDVAR_BASENAME!" EQU "" (
 		SET LUDN_ERROR=Could not open/read config file "!LibUsbDotNet_Cfg!".
@@ -271,42 +267,6 @@ GOTO :EOF
 	
 GOTO :EOF
 
-:Build_LibUsb
-	PUSHD "!CD!"
-	CD "!CMDVAR_LIBUSBPATH!src\driver\"
-	IF !ERRORLEVEL! NEQ 0 (
-		SET LUDN_ERROR=LibUsbPath not found "!CMDVAR_LIBUSBPATH!src\driver\"! 
-		GOTO ErrorWaitExit
-	)
-	
-	CALL :TagEnv "'ioctl.c.in' -o='ioctl.c'"
-	
-	CD "!CMDVAR_LIBUSBPATH!ddk_make\"
-	
-	CALL :TagEnv "'sources_drv.in' -o='sources_drv'"
-	
-	CALL make_x86.bat !CMDVAR_QUIET! false
-	IF !ERRORLEVEL! NEQ 0 (
-		SET LUDN_ERROR=Build_LibUsb::make_x86.bat
-		GOTO ErrorWaitExit
-	)
-	
-	CALL make_i64.bat !CMDVAR_QUIET! false
-	IF !ERRORLEVEL! NEQ 0 (
-		SET LUDN_ERROR=Build_LibUsb::make_i64.bat
-		GOTO ErrorWaitExit
-	)
-	
-	CALL make_x64.bat !CMDVAR_QUIET! false
-	IF !ERRORLEVEL! NEQ 0 (
-		SET LUDN_ERROR=Build_LibUsb::make_x64.bat
-		GOTO ErrorWaitExit
-	)
-	
-	POPD
-GOTO :EOF
-
-
 :Package_Bin
 	SET _SRC_=!CMDVAR_BASEDIR!Bin\Release\
 	SET _DST_=!CMDVAR_TEMPDIR!Bin\
@@ -324,29 +284,6 @@ GOTO :EOF
 	CALL :Copy_ChmHelp "!_DST_!"
 	CALL :Copy_License "!_DST_!"
 	
-	SET _SRC_=!CMDVAR_LIBUSBPATH!
-	SET _DST_=!CMDVAR_TEMPDIR!Bin\libusb-win32\
-	CALL :ReCreateDir "!_DST_!"
-	CALL :CopyFile AUTHORS.txt
-	CALL :CopyFile COPYING_GPL.txt
-	CALL :CopyFile COPYING_LGPL.txt
-	CALL :CopyFile LibUsbDotNet_ModDiff.html
-	
-	SET _SRC_=!CMDVAR_LIBUSBPATH!ddk_make\x86\
-	SET _DST_=!CMDVAR_TEMPDIR!Bin\libusb-win32\x86\
-	CALL :ReCreateDir "!_DST_!"
-	CALL :CopyFile "*"
-	
-	SET _SRC_=!CMDVAR_LIBUSBPATH!ddk_make\x64\
-	SET _DST_=!CMDVAR_TEMPDIR!Bin\libusb-win32\x64\
-	CALL :ReCreateDir "!_DST_!"
-	CALL :CopyFile "*"
-	
-	SET _SRC_=!CMDVAR_LIBUSBPATH!ddk_make\i64\
-	SET _DST_=!CMDVAR_TEMPDIR!Bin\libusb-win32\i64\
-	CALL :ReCreateDir "!_DST_!"
-	CALL :CopyFile "*"
-
 	PUSHD "!CD!"
 	CD /D "!CMDVAR_TEMPDIR!"
 	"!CMDVAR_ZIP!" -tzip a -r "!CMDVAR_TEMPDIR!!CMDVAR_BASENAME!_Bin.!CMDVAR_FRIENDLYVERSION!.zip" ".\Bin\*" !LUDN_QUIET_MODE2:~1,-1!
@@ -376,7 +313,6 @@ GOTO :EOF
 	CALL :CopyDirs "!CMDVAR_BASEDIR!MonoLibUsb\*" "!_DST_!MonoLibUsb\"
 	CALL :CopyDirs "!CMDVAR_BASEDIR!Utility\*" "!_DST_!Utility\"
 	CALL :CopyDirs "!CMDVAR_BASEDIR!Test_DeviceNotify\*" "!_DST_!Test_DeviceNotify\"
-	CALL :CopyDirs "!CMDVAR_LIBUSBPATH!*" "!_DST_!libusb-win32-src-0.1.12.2\"
 	
 	CALL :Copy_ChmHelp "!_DST_!"
 	CALL :Copy_License "!_DST_!"
@@ -505,8 +441,6 @@ GOTO :EOF
 	PUSHD "!CD!"
 	CD "!CMDVAR_BASEDIR!"
 	CALL superClean.bat packager !LUDN_QUIET_MODE2:~1,-1!
-	CD "!CMDVAR_LIBUSBPATH!ddk_make\"
-	CALL "make_super_clean.bat" !LUDN_QUIET_MODE2:~1,-1!
 	POPD
 GOTO :EOF
 

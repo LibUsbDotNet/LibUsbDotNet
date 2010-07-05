@@ -32,13 +32,13 @@ namespace Examples
 
         #region SET YOUR USB Vendor and Product ID!
 
-        public static UsbDeviceFinder MyUsbFinder = new UsbDeviceFinder(0x04d8, 0x0080);
+        public static UsbDeviceFinder MyUsbFinder = new UsbDeviceFinder(0x04d8, 0x0F02);
 
         #endregion
 
         private static readonly int NUM_OF_TEST_TRANSFERS = 30;
-        private static readonly int ISO_NUMBER_OF_PACKETS = 5;
-        private static readonly int ISO_PACKET_SIZE = 128;
+        private static readonly int ISO_NUMBER_OF_PACKETS = 128;
+        private static readonly int ISO_PACKET_SIZE = 64;
         private static int transferCount = 0;
 
         public static void Main(string[] args)
@@ -48,7 +48,11 @@ namespace Examples
             try
             {
                 // Find and open the usb device.
-                MyUsbDevice = UsbDevice.OpenUsbDevice(MyUsbFinder);
+                UsbRegDeviceList regList = UsbDevice.AllDevices.FindAll(MyUsbFinder);
+                if (regList.Count == 0) throw new Exception("Device Not Found.");
+
+                regList[regList.Count - 2].Open(out MyUsbDevice);
+                // MyUsbDevice = UsbDevice.OpenUsbDevice(MyUsbFinder);
 
                 // If the device is open and ready
                 if (MyUsbDevice == null) throw new Exception("Device Not Found.");
@@ -72,22 +76,50 @@ namespace Examples
                 }
 
                 // open read endpoint 1.
-                UsbEndpointReader reader = MyUsbDevice.OpenEndpointReader(ReadEndpointID.Ep01, 0, EndpointType.Isochronous);
+                UsbEndpointReader reader = null;
+                foreach (LibUsbDotNet.Info.UsbEndpointInfo endpointInfo in MyUsbDevice.Configs[0].InterfaceInfoList[0].EndpointInfoList)
+                {
+                    if ((endpointInfo.Descriptor.EndpointID & 0x80) != 0)
+                    {
+                        reader = MyUsbDevice.OpenEndpointReader(
+                            (ReadEndpointID)endpointInfo.Descriptor.EndpointID, 
+                            0, 
+                            (EndpointType)(endpointInfo.Descriptor.Attributes & 0x3));
+                        break;
+                    }
+                }
 
-                int readBufferSize = ISO_PACKET_SIZE*ISO_NUMBER_OF_PACKETS;
+                if (ReferenceEquals(reader, null))
+                {
+                    throw new Exception("Failed locating read endpoint.");
+                }
+                reader.Reset();
+                int readBufferSize = ISO_PACKET_SIZE * ISO_NUMBER_OF_PACKETS;
+
 
                 byte[] bufferEven = new byte[readBufferSize];
                 UsbTransfer transferEven = reader.NewAsyncTransfer();
-                transferEven.Fill(bufferEven, 0, readBufferSize, 1000, ISO_PACKET_SIZE);
+                transferEven.Fill(bufferEven, 0, readBufferSize, 5000, ISO_PACKET_SIZE);
 
                 byte[] bufferOdd = new byte[readBufferSize];
                 UsbTransfer transferOdd = reader.NewAsyncTransfer();
-                transferOdd.Fill(bufferOdd, 0, readBufferSize, 1000, ISO_PACKET_SIZE);
+                transferOdd.Fill(bufferOdd, 0, readBufferSize, 5000, ISO_PACKET_SIZE);
+
+                byte[] bufferEnd = new byte[readBufferSize];
+                UsbTransfer transferEnd = reader.NewAsyncTransfer();
+                transferEnd.Fill(bufferEnd, 0, readBufferSize, 5000, ISO_PACKET_SIZE);
 
                 ec = transferEven.Submit();
                 if (ec != ErrorCode.Success) throw new Exception("Failed submitting transfer");
+                Thread.Sleep(0);
+
                 ec = transferOdd.Submit();
                 if (ec != ErrorCode.Success) throw new Exception("Failed submitting transfer");
+                Thread.Sleep(0);
+
+                ec = transferEnd.Submit();
+                if (ec != ErrorCode.Success) throw new Exception("Failed submitting transfer");
+                Thread.Sleep(0);
 
                 int transferred;
                 UsbTransfer transferCurrent = transferEven;
@@ -95,7 +127,10 @@ namespace Examples
 
                 do
                 {
-                    int waitRet = WaitHandle.WaitAny(new WaitHandle[] {transferCurrent.AsyncWaitHandle}, 1000, false);
+                    int waitRet = WaitHandle.WaitAny(new WaitHandle[]
+                                                         {
+                                                             transferCurrent.AsyncWaitHandle
+                                                         }, 5000, true);
                     if (waitRet == WaitHandle.WaitTimeout)
                         throw new Exception("Read time out");
 
@@ -103,12 +138,14 @@ namespace Examples
                     if (ec != ErrorCode.Success)
                         throw new Exception("Failed getting async result");
 
-                    showTransfer(transferCurrent, bufferCurrent, transferred);
+                    showTransfer(transferCurrent, bufferCurrent, transferred, transferCount);
 
-                    if (transferCount + 2 < NUM_OF_TEST_TRANSFERS)
+                    if (transferCount + 3 < NUM_OF_TEST_TRANSFERS)
                     {
                         transferCurrent.Reset();
                         ec = transferCurrent.Submit();
+                        Thread.Sleep(0);
+
                         if (ec != ErrorCode.Success)
                             throw new Exception("Failed submitting transfer");
                     }
@@ -117,7 +154,12 @@ namespace Examples
                         transferCurrent = transferOdd;
                         bufferCurrent = bufferOdd;
                     }
-                    else
+                    else if (ReferenceEquals(transferCurrent, transferOdd))
+                    {
+                        transferCurrent = transferEnd;
+                        bufferCurrent = bufferEnd;
+                    }
+                    else if (ReferenceEquals(transferCurrent, transferEnd))
                     {
                         transferCurrent = transferEven;
                         bufferCurrent = bufferEven;
@@ -167,9 +209,28 @@ namespace Examples
             }
         }
 
-        private static void showTransfer(UsbTransfer transfer, byte[] bufferCurrent, int transferred)
+        static DateTime dtLast = DateTime.MinValue;
+        static double mTotalBytes = 0.0;
+        static object oShowTransferLOCK=new object();
+        private static void showTransfer(UsbTransfer transfer, byte[] bufferCurrent, int transferred, int transferIndex)
         {
-            Console.WriteLine("#{0} Transfer complete: {1} bytes", transferCount+1, transferred);
+            double bytesSec;
+            double totalBytes;
+            lock (oShowTransferLOCK)
+            {
+                if (dtLast == DateTime.MinValue)
+                {
+                    dtLast = DateTime.Now;
+                    return;
+                } 
+                mTotalBytes += transferred;
+                totalBytes = mTotalBytes;
+            }
+            bytesSec = totalBytes / (DateTime.Now - dtLast).TotalSeconds;
+            Console.WriteLine("#{0} complete. {1} bytes/sec ({2} bytes total)", 
+                transferIndex,
+                Math.Round(bytesSec,2), 
+                transferred);
         }
     }
 }

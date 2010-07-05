@@ -19,6 +19,7 @@
 // visit www.gnu.org.
 // 
 // 
+using System;
 using System.Runtime.InteropServices;
 using System.Threading;
 using LibUsbDotNet.Main;
@@ -64,15 +65,20 @@ namespace LibUsbDotNet.Internal
             return eReturn;
         }
 
-        public override ErrorCode Wait(out int transferredCount)
+        public override ErrorCode Wait(out int transferredCount, bool cancel) 
         {
             if (mHasWaitBeenCalled) throw new UsbException(this, "Repeated calls to wait with a submit is not allowed.");
-            mHasWaitBeenCalled = true;
 
             transferredCount = 0;
             bool bSuccess;
             // Temporarily release the transfer lock while we wait for something to happen.
-            int iWait = WaitHandle.WaitAny(new WaitHandle[] {mTransferCompleteEvent, mTransferCancelEvent}, mTimeout, UsbConstants.EXIT_CONTEXT);
+            int iWait = WaitHandle.WaitAny(new WaitHandle[] { mTransferCompleteEvent, mTransferCancelEvent }, mTimeout, UsbConstants.EXIT_CONTEXT);
+            if (iWait == WaitHandle.WaitTimeout && !cancel)
+            {
+                return ErrorCode.IoTimedOut;
+            }
+            mHasWaitBeenCalled = true;
+
             if (iWait != 0)
             {
                 bSuccess = EndpointBase.mUsbApi.AbortPipe(EndpointBase.Handle, EndpointBase.EpNum);
@@ -91,10 +97,10 @@ namespace LibUsbDotNet.Internal
             bSuccess = EndpointBase.mUsbApi.GetOverlappedResult(EndpointBase.Handle, Overlapped.GlobalOverlapped, out transferredCount, true);
             if (!bSuccess)
             {
-                UsbError usbErr = UsbError.Error(ErrorCode.Win32Error, Marshal.GetLastWin32Error(), "GetOverlappedResult",EndpointBase);
+                UsbError usbErr = UsbError.Error(ErrorCode.Win32Error, Marshal.GetLastWin32Error(), "GetOverlappedResult", EndpointBase);
                 return usbErr.ErrorCode;
             }
-            return ErrorCode.None;
+            return ErrorCode.None; 
         }
     }
 }

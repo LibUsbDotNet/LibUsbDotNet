@@ -17,9 +17,26 @@ namespace Examples
 
         public static void Main(string[] args)
         {
+            // First list all known devices.
+            UsbRegDeviceList allDevices = UsbDevice.AllDevices;
+            foreach (UsbRegistry usbRegistry in allDevices)
+            {
+                if (usbRegistry.Open(out MyUsbDevice))
+                {
+                    Console.WriteLine("{0:X4}h:{1:X4}h {2} ({3})",
+                        MyUsbDevice.Info.Descriptor.VendorID,
+                        MyUsbDevice.Info.Descriptor.ProductID,
+                        MyUsbDevice.Info.ProductString,
+                        MyUsbDevice.Info.ManufacturerString);
+
+                    MyUsbDevice.Close();
+                }
+            }
+
             // Check for a valid & connected usb device by vendor and product id.
+            // (see MyUsbFinder above)
             Console.WriteLine("Finding your device..");
-            UsbRegistry myUsbRegistry = UsbDevice.AllDevices.Find(MyUsbFinder);
+            UsbRegistry myUsbRegistry = allDevices.Find(MyUsbFinder);
 
             if (ReferenceEquals(myUsbRegistry, null))
             {
@@ -33,9 +50,8 @@ namespace Examples
             // This is the description that was set by the install inf. 
             Console.WriteLine("Found device {0}", myUsbRegistry[SPDRP.DeviceDesc]);
 
-            // Display the usb devices DeviceInterfaceGuids.
-            // This set by the install inf.
-
+            // Display the usb devices DeviceInterfaceGuids (if any).
+            // These are set in the devices install inf.
             Guid[] deviceInterfaceGuids = myUsbRegistry.DeviceInterfaceGuids;
             foreach (Guid deviceInterfaceGuid in deviceInterfaceGuids)
                 Console.WriteLine("Device Interface Guid: {0}", deviceInterfaceGuid);
@@ -43,14 +59,15 @@ namespace Examples
             // Open this usb device.
             if (!myUsbRegistry.Open(out MyUsbDevice))
             {
-                // If a UsbRegistry class is obtained this should never happen with libusb-win32.
-                // It will happen with WinUsb only of the device is being used by another process.
+                // If using libusb-win32 this should not happen.
+                // If using WinUSB or libusb-1.0 this will occur if the 
+                // device is in-use.
                 Console.WriteLine("Failed opening device!");
                 ShowLastUsbError();
                 return;
             }
 
-            // Get the REAL usb DeviceDescriptor information from the usb device.
+            // Get the usb DeviceDescriptor information from the usb device.
             // Up until this point, we have just been querying the windows registry,
             // nothing had actually been sent or received from the usb device.
             UsbDeviceInfo myDeviceInfo = MyUsbDevice.Info;
@@ -58,24 +75,23 @@ namespace Examples
             // Dump the UsbDeviceDesciptor to console output.
             Console.WriteLine(myDeviceInfo.Descriptor.ToString());
 
-            // Display REAL Manufacturer String (if one exists)
+            // Display device manufacturer string (if one exists)
             if (myDeviceInfo.Descriptor.ManufacturerStringIndex != 0)
                 Console.WriteLine("Manufacturer: {0}", myDeviceInfo.ManufacturerString);
 
-            // Display REAL Product String (if one exists)
+            // Display device product string (if one exists)
             if (myDeviceInfo.Descriptor.ProductStringIndex != 0)
                 Console.WriteLine("Product: {0}", myDeviceInfo.ProductString);
 
-            // Display REAL Serial Number String (if one exists)
+            // Display device serial number string (if one exists)
             if (myDeviceInfo.Descriptor.SerialStringIndex != 0)
                 Console.WriteLine("Serial Number: {0}", myDeviceInfo.SerialString);
 
             // Close the device.
-            // When a UsbDevice class is closed, it is disposed and all resources 
-            // are freed. It cannot be re-open; you must create a new instance.
             MyUsbDevice.Close();
             
-            // Free usb resources
+            // Free usb resources.
+            // This is necessary for libusb-1.0 and Linux compatibility.
             UsbDevice.Exit();
 
             // Wait for user input..

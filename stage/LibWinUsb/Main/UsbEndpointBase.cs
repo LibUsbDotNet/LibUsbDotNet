@@ -38,9 +38,9 @@ namespace LibUsbDotNet.Main
         /// <remarks>
         /// Transfers greater than this amount are automatically split into
         /// multiple transfers.  This applies to all endpoint transfer methods
-        /// (reads and writes). The default is 65536.
+        /// (reads and writes). The default is 4megs (4,194,304 bytes)
         /// </remarks>
-        public static int MaxReadWrite = 65536;
+        public static int MaxReadWrite = 65536*64;
 
         internal readonly byte mEpNum;
         internal readonly UsbApiBase mUsbApi;
@@ -138,7 +138,8 @@ namespace LibUsbDotNet.Main
                 {
                     if (!LookupEndpointInfo(Device, mEpNum, out mUsbEndpointInfo))
                     {
-                        throw new UsbException(this, String.Format("Failed locating endpoint {0} for the current usb configuration.", mEpNum));
+                        // throw new UsbException(this, String.Format("Failed locating endpoint {0} for the current usb configuration.", mEpNum));
+                        return null;
                     }
                 }
                 return mUsbEndpointInfo;
@@ -284,7 +285,7 @@ namespace LibUsbDotNet.Main
             return transfer;
         }
 
-        internal static bool LookupEndpointInfo(UsbDevice usbDevice, byte endpointAddress, out UsbEndpointInfo usbEndpointInfo)
+        public static bool LookupEndpointInfo(UsbDevice usbDevice, byte endpointAddress, out UsbEndpointInfo usbEndpointInfo)
         {
             usbEndpointInfo = null;
             byte currentConfig;

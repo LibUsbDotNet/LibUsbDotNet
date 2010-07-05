@@ -20,6 +20,7 @@
 // 
 // 
 using System;
+using System.Diagnostics;
 using System.Threading;
 
 namespace LibUsbDotNet.Main
@@ -159,8 +160,16 @@ namespace LibUsbDotNet.Main
         /// Wait for the transfer to complete, timeout, or get cancelled.
         /// </summary>
         /// <param name="transferredCount">The number of bytes transferred on <see cref="ErrorCode.Success"/>.</param>
+        /// <param name="cancel">If true, the transfer is cancelled if it does not complete within the time specified in <see cref="Timeout"/>.</param>
         /// <returns><see cref="ErrorCode.Success"/> if the transfer completes successfully, otherwise one of the other <see cref="ErrorCode"/> codes.</returns>
-        public abstract ErrorCode Wait(out int transferredCount);
+        public abstract ErrorCode Wait(out int transferredCount, bool cancel);
+
+        /// <summary>
+        /// Wait for the transfer to complete, timeout, or get cancelled.
+        /// </summary>
+        /// <param name="transferredCount">The number of bytes transferred on <see cref="ErrorCode.Success"/>.</param>
+        /// <returns><see cref="ErrorCode.Success"/> if the transfer completes successfully, otherwise one of the other <see cref="ErrorCode"/> codes.</returns>
+        public ErrorCode Wait(out int transferredCount) { return Wait(out transferredCount, true); }
 
         /// <summary>
         /// Fills the transfer with the data to <see cref="Submit"/>.
@@ -224,23 +233,37 @@ namespace LibUsbDotNet.Main
             Reset();
         }
         internal static ErrorCode SyncTransfer(UsbTransfer transferContext,
+                                       IntPtr buffer,
+                                       int offset,
+                                       int length,
+                                       int timeout,
+                                       out int transferLength)
+        {
+            return SyncTransfer(transferContext, buffer, offset, length, timeout, 0, out transferLength);
+        }
+        internal static ErrorCode SyncTransfer(UsbTransfer transferContext,
                                                IntPtr buffer,
                                                int offset,
                                                int length,
                                                int timeout,
+                                               int isoPacketSize,
                                                out int transferLength)
         {
             if (ReferenceEquals(transferContext, null)) throw new NullReferenceException("Invalid transfer context.");
             if (offset < 0) throw new ArgumentException("must be >=0", "offset");
-
+            if (isoPacketSize == 0 && transferContext.EndpointBase.Type == EndpointType.Isochronous)
+            {
+                Info.UsbEndpointInfo endpointInfo = transferContext.EndpointBase.EndpointInfo;
+                if (endpointInfo!=null)
+                    isoPacketSize = endpointInfo.Descriptor.MaxPacketSize;
+            }
             lock (transferContext.mTransferLOCK)
             {
                 transferLength = 0;
 
                 int transferred;
                 ErrorCode ec;
-
-                transferContext.Fill(buffer, offset, length, timeout);
+                transferContext.Fill(buffer, offset, length, timeout, isoPacketSize);
 
                 while (true)
                 {
@@ -269,14 +292,33 @@ namespace LibUsbDotNet.Main
         public bool IncrementTransfer(int amount)
         {
             mCurrentTransmitted += amount;
-            mCurrentOffset += amount;
             mCurrentRemaining -= amount;
+            mCurrentOffset += amount;
 
-            if (mCurrentRemaining <= 0) return false;
+            if ((mCurrentRemaining) <= 0)
+            {
+                Debug.Assert(mCurrentRemaining == 0);
+                return false;
+            }
 
             return true;
         }
 
+        public int Transmitted
+        {
+            get
+            {
+                return mCurrentTransmitted;
+            }
+        }
+
+        public int Remaining
+        {
+            get
+            {
+                return mCurrentRemaining;
+            }
+        }
         /// <summary>
         /// Resets the transfer to its orignal state.
         /// </summary>

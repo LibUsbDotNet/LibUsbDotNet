@@ -8,85 +8,17 @@
             <token>Added</token>
           </bugaction>
           <bugentry>
-            <CREF>E:LibUsbDotNet.UsbEndpointReader.DataReceivedEnabledChanged</CREF> event
-            <para>
-              This event is fired on the <CREF>P:LibUsbDotNet.UsbEndpointReader.DataReceivedEnabled</CREF> property changes state.
-            </para>
+            Isochronous endpoint support.
           </bugentry>
         </bug>        
-        <bug>
-          <bugaction>
-            <token>Updated</token>
-          </bugaction>
-          <bugentry>
-            The LibUsbDotNet InfWizard has been re-worked and includes many new features.
-            <para>
-              InfWizard no longer uses the 'Find Drivers' option.  Instead, it uses
-              driver resource packages that contain the drivers/coinstallers, inf/cat file
-              templates, and all other files that may be required by the installation.
-              Driver resource packages can be downloaded automatically by InfWizard
-              or from http://sites.google.com/site/libusbdotnet/driver_resources.
-              As of v$(Major).$(Minor).$(Build) Winusb 1.9 and libusb-win32 0.1.12.2 packages are available.
-            </para>
-            <para>
-              InfWiard has an install now feature, thanks to Peter Batard and the Libusb-1.0 team.
-              After a driver package is created, it can be automatically installed.
-            </para>
-            <para>
-              InfWizard remove device function enhancements. The remove device function can remove usb 
-              devices by the device instance id or all devices matching the hardware id. It now calls 
-              SetupDiUnintallOEMInf as well as SetupDIRemoveDevice.
-            </para>
-            <para>
-              Detailed logging added. Most of the InfWizard pages have a log status rtf box which indicates
-              the current progress of an operation.  All log status boxes can be saved, copied and cleared via
-              the context menu.
-            </para>
-          </bugentry>
-        </bug>
-        <bug>
-          <bugaction>
-            <token>Updated</token>
-          </bugaction>
-          <bugentry>
-            <CREF>T:LibUsbDotNet.WinUsb.WinUsbRegistry</CREF> class
-            <para>Improved support for composite devices. Added <CREF>P:LibUsbDotNet.WinUsb.WinUsbRegistry.DeviceID</CREF> and <CREF>P:LibUsbDotNet.WinUsb.WinUsbRegistry.InterfaceID</CREF> property</para>
-          </bugentry>
-        </bug>
         <bug>
           <bugaction>
             <token>Added</token>
           </bugaction>
           <bugentry>
-            <CREF>T:LibUsbDotNet.Main.EndpointType</CREF> parameter to OpenEndpointReader and OpenEndpointWriter methods.
-            <para>The endpoint type must be specified for linux Libusb-1.0 compatibility.</para>
+            Additional support for asynchronous I/O.
           </bugentry>
         </bug>
-        <bug>
-          <bugaction>
-            <token>Added</token>
-          </bugaction>
-          <bugentry>
-            Benchmark Console application.
-            <para>Thank Xiaofan (http://mcuee.blogspot.com) for helping debug this application and getting it ready for release.</para>
-          </bugentry>
-        </bug>
-        <bug>
-          <bugaction>
-            <token>Fixed</token>
-          </bugaction>
-          <bugentry>
-            Usb devices runnning benchmark firmware do not work correctly if plugged in while booting under linux.
-          </bugentry>
-        </bug>
-        <bug>
-          <bugaction>
-            <token>Updated</token>
-          </bugaction>
-          <bugentry>
-            Benchmark firmware for Microchip PIC USB devices updated to MCHPFSUSB Framework v2.6a. Added support for no ping pong buffering benchmark tests.
-          </bugentry>
-        </bug>        
       </bugs>
     </content>
   </releaseNotes>
