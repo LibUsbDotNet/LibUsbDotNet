@@ -390,19 +390,21 @@ namespace Benchmark
                     // Claim interface #0.
                     wholeUsbDevice.ClaimInterface(0);
                 }
+                
+                UsbEndpointInfo endpointInfo;
 
-                mEP1Reader = mUsbDevice.OpenEndpointReader(mBenchMarkParameters.ReadEndpoint);
-                mEP1Writer = mUsbDevice.OpenEndpointWriter(mBenchMarkParameters.WriteEndpoint);
+                UsbEndpointBase.LookupEndpointInfo(mUsbDevice, (byte)mBenchMarkParameters.ReadEndpoint, out endpointInfo);
+                mBenchMarkParameters.BufferSize -= (mBenchMarkParameters.BufferSize % ((int)endpointInfo.Descriptor.MaxPacketSize));
+                mEP1Reader = mUsbDevice.OpenEndpointReader(mBenchMarkParameters.ReadEndpoint, mBenchMarkParameters.BufferSize, (EndpointType)(endpointInfo.Descriptor.Attributes & 3));
 
-                mEP1Reader.ReadBufferSize = mBenchMarkParameters.ReadBufferSize;
-                mEP1Reader.ReadThreadPriority = mBenchMarkParameters.ReadThreadPriority;
+                UsbEndpointBase.LookupEndpointInfo(mUsbDevice, (byte)mBenchMarkParameters.WriteEndpoint, out endpointInfo);
+                mBenchMarkParameters.BufferSize -= (mBenchMarkParameters.BufferSize % ((int)endpointInfo.Descriptor.MaxPacketSize));
+                mEP1Writer = mUsbDevice.OpenEndpointWriter(mBenchMarkParameters.WriteEndpoint, (EndpointType)(endpointInfo.Descriptor.Attributes & 3));
+
+                mEP1Reader.ReadThreadPriority = mBenchMarkParameters.Priority;
                 mEP1Reader.DataReceived += OnDataReceived;
 
-                mEP1Reader.ReadBufferSize = mBenchMarkParameters.ReadBufferSize;
-                makeTestBytes(out loopTestBytes,
-                              mBenchMarkParameters.WriteBufferSize > mBenchMarkParameters.ReadBufferSize
-                                  ? mBenchMarkParameters.ReadBufferSize
-                                  : mBenchMarkParameters.WriteBufferSize);
+                makeTestBytes(out loopTestBytes,mBenchMarkParameters.BufferSize);
 
                 return true;
             }
@@ -454,7 +456,9 @@ namespace Benchmark
             while (bWriteThreadEP1Enabled)
             {
                 int bytesTransmitted;
-                ErrorCode ec = mEP1Writer.Write(loopTestBytes, mBenchMarkParameters.LoopWriteTimeout, out bytesTransmitted);
+                //if (mEP1Writer.Type == EndpointType.Isochronous)
+                //    mEP1Writer.Reset();
+                ErrorCode ec = mEP1Writer.Write(loopTestBytes, mBenchMarkParameters.Timeout, out bytesTransmitted);
                 if (ec != ErrorCode.Success)
                 {
                     bWriteThreadEP1Enabled = false;
@@ -468,14 +472,16 @@ namespace Benchmark
         {
             ResetBenchmark();
 
-            byte[] dat = new byte[mBenchMarkParameters.WriteBufferSize];
+            byte[] dat = new byte[mBenchMarkParameters.BufferSize];
             for (uint i = 0; i < dat.Length; i++)
                 dat[i] = (byte) (i & 0xff);
             while (bWriteThreadEP1Enabled)
             {
                 int uiBytesTransmitted;
 
-                if (mEP1Writer.Write(dat, mBenchMarkParameters.WriteTimeout, out uiBytesTransmitted) == ErrorCode.None)
+                //if (mEP1Writer.Type == EndpointType.Isochronous)
+                //    mEP1Writer.Reset();
+                if (mEP1Writer.Write(dat, mBenchMarkParameters.Timeout, out uiBytesTransmitted) == ErrorCode.None)
                 {
                     UpdateDataRate(uiBytesTransmitted);
                 }
