@@ -41,17 +41,8 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="BenchmarkConsole.Arguments.cs" />
     <Compile Include="BenchmarkConsole.cs" />
-    <Compile Include="BenchmarkConsole.Enums.cs" />
-    <Compile Include="BenchmarkConsole.Display.cs" />
-    <Compile Include="EndpointRunningStatus.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="resBenchmark.Designer.cs">
-      <AutoGen>True</AutoGen>
-      <DesignTime>True</DesignTime>
-      <DependentUpon>resBenchmark.resx</DependentUpon>
-    </Compile>
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\LibWinUsb\LibUsbDotNet.csproj">
@@ -63,18 +54,13 @@
     <None Include="app.config" />
   </ItemGroup>
   <ItemGroup>
-    <EmbeddedResource Include="resBenchmark.resx">
-      <Generator>ResXFileCodeGenerator</Generator>
-      <LastGenOutput>resBenchmark.Designer.cs</LastGenOutput>
-    </EmbeddedResource>
-  </ItemGroup>
-  <ItemGroup>
     <None Include="Resources\ShowHelp.txt" />
   </ItemGroup>
   <ItemGroup>
     <None Include="Resources\CommandLineArgExp.txt" />
   </ItemGroup>
   <ItemGroup>
+    <EmbeddedResource Include="BenchmarkHelp.txt" />
     <Content Include="UsbDos.ico" />
     <Content Include="UsbIco.ico" />
   </ItemGroup>

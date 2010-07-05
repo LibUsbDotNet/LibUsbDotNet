@@ -20,492 +20,1480 @@
 // 
 // 
 using System;
+using System.Collections.ObjectModel;
+using System.Globalization;
+using System.IO;
+using System.Reflection;
 using System.Threading;
-using System.Windows.Forms;
+using LibUsbDotNet.Info;
 using LibUsbDotNet.Main;
+
+// ReSharper disable InconsistentNaming
 
 namespace LibUsbDotNet
 {
-    internal partial class BenchmarkConsole
+    internal class BenchmarkConsole2
     {
-        #region Benchmark Device Configuration
+        private const int MAX_OUTSTANDING_TRANSFERS = 10;
+        private static readonly string[] EndpointTypeDisplayString = new string[] {"Control", "Isochronous", "Bulk", "Interrupt", null};
+        private static readonly string[] TestDisplayString = new string[] {"None", "Read", "Write", "Loop", null};
+        private static object DisplayCriticalSection = new object();
 
-        private const int MY_CONFIG = 1;
-        private const EndpointType MY_ENDPOINT_TYPE = EndpointType.Bulk;
+        // This is used only in VerifyData() for display information
+        // about data validation mismatches.
+        public static void CONVDAT(string format, params object[] args) { Console.Write("vdat:" + format, args); }
 
-        /// <summary>Custom vendor request implemented in the test firmware.</summary>
-        /// <remarks>Gets the test type byte to the user allocated data buffer.</remarks>
-        private static UsbSetupPacket mGetTestTypePacket =
-            new UsbSetupPacket((byte) (UsbCtrlFlags.Direction_In | UsbCtrlFlags.Recipient_Device | UsbCtrlFlags.RequestType_Vendor),
-                               (byte) PICFW_COMMANDS.GET_TEST,
-                               0,
-                               0,
-                               1);
+        public static void CONERR(string format, params object[] args) { Console.Write("err:" + format, args); }
+        public static void CONMSG(string format, params object[] args) { Console.Write(format, args); }
+        public static void CONWRN(string format, params object[] args) { Console.Write("wrn:" + format, args); }
+        public static void CONDBG(string format, params object[] args) { Console.Write("dbg:" + format, args); }
+
+        public static void CONERR0(string message) { CONERR("{0}", message); }
+        public static void CONMSG0(string message) { CONMSG("{0}", message); }
+        public static void CONWRN0(string message) { CONWRN("{0}", message); }
+        public static void CONDBG0(string message) { CONDBG("{0}", message); }
 
 
-        /// <summary>Custom vendor request implemented in the test firmware.</summary>
-        /// <remarks>
-        /// Sets the test type using the value parameter of the setup packet.
-        /// Gets the test type byte to the user allocated data buffer.
-        /// </remarks>
-        private static UsbSetupPacket mSetTestTypePacket =
-            new UsbSetupPacket((byte) (UsbCtrlFlags.Direction_In | UsbCtrlFlags.Recipient_Device | UsbCtrlFlags.RequestType_Vendor),
-                               (byte) PICFW_COMMANDS.SET_TEST,
-                               (short) UsbTestType.None,
-                               0,
-                               1);
-
-        #endregion
-
-        #region User Configurable Fields and Defaults
-
-        /// <summary>The display update interval (ms).</summary>
-        private static int mDisplayUpdateInterval = 1000;
-
-        private static UsbDevice.DriverModeType mDriverMode;
-
-        /// <summary>The benchmark usb device vendor id.</summary>
-        private static ushort mPid;
-
-        private static bool mShowDeviceList;
-
-        /// <summary>The type of test to run.</summary>
-        private static UsbTestType mTestMode = UsbTestType.Loop;
-
-        /// <summary>The transfer size used for reading and writing. This should not be greater than 65536.</summary>
-        private static int mTestTransferSize = 4096;
-
-        /// <summary>Priority for all usb threads (including handle events)</summary>
-        private static ThreadPriority mThreadPriority = ThreadPriority.AboveNormal;
-
-        /// <summary>If the sync read/write functions return a timeout error the transfer is tried this many times.</summary>
-        private static int mTimeoutRetryCount = 1;
-
-        /// <summary>Thee transfer read/write timeout.</summary>
-        private static int mTransferTimeout = 5000;
-
-        /// <summary>The benchmark usb device product id.</summary>
-        private static ushort mVid = 0x04d8;
-
-        private static byte mEndpointID = 0x01;
-        private static byte mInterfaceID = 0x00;
-
-        private static bool mNoTestSelect;
-
-        #endregion
-
-        #region Internal Benchmark Fields 
-
-        private static readonly ManualResetEvent mCancelTestEvent = new ManualResetEvent(false);
-
-        private static readonly EndpointRunningStatus mStatusReader = new EndpointRunningStatus();
-        private static readonly EndpointRunningStatus mStatusWriter = new EndpointRunningStatus();
-
-        private static UsbEndpointReader mReader;
-        private static UsbDevice mUsbDevice;
-        private static UsbEndpointWriter mWriter;
-
-        private static Thread mReadThread;
-        private static Thread mWriteThread;
-
-        #endregion
-        internal static ReadEndpointID ReadEndpoint
+        // Custom vendor requests that must be implemented in the benchmark firmware.
+        // Test selection can be bypassed with the "notestselect" argument.
+        //
+        private enum BENCHMARK_DEVICE_COMMANDS
         {
-            get
-            {
-                return (ReadEndpointID)(mEndpointID | 0x80);
-            }
+            SET_TEST = 0x0E,
+            GET_TEST = 0x0F,
+        } ;
+
+        // Tests supported by the official benchmark firmware.
+        //
+        [Flags]
+        private enum BENCHMARK_DEVICE_TEST_TYPE
+        {
+            TestTypeNone = 0x00,
+            TestTypeRead = 0x01,
+            TestTypeWrite = 0x02,
+            TestTypeLoop = TestTypeRead | TestTypeWrite,
+        } ;
+
+// This software was mainly created for testing the libusb-win32 kernel & user driver.
+        private enum BENCHMARK_TRANSFER_MODE
+        {
+            // Tests for the libusb-win32 sync transfer function.
+            TRANSFER_MODE_SYNC,
+
+            // Test for async function, iso transfers, and queued transfers
+            TRANSFER_MODE_ASYNC,
+        } ;
+
+// Holds all of the information about a test.
+        private class BENCHMARK_TEST_PARAM
+        {
+            // User configurable value set from the command line.
+            //
+            public int BufferCount; // Number of outstanding asynchronous transfers
+            public int BufferSize; // Number of bytes to transfer
+            public UsbDevice Device;
+            public int Ep; // Endpoint number (1-15)
+            public int Intf; // Interface number
+            public bool IsCancelled;
+            public int IsoPacketSize; // Isochronous packet size (defaults to the endpoints max packet size)
+            public bool IsUserAborted;
+            public bool NoTestSelect; // If true, don't send control message to select the test type.
+            public int Pid; // Porduct ID
+            public ThreadPriority Priority; // Priority to run this thread at.
+            public int Refresh; // Refresh interval (ms)
+            public int Retry; // Number for times to retry a timed out transfer before aborting
+            public BENCHMARK_DEVICE_TEST_TYPE TestType; // The benchmark test type.
+            public int Timeout; // Transfer timeout (ms)
+            public BENCHMARK_TRANSFER_MODE TransferMode; // Sync or Async
+            public bool UseList; // Show the user a device list and let them choose a benchmark device. 
+            public bool Verify; // Only for loop and read test. If true, verifies data integrity. 
+
+            // Internal value use during the test.
+            //
+
+            public byte[] VerifyBuffer; // Stores the verify test pattern for 1 packet.
+            public int VerifyBufferSize; // Size of VerifyBuffer
+            public bool VerifyDetails; // If true, prints detailed information for each invalid byte.
+            public int Vid; // Vendor ID
+            public UsbDevice.DriverModeType Driver;
+        } ;
+
+// The benchmark transfer context used for asynchronous transfers.  see TransferAsync().
+        public class BENCHMARK_TRANSFER_HANDLE
+        {
+            public UsbTransfer Context;
+            public byte[] Data;
+            public int DataMaxLength;
+            public bool InUse;
+        } ;
+
+// Holds all of the information about a transfer.
+        private class BENCHMARK_TRANSFER_PARAM
+        {
+            public readonly BENCHMARK_TRANSFER_HANDLE[] TransferHandles = new BENCHMARK_TRANSFER_HANDLE[MAX_OUTSTANDING_TRANSFERS];
+
+            // Placeholder for end of structure; this is where the raw data for the
+            // transfer buffer is allocated.
+            //
+            public byte[][] Buffer;
+            public UsbEndpointBase Ep;
+            public int IsoPacketSize;
+            public bool IsRunning;
+            public long LastStartTick;
+            public long LastTick;
+
+            public long LastTransferred;
+            public int OutstandingTransferCount;
+
+            public int Packets;
+            public int RunningErrorCount;
+            public int RunningTimeoutCount;
+
+            public int ShortTransferCount;
+            public long StartTick;
+            public BENCHMARK_TEST_PARAM Test;
+
+            public Thread ThreadHandle;
+            public int TotalErrorCount;
+            public int TotalTimeoutCount;
+            public long TotalTransferred;
+
+            public int TransferHandleNextIndex;
+            public int TransferHandleWaitIndex;
+        } ;
+
+
+// Critical section for running status. 
+        private static string TRANSFER_DISPLAY(BENCHMARK_TRANSFER_PARAM TransferParam, string ReadingString, string WritingString) { return ((TransferParam.Ep.EndpointInfo.Descriptor.EndpointID & 0x80) == 0x80 ? ReadingString : WritingString); }
+
+        private static void INC_ROLL(ref int IncField, int RollOverValue)
+        {
+            if ((++IncField) >= RollOverValue)
+                IncField = 0;
         }
-        internal static WriteEndpointID WriteEndpoint
+
+        private static byte ENDPOINT_TYPE(BENCHMARK_TRANSFER_PARAM TransferParam) { return (byte) (TransferParam.Ep.EndpointInfo.Descriptor.Attributes & 3); }
+
+        private static void SetTestDefaults(BENCHMARK_TEST_PARAM test)
         {
-            get
-            {
-                return (WriteEndpointID)(mEndpointID);
-            }
+            test.Ep = 0x00;
+            test.Vid = 1234;
+            test.Pid = 5678;
+            test.Refresh = 1000;
+            test.Timeout = 5000;
+            test.TestType = BENCHMARK_DEVICE_TEST_TYPE.TestTypeLoop;
+            test.BufferSize = 4096;
+            test.BufferCount = 1;
+            test.Priority = ThreadPriority.Normal;
         }
-        protected static bool IsTestRunning
+
+        private static UsbInterfaceInfo usb_find_interface(UsbConfigInfo config_descriptor, int interface_number, out UsbInterfaceInfo first_interface)
         {
-            get
+            first_interface = null;
+
+            if (ReferenceEquals(config_descriptor, null)) return null;
+            ReadOnlyCollection<UsbInterfaceInfo> interfaces = config_descriptor.InterfaceInfoList;
+            for (int intfIndex = 0; intfIndex < interfaces.Count; intfIndex++)
             {
-                switch (mTestMode)
+                if (ReferenceEquals(first_interface, null))
+                    first_interface = interfaces[intfIndex];
+                if (interfaces[intfIndex].Descriptor.InterfaceID == interface_number)
                 {
-                    case UsbTestType.ReadFromDevice:
-                        return (mReadThread.IsAlive);
-                    case UsbTestType.WriteToDevice:
-                        return (mWriteThread.IsAlive);
-                    case UsbTestType.Loop:
-                        return (mReadThread.IsAlive && mWriteThread.IsAlive);
-                    default:
-                        throw new ArgumentOutOfRangeException();
+                    return interfaces[intfIndex];
                 }
             }
-        }
 
-        private static bool NeedsReadThread
+            return null;
+        }
+        private static UsbRegDeviceList GetBenchmarkDeviceList(BENCHMARK_TEST_PARAM testParam)
         {
-            get { return (mTestMode == UsbTestType.Loop || mTestMode == UsbTestType.ReadFromDevice); }
-        }
+            switch (testParam.Driver)
+            {
+                case UsbDevice.DriverModeType.Unknown:
+                    UsbDevice.ForceLibUsbWinBack = false;
+                    return UsbDevice.AllDevices;
 
-        private static bool NeedsWriteThread
+                case UsbDevice.DriverModeType.LibUsb:
+                    UsbDevice.ForceLibUsbWinBack = false;
+                    return UsbDevice.AllLibUsbDevices;
+
+                case UsbDevice.DriverModeType.WinUsb:
+                    UsbDevice.ForceLibUsbWinBack = false;
+                    return UsbDevice.AllWinUsbDevices;
+
+                case UsbDevice.DriverModeType.MonoLibUsb:
+                case UsbDevice.DriverModeType.LibUsbWinBack:
+                    UsbDevice.ForceLibUsbWinBack=true;
+                    return UsbDevice.AllLibUsbDevices;
+
+                default:
+                    throw new ArgumentOutOfRangeException();
+            }
+        }
+        private static UsbDevice Bench_Open(BENCHMARK_TEST_PARAM test)
         {
-            get { return (mTestMode == UsbTestType.Loop || mTestMode == UsbTestType.WriteToDevice); }
-        }
+            UsbDevice foundDevice;
+            UsbRegDeviceList usbRegDevices = GetBenchmarkDeviceList(test);
+            foreach (UsbRegistry usbRegDevice in usbRegDevices)
+            {
+                if (usbRegDevice.Vid == test.Vid && usbRegDevice.Pid == test.Pid)
+                {
+                    if (usbRegDevice.Open(out foundDevice))
+                    {
+                        if (foundDevice.Info.Descriptor.ConfigurationCount > 0)
+                        {
+                            UsbInterfaceInfo firstInterface;
+                            UsbInterfaceInfo foundInterface = usb_find_interface(foundDevice.Configs[0], test.Intf, out firstInterface);
+                            if (!ReferenceEquals(foundInterface, null))
+                            {
+                                return foundDevice;
+                            }
+                        }
 
-        private static void fillTestData(byte[] data, int len)
-        {
-            int i;
-            for (i = 0; i < len; i++)
-                data[i] = (byte) (65 + (i & 0xf));
+                        foundDevice.Close();
+                    }
+                }
+            }
+            return null;
         }
-
 
         /// <summary>
         /// Sends the control request to get the test mode
         /// </summary>
-        private static bool GetTestType(out byte testType)
+        private int Bench_GetTestType(UsbDevice dev, out BENCHMARK_DEVICE_TEST_TYPE testType, int intf)
         {
             int transferred;
             byte[] dataBuffer = new byte[1];
-            mGetTestTypePacket.Index = mInterfaceID;
-            bool success = mUsbDevice.ControlTransfer(ref mGetTestTypePacket, dataBuffer, dataBuffer.Length, out transferred);
-            testType = dataBuffer[0];
+            UsbSetupPacket getTestTypePacket =
+                new UsbSetupPacket((byte) (UsbCtrlFlags.Direction_In | UsbCtrlFlags.Recipient_Device | UsbCtrlFlags.RequestType_Vendor),
+                                   (byte) BENCHMARK_DEVICE_COMMANDS.GET_TEST,
+                                   0,
+                                   (short) intf,
+                                   1);
+            bool success = dev.ControlTransfer(ref getTestTypePacket, dataBuffer, dataBuffer.Length, out transferred);
+            testType = (BENCHMARK_DEVICE_TEST_TYPE) dataBuffer[0];
+            if (!success) return -1;
 
-            return success;
+            return transferred;
         }
 
         /// <summary>
         /// Sends the control request to set the test mode
         /// </summary>
-        private static bool SetTestType(ref UsbTestType testType)
+        private static int Bench_SetTestType(UsbDevice dev, BENCHMARK_DEVICE_TEST_TYPE testType, int intf)
         {
             int transferred;
             byte[] dataBuffer = new byte[1];
+            UsbSetupPacket setTestTypePacket =
+                new UsbSetupPacket((byte) (UsbCtrlFlags.Direction_In | UsbCtrlFlags.Recipient_Device | UsbCtrlFlags.RequestType_Vendor),
+                                   (byte)BENCHMARK_DEVICE_COMMANDS.SET_TEST,
+                                   (short) testType,
+                                   (short) intf,
+                                   1);
 
-            mSetTestTypePacket.Value = (short) testType;
-            mSetTestTypePacket.Index = mInterfaceID;
+            bool success = dev.ControlTransfer(ref setTestTypePacket, dataBuffer, dataBuffer.Length, out transferred);
+            if (!success) return -1;
 
-            bool success = mUsbDevice.ControlTransfer(ref mSetTestTypePacket, dataBuffer, dataBuffer.Length, out transferred);
-            testType = (UsbTestType) dataBuffer[0];
-
-            return success;
+            return transferred;
         }
 
-        public static void Main(string[] args)
+
+        private static int VerifyData(BENCHMARK_TRANSFER_PARAM transferParam, byte[] data, int dataLength)
         {
-            Console.Clear();
+            int verifyDataSize = transferParam.Test.VerifyBufferSize;
+            byte[] verifyData = transferParam.Test.VerifyBuffer;
+            byte keyC = 0;
+            bool seedKey = true;
+            int dataLeft = dataLength;
+            int dataIndex = 0;
+            int packetIndex = 0;
+            int verifyIndex = 0;
 
-            try
+            while (dataLeft > 1)
             {
-                if (args.Length == 0)
+                verifyDataSize = dataLeft > transferParam.Test.VerifyBufferSize ? transferParam.Test.VerifyBufferSize : dataLeft;
+
+                if (seedKey)
+                    keyC = data[dataIndex + 1];
+                else
                 {
-                    ConWriteLine(ConType.Info, resBenchmark.ShowHelp);
-                    return;
+                    if (data[dataIndex + 1] == 0)
+                        keyC = 0;
+                    else
+                    {
+                        keyC++;
+                    }
                 }
-                string argErrors;
-                if (!parseArguments(args, out argErrors))
-                    throw new BenchmarkArgumentException(argErrors);
-
-                if (mNoTestSelect)
-                    mTestMode = UsbTestType.Loop;
-
-                Thread.CurrentThread.Priority = mThreadPriority;
-                UsbRegistry deviceProfile = null;
-
-                if (mPid == 0 || mShowDeviceList)
+                seedKey = false;
+                // Index 0 is always 0.
+                // The key is always at index 1
+                verifyData[1] = keyC;
+                if (memcmp(data, dataIndex, verifyData, verifyDataSize) != 0)
                 {
-                    showDeviceSelection(out deviceProfile);
+                    // Packet verification failed.
+
+                    // Reset the key byte on the next packet.
+                    seedKey = true;
+
+                    CONVDAT("data mismatch packet-index={0} data-index={1}\n", packetIndex, dataIndex);
+
+                    if (transferParam.Test.VerifyDetails)
+                    {
+                        for (verifyIndex = 0; verifyIndex < verifyDataSize; verifyIndex++)
+                        {
+                            if (verifyData[verifyIndex] == data[dataIndex + verifyIndex])
+                                continue;
+
+                            CONVDAT("packet-offset={0} expected {1:X2}h got {2:X2}h\n",
+                                    verifyIndex,
+                                    verifyData[verifyIndex],
+                                    data[dataIndex + verifyIndex]);
+                        }
+                    }
+                }
+
+                // Move to the next packet.
+                packetIndex++;
+                dataLeft -= verifyDataSize;
+                dataIndex += verifyDataSize;
+            }
+
+            return 0;
+        }
+
+        private static int memcmp(byte[] srcBytes, int srcStartOffset, byte[] compareBytes, int count)
+        {
+            for (int i = 0; i < count; i++)
+            {
+                if (srcBytes[i + srcStartOffset] != compareBytes[i])
+                    return -1;
+            }
+            return 0;
+        }
+
+        private static ErrorCode TransferSync(BENCHMARK_TRANSFER_PARAM transferParam, out int transferred)
+        {
+            return transferParam.Ep.Transfer(transferParam.Buffer[0],
+                                             0,
+                                             transferParam.Test.BufferSize,
+                                             transferParam.Test.Timeout,
+                                             out transferred);
+        }
+
+        private static ErrorCode TransferAsync(BENCHMARK_TRANSFER_PARAM transferParam, out BENCHMARK_TRANSFER_HANDLE handleRef, out int transferred)
+        {
+            BENCHMARK_TRANSFER_HANDLE handle;
+            handleRef = null;
+            ErrorCode ret = ErrorCode.Success;
+
+            transferred = 0;
+            // Submit transfers until the maximum number of outstanding transfer(s) is reached.
+            while (transferParam.OutstandingTransferCount < transferParam.Test.BufferCount)
+            {
+                if (ReferenceEquals(transferParam.TransferHandles[transferParam.TransferHandleNextIndex],null))
+                {
+                    transferParam.TransferHandles[transferParam.TransferHandleNextIndex]=new BENCHMARK_TRANSFER_HANDLE();
+                }
+                // Get the next available benchmark transfer handle.
+                handleRef = handle = transferParam.TransferHandles[transferParam.TransferHandleNextIndex];
+
+                // If a libusb-win32 transfer context hasn't been setup for this benchmark transfer
+                // handle, do it now.
+                //
+                if (ReferenceEquals(handle.Context, null))
+                {
+                    // Data buffer(s) are located at the end of the transfer param.
+                    handle.Data = transferParam.Buffer[transferParam.TransferHandleNextIndex];
+                    handle.DataMaxLength = transferParam.Test.BufferSize;
+
+                    handle.Context = transferParam.Ep.NewAsyncTransfer();
+                    handle.Context.Fill(handle.Data,
+                                        0,
+                                        handle.DataMaxLength,
+                                        transferParam.Test.Timeout,
+                                        transferParam.IsoPacketSize > 0 ? transferParam.IsoPacketSize : transferParam.Ep.EndpointInfo.Descriptor.MaxPacketSize);
+                }
+
+
+                // Submit this transfer now.
+                handle.Context.Reset();
+                ret = handle.Context.Submit();
+                if (ret != ErrorCode.Success) goto Done;
+
+                // Mark this handle has InUse.
+                handle.InUse = true;
+
+                // When transfers ir successfully submitted, OutstandingTransferCount goes up; when
+                // they are completed it goes down.
+                //
+                transferParam.OutstandingTransferCount++;
+
+                // Move TransferHandleNextIndex to the next available transfer.
+                INC_ROLL(ref transferParam.TransferHandleNextIndex, transferParam.Test.BufferCount);
+            }
+
+            // If the number of outstanding transfers has reached the limit, wait for the 
+            // oldest outstanding transfer to complete.
+            //
+            if (transferParam.OutstandingTransferCount == transferParam.Test.BufferCount)
+            {
+                // TransferHandleWaitIndex is the index of the oldest outstanding transfer.
+                handleRef = handle = transferParam.TransferHandles[transferParam.TransferHandleWaitIndex];
+                ret = handle.Context.Wait(out transferred, false);
+                if (ret != ErrorCode.Success)
+                    goto Done;
+
+                // Mark this handle has no longer InUse.
+                handle.InUse = false;
+
+                // When transfers ir successfully submitted, OutstandingTransferCount goes up; when
+                // they are completed it goes down.
+                //
+                transferParam.OutstandingTransferCount--;
+
+                // Move TransferHandleWaitIndex to the oldest outstanding transfer.
+                INC_ROLL(ref transferParam.TransferHandleWaitIndex, transferParam.Test.BufferCount);
+            }
+
+            Done:
+            return ret;
+        }
+
+        private static void TransferThreadProc(object state)
+        {
+            int transferred;
+            byte[] data;
+            int i;
+            ErrorCode ret;
+            BENCHMARK_TRANSFER_HANDLE handle;
+            BENCHMARK_TRANSFER_PARAM transferParam = (BENCHMARK_TRANSFER_PARAM) state;
+
+            transferParam.IsRunning = true;
+
+            while (!transferParam.Test.IsCancelled)
+            {
+                data = null;
+                handle = null;
+                transferred = 0;
+
+                if (transferParam.Test.TransferMode == BENCHMARK_TRANSFER_MODE.TRANSFER_MODE_SYNC)
+                {
+                    ret = TransferSync(transferParam, out transferred);
+                    data = transferParam.Buffer[0];
+                }
+                else if (transferParam.Test.TransferMode == BENCHMARK_TRANSFER_MODE.TRANSFER_MODE_ASYNC)
+                {
+                    ret = TransferAsync(transferParam, out handle, out transferred);
+                    if (!ReferenceEquals(handle, null)) data = handle.Data;
                 }
                 else
                 {
-                    UsbDeviceFinder finder = new UsbDeviceFinder(mVid, mPid);
-                    UsbRegDeviceList deviceProfiles = UsbDevice.AllDevices.FindAll(finder);
+                    CONERR("invalid transfer mode {0}\n", transferParam.Test.TransferMode);
+                    goto Done;
+                }
+                if (ret != ErrorCode.Success)
+                {
+                    // The user pressed 'Q'.
+                    if (transferParam.Test.IsUserAborted) break;
 
-                    if (deviceProfiles.Count == 0) throw new BenchmarkException("Benchmark test device not connected.");
-
-                    foreach (UsbRegistry availProfile in deviceProfiles)
+                    // Transfer timed out
+                    if (ret == ErrorCode.IoTimedOut)
                     {
-                        if (availProfile is WinUsb.WinUsbRegistry)
-                        {
-                            WinUsb.WinUsbRegistry winUSBRegistry = (WinUsb.WinUsbRegistry) availProfile;
-                            if (winUSBRegistry.InterfaceID != mInterfaceID) continue;
-                        }
-                        if (availProfile.Open(out mUsbDevice))
-                        {
-                            deviceProfile = availProfile;
+                        transferParam.TotalTimeoutCount++;
+                        transferParam.RunningTimeoutCount++;
+                        CONWRN("Timeout #{0} {1} on Ep{2:X2}h..\n",
+                               transferParam.RunningTimeoutCount,
+                               TRANSFER_DISPLAY(transferParam, "reading", "writing"),
+                               transferParam.Ep.EndpointInfo.Descriptor.EndpointID);
+
+                        if (transferParam.RunningTimeoutCount > transferParam.Test.Retry)
                             break;
-                        }
                     }
-                }
-
-                if (ReferenceEquals(deviceProfile, null)) throw new BenchmarkException("Benchmark test device could not be opened.");
-
-                mDriverMode = mUsbDevice.DriverMode;
-
-                // If this is a "whole" usb device (libusb-win32, linux libusb-1.0)
-                // it exposes an IUsbDevice interface. If not (WinUSB) the 
-                // 'wholeUsbDevice' variable will be null indicating this is 
-                // an interface of a device; it does not require or support 
-                // configuration and interface selection.
-                IUsbDevice wholeUsbDevice = mUsbDevice as IUsbDevice;
-                if (!ReferenceEquals(wholeUsbDevice, null))
-                {
-                    // This is a "whole" USB device. Before it can be used, 
-                    // the desired configuration and interface must be selected.
-
-                    // Select config #1
-                    if (!wholeUsbDevice.SetConfiguration(MY_CONFIG))
-                        throw new Exception(String.Format("Failed set configuration!\n{0}", UsbDevice.LastErrorString));
-
-                    // Claim interface #0.
-                    if (!wholeUsbDevice.ClaimInterface(mInterfaceID))
-                        throw new Exception(String.Format("Failed claim interface!\n{0}", UsbDevice.LastErrorString));
-                }
-                if (!mNoTestSelect)
-                {
-                    byte testType;
-                    if (!GetTestType(out testType))
-                        throw new BenchmarkException("Failed getting test type, {0:X4}:{1:X4} doesn't appear to be a benchmark device.\n{2}",
-                                                     mVid,
-                                                     mPid,
-                                                     UsbDevice.LastErrorString);
-
-                    // Make sure the device is in loop mode.
-                    if (testType != (byte) mTestMode)
-                        if (!SetTestType(ref mTestMode))
-                            throw new BenchmarkException("Failed setting test type, {0:X4}:{1:X4} may not be a benchmark device.\n{2}",
-                                                         mVid,
-                                                         mPid,
-                                                         UsbDevice.LastErrorString);
-
-                }
-                showTestInfo(ConType.Info);
-                showBenchmarkStartTest();
-
-                // Create the read/write threads
-                mReadThread = new Thread(ReadThreadFn);
-                mWriteThread = new Thread(WriteThreadFn);
-
-                mReadThread.Priority = mThreadPriority;
-                mWriteThread.Priority = mThreadPriority;
-
-
-                // Start the read/write threads
-                if (NeedsReadThread)
-                {
-                    mReader = mUsbDevice.OpenEndpointReader(ReadEndpoint, mTestTransferSize, MY_ENDPOINT_TYPE);
-                    mReadThread.Start();
-                }
-                if (NeedsWriteThread)
-                {
-                    mWriter = mUsbDevice.OpenEndpointWriter(WriteEndpoint, MY_ENDPOINT_TYPE);
-                    mWriteThread.Start();
-                }
-                Thread.Sleep(10);
-
-                // The threads will keep running until 'q' is pressed, 
-                // the maximum timeout retry count is reached or another error 
-                // code is returned by the bulk read/write sync functions.
-                while (IsTestRunning)
-                {
-                    if (NeedsReadThread)
-                        showRunningStatus(mStatusReader);
                     else
-                        showRunningStatus(mStatusWriter);
-
-                    // Make sure 'q' has not been pressed.
-                    Application.DoEvents();
-                    if (Console.KeyAvailable)
                     {
-                        ConsoleKeyInfo key = Console.ReadKey();
-                        if (key.KeyChar.ToString().ToLower() == "q")
-                        {
-                            mCancelTestEvent.Set();
-                            if (NeedsReadThread)
-                                mReader.Abort();
+                        // An error (other than a timeout) occured.
 
-                            if (NeedsWriteThread)
-                                mWriter.Abort();
+                        // usb_strerror()is not thread safe and should not be used
+                        // in a multi-threaded app.  It's used here because
+                        // this is a test program.
+                        //
 
-                            ConWriteLine(ConType.Info, "\nStopping Test..");
+                        transferParam.TotalErrorCount++;
+                        transferParam.RunningErrorCount++;
+                        CONERR("failed {0}! {1} of {2} ret={3}: {4}\n",
+                               TRANSFER_DISPLAY(transferParam, "reading", "writing"),
+                               transferParam.RunningErrorCount,
+                               transferParam.Test.Retry + 1,
+                               ret,
+                               UsbDevice.LastErrorString);
+
+                        transferParam.Ep.Reset();
+
+                        if (transferParam.RunningErrorCount > transferParam.Test.Retry)
                             break;
-                        }
-
-                        if (key.KeyChar.ToString().ToLower() == "i")
+                    }
+                    ret = 0;
+                }
+                else
+                {
+                    if (transferred < transferParam.Test.BufferSize && !transferParam.Test.IsCancelled)
+                    {
+                        if (transferred > 0)
                         {
-                            showTestInfo(ConType.Info);
+                            transferParam.ShortTransferCount++;
+                            CONWRN("Short transfer on Ep{0:X2}h expected {1} got {2}.\n",
+                                   transferParam.Ep.EndpointInfo.Descriptor.EndpointID,
+                                   transferParam.Test.BufferSize,
+                                   transferred);
                         }
-                        else if (key.KeyChar.ToString().ToLower() == "r")
+                        else
                         {
-                            showResults(ConType.Status);
+                            CONWRN("Zero-length transfer on Ep{0:X2}h expected {1}.\n",
+                                   transferParam.Ep.EndpointInfo.Descriptor.EndpointID,
+                                   transferParam.Test.BufferSize);
+
+                            transferParam.TotalErrorCount++;
+                            transferParam.RunningErrorCount++;
+                            if (transferParam.RunningErrorCount > transferParam.Test.Retry)
+                                break;
                         }
-                        while (Console.KeyAvailable) Console.ReadKey(true);
                     }
-                    Thread.Sleep(mDisplayUpdateInterval);
-                }
-                mStatusReader.Enabled = false;
-                mStatusWriter.Enabled = false;
-                // When both threads have exited the test is over.
-                ConWriteLine(ConType.Info, "\nWaiting for threads..");
-                while (mReadThread.IsAlive || mWriteThread.IsAlive)
-                {
-                    ConWriteLine(ConType.Info, "\treading:{0}, writing:{1}", mReadThread.IsAlive, mWriteThread.IsAlive);
-                    Thread.Sleep(1000);
-                }
-            }
-            catch (BenchmarkArgumentException ex)
-            {
-                ConWriteLine(ConType.Info, resBenchmark.ShowHelp);
-                ConWriteLine(ConType.Error, "\n\nARGUMENT ERROR!");
-                ConWriteLine(ConType.Error, ex.Message);
-            }
-            catch (BenchmarkException ex)
-            {
-                ConWriteLine(ConType.Error, "\n\nBENCHMARK ERROR!");
-                ConWriteLine(ConType.Error, ex.Message);
-            }
-            catch (Exception ex)
-            {
-                ConWriteLine(ConType.Error, "\n\nBENCHMARK EXCEPTION!");
-                ConWriteLine(ConType.Error, ex.ToString());
-            }
-            finally
-            {
-                if ((mUsbDevice != null) && mUsbDevice.IsOpen)
-                {
-                    // If this is a "whole" usb device (libusb-win32, linux libusb-1.0)
-                    // it exposes an IUsbDevice interface. If not (WinUSB) the 
-                    // 'wholeUsbDevice' variable will be null indicating this is 
-                    // an interface of a device; it does not require or support 
-                    // configuration and interface selection.
-                    IUsbDevice wholeUsbDevice = mUsbDevice as IUsbDevice;
-                    if (!ReferenceEquals(wholeUsbDevice, null))
+                    else
                     {
-                        // Release interface #0.
-                        wholeUsbDevice.ReleaseInterface(0);
+                        transferParam.RunningErrorCount = 0;
+                        transferParam.RunningTimeoutCount = 0;
                     }
 
-                    mUsbDevice.Close();
-
-                    ConWriteLine(ConType.Info, "\nDone!\n");
-                    showTestInfo(ConType.Status);
-                    showResults(ConType.Status);
+                    if ((transferParam.Test.Verify) &&
+                        (transferParam.Ep.EndpointInfo.Descriptor.EndpointID & 0x80) != 0)
+                    {
+                        VerifyData(transferParam, data, transferred);
+                    }
                 }
-                mUsbDevice = null;
-                UsbDevice.Exit();
 
+                lock (DisplayCriticalSection)
+                {
+                    if (transferParam.StartTick == 0 && transferParam.Packets >= 0)
+                    {
+                        transferParam.StartTick = DateTime.Now.Ticks;
+                        transferParam.LastStartTick = transferParam.StartTick;
+                        transferParam.LastTick = transferParam.StartTick;
 
-#if DEBUG
-                Console.ReadKey();
-#endif
+                        transferParam.LastTransferred = 0;
+                        transferParam.TotalTransferred = 0;
+                        transferParam.Packets = 0;
+                    }
+                    else
+                    {
+                        if (transferParam.LastStartTick == 0)
+                        {
+                            transferParam.LastStartTick = transferParam.LastTick;
+                            transferParam.LastTransferred = 0;
+                        }
+                        transferParam.LastTick = DateTime.Now.Ticks;
+
+                        transferParam.LastTransferred += transferred;
+                        transferParam.TotalTransferred += transferred;
+                        transferParam.Packets++;
+                    }
+                }
             }
+
+            Done:
+
+            for (i = 0; i < transferParam.Test.BufferCount; i++)
+            {
+                if (!ReferenceEquals(transferParam.TransferHandles[i], null))
+                {
+                    if (transferParam.TransferHandles[i].InUse)
+                    {
+                        if (!transferParam.TransferHandles[i].Context.IsCompleted)
+                        {
+                            transferParam.Ep.Abort();
+                            Thread.Sleep(1);
+                        }
+                        transferParam.TransferHandles[i].InUse = false;
+                        transferParam.TransferHandles[i].Context.Dispose();
+                    }
+                }
+            }
+
+            transferParam.IsRunning = false;
+            return;
         }
 
-        private static void ReadThreadFn()
+        private static string GetParamStrValue(string src, string paramName)
         {
-            byte[] dataBuffer = new byte[mTestTransferSize];
-            int timeoutCount = 0;
-            ErrorCode ec = ErrorCode.InvalidParam;
-            do
-            {
-                int transferred;
-                if (mCancelTestEvent.WaitOne(0, false)) break;
-                ec = mReader.Read(dataBuffer, mTransferTimeout, out transferred);
-                mStatusReader.AddPacket(transferred);
-                Thread.Sleep(0);
-
-                if (mTestMode == UsbTestType.Loop)
-                {
-                    // TODO: Verify Loop Data..
-                }
-                else if (mTestMode == UsbTestType.ReadFromDevice)
-                {
-                    // TODO: Verify Read Data..
-                }
-
-                if (ec == ErrorCode.Success)
-                {
-                    timeoutCount = 0;
-                }
-                if (ec == ErrorCode.IoTimedOut && !mCancelTestEvent.WaitOne(0, false))
-                {
-                    mStatusReader.TimeoutCount++;
-                    if (timeoutCount < mTimeoutRetryCount)
-                    {
-                        ConWriteLine(ConType.Error, "ReadThreadFn   : BulkTransfer timeout count:{0}", timeoutCount);
-                        ec = ErrorCode.Success;
-                    }
-                    timeoutCount++;
-                }
-            } while (ec == ErrorCode.Success && !mCancelTestEvent.WaitOne(0, false));
-
-            // The thread is exiting
-            if (ec != ErrorCode.Success && !mCancelTestEvent.WaitOne(0, false))
-                ConWriteLine(ConType.Error, "ReadThreadFn   : BulkTransfer failed: {0}", ec);
-            else
-                ConWriteLine(ConType.Status, "ReadThreadFn   : Normal termination.");
+            if (src.StartsWith(paramName)) return src.Substring(paramName.Length);
+            return null;
         }
 
-        private static void WriteThreadFn()
+        private static bool GetParamIntValue(string src, string paramName, ref int returnValue)
         {
-            byte[] dataBuffer = new byte[mTestTransferSize];
-            fillTestData(dataBuffer, dataBuffer.Length);
-            ErrorCode ec = ErrorCode.InvalidParam;
-            int timeoutCount = 0;
-
-            do
+            string value = GetParamStrValue(src, paramName);
+            if (!String.IsNullOrEmpty(value))
             {
-                int transferred;
-                if (mCancelTestEvent.WaitOne(0, false)) break;
-                ec = mWriter.Write(dataBuffer, mTransferTimeout, out transferred);
-                mStatusWriter.AddPacket(transferred);
-
-                Thread.Sleep(0);
-
-                if (ec == ErrorCode.Success)
+                NumberStyles style = NumberStyles.Integer;
+                if (value.ToLower().StartsWith("0x"))
                 {
-                    timeoutCount = 0;
+                    value = value.Substring(2);
+                    style = NumberStyles.HexNumber;
                 }
-                if (ec == ErrorCode.IoTimedOut && !mCancelTestEvent.WaitOne(0, false))
+                int testValue;
+                if (int.TryParse(value, style, null, out testValue))
                 {
-                    mStatusWriter.TimeoutCount++;
-
-                    if (timeoutCount < mTimeoutRetryCount)
-                    {
-                        ec = ErrorCode.Success;
-                        ConWriteLine(ConType.Error, "WriteThreadFn  : BulkTransfer timeout count:{0}", timeoutCount);
-                    }
-                    timeoutCount++;
+                    returnValue = testValue;
+                    return true;
                 }
-                else if (ec == ErrorCode.Success && transferred != dataBuffer.Length && !mCancelTestEvent.WaitOne(0, false))
-                {
-                    mStatusWriter.ShortPacketCount++;
-                    ConWriteLine(ConType.Error, "WriteThreadFn  : BulkTransfer short write ({0} bytes)", transferred);
-                }
-            } while (ec == ErrorCode.Success && !mCancelTestEvent.WaitOne(0, false));
-
-            // The thread is exiting
-            if (ec != ErrorCode.Success && !mCancelTestEvent.WaitOne(0, false))
-                ConWriteLine(ConType.Error, "WriteThreadFn  : BulkTransfer failed: {0}", ec);
-            else
-                ConWriteLine(ConType.Status, "WriteThreadFn  : Normal termination.");
+            }
+            return false;
         }
-    }
 
-    internal class BenchmarkException : Exception
-    {
-        public BenchmarkException(string argErrors)
-            : base(argErrors) { }
+        private static int ValidateBenchmarkArgs(BENCHMARK_TEST_PARAM testParam)
+        {
+            if (testParam.BufferCount < 1 || testParam.BufferCount > MAX_OUTSTANDING_TRANSFERS)
+            {
+                CONERR("Invalid BufferCount argument {0}. BufferCount must be greater than 0 and less than or equal to {1}.\n",
+                       testParam.BufferCount,
+                       MAX_OUTSTANDING_TRANSFERS);
+                return -1;
+            }
 
-        public BenchmarkException(string format, params object[] args)
-            : base(string.Format(format, args)) { }
-    }
+            return 0;
+        }
 
-    internal class BenchmarkArgumentException : BenchmarkException
-    {
-        public BenchmarkArgumentException(string argErrors)
-            : base(argErrors) { }
+        private static int ParseBenchmarkArgs(BENCHMARK_TEST_PARAM testParams, int argc, string[] argv)
+        {
+            string arg;
+            string value;
+            int iarg;
 
-        public BenchmarkArgumentException(string format, params object[] args)
-            : base(format, args) { }
+            for (iarg = 0; iarg < argc; iarg++)
+            {
+                arg = argv[iarg].ToLower();
+
+                if (GetParamIntValue(arg, "vid=", ref testParams.Vid))
+                {
+                }
+                else if (GetParamIntValue(arg, "pid=", ref testParams.Pid))
+                {
+                }
+                else if (GetParamIntValue(arg, "retry=", ref testParams.Retry))
+                {
+                }
+                else if (GetParamIntValue(arg, "buffercount=", ref testParams.BufferCount))
+                {
+                    if (testParams.BufferCount > 1)
+                        testParams.TransferMode = BENCHMARK_TRANSFER_MODE.TRANSFER_MODE_ASYNC;
+                }
+                else if (GetParamIntValue(arg, "buffersize=", ref testParams.BufferSize))
+                {
+                }
+                else if (GetParamIntValue(arg, "size=", ref testParams.BufferSize))
+                {
+                }
+                else if (GetParamIntValue(arg, "timeout=", ref testParams.Timeout))
+                {
+                }
+                else if (GetParamIntValue(arg, "intf=", ref testParams.Intf))
+                {
+                }
+                else if (GetParamIntValue(arg, "ep=", ref testParams.Ep))
+                {
+                    testParams.Ep &= 0xf;
+                }
+                else if (GetParamIntValue(arg, "refresh=", ref testParams.Refresh))
+                {
+                }
+                else if ((value = GetParamStrValue(arg, "mode=")) != null)
+                {
+                    if (GetParamStrValue(value, "sync") != null)
+                    {
+                        testParams.TransferMode = BENCHMARK_TRANSFER_MODE.TRANSFER_MODE_SYNC;
+                    }
+                    else if (GetParamStrValue(value, "async") != null)
+                    {
+                        testParams.TransferMode = BENCHMARK_TRANSFER_MODE.TRANSFER_MODE_ASYNC;
+                    }
+                    else
+                    {
+                        // Invalid EndpointType argument.
+                        CONERR("invalid transfer mode argument! {0}\n", argv[iarg]);
+                        return -1;
+                    }
+                }
+                else if ((value = GetParamStrValue(arg, "priority=")) != null)
+                {
+                    if (GetParamStrValue(value, "lowest") != null)
+                    {
+                        testParams.Priority = ThreadPriority.Lowest;
+                    }
+                    else if (GetParamStrValue(value, "belownormal") != null)
+                    {
+                        testParams.Priority = ThreadPriority.BelowNormal;
+                    }
+                    else if (GetParamStrValue(value, "normal") != null)
+                    {
+                        testParams.Priority = ThreadPriority.Normal;
+                    }
+                    else if (GetParamStrValue(value, "abovenormal") != null)
+                    {
+                        testParams.Priority = ThreadPriority.AboveNormal;
+                    }
+                    else if (GetParamStrValue(value, "highest") != null)
+                    {
+                        testParams.Priority = ThreadPriority.Highest;
+                    }
+                    else
+                    {
+                        CONERR("invalid priority argument! {0}\n", argv[iarg]);
+                        return -1;
+                    }
+                }
+                else if (GetParamIntValue(arg, "packetsize=", ref testParams.IsoPacketSize))
+                {
+                }
+                else if ((value = GetParamStrValue(arg, "driver=")) != null)
+                {
+                    if (GetParamStrValue(value, "winusb") != null)
+                    {
+                        testParams.Driver = UsbDevice.DriverModeType.WinUsb;
+                    }
+                    else if (GetParamStrValue(value, "libusb-win32") != null)
+                    {
+                        testParams.Driver = UsbDevice.DriverModeType.LibUsb;
+                    }
+                    else if (GetParamStrValue(value, "libusb10") != null)
+                    {
+                        testParams.Driver = UsbDevice.DriverModeType.MonoLibUsb;
+                    }
+                    else
+                    {
+                        CONERR("invalid driver argument! {0}\n", argv[iarg]);
+                        return -1;
+                    }
+                }
+                else if (GetParamStrValue(arg, "notestselect") != null)
+                {
+                    testParams.NoTestSelect = true;
+                }
+                else if (GetParamStrValue(arg, "read") != null)
+                {
+                    testParams.TestType = BENCHMARK_DEVICE_TEST_TYPE.TestTypeRead;
+                }
+                else if (GetParamStrValue(arg, "write") != null)
+                {
+                    testParams.TestType = BENCHMARK_DEVICE_TEST_TYPE.TestTypeWrite;
+                }
+                else if (GetParamStrValue(arg, "loop") != null)
+                {
+                    testParams.TestType = BENCHMARK_DEVICE_TEST_TYPE.TestTypeLoop;
+                }
+                else if (GetParamStrValue(arg, "list") != null)
+                {
+                    testParams.UseList = true;
+                }
+                else if (GetParamStrValue(arg, "verifydetails") != null)
+                {
+                    testParams.VerifyDetails = true;
+                    testParams.Verify = true;
+                }
+                else if (GetParamStrValue(arg, "verify") != null)
+                {
+                    testParams.Verify = true;
+                }
+                else
+                {
+                    CONERR("invalid argument! {0}\n", argv[iarg]);
+                    return -1;
+                }
+            }
+            return ValidateBenchmarkArgs(testParams);
+        }
+
+        private static int CreateVerifyBuffer(BENCHMARK_TEST_PARAM testParam, ushort endpointMaxPacketSize)
+        {
+            int i;
+            byte indexC = 0;
+            testParam.VerifyBuffer = new byte[endpointMaxPacketSize];
+
+            testParam.VerifyBufferSize = endpointMaxPacketSize;
+
+            for (i = 0; i < endpointMaxPacketSize; i++)
+            {
+                testParam.VerifyBuffer[i] = indexC++;
+                if (indexC == 0) indexC = 1;
+            }
+
+            return 0;
+        }
+
+        private static void FreeTransferParam(ref BENCHMARK_TRANSFER_PARAM testTransferRef)
+        {
+            if (ReferenceEquals(testTransferRef, null)) return;
+
+            if (testTransferRef.ThreadHandle != null)
+            {
+                testTransferRef.ThreadHandle = null;
+            }
+
+            testTransferRef = null;
+        }
+
+        private static BENCHMARK_TRANSFER_PARAM CreateTransferParam(BENCHMARK_TEST_PARAM test, int endpointID)
+        {
+            BENCHMARK_TRANSFER_PARAM transferParam;
+            UsbInterfaceInfo testInterface;
+            UsbInterfaceInfo firstInterface;
+            int i;
+
+            transferParam = new BENCHMARK_TRANSFER_PARAM();
+            transferParam.Test = test;
+            transferParam.Buffer = new byte[transferParam.Test.BufferCount][];
+            for (i = 0; i < transferParam.Test.BufferCount; i++)
+                transferParam.Buffer[i] = new byte[transferParam.Test.BufferSize];
+
+            if (ReferenceEquals((testInterface = usb_find_interface(test.Device.Configs[0], test.Intf, out firstInterface)), null))
+            {
+                CONERR("failed locating interface {0:X2}h!\n", test.Intf);
+                FreeTransferParam(ref transferParam);
+                goto Done;
+            }
+
+            for (i = 0; i < testInterface.EndpointInfoList.Count; i++)
+            {
+                if ((endpointID & 0x80) == 0x80)
+                {
+                    // Use first endpoint that matches the direction
+                    if ((testInterface.EndpointInfoList[i].Descriptor.EndpointID & 0x80) == 0x80)
+                    {
+                        transferParam.Ep = test.Device.OpenEndpointReader(
+                            (ReadEndpointID) testInterface.EndpointInfoList[i].Descriptor.EndpointID,
+                            0,
+                            (EndpointType) (testInterface.EndpointInfoList[i].Descriptor.Attributes & 0x3));
+                        break;
+                    }
+                }
+                else
+                {
+                    if ((testInterface.EndpointInfoList[i].Descriptor.EndpointID & 0x80) == 0x00)
+                    {
+                        transferParam.Ep = test.Device.OpenEndpointWriter(
+                            (WriteEndpointID) testInterface.EndpointInfoList[i].Descriptor.EndpointID,
+                            (EndpointType) (testInterface.EndpointInfoList[i].Descriptor.Attributes & 0x3));
+                        break;
+                    }
+                }
+            }
+            if (ReferenceEquals(transferParam.Ep, null))
+            {
+                CONERR("failed locating EP{0:X2}h!\n", endpointID);
+                FreeTransferParam(ref transferParam);
+                goto Done;
+            }
+
+            if ((transferParam.Test.BufferSize%transferParam.Ep.EndpointInfo.Descriptor.MaxPacketSize) > 0)
+            {
+                CONERR("buffer size {0} is not an interval of EP{1:X2}h maximum packet size of {2}!\n",
+                       transferParam.Test.BufferSize,
+                       transferParam.Ep.EndpointInfo.Descriptor.EndpointID,
+                       transferParam.Ep.EndpointInfo.Descriptor.MaxPacketSize);
+
+                FreeTransferParam(ref transferParam);
+                goto Done;
+            }
+
+            if (test.IsoPacketSize != 0)
+                transferParam.IsoPacketSize = test.IsoPacketSize;
+            else
+                transferParam.IsoPacketSize = transferParam.Ep.EndpointInfo.Descriptor.MaxPacketSize;
+
+            if (ENDPOINT_TYPE(transferParam) == (byte) EndpointType.Isochronous)
+                transferParam.Test.TransferMode = BENCHMARK_TRANSFER_MODE.TRANSFER_MODE_ASYNC;
+
+            ResetRunningStatus(transferParam);
+
+            transferParam.ThreadHandle = new Thread(TransferThreadProc);
+
+            // If verify mode is on, this is a loop test, and this is a write endpoint, fill
+            // the buffers with the same test data sent by a benchmark device when running
+            // a read only test.
+            if (transferParam.Test.Verify &&
+                transferParam.Test.TestType == BENCHMARK_DEVICE_TEST_TYPE.TestTypeLoop &&
+                (transferParam.Ep.EndpointInfo.Descriptor.EndpointID & 0x80) == 0)
+            {
+                // Data Format:
+                // [0][KeyByte] 2 3 4 5 ..to.. wMaxPacketSize (if data byte rolls it is incremented to 1)
+                // Increment KeyByte and repeat
+                //
+                byte indexC = 0;
+                int bufferIndex = 0;
+                int transferIndex = 0;
+                UInt16 dataIndex;
+                int packetIndex;
+                int packetCount = ((transferParam.Test.BufferCount*transferParam.Test.BufferSize)/transferParam.Ep.EndpointInfo.Descriptor.MaxPacketSize);
+                for (packetIndex = 0; packetIndex < packetCount; packetIndex++)
+                {
+                    indexC = 2;
+                    for (dataIndex = 0; dataIndex < transferParam.Ep.EndpointInfo.Descriptor.MaxPacketSize; dataIndex++)
+                    {
+                        if (dataIndex == 0) // Start
+                            transferParam.Buffer[transferIndex][bufferIndex] = 0;
+                        else if (dataIndex == 1) // Key
+                            transferParam.Buffer[transferIndex][bufferIndex] = (byte) (packetIndex & 0xFF);
+                        else // Data
+                            transferParam.Buffer[transferIndex][bufferIndex] = indexC++;
+
+                        // if wMaxPacketSize is > 255, indexC resets to 1.
+                        if (indexC == 0) indexC = 1;
+
+                        bufferIndex++;
+                        if (transferParam.Test.BufferSize == bufferIndex)
+                        {
+                            bufferIndex = 0;
+                            transferIndex++;
+                        }
+                    }
+                }
+            }
+
+            Done:
+            if (ReferenceEquals(transferParam, null))
+                CONERR0("failed creating transfer param!\n");
+
+            return transferParam;
+        }
+
+        private static void GetAverageBytesSec(BENCHMARK_TRANSFER_PARAM transferParam, out double bps)
+        {
+            double ticksSec;
+            if ((transferParam.StartTick == 0) ||
+                (transferParam.StartTick >= transferParam.LastTick) ||
+                transferParam.TotalTransferred == 0)
+            {
+                bps = 0;
+            }
+            else
+            {
+                ticksSec = (transferParam.LastTick - transferParam.StartTick)/10000000.0;
+                bps = (transferParam.TotalTransferred/ticksSec);
+            }
+        }
+
+        private static void GetCurrentBytesSec(BENCHMARK_TRANSFER_PARAM transferParam, out double bps)
+        {
+            double ticksSec;
+            if ((transferParam.StartTick == 0) ||
+                (transferParam.LastStartTick == 0) ||
+                (transferParam.LastTick <= transferParam.LastStartTick) ||
+                transferParam.LastTransferred == 0)
+            {
+                bps = 0;
+            }
+            else
+            {
+                ticksSec = (transferParam.LastTick - transferParam.LastStartTick)/10000000.0;
+                bps = transferParam.LastTransferred/ticksSec;
+            }
+        }
+
+        private static void ShowRunningStatus(BENCHMARK_TRANSFER_PARAM transferParam)
+        {
+            BENCHMARK_TRANSFER_PARAM temp = transferParam;
+            double bpsOverall;
+            double bpsLastTransfer;
+
+            // LOCK the display critical section
+            lock (DisplayCriticalSection)
+            {
+                // UNLOCK the display critical section
+
+                if ((temp.StartTick == 0) || (temp.StartTick >= temp.LastTick))
+                {
+                    CONMSG("Synchronizing {0}..\n", Math.Abs(transferParam.Packets));
+                }
+                else
+                {
+                    GetAverageBytesSec(temp, out bpsOverall);
+                    GetCurrentBytesSec(temp, out bpsLastTransfer);
+                    transferParam.LastStartTick = 0;
+                    CONMSG("Avg. Bytes/s: {0:F2} Transfers: {1} Bytes/s: {2:F2}\n",
+                           bpsOverall,
+                           temp.Packets,
+                           bpsLastTransfer);
+                }
+            }
+        }
+
+        private static void ShowTransferInfo(BENCHMARK_TRANSFER_PARAM transferParam)
+        {
+            double bpsAverage;
+            double bpsCurrent;
+            double elapsedSeconds;
+
+            if (ReferenceEquals(transferParam, null)) return;
+
+            CONMSG("{0} {1} (Ep{2:X2}h) max packet size: {3}\n",
+                   EndpointTypeDisplayString[ENDPOINT_TYPE(transferParam)],
+                   TRANSFER_DISPLAY(transferParam, "Read", "Write"),
+                   transferParam.Ep.EndpointInfo.Descriptor.EndpointID,
+                   transferParam.Ep.EndpointInfo.Descriptor.MaxPacketSize);
+
+            if (transferParam.StartTick != 0)
+            {
+                GetAverageBytesSec(transferParam, out bpsAverage);
+                GetCurrentBytesSec(transferParam, out bpsCurrent);
+                CONMSG("\tTotal Bytes     : {0}\n", transferParam.TotalTransferred);
+                CONMSG("\tTotal Transfers : {0}\n", transferParam.Packets);
+
+                if (transferParam.ShortTransferCount > 0)
+                {
+                    CONMSG("\tShort Transfers : {0}\n", transferParam.ShortTransferCount);
+                }
+                if (transferParam.TotalTimeoutCount > 0)
+                {
+                    CONMSG("\tTimeout Errors  : {0}\n", transferParam.TotalTimeoutCount);
+                }
+                if (transferParam.TotalErrorCount > 0)
+                {
+                    CONMSG("\tOther Errors    : {0}\n", transferParam.TotalErrorCount);
+                }
+
+                CONMSG("\tAvg. Bytes/sec  : {0:F2}\n", bpsAverage);
+
+                if (transferParam.StartTick != 0 && transferParam.StartTick < transferParam.LastTick)
+                {
+                    elapsedSeconds = (transferParam.LastTick - transferParam.StartTick) / 10000000.0;
+
+                    CONMSG("\tElapsed Time    : {0:F2} seconds\n", elapsedSeconds);
+                }
+
+                CONMSG0("\n");
+            }
+        }
+
+        private static void ShowTestInfo(BENCHMARK_TEST_PARAM testParam)
+        {
+            if (ReferenceEquals(testParam, null)) return;
+
+            CONMSG("{0} Test Information\n", TestDisplayString[(byte) testParam.TestType & 3]);
+            CONMSG("\tVid / Pid       : {0:X4}h / {1:X4}h\n", testParam.Vid, testParam.Pid);
+            CONMSG("\tInterface #     : {0:X2}h\n", testParam.Intf);
+            CONMSG("\tPriority        : {0}\n", testParam.Priority);
+            CONMSG("\tBuffer Size     : {0}\n", testParam.BufferSize);
+            CONMSG("\tBuffer Count    : {0}\n", testParam.BufferCount);
+            CONMSG("\tDisplay Refresh : {0} (ms)\n", testParam.Refresh);
+            CONMSG("\tTransfer Timeout: {0} (ms)\n", testParam.Timeout);
+            CONMSG("\tRetry Count     : {0}\n", testParam.Retry);
+            CONMSG("\tVerify Data     : {0}{1}\n",
+                   testParam.Verify ? "On" : "Off",
+                   (testParam.Verify && testParam.VerifyDetails) ? " (Detailed)" : "");
+
+            CONMSG0("\n");
+        }
+
+        private static void WaitForTestTransfer(BENCHMARK_TRANSFER_PARAM transferParam)
+        {
+            while (!ReferenceEquals(transferParam, null))
+            {
+                if (!transferParam.IsRunning)
+                {
+                    if (!transferParam.ThreadHandle.IsAlive)
+                    {
+                        CONMSG("stopped Ep{0:X2}h thread.\n",
+                               transferParam.Ep.EndpointInfo.Descriptor.EndpointID);
+                        break;
+                    }
+                }
+                Thread.Sleep(100);
+                CONMSG("waiting for Ep{0:X2}h thread..\n", transferParam.Ep.EndpointInfo.Descriptor.EndpointID);
+            }
+        }
+
+        private static void ResetRunningStatus(BENCHMARK_TRANSFER_PARAM transferParam)
+        {
+            if (ReferenceEquals(transferParam, null)) return;
+
+            transferParam.StartTick = 0;
+            transferParam.TotalTransferred = 0;
+            transferParam.Packets = -2;
+            transferParam.LastTick = 0;
+            transferParam.RunningTimeoutCount = 0;
+        }
+
+
+        private static int GetTestDeviceFromList(BENCHMARK_TEST_PARAM testParam)
+        {
+            UsbRegDeviceList allRegDevices = GetBenchmarkDeviceList(testParam);
+            UsbInterfaceInfo firstInterface;
+
+            int ret = -1;
+
+            for (int i = 0; i < allRegDevices.Count; i++)
+            {
+
+                {
+                    UsbRegistry usbRegDevice = allRegDevices[i];
+
+                    CONMSG("{0}. {1:X4}:{2:X4} {3}\n",
+                           i + 1,
+                           usbRegDevice.Vid,
+                           usbRegDevice.Pid,
+                           usbRegDevice.FullName);
+                }
+            }
+
+            if (allRegDevices.Count == 0)
+            {
+                CONERR0("No devices where found!\n");
+                ret = -1;
+                goto Done;
+            }
+
+            CONMSG("\nSelect device (1-{0}) :", allRegDevices.Count);
+            string userInputS = Console.ReadLine();
+            int userInput;
+            if (int.TryParse(userInputS, out userInput))
+                ret = 1;
+            else
+                ret = -1;
+            if (ret != 1 || userInput < 1)
+            {
+                CONMSG0("\n");
+                CONMSG0("Aborting..\n");
+                ret = -1;
+                goto Done;
+            }
+            CONMSG0("\n");
+            userInput--;
+            if (userInput >= 0 && userInput < allRegDevices.Count)
+            {
+                testParam.Device = allRegDevices[userInput].Device;
+
+                if (!ReferenceEquals(testParam.Device, null))
+                {
+                    testParam.Vid = testParam.Device.Info.Descriptor.VendorID;
+                    testParam.Pid = testParam.Device.Info.Descriptor.ProductID;
+
+                    if (usb_find_interface(testParam.Device.Configs[0], testParam.Intf, out firstInterface) == null)
+                    {
+                        // the specified (or default) interface didn't exist, use the first one.
+                        if (firstInterface != null)
+                        {
+                            testParam.Intf = firstInterface.Descriptor.InterfaceID;
+                        }
+                        else
+                        {
+                            CONERR("device {0:X4}:{1:X4} does not have any interfaces!\n",
+                                   testParam.Vid,
+                                   testParam.Pid);
+                            ret = -1;
+                            goto Done;
+                        }
+                    }
+                    ret = 0;
+                }
+            }
+
+            Done:
+            return ret;
+        }
+
+        private static int Main(string[] argv)
+        {
+            BENCHMARK_TEST_PARAM Test = new BENCHMARK_TEST_PARAM();
+            BENCHMARK_TRANSFER_PARAM ReadTest = null;
+            BENCHMARK_TRANSFER_PARAM WriteTest = null;
+
+
+            if (argv.Length == 0)
+            {
+                ShowHelp();
+                return -1;
+            }
+
+            ShowCopyright();
+
+            SetTestDefaults(Test);
+
+            // Load the command line arguments.
+            if (ParseBenchmarkArgs(Test, argv.Length, argv) < 0)
+                return -1;
+
+            if (Test.UseList)
+            {
+                if (GetTestDeviceFromList(Test) < 0)
+                    goto Done;
+            }
+            else
+            {
+                // Open a benchmark device. see Bench_Open().
+                Test.Device = Bench_Open(Test);
+            }
+            if (Test.Device == null)
+            {
+                CONERR("device {0:X4}:{1:X4} not found!\n", Test.Vid, Test.Pid);
+                goto Done;
+            }
+            // If "NoTestSelect" appears in the command line then don't send the control
+            // messages for selecting the test type.
+            //
+            if (!Test.NoTestSelect)
+            {
+                if (Bench_SetTestType(Test.Device, Test.TestType, Test.Intf) != 1)
+                {
+                    CONERR("setting bechmark test type #{0}!\n{1}\n", Test.TestType, UsbDevice.LastErrorString);
+                    goto Done;
+                }
+            }
+
+            CONMSG("Benchmark device {0:X4}:{1:X4} opened..\n", Test.Vid, Test.Pid);
+
+            // If reading from the device create the read transfer param. This will also create
+            // a thread in a suspended state.
+            //
+            if ((Test.TestType & BENCHMARK_DEVICE_TEST_TYPE.TestTypeRead) != 0)
+            {
+                ReadTest = CreateTransferParam(Test, Test.Ep | 0x80);
+                if (ReadTest == null) goto Done;
+            }
+
+            // If writing to the device create the write transfer param. This will also create
+            // a thread in a suspended state.
+            //
+            if ((Test.TestType & BENCHMARK_DEVICE_TEST_TYPE.TestTypeWrite) != 0)
+            {
+                WriteTest = CreateTransferParam(Test, Test.Ep);
+                if (WriteTest == null) goto Done;
+            }
+
+            // If this is a "whole" usb device (libusb-win32, linux libusb-1.0)
+            // it exposes an IUsbDevice interface. If not (WinUSB) the 
+            // 'wholeUsbDevice' variable will be null indicating this is 
+            // an interface of a device; it does not require or support 
+            // configuration and interface selection.
+            IUsbDevice wholeUsbDevice = Test.Device as IUsbDevice;
+            if (!ReferenceEquals(wholeUsbDevice, null))
+            {
+                // This is a "whole" USB device. Before it can be used, 
+                // the desired configuration and interface must be selected.
+
+                // Select config #1
+                if (!wholeUsbDevice.SetConfiguration(1))
+                {
+                    CONERR("setting configuration #{0}!\n{1}\n", 1, UsbDevice.LastErrorString);
+                    goto Done;
+                }
+                // Claim interface #0.
+                if (!wholeUsbDevice.ClaimInterface(Test.Intf))
+                {
+                    CONERR("claiming interface #{0}!\n{1}\n", Test.Intf, UsbDevice.LastErrorString);
+                    goto Done;
+                }
+            }
+
+            if (Test.Verify)
+            {
+                if (ReadTest != null && WriteTest != null)
+                {
+                    if (CreateVerifyBuffer(Test, (ushort) WriteTest.Ep.EndpointInfo.Descriptor.MaxPacketSize) < 0)
+                        goto Done;
+                }
+                else if (ReadTest != null)
+                {
+                    if (CreateVerifyBuffer(Test, (ushort) ReadTest.Ep.EndpointInfo.Descriptor.MaxPacketSize) < 0)
+                        goto Done;
+                }
+                else
+                {
+                    // This is a write only test; nothing to do here.
+                }
+            }
+
+            ShowTestInfo(Test);
+            ShowTransferInfo(ReadTest);
+            ShowTransferInfo(WriteTest);
+
+            CONMSG0("\nWhile the test is running:\n");
+            CONMSG0("Press 'Q' to quit\n");
+            CONMSG0("Press 'T' for test details\n");
+            CONMSG0("Press 'I' for status information\n");
+            CONMSG0("Press 'R' to reset averages\n");
+            CONMSG0("\nPress 'Q' to exit, any other key to begin..");
+            char key = Console.ReadKey().KeyChar;
+            CONMSG0("\n");
+
+            if (key == 'Q' || key == 'q') goto Done;
+
+            // Set the thread priority and start it.
+            if (ReadTest != null)
+            {
+                ReadTest.ThreadHandle.Priority = Test.Priority;
+                ReadTest.ThreadHandle.Start(ReadTest);
+            }
+
+            // Set the thread priority and start it.
+            if (WriteTest != null)
+            {
+                WriteTest.ThreadHandle.Priority = Test.Priority;
+                WriteTest.ThreadHandle.Start(WriteTest);
+            }
+
+            while (!Test.IsCancelled)
+            {
+                Thread.Sleep(Test.Refresh);
+
+                if (Console.KeyAvailable)
+                {
+                    // A key was pressed.
+                    key = Console.ReadKey().KeyChar;
+                    switch (key)
+                    {
+                        case 'Q':
+                        case 'q':
+                            Test.IsUserAborted = true;
+                            Test.IsCancelled = true;
+                            break;
+                        case 'T':
+                        case 't':
+                            ShowTestInfo(Test);
+                            break;
+                        case 'I':
+                        case 'i':
+                            // LOCK the display critical section
+                            lock (DisplayCriticalSection)
+                            {
+                                // Print benchmark test details.
+                                ShowTransferInfo(ReadTest);
+                                ShowTransferInfo(WriteTest);
+                            }
+
+                            break;
+
+                        case 'R':
+                        case 'r':
+                            // LOCK the display critical section
+                            lock (DisplayCriticalSection)
+                            {
+                                // Reset the running status.
+                                ResetRunningStatus(ReadTest);
+                                ResetRunningStatus(WriteTest);
+
+                                // UNLOCK the display critical section
+                            }
+                            break;
+                    }
+
+                    // Only one key at a time.
+                    while (Console.KeyAvailable) Console.ReadKey(true);
+                }
+
+                // If the read test should be running and it isn't, cancel the test.
+                if ((ReadTest != null) && !ReadTest.IsRunning)
+                {
+                    Test.IsCancelled = true;
+                    break;
+                }
+
+                // If the write test should be running and it isn't, cancel the test.
+                if ((WriteTest != null) && !WriteTest.IsRunning)
+                {
+                    Test.IsCancelled = true;
+                    break;
+                }
+
+                // Print benchmark stats
+                if (ReadTest != null)
+                    ShowRunningStatus(ReadTest);
+                else
+                    ShowRunningStatus(WriteTest);
+            }
+
+            // Wait for the transfer threads to complete gracefully if it
+            // can be done in 10ms. All of the code from this point to
+            // WaitForTestTransfer() is not required.  It is here only to
+            // improve response time when the test is cancelled.
+            //
+            Thread.Sleep(10);
+
+            // If the thread is still running, abort and reset the endpoint.
+            if ((ReadTest != null) && ReadTest.IsRunning)
+                ReadTest.Ep.Abort();
+
+            // If the thread is still running, abort and reset the endpoint.
+            if ((WriteTest != null) && WriteTest.IsRunning)
+                WriteTest.Ep.Abort();
+
+            // Small delay incase usb_resetep() was called.
+            Thread.Sleep(10);
+
+            // WaitForTestTransfer will not return until the thread
+            // has exited.
+            WaitForTestTransfer(ReadTest);
+            WaitForTestTransfer(WriteTest);
+
+            // Print benchmark detailed stats
+            ShowTestInfo(Test);
+            if (ReadTest != null) ShowTransferInfo(ReadTest);
+            if (WriteTest != null) ShowTransferInfo(WriteTest);
+
+
+            Done:
+            if (Test.Device != null)
+            {
+                Test.Device.Close();
+                Test.Device = null;
+            }
+
+            FreeTransferParam(ref ReadTest);
+            FreeTransferParam(ref WriteTest);
+
+            CONMSG0("Press any key to exit..");
+            Console.ReadKey();
+            CONMSG0("\n");
+
+            return 0;
+        }
+
+        private static void ShowHelp()
+        {
+            ShowCopyright();
+
+            string[] resourceNames = Assembly.GetExecutingAssembly().GetManifestResourceNames();
+            foreach (string resourceName in resourceNames)
+            {
+                if (resourceName.ToLower().EndsWith("benchmarkhelp.txt"))
+                {
+                    Stream helpTextStream = Assembly.GetExecutingAssembly().GetManifestResourceStream(resourceName);
+                    StreamReader helpTextStreamReader = new StreamReader(helpTextStream);
+                    CONMSG("{0}", helpTextStreamReader.ReadToEnd());
+                    helpTextStreamReader.Close();
+                }
+            }
+        }
+        public static string Version
+        {
+            get
+            {
+                Assembly assembly = Assembly.GetExecutingAssembly();
+                string[] assemblyKvp = assembly.FullName.Split(',');
+                foreach (string s in assemblyKvp)
+                {
+                    string[] sKeyPair = s.Split('=');
+                    if (sKeyPair[0].ToLower().Trim() == "version")
+                    {
+                        return sKeyPair[1].Trim();
+                    }
+                }
+                return null;
+            }
+        }
+
+        private static void ShowCopyright()
+        {
+            CONMSG("LibUsbDotNet USB Benchmark v{0}\n",Version);
+            CONMSG0("Copyright (c) 2010 Travis Robinson. <libusbdotnet@gmail.com>\n");
+            CONMSG0("website: http://sourceforge.net/projects/libusbdotnet\n");
+        }
     }
 }
