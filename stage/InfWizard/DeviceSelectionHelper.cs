@@ -225,10 +225,10 @@ namespace InfWizard.WizardClassHelpers
                         break;
                     }
                 }
-                //if (!bContinue && deviceEnumeratorInfo.SkipWindowsServices)
-                //    continue;
-                if (!bContinue)
+                if (!bContinue && deviceEnumeratorInfo.SkipWindowsServices)
                     continue;
+                //if (!bContinue)
+                //    continue;
 
                 deviceItem.mIsSkipServiceName = !bContinue;
 
@@ -531,7 +531,7 @@ namespace InfWizard.WizardClassHelpers
                 InfWizardStatus.Log(CategoryType.RemoveDevice, StatusType.Success, "device uninstall complete");  
             }
             object oInfFileName;
-            if (item.mDriverRegistryList != null)
+            if (item.mDriverRegistryList != null && !item.mIsSkipServiceName)
             {
                 if (item.mDriverRegistryList.TryGetValue("InfPath", out oInfFileName))
                 {

@@ -117,7 +117,7 @@ namespace InfWizard
 
         private void Remove()
         {
-            DEIFlags flags = DEIFlags.DICFG_AllClasses;
+            DEIFlags flags = DEIFlags.DICFG_AllClasses|DEIFlags.IncludeWindowsServices;
             Cursor = Cursors.WaitCursor;
 
             rtfRemoveDeviceStatus.StatusFilter = RemoveStatusFilter;
@@ -136,9 +136,7 @@ namespace InfWizard
 
                 if (DefaultRemoveOptions.DeepClean)
                 {
-                    if (DefaultRemoveOptions.DeepClean)
-                        DeepClean();
-
+                     DeepClean();
                 }
             }
             catch (Exception ex)
