@@ -137,6 +137,7 @@
     <EmbeddedResource Include="RemoveDeviceForm.resx">
       <DependentUpon>RemoveDeviceForm.cs</DependentUpon>
     </EmbeddedResource>
+    <EmbeddedResource Include="Resources\LibUsb-Win32-LUDN.Driver.Resources" />
     <EmbeddedResource Include="WaitForSetupForm.resx">
       <DependentUpon>WaitForSetupForm.cs</DependentUpon>
     </EmbeddedResource>

@@ -11,7 +11,7 @@ Namespace Examples
 
 		#Region "SET YOUR USB Vendor and Product ID!"
 
-		Public Shared MyUsbFinder As New UsbDeviceFinder(&H4d8, &H53)
+		Public Shared MyUsbFinder As New UsbDeviceFinder(1234, 1)
 
 		#End Region
 
@@ -55,7 +55,7 @@ Namespace Examples
 				Dim cmdLine As String = Regex.Replace(Environment.CommandLine, "^"".+?""^.*? |^.*? ", "", RegexOptions.Singleline)
 
 				If Not [String].IsNullOrEmpty(cmdLine) Then
-					AddHandler reader.DataReceived, (AddressOf OnRxEndPointData)
+					reader.DataReceived += (AddressOf OnRxEndPointData)
 					reader.DataReceivedEnabled = True
 
 					Dim bytesWritten As Integer
@@ -70,7 +70,7 @@ Namespace Examples
 
 					' Always disable and unhook event when done.
 					reader.DataReceivedEnabled = False
-					RemoveHandler reader.DataReceived, (AddressOf OnRxEndPointData)
+					reader.DataReceived -= (AddressOf OnRxEndPointData)
 
 					Console.WriteLine(vbCr & vbLf & "Done!" & vbCr & vbLf)
 				Else
@@ -78,7 +78,7 @@ Namespace Examples
 				End If
 			Catch ex As Exception
 				Console.WriteLine()
-				Console.WriteLine((If(ec <> ErrorCode.None, Convert.ToString(ec) & ":", [String].Empty)) & ex.Message)
+				Console.WriteLine((If(ec <> ErrorCode.None, ec & ":", [String].Empty)) & ex.Message)
 			Finally
 				If MyUsbDevice IsNot Nothing Then
 					If MyUsbDevice.IsOpen Then

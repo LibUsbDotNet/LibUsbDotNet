@@ -304,6 +304,9 @@ namespace LibUsbDotNet.Main
             return true;
         }
 
+        /// <summary>
+        /// Totoal number of bytes transferred.
+        /// </summary>
         public int Transmitted
         {
             get
@@ -312,6 +315,9 @@ namespace LibUsbDotNet.Main
             }
         }
 
+        /// <summary>
+        /// Remaining bytes in the transfer data buffer.
+        /// </summary>
         public int Remaining
         {
             get
@@ -381,6 +387,237 @@ namespace LibUsbDotNet.Main
         public bool CompletedSynchronously
         {
             get { return false; }
+        }
+    }
+
+    /// <summary>
+    /// Helper class for maintaining a user defined number of outstanding aync transfers on an endpoint.
+    /// </summary>
+    public class UsbTransferQueue
+    {
+        /// <summary>
+        /// Creates a new transfer queue instance.
+        /// </summary>
+        /// <param name="endpointBase">The endpoint to transfer data to/from.</param>
+        /// <param name="maxOutstandingIO">The number of transfers to <see cref="UsbTransfer.Submit"/> before waiting for a completion.</param>
+        /// <param name="bufferSize">The size of each data buffer.</param>
+        /// <param name="timeout">The maximum time to wait for each transfer.</param>
+        /// <param name="isoPacketSize">For isochronous use only.  The iso packet size.  If 0, the endpoints max packet size is used.</param>
+        public UsbTransferQueue(UsbEndpointBase endpointBase, int maxOutstandingIO, int bufferSize, int timeout, int isoPacketSize)
+        {
+            EndpointBase = endpointBase;
+            IsoPacketSize = isoPacketSize;
+            Timeout = timeout;
+            BufferSize = bufferSize;
+            MaxOutstandingIO = maxOutstandingIO;
+
+            mTransferHandles = new Handle[maxOutstandingIO];
+
+            mBuffer = new byte[maxOutstandingIO][];
+            for(int i=0; i < maxOutstandingIO; i++) 
+                mBuffer[i] = new byte[bufferSize];
+
+            IsoPacketSize = isoPacketSize > 0 ? isoPacketSize : endpointBase.EndpointInfo.Descriptor.MaxPacketSize;
+        }
+
+        /// <summary>
+        /// Endpoint for I/O operations.
+        /// </summary>
+        public readonly UsbEndpointBase EndpointBase;
+
+        /// <summary>
+        /// Maximum outstanding I/O operations before waiting for a completion.
+        /// This is also the number of data buffers allocated for this transfer queue.
+        /// </summary>
+        public readonly int MaxOutstandingIO;
+
+        /// <summary>
+        /// Size (in bytes) of each data buffer in this transfer queue.
+        /// </summary>
+        public readonly int BufferSize;
+
+        /// <summary>
+        /// Time (in milliseconds) to wait for a transfer to complete before returning <see cref="ErrorCode.IoTimedOut"/>.
+        /// </summary>
+        public readonly int Timeout;
+
+        /// <summary>
+        /// For isochronous use only.  The iso packet size.
+        /// </summary>
+        public readonly int IsoPacketSize;
+
+        private int mOutstandingTransferCount;
+        private readonly Handle[] mTransferHandles;
+        private readonly byte[][] mBuffer;
+        private int mTransferHandleNextIndex;
+        private int mTransferHandleWaitIndex;
+
+        /// <summary>
+        /// A transfer queue handle.
+        /// </summary>
+        public class Handle
+        {
+            internal Handle(UsbTransfer context, byte[] data)
+            {
+                Context = context;
+                Data = data;
+
+            }
+
+            /// <summary>
+            /// Transfer context.
+            /// </summary>
+            public readonly UsbTransfer Context;
+
+            /// <summary>
+            /// Data buffer.
+            /// </summary>
+            public readonly byte[] Data;
+
+            /// <summary>
+            /// Number of bytes sent/received.
+            /// </summary>
+            public int Transferred;
+
+            internal bool InUse;
+
+        }
+
+        /// <summary>
+        /// Gets the transfer data buffer at the specified index.
+        /// </summary>
+        /// <param name="index">The index of the buffer to retrieve.</param>
+        /// <returns>The byte array for a transfer.</returns>
+        public byte[] this[int index]
+        {
+            get{ return mBuffer[index]; }
+        }
+
+        /// <summary>
+        /// Gets a two dimensional array of data buffers. The first index represents the transfer the second represents the data buffer.
+        /// </summary>
+        public byte[][] Buffer
+        {
+            get { return mBuffer; }
+        }
+
+        private static void IncWithRoll(ref int incField, int rollOverValue)
+        {
+            if ((++incField) >= rollOverValue)
+                incField = 0;
+        }
+
+        /// <summary>
+        /// Begins submitting transfers until <see cref="MaxOutstandingIO"/> is reached then waits for the oldest transfer to complete.  
+        /// </summary>
+        /// <param name="handle">The queue handle to the <see cref="UsbTransfer"/> that completed.</param>
+        /// <returns></returns>
+        public ErrorCode Transfer(out Handle handle)
+        {
+            return transfer(this, out handle);
+        }
+        private static ErrorCode transfer(UsbTransferQueue transferParam, out Handle handle)
+        {
+            handle = null;
+            ErrorCode ret = ErrorCode.Success;
+
+            // Submit transfers until the maximum number of outstanding transfer(s) is reached.
+            while (transferParam.mOutstandingTransferCount < transferParam.MaxOutstandingIO)
+            {
+                if (ReferenceEquals(transferParam.mTransferHandles[transferParam.mTransferHandleNextIndex], null))
+                {
+                    handle = transferParam.mTransferHandles[transferParam.mTransferHandleNextIndex] =
+                        new Handle(transferParam.EndpointBase.NewAsyncTransfer(), transferParam.mBuffer[transferParam.mTransferHandleNextIndex]);
+
+                    // Get the next available benchmark transfer handle.
+                    handle.Context.Fill(handle.Data, 0, handle.Data.Length, transferParam.Timeout, transferParam.IsoPacketSize);
+                }
+                else
+                {
+                    // Get the next available benchmark transfer handle.
+                    handle = transferParam.mTransferHandles[transferParam.mTransferHandleNextIndex];
+
+                }
+
+                handle.Transferred = 0;
+
+                // Submit this transfer now.
+                handle.Context.Reset();
+                ret = handle.Context.Submit();
+                if (ret != ErrorCode.Success) goto Done;
+
+                // Mark this handle has InUse.
+                handle.InUse = true;
+
+                // When transfers ir successfully submitted, OutstandingTransferCount goes up; when
+                // they are completed it goes down.
+                //
+                transferParam.mOutstandingTransferCount++;
+
+                // Move TransferHandleNextIndex to the next available transfer.
+                IncWithRoll(ref transferParam.mTransferHandleNextIndex, transferParam.MaxOutstandingIO);
+            }
+
+            // If the number of outstanding transfers has reached the limit, wait for the 
+            // oldest outstanding transfer to complete.
+            //
+            if (transferParam.mOutstandingTransferCount == transferParam.MaxOutstandingIO)
+            {
+                // TransferHandleWaitIndex is the index of the oldest outstanding transfer.
+                handle = transferParam.mTransferHandles[transferParam.mTransferHandleWaitIndex];
+                ret = handle.Context.Wait(out handle.Transferred, false);
+                if (ret != ErrorCode.Success)
+                    goto Done;
+
+                // Mark this handle has no longer InUse.
+                handle.InUse = false;
+
+                // When transfers ir successfully submitted, OutstandingTransferCount goes up; when
+                // they are completed it goes down.
+                //
+                transferParam.mOutstandingTransferCount--;
+
+                // Move TransferHandleWaitIndex to the oldest outstanding transfer.
+                IncWithRoll(ref transferParam.mTransferHandleWaitIndex, transferParam.MaxOutstandingIO);
+
+                return ErrorCode.Success;
+            }
+
+        Done:
+            return ret;
+        }
+
+        /// <summary>
+        /// Cancels and frees all oustanding transfers.
+        /// </summary>
+        public void Free()
+        {
+            free(this);
+        }
+
+        private static void free(UsbTransferQueue transferParam)
+        {
+            for (int i = 0; i < transferParam.MaxOutstandingIO; i++)
+            {
+                if (!ReferenceEquals(transferParam.mTransferHandles[i], null))
+                {
+                    if (transferParam.mTransferHandles[i].InUse)
+                    {
+                        if (!transferParam.mTransferHandles[i].Context.IsCompleted)
+                        {
+                            transferParam.EndpointBase.Abort();
+                            Thread.Sleep(1);
+                        }
+
+                        transferParam.mTransferHandles[i].InUse = false;
+                        transferParam.mTransferHandles[i].Context.Dispose();
+                    }
+                    transferParam.mTransferHandles[i] = null;
+                }
+            }
+            transferParam.mOutstandingTransferCount = 0;
+            transferParam.mTransferHandleNextIndex = 0;
+            transferParam.mTransferHandleWaitIndex = 0;
         }
     }
 }

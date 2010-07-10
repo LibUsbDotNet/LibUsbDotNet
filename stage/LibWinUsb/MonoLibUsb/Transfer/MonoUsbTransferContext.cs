@@ -169,6 +169,7 @@ namespace LibUsbDotNet.LudnMonoLibUsb.Internal
         /// Wait for the transfer to complete, timeout, or get cancelled.
         /// </summary>
         /// <param name="transferredCount">The number of bytes transferred on <see cref="ErrorCode.Success"/>.</param>
+        /// <param name="cancel">Not used for libusb-1.0. Transfers are always cancelled on timeout or error.</param>
         /// <returns><see cref="ErrorCode.Success"/> if the transfer completes successfully, otherwise one of the other <see cref="ErrorCode"/> codes.</returns>
         public override ErrorCode Wait(out int transferredCount, bool cancel)
         {

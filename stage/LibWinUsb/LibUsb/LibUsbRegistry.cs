@@ -52,10 +52,18 @@ namespace LibUsbDotNet.LibUsb
             // If the SymbolicName key does not exists, use the first HardwareID string.
             if (!mDeviceProperties.ContainsKey(SYMBOLIC_NAME_KEY) || String.IsNullOrEmpty(symbolicName))
             {
-                string[] saHardwareIds = mDeviceProperties[SPDRP.HardwareId.ToString()] as string[];
-                if (saHardwareIds.Length > 0)
+                string[] hwIDs = mDeviceProperties[SPDRP.HardwareId.ToString()] as string[];
+
+                if ((hwIDs == null) || hwIDs.Length==0)
                 {
-                    mDeviceProperties.Add(SYMBOLIC_NAME_KEY, saHardwareIds[0]);
+                    LibUsbDevice usbDevice = new LibUsbDevice(UsbDevice.LibUsbApi, usbHandle, deviceFileName);
+                    LegacyUsbRegistry.GetPropertiesSPDRP(usbDevice, mDeviceProperties);
+                    return;
+                }
+
+                if (hwIDs.Length > 0)
+                {
+                    mDeviceProperties.Add(SYMBOLIC_NAME_KEY, hwIDs[0]);
                 }
             }
 

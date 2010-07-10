@@ -1,0 +1,96 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<topic id="6762cf9e-c192-4780-9717-c7d52a59a847" revisionNumber="1">
+  <developerHowToDocument xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5" xmlns:xlink="http://www.w3.org/1999/xlink">
+    <!-- ><summary><para>Optional summary abstract</para></summary> -->
+    <introduction>
+      <para>
+        To use this example with the benchmark firmware, ensure <c>IS_BENCHMARK_DEVICE</c> is defined
+        at the top of the source file.
+      </para>
+    </introduction>
+    <procedure>
+      <title>Read Isochronous (Async Transfer Queue): Console Application Description</title>
+      <steps class="ordered">
+        <step>
+          <content>
+            <para>
+              Opens a USB device by vendor and product id.
+            </para>
+          </content>
+        </step>
+        <step>
+          <content>
+            <para>
+              Opens a <CREF>T:LibUsbDotNet.UsbEndpointReader</CREF> class for reading.
+            </para>
+          </content>
+        </step>
+        <step>
+          <content>
+            <para>
+              Creates a <CREF>T:LibUsbDotNet.Main.UsbTransferQueue</CREF> class.
+            </para>
+          </content>
+        </step>
+        <step>
+          <content>
+            <para>
+              Submits transfers until <c>TRANFER_MAX_OUTSTANDING_IO</c> is reached then waits for the oldest
+              transfer to complete.
+            </para>
+          </content>
+        </step>
+        <step>
+          <content>
+            <para>
+              Displays information on the completed transfer and repeats the above step until <c>TRANSFER_COUNT</c> is reached.
+            </para>
+          </content>
+        </step>
+      </steps>
+    </procedure>
+    <codeExample>
+      <code source="..\Examples\Read.Isochronous\ReadIsochronous.cs" lang="cs" />
+    </codeExample>
+    <codeExample>
+      <code source="..\Examples\Read.Isochronous\ReadIsochronous.vb" lang="vb" />
+    </codeExample>
+    <buildInstructions>
+      <list class="ordered">
+        <listItem>
+          <para>
+            Create a new console application in your
+            <externalLink target="SharpDevelop_Project_Page">
+              <linkText>favorite designer</linkText>
+              <linkAlternateText>SharpDevelop .NET IDE</linkAlternateText>
+              <linkUri>http://www.icsharpcode.net/OpenSource/SD</linkUri>
+            </externalLink>.
+          </para>
+        </listItem>
+        <listItem>
+          <para>
+            Verify your project references:
+            <list class="bullet">
+              <listItem>
+                <para>System.dll</para>
+              </listItem>
+              <listItem>
+                <para>LibUsbDotNet.dll</para>
+              </listItem>
+            </list>
+          </para>
+        </listItem>
+        <listItem>
+          <para>
+            Add/edit the main class.  Copy/Paste code from one of the examples above.
+          </para>
+        </listItem>
+      </list>
+    </buildInstructions>
+    <alert class="note">
+      Example usb device firmware is located in the <localUri>[InstallDirectory]\Benchmark\Firmware\[Manufacturer]</localUri> directory.
+    </alert>
+    <relatedTopics>
+    </relatedTopics>
+  </developerHowToDocument>
+</topic>

@@ -14,7 +14,7 @@ Namespace Examples
 
 		#Region "SET YOUR USB Vendor and Product ID!"
 
-		Public Shared MyUsbFinder As New UsbDeviceFinder(&H4d8, &H53)
+		Public Shared MyUsbFinder As New UsbDeviceFinder(1234, 1)
 
 		#End Region
 
@@ -22,14 +22,11 @@ Namespace Examples
 			Dim ec As ErrorCode = ErrorCode.None
 			Try
 				' Find and open the usb device.
-				'MyUsbDevice = UsbDevice.OpenUsbDevice(MyUsbFinder);
-				MyUsbDevice = MonoUsbDevice.MonoUsbDeviceList.Find(AddressOf MyUsbFinder.Check)
+				MyUsbDevice = UsbDevice.OpenUsbDevice(MyUsbFinder)
+
 				' If the device is open and ready
 				If MyUsbDevice Is Nothing Then
 					Throw New Exception("Device Not Found.")
-				End If
-				If Not MyUsbDevice.Open() Then
-					Throw New Exception("Open Device Failed.")
 				End If
 
 				' If this is a "whole" usb device (libusb-win32, linux libusb)
@@ -101,7 +98,7 @@ Namespace Examples
 				Console.WriteLine(vbCr & vbLf & "Done!" & vbCr & vbLf)
 			Catch ex As Exception
 				Console.WriteLine()
-				Console.WriteLine((If(ec <> ErrorCode.None, Convert.ToString(ec) & ":", [String].Empty)) & ex.Message)
+				Console.WriteLine((If(ec <> ErrorCode.None, ec & ":", [String].Empty)) & ex.Message)
 			Finally
 				If MyUsbDevice IsNot Nothing Then
 					If MyUsbDevice.IsOpen Then

@@ -19,9 +19,22 @@
     <!--    DO NOT REMOVE    -->
     <!-- CurrentReleaseNotes -->
   <releaseNotes address="LibUsbDotNet_Changes_v2.2.6">
-    <title>v2.2.6 (07/03/2010)</title>
+    <title>v2.2.6 (07/09/2010)</title>
     <content>
       <bugs class="bullet">
+        <bug>
+          <bugaction>
+            <token>Removed</token>
+          </bugaction>
+          <bugentry>
+            libusb-win32 (ludn) source branch.
+            <para>
+              The LUDN edition of libusb-win32 has been discontinued as it is no longer needed.
+              LibUsbDotNet v2.2.6 and above are packaged with the official
+              libusb-win32 signed driver runtines.
+            </para>
+          </bugentry>
+        </bug>
         <bug>
           <bugaction>
             <token>Added</token>

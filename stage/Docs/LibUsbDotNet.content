@@ -15,6 +15,7 @@
     <Topic id="e61bb81e-108b-4f84-a77d-8ccdecebfa31" visible="True" title="Read Write (Event Driven)" />
     <Topic id="8c7cc7dc-5b65-4fab-b2a2-54cf0b727a19" visible="True" title="Device Notification" />
     <Topic id="8564be8a-3154-4b2e-8017-5013ca8244ee" visible="True" title="Async Read/Write" />
+    <Topic id="6762cf9e-c192-4780-9717-c7d52a59a847" visible="True" title="Read Isochronous (Async Transfer Queue)" />
   </Topic>
   <Topic id="9fa3601c-f543-4574-933f-7c3756a2fa67" visible="True" title="MonoLibUsb - [Libusb 1.0 API Library]">
     <Topic id="13c6b1b8-f805-45a9-8160-e0b2ea8f3d3f" visible="True" title="ShowInfo Example" />

@@ -50,14 +50,6 @@
               driver package.  However, access to basic device information via the windows registry is not available.
               See the <CREF>T:LibUsbDotNet.Main.LegacyUsbRegistry</CREF> class for more information.
             </listItem>
-
-            <listItem>
-              Previous LisbUsbDotNet/libusb-win32 developers (prior to v2.0.0) should be aware
-              that as of version 2.0.0, LisbUsbDotNet contains an updated libusb-win32
-              kernel driver (libusb0.sys) which is required for propper operation.
-              The LibUsbDotNet setup package can install/upgrade this driver for you.
-            </listItem>
-
           </list>
 
         </alert>
@@ -79,14 +71,6 @@
         <token>ProjectLinks</token>
       </content>
     </foldSection>
-    
-    <alert class="warning">
-      If you use LibUsbDotNet on windows then you should not install the original libusb-win32 package.
-      The LibUsbDotNet packages include an updated libusb-win32 kernel driver
-      (libusb0.sys). Everything in the libusb-win32 package in contained within
-      LibUsbDotNet including the unused libusb-win32 user-mode driver (libusb0.dll)
-      for legacy compatibility.
-    </alert>
     <relatedTopics>
     </relatedTopics>
   </developerOrientationDocument>

@@ -40,12 +40,22 @@ namespace LibUsbDotNet.Main
         /// <summary>
         /// Maximum number of USB devices.
         /// </summary>
-        public const int MAX_DEVICES = 256;
+        public const int MAX_DEVICES = 128;
 
         /// <summary>
         /// Maximum number of endpoints per device.
         /// </summary>
         public const int MAX_ENDPOINTS = 32;
+
+        /// <summary>
+        /// Endpoint direction mask.
+        /// </summary>
+        public const byte ENDPOINT_DIR_MASK = 0x80;
+
+        /// <summary>
+        /// Endpoint number mask.
+        /// </summary>
+        public const byte ENDPOINT_NUMBER_MASK = 0xf;
 
         ///// <summary>
         ///// See <see cref="UsbError.Handled"/>.  Number of RETRIES before failed regardless of the handled field value.

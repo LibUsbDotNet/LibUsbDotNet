@@ -42,7 +42,7 @@ namespace LibUsbDotNet.Main
         internal LegacyUsbRegistry(UsbDevice usbDevice)
         {
             mUSBDevice = usbDevice;
-            GetPropertiesSPDRP();
+            GetPropertiesSPDRP(mUSBDevice, mDeviceProperties);
         }
 
         /// <summary>
@@ -214,32 +214,32 @@ namespace LibUsbDotNet.Main
             return bSuccess;
         }
 
-        private void GetPropertiesSPDRP()
+        internal static void GetPropertiesSPDRP(UsbDevice usbDevice, Dictionary<string, object> deviceProperties)
         {
 
 
-            mDeviceProperties.Add(DevicePropertyType.Mfg.ToString(),
-                                  mUSBDevice.Info.Descriptor.ManufacturerStringIndex > 0 ? mUSBDevice.Info.ManufacturerString : string.Empty);
+            deviceProperties.Add(DevicePropertyType.Mfg.ToString(),
+                                  usbDevice.Info.Descriptor.ManufacturerStringIndex > 0 ? usbDevice.Info.ManufacturerString : string.Empty);
 
-            mDeviceProperties.Add(DevicePropertyType.DeviceDesc.ToString(),
-                                  mUSBDevice.Info.Descriptor.ProductStringIndex > 0 ? mUSBDevice.Info.ProductString : string.Empty);
+            deviceProperties.Add(DevicePropertyType.DeviceDesc.ToString(),
+                                  usbDevice.Info.Descriptor.ProductStringIndex > 0 ? usbDevice.Info.ProductString : string.Empty);
 
-            mDeviceProperties.Add("SerialNumber",
-                                  mUSBDevice.Info.Descriptor.SerialStringIndex > 0 ? mUSBDevice.Info.SerialString : string.Empty);
+            deviceProperties.Add("SerialNumber",
+                                  usbDevice.Info.Descriptor.SerialStringIndex > 0 ? usbDevice.Info.SerialString : string.Empty);
 
-            string fakeHardwareIds = GetRegistryHardwareID((ushort)mUSBDevice.Info.Descriptor.VendorID,
-                                                           (ushort)mUSBDevice.Info.Descriptor.ProductID,
-                                                           (ushort)mUSBDevice.Info.Descriptor.BcdDevice);
+            string fakeHardwareIds = GetRegistryHardwareID((ushort)usbDevice.Info.Descriptor.VendorID,
+                                                           (ushort)usbDevice.Info.Descriptor.ProductID,
+                                                           (ushort)usbDevice.Info.Descriptor.BcdDevice);
 
-            mDeviceProperties.Add(DevicePropertyType.HardwareId.ToString(), new string[] { fakeHardwareIds });
+            deviceProperties.Add(DevicePropertyType.HardwareId.ToString(), new string[] { fakeHardwareIds });
 
             string fakeSymbolicName = fakeHardwareIds + "{" + Guid.Empty + " }";
 
-            if (mUSBDevice.Info.Descriptor.SerialStringIndex > 0)
+            if (usbDevice.Info.Descriptor.SerialStringIndex > 0)
             {
-                fakeSymbolicName += "#" + mDeviceProperties["SerialNumber"] + "#";
+                fakeSymbolicName += "#" + deviceProperties["SerialNumber"] + "#";
             }
-            mDeviceProperties.Add(SYMBOLIC_NAME_KEY, fakeSymbolicName);
+            deviceProperties.Add(SYMBOLIC_NAME_KEY, fakeSymbolicName);
         }
     }
 }

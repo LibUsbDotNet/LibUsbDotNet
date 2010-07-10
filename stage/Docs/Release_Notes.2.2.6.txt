@@ -1,7 +1,12 @@
 LibUsbDotNet Version History
 
-V2.2.6 (07/03/2010)
+V2.2.6 (07/09/2010)
 ====================
+  * [Removed] libusb-win32 (ludn) source branch. 
+    The LUDN edition of libusb-win32 has been discontinued as it is no longer 
+    needed. LibUsbDotNet v2.2.6 and above are packaged with the official 
+    libusb-win32 signed driver runtines. 
+
   * [Added] Isochronous endpoint support.
 
   * [Added] Additional support for asynchronous I/O.

@@ -5,6 +5,19 @@
       <bugs class="bullet">
         <bug>
           <bugaction>
+            <token>Removed</token>
+          </bugaction>
+          <bugentry>
+            libusb-win32 (ludn) source branch.
+            <para>
+              The LUDN edition of libusb-win32 has been discontinued as it is no longer needed.
+              LibUsbDotNet v$(Major).$(Minor).$(Build) and above are packaged with the official
+              libusb-win32 signed driver runtines.
+            </para>
+          </bugentry>
+        </bug>
+        <bug>
+          <bugaction>
             <token>Added</token>
           </bugaction>
           <bugentry>

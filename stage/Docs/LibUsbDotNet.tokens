@@ -72,51 +72,73 @@
   </ddue:listItem>
 </ddue:list></item>
   <item id="ProjectLinks"><ddue:list class="bullet" xmlns:ddue="http://ddue.schemas.microsoft.com/authoring/2003/5">
-            <ddue:listItem>
-              <ddue:para>
-                <ddue:externalLink target="LibUsbDotNet_Downloads">
-                  <ddue:linkText>Download Page</ddue:linkText>
-                  <ddue:linkAlternateText>LibUsbDotNet Sourceforge Project Download Page</ddue:linkAlternateText>
-                  <ddue:linkUri>
-                    http://sourceforge.net/projects/libusbdotnet/files/
-                  </ddue:linkUri>
-                </ddue:externalLink>
-              </ddue:para>
-            </ddue:listItem>
-            <ddue:listItem>
-              <ddue:para>
-                <ddue:externalLink target="LibUsbDotNet_Support">
-                  <ddue:linkText>Support Forum</ddue:linkText>
-                  <ddue:linkAlternateText>LibUsbDotNet PHPBB Support Forum</ddue:linkAlternateText>
-                  <ddue:linkUri>
-                    http://sourceforge.net/apps/phpbb/libusbdotnet
-                  </ddue:linkUri>
-                </ddue:externalLink>
-              </ddue:para>
-            </ddue:listItem>
-            <ddue:listItem>
-              <ddue:para>
-                <ddue:externalLink target="LibUsbDotNet_Bugs">
-                  <ddue:linkText>Submit a Bug</ddue:linkText>
-                  <ddue:linkAlternateText>LibUsbDotNet Sourceforge Bug Tracker</ddue:linkAlternateText>
-                  <ddue:linkUri>
-                    http://sourceforge.net/tracker/?func=add&amp;group_id=206606&amp;atid=1140572
-                  </ddue:linkUri>
-                </ddue:externalLink>
-              </ddue:para>
-            </ddue:listItem>
-            <ddue:listItem>
-              <ddue:para>
-                <ddue:externalLink target="LibUsbDotNet_Bugs">
-                  <ddue:linkText>View Outstanding Bugs</ddue:linkText>
-                  <ddue:linkAlternateText>LibUsbDotNet Sourceforge Bug Tracker</ddue:linkAlternateText>
-                  <ddue:linkUri>
-                    http://sourceforge.net/tracker/?limit=50&amp;func=&amp;group_id=206606&amp;atid=1140572&amp;status=1&amp;submit=Filter
-                  </ddue:linkUri>
-                </ddue:externalLink>
-              </ddue:para>
-            </ddue:listItem>
-          </ddue:list></item>
+<ddue:listItem>
+  <ddue:para>
+    <ddue:externalLink target="LibUsbDotNet_Downloads">
+      <ddue:linkText>Download Page</ddue:linkText>
+      <ddue:linkAlternateText>LibUsbDotNet Sourceforge Project Download Page</ddue:linkAlternateText>
+      <ddue:linkUri>
+        http://sourceforge.net/projects/libusbdotnet/files/
+      </ddue:linkUri>
+    </ddue:externalLink>
+  </ddue:para>
+</ddue:listItem>
+<ddue:listItem>
+  <ddue:para>
+    <ddue:externalLink target="LibUsbDotNet_Support">
+      <ddue:linkText>Support Forum</ddue:linkText>
+      <ddue:linkAlternateText>LibUsbDotNet PHPBB Support Forum</ddue:linkAlternateText>
+      <ddue:linkUri>
+        http://sourceforge.net/apps/phpbb/libusbdotnet
+      </ddue:linkUri>
+    </ddue:externalLink>
+  </ddue:para>
+</ddue:listItem>
+<ddue:listItem>
+  <ddue:para>
+    <ddue:externalLink target="LibUsbDotNet_Bugs">
+      <ddue:linkText>Submit a Bug</ddue:linkText>
+      <ddue:linkAlternateText>LibUsbDotNet Sourceforge Bug Tracker</ddue:linkAlternateText>
+      <ddue:linkUri>
+        http://sourceforge.net/tracker/?func=add&amp;group_id=206606&amp;atid=1140572
+      </ddue:linkUri>
+    </ddue:externalLink>
+  </ddue:para>
+</ddue:listItem>
+<ddue:listItem>
+  <ddue:para>
+    <ddue:externalLink target="LibUsbDotNet_Bugs">
+      <ddue:linkText>View Outstanding Bugs</ddue:linkText>
+      <ddue:linkAlternateText>LibUsbDotNet Sourceforge Bug Tracker</ddue:linkAlternateText>
+      <ddue:linkUri>
+        http://sourceforge.net/tracker/?limit=50&amp;func=&amp;group_id=206606&amp;atid=1140572&amp;status=1&amp;submit=Filter
+      </ddue:linkUri>
+    </ddue:externalLink>
+  </ddue:para>
+</ddue:listItem>
+<ddue:listItem>
+  <ddue:para>
+    <ddue:externalLink target="LibUsbDotNet_Other">
+      <ddue:linkText>libusb-win32 Project Page</ddue:linkText>
+      <ddue:linkAlternateText>libusb-win32 Project Page</ddue:linkAlternateText>
+      <ddue:linkUri>
+        http://sourceforge.net/apps/trac/libusb-win32/wiki
+      </ddue:linkUri>
+    </ddue:externalLink>
+  </ddue:para>
+</ddue:listItem>
+<ddue:listItem>
+  <ddue:para>
+    <ddue:externalLink target="LibUsbDotNet_Other">
+      <ddue:linkText>libusb-1.0 Project Page</ddue:linkText>
+      <ddue:linkAlternateText>libusb-1.0 Project Page</ddue:linkAlternateText>
+      <ddue:linkUri>
+        http://libusb.org
+      </ddue:linkUri>
+    </ddue:externalLink>
+  </ddue:para>
+</ddue:listItem>
+</ddue:list></item>
   <item id="Removed"><ddue:legacyBold xmlns:ddue="http://ddue.schemas.microsoft.com/authoring/2003/5">Removed</ddue:legacyBold></item>
   <item id="Updated"><ddue:legacyBold xmlns:ddue="http://ddue.schemas.microsoft.com/authoring/2003/5">Updated</ddue:legacyBold></item>
 </content>

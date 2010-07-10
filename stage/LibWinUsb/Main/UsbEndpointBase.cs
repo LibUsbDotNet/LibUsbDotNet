@@ -51,6 +51,7 @@ namespace LibUsbDotNet.Main
         private UsbTransfer mTransferContext;
         private UsbEndpointInfo mUsbEndpointInfo;
         private EndpointType mEndpointType;
+        private UsbInterfaceInfo mUsbInterfacetInfo;
 
         internal UsbEndpointBase(UsbDevice usbDevice, byte epNum, EndpointType endpointType)
         {
@@ -136,7 +137,7 @@ namespace LibUsbDotNet.Main
             {
                 if (ReferenceEquals(mUsbEndpointInfo, null))
                 {
-                    if (!LookupEndpointInfo(Device, mEpNum, out mUsbEndpointInfo))
+                    if (!LookupEndpointInfo(Device.Configs[0], mEpNum, out mUsbInterfacetInfo, out mUsbEndpointInfo))
                     {
                         // throw new UsbException(this, String.Format("Failed locating endpoint {0} for the current usb configuration.", mEpNum));
                         return null;
@@ -285,37 +286,48 @@ namespace LibUsbDotNet.Main
             return transfer;
         }
 
-        public static bool LookupEndpointInfo(UsbDevice usbDevice, byte endpointAddress, out UsbEndpointInfo usbEndpointInfo)
+        /// <summary>
+        /// Looks up endpoint/interface information in a configuration.
+        /// </summary>
+        /// <param name="currentConfigInfo">The config to seach.</param>
+        /// <param name="endpointAddress">The endpoint address to look for.</param>
+        /// <param name="usbInterfaceInfo">On success, the <see cref="UsbInterfaceInfo"/> class for this endpoint.</param>
+        /// <param name="usbEndpointInfo">On success, the <see cref="UsbEndpointInfo"/> class for this endpoint.</param>
+        /// <returns>True of the endpoint was found, otherwise false.</returns>
+        public static bool LookupEndpointInfo(UsbConfigInfo currentConfigInfo, byte endpointAddress, out UsbInterfaceInfo usbInterfaceInfo, out UsbEndpointInfo usbEndpointInfo)
         {
+            bool found = false;
+
+            usbInterfaceInfo = null;
             usbEndpointInfo = null;
-            byte currentConfig;
-            bool bSucccess = usbDevice.GetConfiguration(out currentConfig);
-            if (!bSucccess) return false;
-            ReadOnlyCollection<UsbConfigInfo> configList = usbDevice.Configs;
-
-            if (currentConfig == 0)
-                throw new UsbException(usbDevice, "Device is not configured. Invalid configuration value " + currentConfig);
-
-            UsbConfigInfo currentConfigInfo = null;
-            foreach (UsbConfigInfo configInfo in configList)
-            {
-                if (configInfo.Descriptor.ConfigID == currentConfig)
-                {
-                    currentConfigInfo = configInfo;
-                    break;
-                }
-            }
-
-            if (ReferenceEquals(currentConfigInfo, null))
-                throw new UsbException(usbDevice, "Configuration not found. Invalid configuration value " + currentConfig);
-
-
             foreach (UsbInterfaceInfo interfaceInfo in currentConfigInfo.InterfaceInfoList)
             {
                 foreach (UsbEndpointInfo endpointInfo in interfaceInfo.EndpointInfoList)
                 {
-                    if (endpointInfo.Descriptor.EndpointID == endpointAddress)
+                    if ((endpointAddress & UsbConstants.ENDPOINT_NUMBER_MASK) == 0)
                     {
+                        // find first read/write endpoint
+                        if ((endpointAddress & UsbConstants.ENDPOINT_DIR_MASK) == 0 && 
+                            (endpointInfo.Descriptor.EndpointID & UsbConstants.ENDPOINT_DIR_MASK) == 0)
+                        {
+                            // first write endpoint
+                            found = true;
+                        }
+                        if ((endpointAddress & UsbConstants.ENDPOINT_DIR_MASK) != 0 && 
+                            (endpointInfo.Descriptor.EndpointID & UsbConstants.ENDPOINT_DIR_MASK) != 0)
+                        {
+                            // first read endpoint
+                            found = true;
+                        }
+                    }
+                    else if (endpointInfo.Descriptor.EndpointID == endpointAddress)
+                    {
+                        found = true;
+                    }
+
+                    if (found)
+                    {
+                        usbInterfaceInfo = interfaceInfo;
                         usbEndpointInfo = endpointInfo;
                         return true;
                     }

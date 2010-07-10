@@ -373,6 +373,23 @@ namespace Benchmark
             if (usbRegistry.Open(out mUsbDevice))
             {
                 UsbDevice.UsbErrorEvent += OnUsbError;
+                
+                UsbEndpointInfo endpointInfo;
+                UsbInterfaceInfo interfaceInfo;
+
+                UsbEndpointBase.LookupEndpointInfo(mUsbDevice.Configs[0], (byte)mBenchMarkParameters.ReadEndpoint,  out interfaceInfo, out endpointInfo);
+                mBenchMarkParameters.BufferSize -= (mBenchMarkParameters.BufferSize % ((int)endpointInfo.Descriptor.MaxPacketSize));
+                mEP1Reader = mUsbDevice.OpenEndpointReader(mBenchMarkParameters.ReadEndpoint, mBenchMarkParameters.BufferSize, (EndpointType)(endpointInfo.Descriptor.Attributes & 3));
+
+                UsbEndpointBase.LookupEndpointInfo(mUsbDevice.Configs[0], (byte)mBenchMarkParameters.WriteEndpoint, out interfaceInfo, out endpointInfo);
+                mBenchMarkParameters.BufferSize -= (mBenchMarkParameters.BufferSize % ((int)endpointInfo.Descriptor.MaxPacketSize));
+                mEP1Writer = mUsbDevice.OpenEndpointWriter(mBenchMarkParameters.WriteEndpoint, (EndpointType)(endpointInfo.Descriptor.Attributes & 3));
+
+                mEP1Reader.ReadThreadPriority = mBenchMarkParameters.Priority;
+                mEP1Reader.DataReceived += OnDataReceived;
+
+                makeTestBytes(out loopTestBytes,mBenchMarkParameters.BufferSize);
+
 
                 // If this is a "whole" usb device (libusb-win32, linux libusb)
                 // it will have an IUsbDevice interface. If not (WinUSB) the 
@@ -388,24 +405,8 @@ namespace Benchmark
                     wholeUsbDevice.SetConfiguration(1);
 
                     // Claim interface #0.
-                    wholeUsbDevice.ClaimInterface(0);
+                    wholeUsbDevice.ClaimInterface(interfaceInfo.Descriptor.InterfaceID);
                 }
-                
-                UsbEndpointInfo endpointInfo;
-
-                UsbEndpointBase.LookupEndpointInfo(mUsbDevice, (byte)mBenchMarkParameters.ReadEndpoint, out endpointInfo);
-                mBenchMarkParameters.BufferSize -= (mBenchMarkParameters.BufferSize % ((int)endpointInfo.Descriptor.MaxPacketSize));
-                mEP1Reader = mUsbDevice.OpenEndpointReader(mBenchMarkParameters.ReadEndpoint, mBenchMarkParameters.BufferSize, (EndpointType)(endpointInfo.Descriptor.Attributes & 3));
-
-                UsbEndpointBase.LookupEndpointInfo(mUsbDevice, (byte)mBenchMarkParameters.WriteEndpoint, out endpointInfo);
-                mBenchMarkParameters.BufferSize -= (mBenchMarkParameters.BufferSize % ((int)endpointInfo.Descriptor.MaxPacketSize));
-                mEP1Writer = mUsbDevice.OpenEndpointWriter(mBenchMarkParameters.WriteEndpoint, (EndpointType)(endpointInfo.Descriptor.Attributes & 3));
-
-                mEP1Reader.ReadThreadPriority = mBenchMarkParameters.Priority;
-                mEP1Reader.DataReceived += OnDataReceived;
-
-                makeTestBytes(out loopTestBytes,mBenchMarkParameters.BufferSize);
-
                 return true;
             }
 
