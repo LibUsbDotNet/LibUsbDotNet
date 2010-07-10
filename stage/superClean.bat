@@ -16,6 +16,7 @@ REM   .Userprefs
 REM //////////////////////////////////////////////////////////////////////////
 call clean.bat
 .\Utility\RegexClean -d -r -m="(?i)\\(bin\\debug|bin\\release|_UpgradeReport_Files)$"
+.\Utility\RegexClean -d -r -m="(?i)\\(bin)$"
 .\Utility\RegexClean -r -m="(\\(UpgradeLog\.XML)|(\.sln\.cache)|\.Userprefs)$"
 
 REM If the packager argument is present, the superCLean.bat
