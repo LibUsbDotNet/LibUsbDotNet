@@ -25,4 +25,5 @@ REM proccess, so don't execute the following lines.
 IF /I "%~1" EQU "packager" GOTO :EOF
 IF EXIST ".\Docs\Help\" rmdir /S /Q .\Docs\Help
 IF EXIST ".\build\PackageTemp\" rmdir /S /Q .\build\PackageTemp
+IF EXIST .\build\CheckVars.txt del .\build\CheckVars.txt
 
