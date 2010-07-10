@@ -1,12 +1,11 @@
-PIC USB Benchmark Firmware
+PIC USB Benchmark Firmware (Single/Dual Interface) (BULK, INT, ISO)
 
 DIRECTORY TREE:
- Device_Benchmark  - PIC USB Benchmark Firmware
- Microchip         - Original MCP USB Stack 2.6a files used by the benchmark
-                     firmware. 
+ Device_Benchmark  - PIC USB Benchmark Firmware 
+                     (copy this directory to your "Microchip Solutions" dir)
 
 REQUIRED:
- * MCP USB Stack 2.6a
+ * MCP USB Stack 2.7
  * Microchip PIC USB Demo/Test Board
 
 GETTING STARTED:
@@ -14,21 +13,11 @@ GETTING STARTED:
    'Microchip Application Libraries' installation directory. This is normally 
    "C:\Microchip Solutions".
  
- * This firmware can use either libusb or winusb for a device driver.
+ * This firmware is configured in the same way as other MCP examples.
+   (see usb_config.h)
  
- * By default, the VID/PID is set to 0x04D8 / 0x0053.  This is the same as the
-   'WinUSB - High Bandwidth Demo'. It can be changed in "usb_descriptors.c".
-   
-FINDING THE DRIVERS:
- The require drivers have already been provided with the MCP usb stack.  The 
- benchmark firmware can use either WinUSB or libusb-win32 as its device
- driver.
+ * Build/Compile, and Burn
  
-USING WINUSB  -  Set the Product ID in "usb_descriptors.c" to 0x0053.
- Use drivers from:
- "USB Device - WinUSB - High Bandwidth Demo\Driver and INF"
-                  
-USING LIBUSB  -  Set the Product ID in "usb_descriptors.c" to 0x0204.
- Use drivers from:
- "USB Device - LibUSB - Generic Driver Demo\Windows Application\Driver and INF"
+ * Connect the device and use the USB InfWizard to create and install the
+   driver package.
  
