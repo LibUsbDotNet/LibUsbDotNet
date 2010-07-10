@@ -53,6 +53,7 @@ namespace Benchmark
         private Thread mthWriteThreadEP1;
         private UsbDevice mUsbDevice;
         private UsbTestType mUsbTestType;
+        private UsbInterfaceInfo mInterfaceInfo;
 
         public fBenchmark() { InitializeComponent(); }
 
@@ -72,7 +73,7 @@ namespace Benchmark
 
             stopReadWrite();
 
-            if (PIC18TestDevice.SetTestType(mUsbDevice, newTestType, false))
+            if (PIC18TestDevice.SetTestType(mUsbDevice, newTestType, false, mInterfaceInfo.Descriptor.InterfaceID))
             {
                 SetStatus("Test Selected:" + newTestType, false);
             }
@@ -157,7 +158,7 @@ namespace Benchmark
                 //bool bRecvEnabled = mEP1.DataReceivedEnabled;
                 //mEP1.DataReceivedEnabled = false;
                 UsbTestType bTestType;
-                if (getTestType(out bTestType))
+                if (getTestType(out bTestType, mInterfaceInfo.Descriptor.InterfaceID))
                 {
                     SetStatus("Test Type:" + bTestType, false);
                 }
@@ -227,11 +228,11 @@ namespace Benchmark
                 SetStatus("GetConfiguration Failed.", true);
         }
 
-        private bool getTestType(out UsbTestType testType)
+        private bool getTestType(out UsbTestType testType, byte interfaceID)
         {
             if (mUsbDevice.IsOpen)
             {
-                if (PIC18TestDevice.GetTestType(mUsbDevice, out testType))
+                if (PIC18TestDevice.GetTestType(mUsbDevice, out testType, interfaceID))
                     return true;
 
                 testType = 0;
@@ -384,6 +385,8 @@ namespace Benchmark
                 UsbEndpointBase.LookupEndpointInfo(mUsbDevice.Configs[0], (byte)mBenchMarkParameters.WriteEndpoint, out interfaceInfo, out endpointInfo);
                 mBenchMarkParameters.BufferSize -= (mBenchMarkParameters.BufferSize % ((int)endpointInfo.Descriptor.MaxPacketSize));
                 mEP1Writer = mUsbDevice.OpenEndpointWriter(mBenchMarkParameters.WriteEndpoint, (EndpointType)(endpointInfo.Descriptor.Attributes & 3));
+
+                mInterfaceInfo = interfaceInfo;
 
                 mEP1Reader.ReadThreadPriority = mBenchMarkParameters.Priority;
                 mEP1Reader.DataReceived += OnDataReceived;

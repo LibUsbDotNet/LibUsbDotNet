@@ -68,21 +68,9 @@ namespace TestDevice
                                0,
                                1);
 
-        private static UsbDevice usbTestDevice;
 
-        public static UsbDevice UsbTestDevice
-        {
-            get { return usbTestDevice; }
-            set { usbTestDevice = value; }
-        }
 
-        public static bool GetTestType(UsbDevice usbDevice, out UsbTestType usbTestType)
-        {
-            UsbTestDevice = usbDevice;
-            return GetTestType(out usbTestType);
-        }
-
-        public static bool GetTestType(out UsbTestType usbTestType)
+        public static bool GetTestType(UsbDevice usbTestDevice, out UsbTestType usbTestType, byte interfaceID)
         {
             if (ReferenceEquals(usbTestDevice, null))
                 throw new UsbTestDeviceException("UsbTestDevice must be set before invoking this member!");
@@ -91,6 +79,8 @@ namespace TestDevice
             byte[] buf = new byte[1];
 
             UsbSetupPacket cmd = UsbCmdGetTestType;
+            cmd.Index = interfaceID;
+
             bool bSuccess = usbTestDevice.ControlTransfer(ref cmd, buf, buf.Length, out lengthTransferred);
 
             if (bSuccess && lengthTransferred == 1)
@@ -102,15 +92,8 @@ namespace TestDevice
             return false;
         }
 
-        public static bool SetTestType(UsbDevice usbDevice, UsbTestType usbTestType)
-        {
-            UsbTestDevice = usbDevice;
-            return SetTestType(usbTestType);
-        }
 
-        public static bool SetTestType(UsbTestType usbTestType) { return SetTestType(usbTestType, true); }
-
-        public static bool SetTestType(UsbTestType usbTestType, bool bCheck)
+        public static bool SetTestType(UsbDevice usbTestDevice, UsbTestType usbTestType, bool bCheck, byte interfaceID)
         {
             if (ReferenceEquals(usbTestDevice, null))
                 throw new UsbTestDeviceException("UsbTestDevice must be set before invoking this member!");
@@ -118,7 +101,7 @@ namespace TestDevice
             if (bCheck)
             {
                 UsbTestType bCurrentTestType;
-                if (GetTestType(out bCurrentTestType))
+                if (GetTestType(usbTestDevice, out bCurrentTestType, interfaceID))
                 {
                     if (bCurrentTestType == usbTestType) return true;
                 }
@@ -130,15 +113,15 @@ namespace TestDevice
 
             UsbSetupPacket cmd = UsbCmdSetTestType;
             cmd.Value = (short) usbTestType;
+            cmd.Index = interfaceID;
 
             bool bSuccess = usbTestDevice.ControlTransfer(ref cmd, buf, buf.Length, out lengthTransferred);
 
             return bSuccess && lengthTransferred == 1;
         }
 
-        public static bool ReadEEDATA(byte address, out byte value) { return ReadEEDATA(UsbTestDevice, address, out value); }
 
-        public static bool ReadEEDATA(UsbDevice usbDevice, byte address, out byte value)
+        public static bool ReadEEDATA(UsbDevice usbTestDevice, byte address, out byte value)
         {
             if (ReferenceEquals(usbTestDevice, null))
                 throw new UsbTestDeviceException("UsbTestDevice must be set before invoking this member!");
@@ -160,9 +143,8 @@ namespace TestDevice
             return false;
         }
 
-        public static bool WriteEEDATA(byte address, byte value) { return WriteEEDATA(UsbTestDevice, address, value); }
 
-        public static bool WriteEEDATA(UsbDevice usbDevice, byte address, byte value)
+        public static bool WriteEEDATA(UsbDevice usbTestDevice, byte address, byte value)
         {
             if (ReferenceEquals(usbTestDevice, null))
                 throw new UsbTestDeviceException("UsbTestDevice must be set before invoking this member!");
@@ -176,12 +158,6 @@ namespace TestDevice
             bool bSuccess = usbTestDevice.ControlTransfer(ref cmd, buf, buf.Length, out lengthTransferred);
 
             return bSuccess && lengthTransferred == 1;
-        }
-
-        public static bool SetTestType(UsbDevice usbDevice, UsbTestType usbTestType, bool check)
-        {
-            UsbTestDevice = usbDevice;
-            return SetTestType(usbTestType, check);
         }
 
         #region Nested Types
