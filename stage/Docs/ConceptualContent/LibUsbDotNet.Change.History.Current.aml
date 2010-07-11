@@ -12,7 +12,7 @@
             <para>
               The LUDN edition of libusb-win32 has been discontinued as it is no longer needed.
               LibUsbDotNet v$(Major).$(Minor).$(Build) and above are packaged with the official
-              libusb-win32 signed driver runtines.
+              libusb-win32 signed drivers. (http://sourceforge.net/projects/libusb-win32)
             </para>
           </bugentry>
         </bug>
@@ -29,7 +29,21 @@
             <token>Added</token>
           </bugaction>
           <bugentry>
-            Additional support for asynchronous I/O.
+            Additional support for asynchronous I/O. See the <CREF>T:LibUsbDotNet.Main.UsbTransferQueue</CREF> class and 
+            the <link xlink:href="6762cf9e-c192-4780-9717-c7d52a59a847">Read.Isochronous</link> example.
+          </bugentry>
+        </bug>
+        <bug>
+          <bugaction>
+            <token>Updated</token>
+          </bugaction>
+          <bugentry>
+            InfWizard to include an embedded libusb-win32 driver resource package.
+            <para>
+              Previous version of the InfWizard required the user to download driver resource package(s) before it could be used.
+              InfWizard will continue to support these downloadable driver packages but now comes with a libusb-win32 driver resource package
+              embedded into InfWizard.exe.
+            </para>
           </bugentry>
         </bug>
       </bugs>

@@ -1,67 +1,77 @@
 LibUsbDotNet Version History
 
-V2.2.6 (07/09/2010)
+V2.2.6 (07/10/2010)
 ====================
   * [Removed] libusb-win32 (ludn) source branch. 
     The LUDN edition of libusb-win32 has been discontinued as it is no longer 
     needed. LibUsbDotNet v2.2.6 and above are packaged with the official 
-    libusb-win32 signed driver runtines. 
+    libusb-win32 signed drivers. (http://sourceforge.net/projects/libusb-
+    win32) 
 
   * [Added] Isochronous endpoint support.
 
-  * [Added] Additional support for asynchronous I/O.
+  * [Added] Additional support for asynchronous I/O. See the UsbTransferQueue 
+    class and the Read.Isochronous example.
 
-
-V2.2.5 (04/22/2010)
-====================
-  * [Added] DataReceivedEnabledChanged event 
-    This event is fired on the DataReceivedEnabled property changes state. 
-
-  * [Updated] The LibUsbDotNet InfWizard has been re-worked and includes many 
-    new features. 
-    InfWizard no longer uses the 'Find Drivers' option. Instead, it uses 
-    driver resource packages that contain the drivers/coinstallers, inf/cat 
-    file templates, and all other files that may be required by the 
-    installation. Driver resource packages can be downloaded automatically by 
-    InfWizard or from http://sites.google.com/site/libusbdotnet/
-    driver_resources. As of v2.2.5 Winusb 1.9 and libusb-win32 0.1.12.2 
-    packages are available. 
-    
-    InfWiard has an install now feature, thanks to Peter Batard and the Libusb-
-    1.0 team. After a driver package is created, it can be automatically 
-    installed. 
-    
-    InfWizard remove device function enhancements. The remove device function 
-    can remove usb devices by the device instance id or all devices matching 
-    the hardware id. It now calls SetupDiUnintallOEMInf as well as 
-    SetupDIRemoveDevice. 
-    
-    Detailed logging added. Most of the InfWizard pages have a log status rtf 
-    box which indicates the current progress of an operation. All log status 
-    boxes can be saved, copied and cleared via the context menu. 
-
-  * [Updated] WinUsbRegistry class 
-    Improved support for composite devices. Added DeviceID and InterfaceID 
-    property 
-
-  * [Added] EndpointType parameter to OpenEndpointReader and 
-    OpenEndpointWriter methods. 
-    The endpoint type must be specified for linux Libusb-1.0 compatibility.
-
-  * [Added] Benchmark Console application. 
-    Thank Xiaofan (http://mcuee.blogspot.com) for helping debug this 
-    application and getting it ready for release.
-
-  * [Fixed] Usb devices runnning benchmark firmware do not work correctly if 
-    plugged in while booting under linux.
-
-  * [Updated] Benchmark firmware for Microchip PIC USB devices updated to 
-    MCHPFSUSB Framework v2.6a. Added support for no ping pong buffering 
-    benchmark tests.
+  * [Updated] InfWizard to include an embedded libusb-win32 driver resource 
+    package. 
+    Previous version of the InfWizard required the user to download driver 
+    resource package(s) before it could be used. InfWizard will continue to 
+    support these downloadable driver packages but now comes with a libusb-
+    win32 driver resource package embedded into InfWizard.exe. 
 
 
 PREVIOUS VERSIONS
 ==================
+
+    V2.2.5 (04/22/2010)
+    ====================
+      * [Added] DataReceivedEnabledChanged event 
+        This event is fired on the DataReceivedEnabled property changes state. 
+
+      * [Updated] The LibUsbDotNet InfWizard has been re-worked and includes 
+        many new features. 
+        InfWizard no longer uses the 'Find Drivers' option. Instead, it uses 
+        driver resource packages that contain the drivers/coinstallers, inf/
+        cat file templates, and all other files that may be required by the 
+        installation. Driver resource packages can be downloaded automatically 
+        by InfWizard or from http://sites.google.com/site/libusbdotnet/
+        driver_resources. As of v2.2.5 Winusb 1.9 and libusb-win32 0.1.12.2 
+        packages are available. 
+        
+        InfWiard has an install now feature, thanks to Peter Batard and the 
+        Libusb-1.0 team. After a driver package is created, it can be 
+        automatically installed. 
+        
+        InfWizard remove device function enhancements. The remove device 
+        function can remove usb devices by the device instance id or all 
+        devices matching the hardware id. It now calls SetupDiUnintallOEMInf 
+        as well as SetupDIRemoveDevice. 
+        
+        Detailed logging added. Most of the InfWizard pages have a log status 
+        rtf box which indicates the current progress of an operation. All log 
+        status boxes can be saved, copied and cleared via the context menu. 
+
+      * [Updated] WinUsbRegistry class 
+        Improved support for composite devices. Added DeviceID and InterfaceID 
+        property 
+
+      * [Added] EndpointType parameter to OpenEndpointReader and 
+        OpenEndpointWriter methods. 
+        The endpoint type must be specified for linux Libusb-1.0 
+        compatibility.
+
+      * [Added] Benchmark Console application. 
+        Thank Xiaofan (http://mcuee.blogspot.com) for helping debug this 
+        application and getting it ready for release.
+
+      * [Fixed] Usb devices runnning benchmark firmware do not work correctly 
+        if plugged in while booting under linux.
+
+      * [Updated] Benchmark firmware for Microchip PIC USB devices updated to 
+        MCHPFSUSB Framework v2.6a. Added support for no ping pong buffering 
+        benchmark tests.
+
 
     V2.2.4 (03/13/2010)
     ====================

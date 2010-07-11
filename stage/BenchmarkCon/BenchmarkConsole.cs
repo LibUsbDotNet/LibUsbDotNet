@@ -1452,6 +1452,7 @@ namespace LibUsbDotNet
             Console.ReadKey();
             CONMSG0("\n");
 
+            UsbDevice.Exit();
             return 0;
         }
 

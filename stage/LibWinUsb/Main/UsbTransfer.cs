@@ -508,10 +508,10 @@ namespace LibUsbDotNet.Main
         }
 
         /// <summary>
-        /// Begins submitting transfers until <see cref="MaxOutstandingIO"/> is reached then waits for the oldest transfer to complete.  
+        /// Submits transfers until <see cref="MaxOutstandingIO"/> is reached then waits for the oldest transfer to complete.  
         /// </summary>
         /// <param name="handle">The queue handle to the <see cref="UsbTransfer"/> that completed.</param>
-        /// <returns></returns>
+        /// <returns><see cref="ErrorCode.Success"/> if data was transferred, or another <see cref="ErrorCode"/> on error.</returns>
         public ErrorCode Transfer(out Handle handle)
         {
             return transfer(this, out handle);

@@ -19,7 +19,7 @@
     <!--    DO NOT REMOVE    -->
     <!-- CurrentReleaseNotes -->
   <releaseNotes address="LibUsbDotNet_Changes_v2.2.6">
-    <title>v2.2.6 (07/09/2010)</title>
+    <title>v2.2.6 (07/10/2010)</title>
     <content>
       <bugs class="bullet">
         <bug>
@@ -31,7 +31,7 @@
             <para>
               The LUDN edition of libusb-win32 has been discontinued as it is no longer needed.
               LibUsbDotNet v2.2.6 and above are packaged with the official
-              libusb-win32 signed driver runtines.
+              libusb-win32 signed drivers. (http://sourceforge.net/projects/libusb-win32)
             </para>
           </bugentry>
         </bug>
@@ -48,201 +48,221 @@
             <token>Added</token>
           </bugaction>
           <bugentry>
-            Additional support for asynchronous I/O.
+            Additional support for asynchronous I/O. See the <CREF>T:LibUsbDotNet.Main.UsbTransferQueue</CREF> class and 
+            the <link xlink:href="6762cf9e-c192-4780-9717-c7d52a59a847">Read.Isochronous</link> example.
+          </bugentry>
+        </bug>
+        <bug>
+          <bugaction>
+            <token>Updated</token>
+          </bugaction>
+          <bugentry>
+            InfWizard to include an embedded libusb-win32 driver resource package.
+            <para>
+              Previous version of the InfWizard required the user to download driver resource package(s) before it could be used.
+              InfWizard will continue to support these downloadable driver packages but now comes with a libusb-win32 driver resource package
+              embedded into InfWizard.exe.
+            </para>
           </bugentry>
         </bug>
       </bugs>
     </content>
   </releaseNotes>
-    <releaseNotes address="LibUsbDotNet_Changes_v2.2.5">
-      <title>v2.2.5 (04/22/2010)</title>
-      <content>
-        <bugs class="bullet">
-          <bug>
-            <bugaction>
-              <token>Added</token>
-            </bugaction>
-            <bugentry>
-              <CREF>E:LibUsbDotNet.UsbEndpointReader.DataReceivedEnabledChanged</CREF> event
-              <para>
-                This event is fired on the <CREF>P:LibUsbDotNet.UsbEndpointReader.DataReceivedEnabled</CREF> property changes state.
-              </para>
-            </bugentry>
-          </bug>
-          <bug>
-            <bugaction>
-              <token>Updated</token>
-            </bugaction>
-            <bugentry>
-              The LibUsbDotNet InfWizard has been re-worked and includes many new features.
-              <para>
-                InfWizard no longer uses the 'Find Drivers' option.  Instead, it uses
-                driver resource packages that contain the drivers/coinstallers, inf/cat file
-                templates, and all other files that may be required by the installation.
-                Driver resource packages can be downloaded automatically by InfWizard
-                or from http://sites.google.com/site/libusbdotnet/driver_resources.
-                As of v2.2.5 Winusb 1.9 and libusb-win32 0.1.12.2 packages are available.
-              </para>
-              <para>
-                InfWiard has an install now feature, thanks to Peter Batard and the Libusb-1.0 team.
-                After a driver package is created, it can be automatically installed.
-              </para>
-              <para>
-                InfWizard remove device function enhancements. The remove device function can remove usb
-                devices by the device instance id or all devices matching the hardware id. It now calls
-                SetupDiUnintallOEMInf as well as SetupDIRemoveDevice.
-              </para>
-              <para>
-                Detailed logging added. Most of the InfWizard pages have a log status rtf box which indicates
-                the current progress of an operation.  All log status boxes can be saved, copied and cleared via
-                the context menu.
-              </para>
-            </bugentry>
-          </bug>
-          <bug>
-            <bugaction>
-              <token>Updated</token>
-            </bugaction>
-            <bugentry>
-              <CREF>T:LibUsbDotNet.WinUsb.WinUsbRegistry</CREF> class
-              <para>
-                Improved support for composite devices. Added <CREF>P:LibUsbDotNet.WinUsb.WinUsbRegistry.DeviceID</CREF> and <CREF>P:LibUsbDotNet.WinUsb.WinUsbRegistry.InterfaceID</CREF> property
-              </para>
-            </bugentry>
-          </bug>
-          <bug>
-            <bugaction>
-              <token>Added</token>
-            </bugaction>
-            <bugentry>
-              <CREF>T:LibUsbDotNet.Main.EndpointType</CREF> parameter to OpenEndpointReader and OpenEndpointWriter methods.
-              <para>The endpoint type must be specified for linux Libusb-1.0 compatibility.</para>
-            </bugentry>
-          </bug>
-          <bug>
-            <bugaction>
-              <token>Added</token>
-            </bugaction>
-            <bugentry>
-              Benchmark Console application.
-              <para>Thank Xiaofan (http://mcuee.blogspot.com) for helping debug this application and getting it ready for release.</para>
-            </bugentry>
-          </bug>
-          <bug>
-            <bugaction>
-              <token>Fixed</token>
-            </bugaction>
-            <bugentry>
-              Usb devices runnning benchmark firmware do not work correctly if plugged in while booting under linux.
-            </bugentry>
-          </bug>
-          <bug>
-            <bugaction>
-              <token>Updated</token>
-            </bugaction>
-            <bugentry>
-              Benchmark firmware for Microchip PIC USB devices updated to MCHPFSUSB Framework v2.6a. Added support for no ping pong buffering benchmark tests.
-            </bugentry>
-          </bug>
-        </bugs>
-      </content>
-    </releaseNotes>
-
     <!-- END OF CurrentReleaseNotes -->
 
     <releaseNotes address="LibUsbDotNet_Previous_Release_Notes" display="none">
       <title>Previous Versions</title>
       <content>
         <indentsection>
-          <!-- Previous Release Notes -->  <releaseNotes address="LibUsbDotNet_Changes_v2.2.4">
-    <title>v2.2.4 (03/13/2010)</title>
-    <content>
-      <bugs class="bullet">
-        <bug>
-          <bugaction>
-            <token>Fixed</token>
-          </bugaction>
-          <bugentry>
-            <externalLink target="LibUsbDotNet_Bug">
-              <linkText>Bug ID: 2969931</linkText>
-              <linkUri>
-                http://sourceforge.net/tracker/?func=detail&amp;aid=2969931&amp;group_id=206606&amp;atid=1140572
-              </linkUri>
-            </externalLink>
-            - Linux xbuild issue.
-            <para>
-              The xbuild utility failed to build the LibUsbDotNet.sln. This was caused
-              by an invalid resource in the InfWizard application and a casting issue for
-              function that take a Predicate&lt;&gt; as a parameter.
-            </para>
-          </bugentry>
-        </bug>
-        <bug>
-          <bugaction>
-            <token>Fixed</token>
-          </bugaction>
-          <bugentry>
-            <externalLink target="LibUsbDotNet_Bug">
-              <linkText>Bug ID: 2956665</linkText>
-              <linkUri>
-                http://sourceforge.net/tracker/?func=detail&amp;aid=2956665&amp;group_id=206606&amp;atid=1140572
-              </linkUri>
-            </externalLink>
-            - UsbDeviceFinder fails to find VID and PIDs &gt; 0x7FFF.
-            <para>
-              USB devices that have VID or PIDs greater than 0x7FFF are not found by the
-              UsbDeviceFinder class.
-            </para>
-          </bugentry>
-        </bug>
-        <bug>
-          <bugaction>
-            <token>Added</token>
-          </bugaction>
-          <bugentry>
-            Asynchronous transfer functions to <CREF>T:LibUsbDotNet.Main.UsbEndpointBase</CREF>.
-            <para>
-             For more details see the <CREF>M:LibUsbDotNet.Main.UsbEndpointBase.NewAsyncTransfer</CREF> and <CREF>M:LibUsbDotNet.Main.UsbEndpointBase.SubmitAsyncTransfer</CREF> functions in the <CREF>T:LibUsbDotNet.Main.UsbEndpointBase</CREF> class.
-            </para>
-          </bugentry>
-        </bug>
-        <bug>
-          <bugaction>
-            <token>Added</token>
-          </bugaction>
-          <bugentry>
-            Low-level .NET MonoLibUsb API for <externalLink target="Libusb-1.0"><linkText>Libusb-1.0.</linkText><linkUri>http://www.libusb.org/</linkUri></externalLink>
-            <para>
-              The low-level MonoLibUsb API (Libusb-1.0) is supported on many platforms including windows via the <externalLink target="LibUsbDotNet_Bug"><linkText>Libusb-1.0 windows-backend port</linkText><linkUri>http://www.libusb.org/wiki/windows_backend</linkUri></externalLink>.
-            </para>
-            <para>Unlike the LibUsbDotNet API, MonoLibUsb has full support for all Libusb-1.0 functions.</para>
-          </bugentry>
-        </bug>
-        <bug>
-          <bugaction>
-            <token>Added</token>
-          </bugaction>
-          <bugentry>
-            UsbRegistry.ForceSetupApi option.
-            <para>
-              This option forces LibUsbDotNet to gather extra device information via the windows setup api for devices using drivers that do not support the setupapi.
-            </para>
-          </bugentry>
-        </bug>
-        <bug>
-          <bugaction>
-            <token>Added</token>
-          </bugaction>
-          <bugentry>
-            UsbDevice.ForceLibUsbWinBack option.
-            <para>
-              This option forces LibUsbDotNet to use only the Libusb-1.0 windows backend driver.
-            </para>
-          </bugentry>
-        </bug>        
-      </bugs>
-    </content>
-  </releaseNotes>
+          <!-- Previous Release Notes -->
+          <releaseNotes address="LibUsbDotNet_Changes_v2.2.5">
+            <title>v2.2.5 (04/22/2010)</title>
+            <content>
+              <bugs class="bullet">
+                <bug>
+                  <bugaction>
+                    <token>Added</token>
+                  </bugaction>
+                  <bugentry>
+                    <CREF>E:LibUsbDotNet.UsbEndpointReader.DataReceivedEnabledChanged</CREF> event
+                    <para>
+                      This event is fired on the <CREF>P:LibUsbDotNet.UsbEndpointReader.DataReceivedEnabled</CREF> property changes state.
+                    </para>
+                  </bugentry>
+                </bug>
+                <bug>
+                  <bugaction>
+                    <token>Updated</token>
+                  </bugaction>
+                  <bugentry>
+                    The LibUsbDotNet InfWizard has been re-worked and includes many new features.
+                    <para>
+                      InfWizard no longer uses the 'Find Drivers' option.  Instead, it uses
+                      driver resource packages that contain the drivers/coinstallers, inf/cat file
+                      templates, and all other files that may be required by the installation.
+                      Driver resource packages can be downloaded automatically by InfWizard
+                      or from http://sites.google.com/site/libusbdotnet/driver_resources.
+                      As of v2.2.5 Winusb 1.9 and libusb-win32 0.1.12.2 packages are available.
+                    </para>
+                    <para>
+                      InfWiard has an install now feature, thanks to Peter Batard and the Libusb-1.0 team.
+                      After a driver package is created, it can be automatically installed.
+                    </para>
+                    <para>
+                      InfWizard remove device function enhancements. The remove device function can remove usb
+                      devices by the device instance id or all devices matching the hardware id. It now calls
+                      SetupDiUnintallOEMInf as well as SetupDIRemoveDevice.
+                    </para>
+                    <para>
+                      Detailed logging added. Most of the InfWizard pages have a log status rtf box which indicates
+                      the current progress of an operation.  All log status boxes can be saved, copied and cleared via
+                      the context menu.
+                    </para>
+                  </bugentry>
+                </bug>
+                <bug>
+                  <bugaction>
+                    <token>Updated</token>
+                  </bugaction>
+                  <bugentry>
+                    <CREF>T:LibUsbDotNet.WinUsb.WinUsbRegistry</CREF> class
+                    <para>
+                      Improved support for composite devices. Added <CREF>P:LibUsbDotNet.WinUsb.WinUsbRegistry.DeviceID</CREF> and <CREF>P:LibUsbDotNet.WinUsb.WinUsbRegistry.InterfaceID</CREF> property
+                    </para>
+                  </bugentry>
+                </bug>
+                <bug>
+                  <bugaction>
+                    <token>Added</token>
+                  </bugaction>
+                  <bugentry>
+                    <CREF>T:LibUsbDotNet.Main.EndpointType</CREF> parameter to OpenEndpointReader and OpenEndpointWriter methods.
+                    <para>The endpoint type must be specified for linux Libusb-1.0 compatibility.</para>
+                  </bugentry>
+                </bug>
+                <bug>
+                  <bugaction>
+                    <token>Added</token>
+                  </bugaction>
+                  <bugentry>
+                    Benchmark Console application.
+                    <para>Thank Xiaofan (http://mcuee.blogspot.com) for helping debug this application and getting it ready for release.</para>
+                  </bugentry>
+                </bug>
+                <bug>
+                  <bugaction>
+                    <token>Fixed</token>
+                  </bugaction>
+                  <bugentry>
+                    Usb devices runnning benchmark firmware do not work correctly if plugged in while booting under linux.
+                  </bugentry>
+                </bug>
+                <bug>
+                  <bugaction>
+                    <token>Updated</token>
+                  </bugaction>
+                  <bugentry>
+                    Benchmark firmware for Microchip PIC USB devices updated to MCHPFSUSB Framework v2.6a. Added support for no ping pong buffering benchmark tests.
+                  </bugentry>
+                </bug>
+              </bugs>
+            </content>
+          </releaseNotes>
+          <releaseNotes address="LibUsbDotNet_Changes_v2.2.4">
+            <title>v2.2.4 (03/13/2010)</title>
+            <content>
+              <bugs class="bullet">
+                <bug>
+                  <bugaction>
+                    <token>Fixed</token>
+                  </bugaction>
+                  <bugentry>
+                    <externalLink target="LibUsbDotNet_Bug">
+                      <linkText>Bug ID: 2969931</linkText>
+                      <linkUri>
+                        http://sourceforge.net/tracker/?func=detail&amp;aid=2969931&amp;group_id=206606&amp;atid=1140572
+                      </linkUri>
+                    </externalLink>
+                    - Linux xbuild issue.
+                    <para>
+                      The xbuild utility failed to build the LibUsbDotNet.sln. This was caused
+                      by an invalid resource in the InfWizard application and a casting issue for
+                      function that take a Predicate&lt;&gt; as a parameter.
+                    </para>
+                  </bugentry>
+                </bug>
+                <bug>
+                  <bugaction>
+                    <token>Fixed</token>
+                  </bugaction>
+                  <bugentry>
+                    <externalLink target="LibUsbDotNet_Bug">
+                      <linkText>Bug ID: 2956665</linkText>
+                      <linkUri>
+                        http://sourceforge.net/tracker/?func=detail&amp;aid=2956665&amp;group_id=206606&amp;atid=1140572
+                      </linkUri>
+                    </externalLink>
+                    - UsbDeviceFinder fails to find VID and PIDs &gt; 0x7FFF.
+                    <para>
+                      USB devices that have VID or PIDs greater than 0x7FFF are not found by the
+                      UsbDeviceFinder class.
+                    </para>
+                  </bugentry>
+                </bug>
+                <bug>
+                  <bugaction>
+                    <token>Added</token>
+                  </bugaction>
+                  <bugentry>
+                    Asynchronous transfer functions to <CREF>T:LibUsbDotNet.Main.UsbEndpointBase</CREF>.
+                    <para>
+                      For more details see the <CREF>M:LibUsbDotNet.Main.UsbEndpointBase.NewAsyncTransfer</CREF> and <CREF>M:LibUsbDotNet.Main.UsbEndpointBase.SubmitAsyncTransfer</CREF> functions in the <CREF>T:LibUsbDotNet.Main.UsbEndpointBase</CREF> class.
+                    </para>
+                  </bugentry>
+                </bug>
+                <bug>
+                  <bugaction>
+                    <token>Added</token>
+                  </bugaction>
+                  <bugentry>
+                    Low-level .NET MonoLibUsb API for <externalLink target="Libusb-1.0">
+                      <linkText>Libusb-1.0.</linkText>
+                      <linkUri>http://www.libusb.org/</linkUri>
+                    </externalLink>
+                    <para>
+                      The low-level MonoLibUsb API (Libusb-1.0) is supported on many platforms including windows via the <externalLink target="LibUsbDotNet_Bug">
+                        <linkText>Libusb-1.0 windows-backend port</linkText>
+                        <linkUri>http://www.libusb.org/wiki/windows_backend</linkUri>
+                      </externalLink>.
+                    </para>
+                    <para>Unlike the LibUsbDotNet API, MonoLibUsb has full support for all Libusb-1.0 functions.</para>
+                  </bugentry>
+                </bug>
+                <bug>
+                  <bugaction>
+                    <token>Added</token>
+                  </bugaction>
+                  <bugentry>
+                    UsbRegistry.ForceSetupApi option.
+                    <para>
+                      This option forces LibUsbDotNet to gather extra device information via the windows setup api for devices using drivers that do not support the setupapi.
+                    </para>
+                  </bugentry>
+                </bug>
+                <bug>
+                  <bugaction>
+                    <token>Added</token>
+                  </bugaction>
+                  <bugentry>
+                    UsbDevice.ForceLibUsbWinBack option.
+                    <para>
+                      This option forces LibUsbDotNet to use only the Libusb-1.0 windows backend driver.
+                    </para>
+                  </bugentry>
+                </bug>
+              </bugs>
+            </content>
+          </releaseNotes>
           <releaseNotes address="LibUsbDotNet_Changes_v2.2.3">
             <title>v2.2.3 (01/30/2010)</title>
             <content>
