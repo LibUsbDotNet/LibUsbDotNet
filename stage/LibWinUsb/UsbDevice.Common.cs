@@ -32,11 +32,8 @@ namespace LibUsbDotNet
 {
     public abstract partial class UsbDevice
     {
-        private const string LIBUSB_SYS = "libusb0.sys";
-        private const string WINUSB_DLL = "winusb.dll";
         private static LibUsbAPI _libUsbApi;
         private static WinUsbAPI _winUsbApi;
-        private static object mHasLibUsbDriver;
         private static object mHasWinUsbDriver;
         private static object mHasLibUsbWinBackDriver;
 
@@ -73,9 +70,13 @@ namespace LibUsbDotNet
         /// Gets a list of all available libusb-win32 USB devices.
         /// </summary>
         /// <remarks>
-        /// Use this property to get a list of USB device that can be accessed by LibUsbDotNet under windows using
-        /// the libusb-win32 driver.
-        /// Using the <see cref="AllDevices"/> property instead will ensure your source code is platform-independent.
+        /// <para>
+        /// On windows, gets a list of libusb-win32 USB devices . If <see cref="ForceLibUsbWinBack"/> 
+        /// is true, gets a list of libusb-1.0 devices.
+        /// </para>
+        /// <para>
+        /// On linux/mac, gets a list of libusb-1.0 devices.
+        /// </para>
         /// </remarks>
         public static UsbRegDeviceList AllLibUsbDevices
         {
@@ -92,13 +93,13 @@ namespace LibUsbDotNet
                 }
                 else
                 {
-                    if (HasLibUsbDriver && !ForceLegacyLibUsb && KernelType == LibUsbKernelType.NativeLibUsb)
+                    if (!ForceLegacyLibUsb && KernelType == LibUsbKernelType.NativeLibUsb)
                     {
                         List<LibUsbRegistry> libUsbRegistry = LibUsbRegistry.DeviceList;
                         foreach (LibUsbRegistry usbRegistry in libUsbRegistry)
                             regDevList.Add(usbRegistry);
                     }
-                    else if (HasLibUsbDriver)
+                    else 
                     {
                         List<LegacyUsbRegistry> libUsbRegistry = LegacyUsbRegistry.DeviceList;
                         foreach (LegacyUsbRegistry usbRegistry in libUsbRegistry)

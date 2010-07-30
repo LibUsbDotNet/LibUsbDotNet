@@ -52,9 +52,10 @@ namespace LibUsbDotNet
         /// Gets a list of all available WinUSB USB devices.
         /// </summary>
         /// <remarks>
-        /// Use this property to get a list of USB device that can be accessed by LibUsbDotNet under windows using
-        /// microsofts WinUSB driver.
+        /// On windows, gets a list of WinUSB devices. On linux always returns null.
+        /// <para>
         /// Using the <see cref="AllDevices"/> property instead will ensure your source code is platform-independent.
+        /// </para>
         /// </remarks>
         public static UsbRegDeviceList AllWinUsbDevices
         {
@@ -77,6 +78,15 @@ namespace LibUsbDotNet
         /// <summary>
         /// True if the LibUsb driver is found on the system.
         /// </summary>
+        [Obsolete("Always returns true")]
+        public static bool HasLibUsbDriver
+        {
+            get
+            {
+                return true;
+            }
+        }
+        /*
         public static bool HasLibUsbDriver
         {
             get
@@ -103,11 +113,13 @@ namespace LibUsbDotNet
                 return (bool) mHasLibUsbDriver;
             }
         }
-
+        */
 
         /// <summary>
-        /// True if the WinUsb driver is found on the system.
+        /// True if the WinUSB API is available.
         /// </summary>
+        /// <remarks>
+        /// </remarks>
         public static bool HasWinUsbDriver
         {
             get
@@ -137,7 +149,7 @@ namespace LibUsbDotNet
         }
 
         /// <summary>
-        /// True if the WinUsb driver is found on the system.
+        /// True if the libusb-1.0 API is available.
         /// </summary>
         public static bool HasLibUsbWinBackDriver
         {
