@@ -503,9 +503,11 @@ namespace InfWizard.WizardClassHelpers
 
         public override bool DeviceFound(DeviceItem item, IntPtr pDeviceInfoSet, ref SetupApi.SP_DEVINFO_DATA DeviceInfoData)
         {
-            if (mRemoveDeviceOptions.RemoveByHardwareID)
+            if (mRemoveDeviceOptions.RemoveByVidPid)
             {
-                if (item.BuildInfHardwareID() != mRemoveDeviceOptions.DeviceItem.BuildInfHardwareID()) return true;
+                if (item.VendorID.ToLower() != mRemoveDeviceOptions.DeviceItem.VendorID.ToLower() ||
+                item.ProductID.ToLower() != mRemoveDeviceOptions.DeviceItem.ProductID.ToLower())
+                    return true;
             }
             else
             {
@@ -539,7 +541,7 @@ namespace InfWizard.WizardClassHelpers
                         InfWizardStatus.Log(CategoryType.RemoveDevice, StatusType.Warning | StatusType.Win32Error, "SetupUninstallOEMInf failed");
                 }
             }
-            return mRemoveDeviceOptions.RemoveByHardwareID;
+            return mRemoveDeviceOptions.RemoveByVidPid;
         }
 
         #endregion

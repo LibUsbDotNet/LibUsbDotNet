@@ -53,7 +53,7 @@ namespace InfWizard
 
             private bool mDeepClean;
             private bool mOnlyConnectedDevices;
-            private bool mRemoveByHardwareID;
+            private bool mRemoveByVidPid;
             public RemoveDeviceOptions(DeviceItem deviceItem) { mDeviceItem = deviceItem; }
 
             [DisplayName("Deep Clean INF Directory")]
@@ -65,13 +65,13 @@ namespace InfWizard
                 set { mDeepClean = value; }
             }
 
-            [DisplayName("Remove Device By HardwareID")]
-            [Description("Removes all devices matching this devices hardware id.")]
+            [DisplayName("Remove Device By vendor and product id")]
+            [Description("Removes all devices matching this devices vid and pid.")]
             [Category("Remove Options")]
-            public bool RemoveByHardwareID
+            public bool RemoveByVidPid
             {
-                get { return mRemoveByHardwareID; }
-                set { mRemoveByHardwareID = value; }
+                get { return mRemoveByVidPid; }
+                set { mRemoveByVidPid = value; }
             }
 
             [DisplayName("Connected Devices Only")]
