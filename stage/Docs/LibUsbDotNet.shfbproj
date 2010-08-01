@@ -33,14 +33,14 @@
     <FrameworkVersion>2.0.50727</FrameworkVersion>
     <RootNamespaceContainer>False</RootNamespaceContainer>
     <RootNamespaceTitle>Library Reference</RootNamespaceTitle>
-    <HelpTitle>LibUsbDotNet 2.2.6</HelpTitle>
+    <HelpTitle>LibUsbDotNet 2.2.7</HelpTitle>
     <CopyrightHref>http://www.gnu.org/licenses/lgpl.html</CopyrightHref>
     <CopyrightText>Copyright %28C%29 2010 Travis Robinson. All Rights Reserved.</CopyrightText>
     <FeedbackEMailAddress>libusbdotnet%40gmail.com</FeedbackEMailAddress>
     <FeedbackEMailLinkText>LibUsbDotNet Support</FeedbackEMailLinkText>
     <PresentationStyle>Prototype</PresentationStyle>
     <IncludeFavorites>True</IncludeFavorites>
-    <HelpFileVersion>2.2.6.79</HelpFileVersion>
+    <HelpFileVersion>2.2.7.85</HelpFileVersion>
     <ComponentConfigurations>
       <ComponentConfig id="Code Block Component" enabled="True" xmlns="">
         <component id="Code Block Component" type="SandcastleBuilder.Components.CodeBlockComponent" assembly="{@SHFBFolder}SandcastleBuilder.Components.dll">

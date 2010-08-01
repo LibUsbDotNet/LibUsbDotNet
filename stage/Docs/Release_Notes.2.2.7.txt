@@ -1,0 +1,383 @@
+LibUsbDotNet Version History
+
+V2.2.7 (07/31/2010)
+====================
+  * [Fixed] libusb-1.0 support. 
+    This was broken when ISO endpoint support was added. 
+
+  * [Deprecated] HasLibUsbDriver property 
+    This property will always return true. 
+
+  * [Fixed] 32bit applications not running on 64bit operating systems. 
+    (Windows) 
+    If LibUsbDotNet is compiled as Win32 instead of Any CPU it would not work 
+    on 64bit operating systems with libusb-win32. 
+
+  * [Updated] InfWizard with embedded libusb-win32 v1.2.1 driver resource 
+    package.
+
+  * [Updated] default UsbEndpointBase.MaxReadWrite changed back to 65536. This 
+    is the limit at which libusbdotnet begins splitting transfers.
+
+
+PREVIOUS VERSIONS
+==================
+
+    V2.2.6 (07/10/2010)
+    ====================
+      * [Removed] libusb-win32 (ludn) source branch. 
+        The LUDN edition of libusb-win32 has been discontinued as it is no 
+        longer needed. LibUsbDotNet v2.2.6 and above are packaged with the 
+        official libusb-win32 signed drivers. (http://sourceforge.net/projects/
+        libusb-win32) 
+
+      * [Added] Isochronous endpoint support.
+
+      * [Added] Additional support for asynchronous I/O. See the 
+        UsbTransferQueue class and the Read.Isochronous example.
+
+      * [Updated] InfWizard to include an embedded libusb-win32 driver 
+        resource package. 
+        Previous version of the InfWizard required the user to download driver 
+        resource package(s) before it could be used. InfWizard will continue 
+        to support these downloadable driver packages but now comes with a 
+        libusb-win32 driver resource package embedded into InfWizard.exe. 
+
+
+    V2.2.5 (04/22/2010)
+    ====================
+      * [Added] DataReceivedEnabledChanged event 
+        This event is fired on the DataReceivedEnabled property changes state. 
+
+      * [Updated] The LibUsbDotNet InfWizard has been re-worked and includes 
+        many new features. 
+        InfWizard no longer uses the 'Find Drivers' option. Instead, it uses 
+        driver resource packages that contain the drivers/coinstallers, inf/
+        cat file templates, and all other files that may be required by the 
+        installation. Driver resource packages can be downloaded automatically 
+        by InfWizard or from http://sites.google.com/site/libusbdotnet/
+        driver_resources. As of v2.2.5 Winusb 1.9 and libusb-win32 0.1.12.2 
+        packages are available. 
+        
+        InfWiard has an install now feature, thanks to Peter Batard and the 
+        Libusb-1.0 team. After a driver package is created, it can be 
+        automatically installed. 
+        
+        InfWizard remove device function enhancements. The remove device 
+        function can remove usb devices by the device instance id or all 
+        devices matching the hardware id. It now calls SetupDiUnintallOEMInf 
+        as well as SetupDIRemoveDevice. 
+        
+        Detailed logging added. Most of the InfWizard pages have a log status 
+        rtf box which indicates the current progress of an operation. All log 
+        status boxes can be saved, copied and cleared via the context menu. 
+
+      * [Updated] WinUsbRegistry class 
+        Improved support for composite devices. Added DeviceID and InterfaceID 
+        property 
+
+      * [Added] EndpointType parameter to OpenEndpointReader and 
+        OpenEndpointWriter methods. 
+        The endpoint type must be specified for linux Libusb-1.0 
+        compatibility.
+
+      * [Added] Benchmark Console application. 
+        Thank Xiaofan (http://mcuee.blogspot.com) for helping debug this 
+        application and getting it ready for release.
+
+      * [Fixed] Usb devices runnning benchmark firmware do not work correctly 
+        if plugged in while booting under linux.
+
+      * [Updated] Benchmark firmware for Microchip PIC USB devices updated to 
+        MCHPFSUSB Framework v2.6a. Added support for no ping pong buffering 
+        benchmark tests.
+
+
+    V2.2.4 (03/13/2010)
+    ====================
+      * [Fixed] Bug ID: 2969931 - Linux xbuild issue. 
+        The xbuild utility failed to build the LibUsbDotNet.sln. This was 
+        caused by an invalid resource in the InfWizard application and a 
+        casting issue for function that take a Predicate<> as a parameter. 
+
+      * [Fixed] Bug ID: 2956665 - UsbDeviceFinder fails to find VID and PIDs > 
+        0x7FFF. 
+        USB devices that have VID or PIDs greater than 0x7FFF are not found by 
+        the UsbDeviceFinder class. 
+
+      * [Added] Asynchronous transfer functions to UsbEndpointBase. 
+        For more details see the NewAsyncTransfer and SubmitAsyncTransfer 
+        functions in the UsbEndpointBase class. 
+
+      * [Added] Low-level .NET MonoLibUsb API for Libusb-1.0.
+        The low-level MonoLibUsb API (Libusb-1.0) is supported on many 
+        platforms including windows via the Libusb-1.0 windows-backend port. 
+        
+        Unlike the LibUsbDotNet API, MonoLibUsb has full support for all 
+        Libusb-1.0 functions.
+
+      * [Added] UsbRegistry.ForceSetupApi option. 
+        This option forces LibUsbDotNet to gather extra device information via 
+        the windows setup api for devices using drivers that do not support 
+        the setupapi. 
+
+      * [Added] UsbDevice.ForceLibUsbWinBack option. 
+        This option forces LibUsbDotNet to use only the Libusb-1.0 windows 
+        backend driver. 
+
+
+    V2.2.3 (01/30/2010)
+    ====================
+      * [Removed] - GetConfiguration call in UsbDevice.Open method. 
+        The UsbDevice.Open method requests the usb devices current 
+        configuration upon opening. This causes problems in some situations. 
+
+      * [Added] IUsbDevice.ResetDevice method.
+
+      * [Fixed] Bug ID: 2937372 - Read Failed:WaitHandle.WaitOne missing 
+        member exception. 
+        If .NET 3.5 is not installed, a System.Threading.WaitHandle.WaitOne 
+        missing member exception is thrown. LibUsbDotNet should not require 
+        the 3.5 runtime. It should work with 2.0 and greater. 
+
+      * [Fixed] Bug ID: 2935627 - Stack overflow when reading an ep that does 
+        not exists. 
+        If an attempt is made to open and transmit to a non-existent endpoint 
+        a stack overflow occurs. Expected behavior is to throw an exception. 
+
+      * [Fixed] Bug ID: 2935456 - UsbDevice.KernelType property not set 
+        correcty. 
+        [Windows Only] If the UsbDevice.KernelType is accessed when no device 
+        are connected it does not update properly when a device is connected. 
+
+
+    V2.2.2 (01/19/2010)
+    ====================
+      * [Fixed] Bug ID: 2934547 - DeviceNotifier not working. 
+        On Linux like OSes the DeviceNotifier never fires events. On Windows, 
+        a DllNotFound exception is thrown. 
+
+      * [Fixed] Bug ID: 2933530 - Composite WinUSB not found. 
+        WinUSB interfaces that are part of a composite device do not appear in 
+        the WinUsbRegistry.DeviceList. 
+
+
+    V2.2.1 (01/13/2010)
+    ====================
+      * [Fixed] Bug ID: 2930836 - [OSX PPC] GetDescriptor request fails. 
+        On big-endian platforms, the descriptor type and index bytes are 
+        reversed. 
+
+      * [Fixed] Bug ID: 2927179 - Wrong versioning. LibUsbDotNet 2.2.0 all 
+        AssemblyInfo.cs contains [assembly:AssemblyVersion("2.1.0.13")]
+
+      * [Updated] Benchmark application: Removed all calls to Control.Invoke. 
+        The benchmark application now uses a timer control to periodically 
+        update the display instead of "Invoking" an update everytime data is 
+        transferred. This provides a more accurate benchmark reading as well 
+        as a work-a-round for Mono .NET runtimes on platforms that do not 
+        properly implement the Control.Invoke method. 
+
+      * [Removed] LINUX compiler option. 
+        The LINUX compiler option is no longer used. LibUsbDotNet (v2.2.1 and 
+        above) is fully platform independent. 
+
+
+    V2.2.0 (12/29/2009)
+    ====================
+      * [Added] Linux support. 
+        LibUsbDotNet supports linux via the linux libusb v1.x driver. 
+
+      * [Updated] UsbDevice.OpenEndpointReader and 
+        UsbDevice.OpenEndpointWriter members to first lookup the endpoint 
+        descriptor for the current configuration. 
+        If an attempt is made to open an endpoint on a unconfigured device 
+        (GetConfiguration = 0) an exception is thrown. 
+        
+        If an attempt is made to open a non-existent or invalid endpoint an 
+        exception is thrown. 
+
+      * [Added] endpoint descriptor information to UsbEndpointBase class. 
+        A New property, 'EndpointInfo' is available from the UsbEndpointBase 
+        class. 
+
+      * [Removed] Depricated UsbGlobals class. 
+        The UsbGlobals class has been rendered obsolete and will be removed in 
+        future release. Update your code you use the UsbDevice class instead. 
+
+
+    V2.1.0 (11-02-2009)
+    ====================
+      * [Fixed] Bug ID: 2886021 - Problem with several instances of the same 
+        device (WinUsb) 
+        When connecting 2 (or more) identical USB devices, the library has 
+        problems opening each device instance. 
+
+      * [Fixed] Bug ID: 2873320Bug ID: 2874172 - Error getting Key 
+        "SymbolicName" 
+        Some devices having no SymbolicName. In this case, the main 
+        application or .NET framework crashes. 
+
+      * [Fixed] Bug ID: 2853283 - Infwizard exception thrown on load 
+        The InfWizard throws an exception when loaded. 
+
+      * [Added] support for the genuine libusb-win32 kernel driver. 
+        If the LibUsbDotNet native kernel driver is not detected it falls back 
+        to the original libusb-win32 kernel driver. Using the native driver is 
+        recommended. 
+
+      * [Added] static open method to the LibUsbDevice class. 
+        Opens a libUsb device from a user suppiled device filename. 
+        
+        public static bool Open(string deviceFilename, out LibUsbDevice 
+        usbDevice)
+
+      * [Added] static open method to the WinUsbDevice class. 
+        Opens a WinUSB device from a user suppiled device path (symbolic link).
+        
+        
+        public static bool Open(string devicePath, out WinUsbDevice usbDevice)
+
+      * [Removed] DeviceInterfaceGuid property from WinUsbDevice class. 
+        A DeviceInterfaceGuid is not required for a WinUsbDevice. 
+
+      * [Removed] UsbRegistryInfo property from UsbDevice classes. 
+        A UsbRegistry instance is not required for the UsbDevice classes. 
+
+      * [Removed] device and endpoint level locking features. 
+        The device and endpoint level locking features had specfic 
+        requirements pertaining to the usb symbolic name that could not always 
+        be met. 
+
+
+    V2.0.3 (09-03-2009)
+    ====================
+      * [Fixed] Bug ID: 2845680 - LibUsbDotNet-libusb-win32 v2.1.12.1 
+        GET_INTERFACE request fails in XP SP3 
+        The GET_INTERFACE request in the libusb kernel driver fails on Windows 
+        XP SP3 but works under windows Vista. 
+
+      * [Fixed] Bug ID: 2845679 - InfWizard Spawn driver function problems. 
+        The InfWizard spawn driver function fails to locate WinUSB support 
+        drivers from the DDK install directory. 
+
+      * [Added] UsbException on non-existent endpoint. 
+        If an an attempt is made to open an endpoint that does not exists, a 
+        UsbException is thrown. 
+
+      * [Updated] LibUsbDotNet-libusb-win32 kernel driver. 
+        Applied LibUsbDotNet kernel driver patches to libusb-win32 v0.1.12.2. 
+        LibUsbDotNet-libusb-win32 v2.1.12.2 kernel created. 
+
+      * [Updated] Test_Bulk application. 
+        Removed all references to benchmark device. The Test_Bulk apllication 
+        is more universal and easier to tailor to specific devices. 
+
+      * [Updated] documentation.
+
+
+    V2.0.2 (08-16-2009)
+    ====================
+      * [Fixed] Bug ID: 2833695 - USB rev. code treated as hex instead of bcd. 
+        The USBSymbolicName class is converting the bcd revision number to a 
+        hex number. 
+
+      * [Fixed] Bug ID: 2833701 - InfWizard never populates the "Driver 
+        Information" property. 
+        On the final wizard page of the InfWizard the "Driver Information" 
+        property under the "Info" category is never populated. 
+
+      * [Added] InfWizard remove device options form.
+
+      * [Added] InfWizard disclaimers.
+
+      * [Added] Benchmark PIC device firmware for MCP 2.5 USB stack.
+
+      * [Updated] documentation.
+
+
+    V2.0.1 (07-09-2009)
+    ====================
+      * [Fixed] Bug ID: 2816121 - UsbGlobals.OpenDevice(UsbDeviceFinder) Null 
+        reference exception 
+        Calling UsbGlobals.OpenDevice(UsbDeviceFinder) generates an exception 
+        if the device is not found. 
+
+      * [Fixed] Bug ID: 2818621 - DeviceNotifier Invalid Marshal fieldName 
+        Exception 
+        Field passed in is not a marshaled member of the type '
+        LibUsbDotNet.DeviceNotify.Internal.DevBroadcastPort'. Parameter name: 
+        fieldName. 
+
+      * [Added] 3 example projects.
+
+      * [Updated] documentation.
+
+
+    V2.0.0 (07-01-2009)
+    ====================
+      * [Added] Support for Microsofts generic user-mode usb driver, WinUsb.
+
+      * [Added] Added kernel level support for libusb-win32.
+
+      * [Added] Added a new and improved InfWizard.
+
+      * [Added] Added advanced USB locking strategies for process/thread level 
+        usb device sharing.
+
+      * [Added] Added Additional read/write functions added to the endpoint 
+        reader/writer classes.
+
+      * [Updated] Updated documentation with SandCastle (SHFB). Documentation 
+        is now available in html and Microsoft Help .chm format.
+
+      * [Updated] Updated LibUsbDotNet type and member names; they now adhere 
+        to strict naming conventions.
+
+      * [Added] Added additional members and types for more easily locating 
+        and opening usb devices by: VendorIDProductIDRevision CodeSerial 
+        NumberDevice Interface GUID
+
+
+    V1.0.1 (10-09-2007)
+    ====================
+      * [Updated] Ported to C#2.0! Many API changes. See documentation.
+
+      * [Added] Added Test_DeviceNotify sample project.
+
+      * [Fixed] Fixed mising data issue with the DataReceived event.
+
+      * [Updated] Rebuilt libusb core components with WINDDK 2003 (SP1).
+
+      * [Added] Added Itanium 64bit support.
+
+      * [Fixed] Fixed x64 installation error.
+
+
+    V0.1.4 (07-18-2007)
+    ====================
+      * [Removed] Debug runtimes removed from the distributions to avoid 
+        confusion.
+
+      * [Added] New Class Added. The DeviceNotify class is used for receiving 
+        device insertion/removal events. See documentation for full details.
+
+
+    V0.1.3 (01-04-2007)
+    ====================
+      * [Added] Added lock routines to internal read/write functions to 
+        increase multi-threading stability.
+
+      * [Removed] Removed dependencies on msvcmrt.lib.
+
+      * [Updated] Project defaults changed to compiled with /clr:pure syntax.
+
+      * [Added] Added 64bit support.
+
+      * [Fixed] Fixed function ClibUsb.Open(InfoDevice). It will now open 
+        different devices with the same vendor and product id.
+
+      * [Added] Added remove functions to the CLibUsb.ActiveEndPoints property 
+        (CEndPonts class)
+
+

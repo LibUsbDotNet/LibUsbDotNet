@@ -18,6 +18,69 @@
 
     <!--    DO NOT REMOVE    -->
     <!-- CurrentReleaseNotes -->
+  <releaseNotes address="LibUsbDotNet_Changes_v2.2.7">
+    <title>v2.2.7 (07/31/2010)</title>
+    <content>
+      <bugs class="bullet">
+        <bug>
+          <bugaction>
+            <token>Fixed</token>
+          </bugaction>
+          <bugentry>
+            libusb-1.0 support.
+            <para>
+              This was broken when ISO endpoint support was added.
+            </para>
+          </bugentry>
+        </bug>
+        <bug>
+          <bugaction>
+            <token>Deprecated</token>
+          </bugaction>
+          <bugentry>
+            <CREF>P:UsbDevice.HasLibUsbDriver</CREF> property
+            <para>
+              This property will always return true.
+            </para>
+          </bugentry>
+        </bug>
+        <bug>
+          <bugaction>
+            <token>Fixed</token>
+          </bugaction>
+          <bugentry>
+            32bit applications not running on 64bit operating systems. (Windows)
+            <para>
+              If LibUsbDotNet is compiled as Win32 instead of Any CPU it would not work on 64bit operating systems with libusb-win32.
+            </para>
+          </bugentry>
+        </bug>
+        <bug>
+          <bugaction>
+            <token>Updated</token>
+          </bugaction>
+          <bugentry>
+            InfWizard with embedded libusb-win32 v1.2.1 driver resource package.
+          </bugentry>
+        </bug>
+        <bug>
+          <bugaction>
+            <token>Updated</token>
+          </bugaction>
+          <bugentry>
+            default UsbEndpointBase.MaxReadWrite changed back to 65536.  This is the limit at which libusbdotnet begins splitting transfers.
+          </bugentry>
+        </bug>        
+      </bugs>
+    </content>
+  </releaseNotes>
+    <!-- END OF CurrentReleaseNotes -->
+
+    <releaseNotes address="LibUsbDotNet_Previous_Release_Notes" display="none">
+      <title>Previous Versions</title>
+      <content>
+        <indentsection>
+          <!-- Previous Release Notes -->
   <releaseNotes address="LibUsbDotNet_Changes_v2.2.6">
     <title>v2.2.6 (07/10/2010)</title>
     <content>
@@ -68,13 +131,6 @@
       </bugs>
     </content>
   </releaseNotes>
-    <!-- END OF CurrentReleaseNotes -->
-
-    <releaseNotes address="LibUsbDotNet_Previous_Release_Notes" display="none">
-      <title>Previous Versions</title>
-      <content>
-        <indentsection>
-          <!-- Previous Release Notes -->
           <releaseNotes address="LibUsbDotNet_Changes_v2.2.5">
             <title>v2.2.5 (04/22/2010)</title>
             <content>

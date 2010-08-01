@@ -5,32 +5,35 @@
       <bugs class="bullet">
         <bug>
           <bugaction>
-            <token>Removed</token>
+            <token>Fixed</token>
           </bugaction>
           <bugentry>
-            libusb-win32 (ludn) source branch.
+            libusb-1.0 support.
             <para>
-              The LUDN edition of libusb-win32 has been discontinued as it is no longer needed.
-              LibUsbDotNet v$(Major).$(Minor).$(Build) and above are packaged with the official
-              libusb-win32 signed drivers. (http://sourceforge.net/projects/libusb-win32)
+              This was broken when ISO endpoint support was added.
             </para>
           </bugentry>
         </bug>
         <bug>
           <bugaction>
-            <token>Added</token>
+            <token>Deprecated</token>
           </bugaction>
           <bugentry>
-            Isochronous endpoint support.
+            <CREF>P:UsbDevice.HasLibUsbDriver</CREF> property
+            <para>
+              This property will always return true.
+            </para>
           </bugentry>
-        </bug>        
+        </bug>
         <bug>
           <bugaction>
-            <token>Added</token>
+            <token>Fixed</token>
           </bugaction>
           <bugentry>
-            Additional support for asynchronous I/O. See the <CREF>T:LibUsbDotNet.Main.UsbTransferQueue</CREF> class and 
-            the <link xlink:href="6762cf9e-c192-4780-9717-c7d52a59a847">Read.Isochronous</link> example.
+            32bit applications not running on 64bit operating systems. (Windows)
+            <para>
+              If LibUsbDotNet is compiled as Win32 instead of Any CPU it would not work on 64bit operating systems with libusb-win32.
+            </para>
           </bugentry>
         </bug>
         <bug>
@@ -38,14 +41,17 @@
             <token>Updated</token>
           </bugaction>
           <bugentry>
-            InfWizard to include an embedded libusb-win32 driver resource package.
-            <para>
-              Previous version of the InfWizard required the user to download driver resource package(s) before it could be used.
-              InfWizard will continue to support these downloadable driver packages but now comes with a libusb-win32 driver resource package
-              embedded into InfWizard.exe.
-            </para>
+            InfWizard with embedded libusb-win32 v1.2.1 driver resource package.
           </bugentry>
         </bug>
+        <bug>
+          <bugaction>
+            <token>Updated</token>
+          </bugaction>
+          <bugentry>
+            default UsbEndpointBase.MaxReadWrite changed back to 65536.  This is the limit at which libusbdotnet begins splitting transfers.
+          </bugentry>
+        </bug>        
       </bugs>
     </content>
   </releaseNotes>

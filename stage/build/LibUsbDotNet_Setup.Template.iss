@@ -36,6 +36,7 @@ Name: english; MessagesFile: compiler:Default.isl
 [Icons]
 Name: {group}\libUsb-win32\Enable filter (admin only); Filename: {app}\libusb-win32\install-filter.exe; Parameters: -i; WorkingDir: {app}\libusb-win32; Flags: createonlyiffileexists
 Name: {group}\libUsb-win32\Disable filter (admin only); Filename: {app}\libusb-win32\install-filter.exe; Parameters: -u; WorkingDir: {app}\libusb-win32; Flags: createonlyiffileexists
+Name: {group}\libUsb-win32\Inf-Wizard; Filename: {app}\libusb-win32\inf-wizard.exe; WorkingDir: {app}\libusb-win32; Flags: createonlyiffileexists
 Name: {group}\LibUsbDotNet Help; Filename: {app}\LibUsbHelp.chm; WorkingDir: {app}\Docs; Flags: createonlyiffileexists
 Name: {group}\USB InfWizard; Filename: {app}\InfWizard.exe; WorkingDir: {app}; Flags: createonlyiffileexists
 Name: {group}\Test Info; Filename: {app}\Test_Info.exe; WorkingDir: {app}; Flags: createonlyiffileexists
@@ -72,24 +73,24 @@ Name: tasklibusb\insfilter; Flags:unchecked; Description: Enable libusb-win32 fi
 
 [Files]
 ; LibUsb-win32 x86
-Source: "$(LIBUSB_WIN32_BIN)\x86\libusb0.dll"; DestDir: {sys}; Flags: uninsneveruninstall replacesameversion restartreplace promptifolder; Check: IsX86; Tasks: tasklibusb
+Source: "$(LIBUSB_WIN32_BIN)\x86\libusb0_x86.dll"; DestName: libusb0.dll; DestDir: {sys}; Flags: uninsneveruninstall replacesameversion restartreplace promptifolder; Check: IsX86; Tasks: tasklibusb
 Source: "$(LIBUSB_WIN32_BIN)\x86\libusb0.sys"; DestDir: {sys}\drivers; Flags: uninsneveruninstall replacesameversion restartreplace promptifolder; Check: IsX86; Tasks: tasklibusb
-Source: "$(LIBUSB_WIN32_BIN)\x86\inf-wizard.exe"; DestDir: {app}\libusb-win32; Flags: ignoreversion recursesubdirs createallsubdirs; Check: IsX86; Tasks: tasklibusb
 Source: "$(LIBUSB_WIN32_BIN)\x86\install-filter.exe"; DestDir: {app}\libusb-win32; Flags: ignoreversion recursesubdirs createallsubdirs; Check: IsX86; Tasks: tasklibusb
 
 ; LibUsb-win32 AMD 64bit
-Source: "$(LIBUSB_WIN32_BIN)\x86\libusb0.dll"; DestDir: {syswow64}; Flags: uninsneveruninstall replacesameversion restartreplace promptifolder; Check: IsX64; Tasks: tasklibusb
+Source: "$(LIBUSB_WIN32_BIN)\x86\libusb0_x86.dll"; DestName: libusb0.dll; DestDir: {syswow64}; Flags: uninsneveruninstall replacesameversion restartreplace promptifolder; Check: IsX64; Tasks: tasklibusb
 Source: "$(LIBUSB_WIN32_BIN)\amd64\libusb0.sys"; DestDir: {sys}\drivers; Flags: uninsneveruninstall replacesameversion restartreplace promptifolder; Check: IsX64; Tasks: tasklibusb
 Source: "$(LIBUSB_WIN32_BIN)\amd64\libusb0.dll"; DestDir: {sys}; Flags: uninsneveruninstall replacesameversion restartreplace promptifolder; Check: IsX64; Tasks: tasklibusb
-Source: "$(LIBUSB_WIN32_BIN)\amd64\inf-wizard.exe"; DestDir: {app}\libusb-win32; Flags: ignoreversion recursesubdirs createallsubdirs; Check: IsX64; Tasks: tasklibusb
 Source: "$(LIBUSB_WIN32_BIN)\amd64\install-filter.exe"; DestDir: {app}\libusb-win32; Flags: ignoreversion recursesubdirs createallsubdirs; Check: IsX64; Tasks: tasklibusb
 
 ; LibUsb-win32 Itanium 64bit
-Source: "$(LIBUSB_WIN32_BIN)\x86\libusb0.dll"; DestDir: {syswow64}; Flags: uninsneveruninstall replacesameversion restartreplace promptifolder; Check: IsI64; Tasks: tasklibusb
+Source: "$(LIBUSB_WIN32_BIN)\x86\libusb0_x86.dll"; DestName: libusb0.dll; DestDir: {syswow64}; Flags: uninsneveruninstall replacesameversion restartreplace promptifolder; Check: IsI64; Tasks: tasklibusb
 Source: "$(LIBUSB_WIN32_BIN)\ia64\libusb0.sys"; DestDir: {sys}\drivers; Flags: uninsneveruninstall replacesameversion restartreplace promptifolder; Check: IsI64; Tasks: tasklibusb
 Source: "$(LIBUSB_WIN32_BIN)\ia64\libusb0.dll"; DestDir: {sys}; Flags: uninsneveruninstall replacesameversion restartreplace promptifolder; Check: IsI64; Tasks: tasklibusb
-Source: "$(LIBUSB_WIN32_BIN)\ia64\inf-wizard.exe"; DestDir: {app}\libusb-win32; Flags: ignoreversion recursesubdirs createallsubdirs; Check: IsI64; Tasks: tasklibusb
 Source: "$(LIBUSB_WIN32_BIN)\ia64\install-filter.exe"; DestDir: {app}\libusb-win32; Flags: ignoreversion recursesubdirs createallsubdirs; Check: IsI64; Tasks: tasklibusb
+
+; LibUsb-win32 Common
+Source: "$(LIBUSB_WIN32_BIN)\x86\inf-wizard.exe"; DestDir: {app}\libusb-win32; Flags: ignoreversion recursesubdirs createallsubdirs; Tasks: tasklibusb
 
 ; Runtime Files
 Source: .\bin\*; DestDir: {app}; Flags: recursesubdirs createallsubdirs ignoreversion; Components: dll
