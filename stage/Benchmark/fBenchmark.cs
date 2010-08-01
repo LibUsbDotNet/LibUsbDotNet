@@ -19,7 +19,6 @@
 // visit www.gnu.org.
 // 
 // 
-#define LOOP_BYTES_VALIDATION
 
 using System;
 using System.Collections.ObjectModel;
@@ -28,7 +27,6 @@ using System.Windows.Forms;
 using LibUsbDotNet;
 using LibUsbDotNet.Info;
 using LibUsbDotNet.Main;
-using LibUsbDotNet.LudnMonoLibUsb;
 using TestDevice;
 
 // ReSharper disable InconsistentNaming
@@ -53,6 +51,9 @@ namespace Benchmark
         private Thread mthWriteThreadEP1;
         private UsbDevice mUsbDevice;
         private UsbTestType mUsbTestType;
+
+        private UsbEndpointInfo mReadEndpointInfo;
+        private UsbEndpointInfo mWriteEndpointInfo;
         private UsbInterfaceInfo mInterfaceInfo;
 
         public fBenchmark() { InitializeComponent(); }
@@ -197,9 +198,15 @@ namespace Benchmark
 
         private void Form1_FormClosing(object sender, FormClosingEventArgs e)
         {
-            if (!ReferenceEquals(null, mUsbDevice))
-                closeTestDevice(mUsbDevice);
-            UsbDevice.Exit();
+            try
+            {
+                if (!ReferenceEquals(null, mUsbDevice))
+                    closeTestDevice(mUsbDevice);
+                UsbDevice.Exit();
+            }
+            catch
+            {
+            }
         }
 
         private void Form1_Load(object sender, EventArgs e)
@@ -317,7 +324,7 @@ namespace Benchmark
 
         private void OnDataReceived_LoopTest(object sender, EndpointDataEventArgs e)
         {
-            if (mBenchMarkParameters.VerifyLoopData)
+            if (mBenchMarkParameters.Verify)
             {
                 for (int i = 0; i < e.Count; i++)
                 {
@@ -370,49 +377,100 @@ namespace Benchmark
             if (!ReferenceEquals(mUsbDevice, null))
                 closeTestDevice(mUsbDevice);
 
+            mUsbDevice = null;
 
-            if (usbRegistry.Open(out mUsbDevice))
+            try
             {
-                UsbDevice.UsbErrorEvent += OnUsbError;
-                
-                UsbEndpointInfo endpointInfo;
-                UsbInterfaceInfo interfaceInfo;
-
-                UsbEndpointBase.LookupEndpointInfo(mUsbDevice.Configs[0], (byte)mBenchMarkParameters.ReadEndpoint,  out interfaceInfo, out endpointInfo);
-                mBenchMarkParameters.BufferSize -= (mBenchMarkParameters.BufferSize % ((int)endpointInfo.Descriptor.MaxPacketSize));
-                mEP1Reader = mUsbDevice.OpenEndpointReader(mBenchMarkParameters.ReadEndpoint, mBenchMarkParameters.BufferSize, (EndpointType)(endpointInfo.Descriptor.Attributes & 3));
-
-                UsbEndpointBase.LookupEndpointInfo(mUsbDevice.Configs[0], (byte)mBenchMarkParameters.WriteEndpoint, out interfaceInfo, out endpointInfo);
-                mBenchMarkParameters.BufferSize -= (mBenchMarkParameters.BufferSize % ((int)endpointInfo.Descriptor.MaxPacketSize));
-                mEP1Writer = mUsbDevice.OpenEndpointWriter(mBenchMarkParameters.WriteEndpoint, (EndpointType)(endpointInfo.Descriptor.Attributes & 3));
-
-                mInterfaceInfo = interfaceInfo;
-
-                mEP1Reader.ReadThreadPriority = mBenchMarkParameters.Priority;
-                mEP1Reader.DataReceived += OnDataReceived;
-
-                makeTestBytes(out loopTestBytes,mBenchMarkParameters.BufferSize);
-
-
-                // If this is a "whole" usb device (libusb-win32, linux libusb)
-                // it will have an IUsbDevice interface. If not (WinUSB) the 
-                // variable will be null indicating this is an interface of a 
-                // device.
-                IUsbDevice wholeUsbDevice = mUsbDevice as IUsbDevice;
-                if (!ReferenceEquals(wholeUsbDevice, null))
+                if (usbRegistry.Open(out mUsbDevice))
                 {
-                    // This is a "whole" USB device. Before it can be used, 
-                    // the desired configuration and interface must be selected.
+                    UsbInterfaceInfo readInterfaceInfo;
+                    UsbInterfaceInfo writeInterfaceInfo;
 
-                    // Select config #1
-                    wholeUsbDevice.SetConfiguration(1);
+                    UsbDevice.UsbErrorEvent += OnUsbError;
 
-                    // Claim interface #0.
-                    wholeUsbDevice.ClaimInterface(interfaceInfo.Descriptor.InterfaceID);
+                    if (!UsbEndpointBase.LookupEndpointInfo(mUsbDevice.Configs[0],
+                                                       0x80,
+                                                       out readInterfaceInfo,
+                                                       out mReadEndpointInfo))
+                    {
+                        throw new Exception("failed locating read endpoint.");
+                    }
+
+                    mBenchMarkParameters.BufferSize -= (mBenchMarkParameters.BufferSize%(mReadEndpointInfo.Descriptor.MaxPacketSize));
+
+                    if (!UsbEndpointBase.LookupEndpointInfo(mUsbDevice.Configs[0],
+                                                       0x00,
+                                                       out writeInterfaceInfo,
+                                                       out mWriteEndpointInfo))
+                    {
+                        throw new Exception("failed locating write endpoint.");
+                    }
+
+                    if (((mWriteEndpointInfo.Descriptor.Attributes & 3)==(int) EndpointType.Isochronous) ||
+                        ((mReadEndpointInfo.Descriptor.Attributes & 3)==(int) EndpointType.Isochronous))
+                    {
+                        throw new Exception("buenchmark GUI application does not support ISO endpoints. Use BenchmarkCon instead.");
+                    }
+
+                    mBenchMarkParameters.BufferSize -= (mBenchMarkParameters.BufferSize%(mWriteEndpointInfo.Descriptor.MaxPacketSize));
+
+                    if (writeInterfaceInfo.Descriptor.InterfaceID != readInterfaceInfo.Descriptor.InterfaceID)
+                        throw new Exception("read/write endpoints must be on the same interface.");
+
+                    mEP1Reader = mUsbDevice.OpenEndpointReader(
+                        (ReadEndpointID)mReadEndpointInfo.Descriptor.EndpointID,
+                        mBenchMarkParameters.BufferSize,
+                        (EndpointType)(mReadEndpointInfo.Descriptor.Attributes & 3));
+
+                    mEP1Writer = mUsbDevice.OpenEndpointWriter(
+                        (WriteEndpointID) mWriteEndpointInfo.Descriptor.EndpointID,
+                        (EndpointType) (mWriteEndpointInfo.Descriptor.Attributes & 3));
+
+                    mInterfaceInfo = writeInterfaceInfo;
+
+                    mEP1Reader.ReadThreadPriority = mBenchMarkParameters.Priority;
+                    mEP1Reader.DataReceived += OnDataReceived;
+
+                    makeTestBytes(out loopTestBytes, mBenchMarkParameters.BufferSize);
+
+
+                    // If this is a "whole" usb device (libusb-win32, linux libusb)
+                    // it will have an IUsbDevice interface. If not (WinUSB) the 
+                    // variable will be null indicating this is an interface of a 
+                    // device.
+                    IUsbDevice wholeUsbDevice = mUsbDevice as IUsbDevice;
+                    if (!ReferenceEquals(wholeUsbDevice, null))
+                    {
+                        // This is a "whole" USB device. Before it can be used, 
+                        // the desired configuration and interface must be selected.
+
+                        // Select config #1
+                        wholeUsbDevice.SetConfiguration(1);
+
+                        // Claim interface #0.
+                        wholeUsbDevice.ClaimInterface(mInterfaceInfo.Descriptor.InterfaceID);
+                    }
+                    return true;
                 }
-                return true;
+            }
+            catch(Exception ex)
+            {
+                SetStatus(ex.Message, true);
             }
 
+            if (!ReferenceEquals(mUsbDevice,null))
+            {
+                try
+                {
+                    closeTestDevice(mUsbDevice);
+                }
+                finally
+                {
+                    mUsbDevice = null;
+                    mEP1Reader = null;
+                    mEP1Writer = null;
+                }
+            }
             return false;
         }
 
@@ -443,7 +501,7 @@ namespace Benchmark
                     Thread.Sleep(10);
                     if ((DateTime.Now - dtStart).TotalMilliseconds > 1000)
                     {
-                        System.Diagnostics.Debug.Print("[CRITICAL ERROR] Benchmark write thread is frozen! Terminating thread..");
+                        System.Diagnostics.Debug.Print("[CRITICAL ERROR] Benchmark write thread dead-locked! Terminating thread..");
                         mthWriteThreadEP1.Abort();
                         break;
                     }

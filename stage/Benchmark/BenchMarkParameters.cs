@@ -8,12 +8,16 @@ namespace Benchmark
 {
     public class BenchMarkParameters
     {
+        public enum BenchmarInterfaces
+        {
+            Interface_00,
+            Interface_01,
+        }
         private int mTimeout = 5000;
         private int mBufferSize = UsbEndpointReader.DefReadBufferSize;
-        private ReadEndpointID mReadEndpoint = ReadEndpointID.Ep01;
+        private BenchmarInterfaces mMI = BenchmarInterfaces.Interface_00;
         private ThreadPriority mPriority = ThreadPriority.Normal;
-        private WriteEndpointID mWriteEndpoint = WriteEndpointID.Ep01;
-        private bool mVerifyLoopData = true;
+        private bool mVerify = true;
         private int mScreenRefeshMs = 100;
 
         [Category("General")]
@@ -25,20 +29,12 @@ namespace Benchmark
         }
 
 
-        [Category("Endpoints")]
-        [Description("Endpoint to write test data.")]
-        public WriteEndpointID WriteEndpoint
+        [Category("Interface")]
+        [Description("The benchmark interface #")]
+        public BenchmarInterfaces MI
         {
-            get { return mWriteEndpoint; }
-            set { mWriteEndpoint = value; }
-        }
-
-        [Category("Endpoints")]
-        [Description("Endpoint to read test data.")]
-        public ReadEndpointID ReadEndpoint
-        {
-            get { return mReadEndpoint; }
-            set { mReadEndpoint = value; }
+            get { return mMI; }
+            set { mMI = value; }
         }
 
         [Category("Buffers")]
@@ -66,13 +62,13 @@ namespace Benchmark
 
         [Category("General")]
         [Description("If true, received data is verified against the sent data. This option is only used for a LOOP test.")] 
-        public bool VerifyLoopData
+        public bool Verify
         {
             get {
-                return mVerifyLoopData;
+                return mVerify;
             }
             set {
-                mVerifyLoopData = value;
+                mVerify = value;
             }
         }
     }
