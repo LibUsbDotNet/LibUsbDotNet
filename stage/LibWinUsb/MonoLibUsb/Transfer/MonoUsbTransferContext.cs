@@ -51,7 +51,9 @@ namespace LibUsbDotNet.LudnMonoLibUsb.Internal
         #endregion
         private void allocTransfer(UsbEndpointBase endpointBase, bool ownsTransfer, int isoPacketSize, int count)
         {
-            int numIsoPackets = count/isoPacketSize;
+            int numIsoPackets = 0;
+            if (isoPacketSize > 0)
+                numIsoPackets = count/isoPacketSize;
             freeTransfer();
             mTransfer = MonoUsbTransfer.Alloc(numIsoPackets);
             mOwnsTransfer = ownsTransfer;
