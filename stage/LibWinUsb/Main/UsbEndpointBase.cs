@@ -115,7 +115,6 @@ namespace LibUsbDotNet.Main
         {
             get
             {
-                if (mIsDisposed) throw new ObjectDisposedException(GetType().Name);
                 return mEpNum;
             }
         }
