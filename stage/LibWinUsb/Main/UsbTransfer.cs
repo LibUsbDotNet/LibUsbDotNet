@@ -141,6 +141,9 @@ namespace LibUsbDotNet.Main
         public virtual ErrorCode Cancel()
         {
             mTransferCancelEvent.Set();
+            if (!IsCompleted)
+                mTransferCompleteEvent.WaitOne(1000, false);
+
             return ErrorCode.Success;
         }
 
