@@ -130,9 +130,13 @@ namespace LibUsbDotNet.Main
 
             int dummy;
             if (!mHasWaitBeenCalled) Wait(out dummy);
+            if (mPinnedHandle != null) mPinnedHandle.Dispose();
+            mPinnedHandle = null;
         }
 
         #endregion
+
+        ~UsbTransfer() { Dispose(); }
 
         /// <summary>
         /// Cancels a pending transfer that was previously submitted with <see cref="Submit"/>.
