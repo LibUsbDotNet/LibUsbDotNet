@@ -400,7 +400,7 @@ namespace LibUsbDotNet
         {
             stringData = null;
             int iTransferLength;
-            LangStringDescriptor sd = new LangStringDescriptor(UsbDescriptor.Size + 256);
+            LangStringDescriptor sd = new LangStringDescriptor(255);
             bool bSuccess = GetDescriptor((byte) DescriptorType.String, stringIndex, langId, sd.Ptr, sd.MaxSize, out iTransferLength);
 
             if (bSuccess && iTransferLength > UsbDescriptor.Size && sd.Length == iTransferLength)
