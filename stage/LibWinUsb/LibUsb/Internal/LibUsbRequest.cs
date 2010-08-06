@@ -29,11 +29,6 @@ namespace LibUsbDotNet.Internal.LibUsb
     [StructLayout(LayoutKind.Explicit, Pack = 1, Size = sizeof (int)*6)]
     internal class LibUsbRequest
     {
-        public GCHandle Gch
-        {
-            get { return GCHandle.Alloc(this, GCHandleType.Pinned); }
-        }
-
         public static int Size = Marshal.SizeOf(typeof (LibUsbRequest));
         [FieldOffset(0)] public int Timeout = UsbConstants.DEFAULT_TIMEOUT;
 

@@ -90,6 +90,7 @@ namespace MonoLibUsb.ShowInfo
             if ((int) e < 0)
             {
                 transfer.Free();
+                gcUserCompleted.Free();
                 return e;
             }
             int r;
@@ -106,6 +107,7 @@ namespace MonoLibUsb.ShowInfo
                         if (Usb.HandleEvents(sessionHandle) < 0)
                             break;
                     transfer.Free();
+                    gcUserCompleted.Free();
                     return e;
                 }
             }
@@ -113,6 +115,7 @@ namespace MonoLibUsb.ShowInfo
             transferred = transfer.ActualLength;
             e = MonoUsbApi.MonoLibUsbErrorFromTransferStatus(transfer.Status);
             transfer.Free();
+            gcUserCompleted.Free();
             return e;
         }
 

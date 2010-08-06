@@ -251,7 +251,7 @@ namespace LibUsbDotNet
                             string deviceFileName = LibUsbDriverIO.GetDeviceNameString(i);
                             if (!LibUsbDevice.Open(deviceFileName, out newLibUsbDevice)) continue;
                             LibUsbRequest request = new LibUsbRequest();
-                            GCHandle gcReq = request.Gch;
+                            GCHandle gcReq = GCHandle.Alloc(request, GCHandleType.Pinned);
 
                             int transferred;
                             bool bSuccess = newLibUsbDevice.UsbIoSync(LibUsbIoCtl.GET_VERSION,
@@ -261,6 +261,7 @@ namespace LibUsbDotNet
                                                                       LibUsbRequest.Size,
                                                                       out transferred);
 
+                            gcReq.Free();
                             newLibUsbDevice.Close();
                             if (bSuccess && transferred == LibUsbRequest.Size)
                             {

@@ -76,6 +76,10 @@ namespace LibUsbDotNet.LudnMonoLibUsb.Internal
             mTransferCancelEvent.Set();
             mTransferCompleteEvent.WaitOne(200, UsbConstants.EXIT_CONTEXT);
             mTransfer.Free();
+
+            if (mCompleteEventHandle.IsAllocated)
+                mCompleteEventHandle.Free();
+
            
         }
 

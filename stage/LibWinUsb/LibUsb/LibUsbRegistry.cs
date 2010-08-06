@@ -315,6 +315,7 @@ namespace LibUsbDotNet.LibUsb
 
                 mDeviceProperties.Add(prop.Key, oValue);
             }
+            gcPropBuffer.Free();
         }
     }
 }
