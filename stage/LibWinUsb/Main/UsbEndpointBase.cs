@@ -40,7 +40,7 @@ namespace LibUsbDotNet.Main
         /// multiple transfers.  This applies to all endpoint transfer methods
         /// (reads and writes). The default is 4megs (4,194,304 bytes)
         /// </remarks>
-        public static int MaxReadWrite = 65536*64;
+        public static int MaxReadWrite = 65536;
 
         internal readonly byte mEpNum;
         internal readonly UsbApiBase mUsbApi;
