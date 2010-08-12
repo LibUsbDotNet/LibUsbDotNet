@@ -25,6 +25,8 @@ namespace MonoLibUsb
         private static MonoUsbError mLastReturnCode;
         private static String mLastReturnString=String.Empty;
         private static int mSessionCount;
+        private static string DLL_NOT_FOUND_LINUX = "libusb-1.0 library not found.  This is often an indication that libusb-1.0 was installed to '/usr/local/lib' and mono.net is not looking for it there. To resolve this, add the path '/usr/local/lib' to '/etc/ld.so.conf' and run 'ldconfig' as root. (http://www.mono-project.com/DllNotFoundException)";
+        private static string DLL_NOT_FOUND_WINDOWS = "libusb-1.0.dll not found. If this is a 64bit operating system, ensure that the 64bit version of libusb-1.0.dll exists in the '\Windows\System32' directory.";
 
         /// <summary>
         /// If the session handle is <see cref="SafeContextHandle.IsInvalid"/>, gets the <see cref="MonoUsbError"/> status code indicating the reason.
@@ -64,7 +66,21 @@ namespace MonoLibUsb
             lock (sessionLOCK)
             {
                 IntPtr pNewSession = IntPtr.Zero;
-                mLastReturnCode = (MonoUsbError)MonoUsbApi.Init(ref pNewSession);
+                try
+                {
+                    mLastReturnCode = (MonoUsbError)MonoUsbApi.Init(ref pNewSession);
+                }
+                catch (DllNotFoundException dllNotFound)
+                {
+                    if (Helper.IsLinux)
+                    {
+                        throw new DllNotFoundException(DLL_NOT_FOUND_LINUX, dllNotFound);
+                    }
+                    else
+                    {
+                        throw new DllNotFoundException(DLL_NOT_FOUND_WINDOWS, dllNotFound);
+                    }
+                }
                 if ((int)mLastReturnCode < 0)
                 {
                     mLastReturnString = MonoUsbApi.StrError(mLastReturnCode);
