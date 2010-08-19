@@ -32,6 +32,11 @@ namespace InfWizard.InfWriters
     internal enum InfTagKeys
     {
         BASE_FILENAME,
+
+        INF_FILENAME,
+        CAT_FILENAME,
+        DEVICE_HARDWARE_ID,
+
         DRIVER_DATE,
         DRIVER_VERSION,
         DEVICE_DESCRIPTION,
@@ -82,8 +87,11 @@ namespace InfWizard.InfWriters
                 if (ReferenceEquals(null, mTagger))
                 {
                     TagNReplaceString tnr = new TagNReplaceString();
-
                     tnr[InfTagKeys.BASE_FILENAME.ToString()] = mDeviceItem.BaseFilename;
+
+                    tnr[InfTagKeys.INF_FILENAME.ToString()] = mDeviceItem.BaseFilename + ".inf";
+                    tnr[InfTagKeys.CAT_FILENAME.ToString()] = mDeviceItem.BaseFilename + ".cat";
+                    
                     tnr[InfTagKeys.DRIVER_DATE.ToString()] = mDeviceItem.DriverDate.Date.ToString("MM/dd/yyyy");
                     tnr[InfTagKeys.DRIVER_VERSION.ToString()] = mDeviceItem.DriverVersion;
                     tnr[InfTagKeys.DEVICE_DESCRIPTION.ToString()] = mDeviceItem.DeviceDescription;
@@ -91,6 +99,8 @@ namespace InfWizard.InfWriters
                     tnr[InfTagKeys.PID.ToString()] = mDeviceItem.ProductID;
                     tnr[InfTagKeys.MI.ToString()] = mDeviceItem.MI;
                     tnr[InfTagKeys.HARDWAREID.ToString()] = mDeviceItem.BuildInfHardwareID();
+                    tnr[InfTagKeys.DEVICE_HARDWARE_ID.ToString()] = mDeviceItem.BuildInfHardwareID().Substring(4);
+
                     tnr[InfTagKeys.DEVICE_MANUFACTURER.ToString()] = mDeviceItem.Manufacturer;
                     tnr[InfTagKeys.DEVICE_INTERFACE_GUID.ToString()] = mDeviceItem.DeviceInterfaceGuid;
 
