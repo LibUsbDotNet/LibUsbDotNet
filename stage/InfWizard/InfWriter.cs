@@ -102,7 +102,7 @@ namespace InfWizard.InfWriters
                     tnr[InfTagKeys.DEVICE_HARDWARE_ID.ToString()] = mDeviceItem.BuildInfHardwareID().Substring(4);
 
                     tnr[InfTagKeys.DEVICE_MANUFACTURER.ToString()] = mDeviceItem.Manufacturer;
-                    tnr[InfTagKeys.DEVICE_INTERFACE_GUID.ToString()] = mDeviceItem.DeviceInterfaceGuid;
+                    tnr[InfTagKeys.DEVICE_INTERFACE_GUID.ToString()] = "{" + mDeviceItem.DeviceInterfaceGuid + "}";
 
                     tnr.Formatters.Add(new StandardTagValueFormatter("#", "#", false));
                     mTagger = tnr;
