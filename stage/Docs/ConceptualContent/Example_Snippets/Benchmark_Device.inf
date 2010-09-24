@@ -60,10 +60,6 @@ AddReg=Dev_AddReg
 [Dev_AddReg]
 HKR,,DeviceInterfaceGUIDs,0x10000,"{591a9b4c-cc1c-40ed-a9c2-bbd698899f3b}"
 
-HKR,,"SurpriseRemovalOK",0x00010001,1
-HKR,,"Removable",0x00010001,1
-HKR,,"RemovalPolicy",0x00010001,3
-
 [Benchmark_Device_Install.CoInstallers]
 AddReg=CoInstallers_AddReg
 CopyFiles=CoInstallers_CopyFiles

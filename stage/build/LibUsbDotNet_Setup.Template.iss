@@ -90,7 +90,7 @@ Source: "$(LIBUSB_WIN32_BIN)\ia64\libusb0.dll"; DestDir: {sys}; Flags: uninsneve
 Source: "$(LIBUSB_WIN32_BIN)\ia64\install-filter.exe"; DestDir: {app}\libusb-win32; Flags: ignoreversion recursesubdirs createallsubdirs; Check: IsI64; Tasks: tasklibusb
 
 ; LibUsb-win32 Common
-Source: "$(LIBUSB_WIN32_BIN)\x86\inf-wizard.exe"; DestDir: {app}\libusb-win32; Flags: ignoreversion recursesubdirs createallsubdirs; Tasks: tasklibusb
+Source: "$(LIBUSB_WIN32_BIN)\inf-wizard.exe"; DestDir: {app}\libusb-win32; Flags: ignoreversion recursesubdirs createallsubdirs; Tasks: tasklibusb
 
 ; Runtime Files
 Source: .\bin\*; DestDir: {app}; Flags: recursesubdirs createallsubdirs ignoreversion; Components: dll

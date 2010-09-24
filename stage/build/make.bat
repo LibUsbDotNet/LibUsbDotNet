@@ -92,9 +92,20 @@ EXIT
 		GOTO ErrorWaitExit
 	)
 	FOR /F "eol=; tokens=1,2* usebackq delims==" %%I IN (!LibUsbDotNet_Cfg!) DO (
-		IF NOT "%%~I" EQU "" SET CMDVAR_%%~I=%%~J
-	)
 	
+		IF NOT "%%~I" EQU "" (
+			SET _PNAME=%%~I
+			SET _PNAME=!_PNAME: =!
+			IF /I "!_PNAME!" EQU "DevEnv" (
+				CALL :ToShortNames _PVALUE "%%~J"
+				ECHO !_PVALUE!
+			) ELSE (
+				SET _PVALUE=%%J
+			)
+			SET CMDVAR_!_PNAME!=!_PVALUE!
+		)
+	)
+
 	CALL :ToAbsoutePaths CMDVAR_SLN "!CMDVAR_SLN!"
 	CALL :ToAbsoutePaths CMDVAR_TOOLPATH "!CMDVAR_TOOLPATH!"
 	CALL :ToAbsoutePaths CMDVAR_BASEDIR "!CMDVAR_BASEDIR!"
@@ -152,6 +163,15 @@ GOTO :EOF
 		SHIFT /1
 		SHIFT /1
 		GOTO ToAbsoutePaths
+	)
+GOTO :EOF
+
+:ToShortNames
+	IF NOT "%~1" EQU "" (
+		SET %~1=%~s2
+		SHIFT /1
+		SHIFT /1
+		GOTO ToShortNames
 	)
 GOTO :EOF
 
@@ -241,9 +261,10 @@ GOTO :EOF
     
     "!CMDVAR_TOOLPATH!RegRep" "!MAINAML!" -m="(?<=<\x21--[ \t]*Previous[ \t]*Release[ \t]*Notes[ \t]*-->[ \t]*)(\r\n)" -f="!TEMPAML!"
 
-    DEL "!TEMPAML!
+    DEL "!TEMPAML!"
     
     CALL :IncConfigValue Build
+	pause
     
 GOTO :EOF
 

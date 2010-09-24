@@ -8,50 +8,12 @@
             <token>Fixed</token>
           </bugaction>
           <bugentry>
-            libusb-1.0 support.
+            issue with DataReceived event.
             <para>
-              This was broken when ISO endpoint support was added.
+              When disabling the DataRecevied event, the property would return before the action had been fully carried out.
             </para>
           </bugentry>
         </bug>
-        <bug>
-          <bugaction>
-            <token>Deprecated</token>
-          </bugaction>
-          <bugentry>
-            <CREF>P:UsbDevice.HasLibUsbDriver</CREF> property
-            <para>
-              This property will always return true.
-            </para>
-          </bugentry>
-        </bug>
-        <bug>
-          <bugaction>
-            <token>Fixed</token>
-          </bugaction>
-          <bugentry>
-            32bit applications not running on 64bit operating systems. (Windows)
-            <para>
-              If LibUsbDotNet is compiled as Win32 instead of Any CPU it would not work on 64bit operating systems with libusb-win32.
-            </para>
-          </bugentry>
-        </bug>
-        <bug>
-          <bugaction>
-            <token>Updated</token>
-          </bugaction>
-          <bugentry>
-            InfWizard with embedded libusb-win32 v1.2.1 driver resource package.
-          </bugentry>
-        </bug>
-        <bug>
-          <bugaction>
-            <token>Updated</token>
-          </bugaction>
-          <bugentry>
-            default UsbEndpointBase.MaxReadWrite changed back to 65536.  This is the limit at which libusbdotnet begins splitting transfers.
-          </bugentry>
-        </bug>        
       </bugs>
     </content>
   </releaseNotes>
