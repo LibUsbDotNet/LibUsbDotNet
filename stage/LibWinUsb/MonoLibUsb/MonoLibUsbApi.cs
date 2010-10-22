@@ -1303,11 +1303,12 @@ namespace MonoLibUsb
             Marshal.PtrToStructure(pPriv, priv);
             return priv;
         }
+
         [StructLayout(LayoutKind.Sequential,Pack=0)]
         internal class internal_libusb_device
         {
             public readonly IntPtr mutexLock;
-            public readonly short refCnt;
+            public readonly int refCnt;                 /*QL - changed short to int*/
 
             public readonly IntPtr ctx;
 
@@ -1317,6 +1318,7 @@ namespace MonoLibUsb
 
             public readonly internal_list_head list = new internal_list_head();
             public readonly uint sessionData;
+            //public readonly IntPtr temp;
         }
 
         [StructLayout(LayoutKind.Sequential, Pack = 0)]
@@ -1328,19 +1330,19 @@ namespace MonoLibUsb
 
         internal struct internal_usb_interface
         {
-		public readonly IntPtr path;                     // each interface needs a Windows device interface path,
-		public readonly IntPtr apib; // an API backend (multiple drivers support),
-		public readonly byte nb_endpoints;            // and a set of endpoint addresses (USB_MAXENDPOINTS)
-		public readonly IntPtr endpoint;
-            
+            public readonly IntPtr path;                    // each interface needs a Windows device interface path,
+            public readonly IntPtr apib;                    // an API backend (multiple drivers support),
+            public readonly byte nb_endpoints;              // and a set of endpoint addresses (USB_MAXENDPOINTS)
+            public readonly IntPtr endpoint;                /*QL - added */
+            public readonly bool restricted_functionality;  /*QL - added */         
         }
-        [StructLayout(LayoutKind.Sequential, Pack = 0)]
+
+[StructLayout(LayoutKind.Sequential, Pack = 0)]
         internal class internal_windows_device_priv
         {
             public readonly IntPtr parent_dev;     // access to parent is required for usermode ops
             public readonly uint connection_index;  // also required for some usermode ops
             public readonly IntPtr path;            // path used by Windows to reference the USB node
-
 
             public readonly IntPtr apib;
             [MarshalAs(UnmanagedType.ByValArray, SizeConst = 32)]
@@ -1349,10 +1351,11 @@ namespace MonoLibUsb
             public readonly byte composite_api_flags;        // HID and composite devices require additional data
             public readonly IntPtr hid;
             public readonly byte active_config;
+
+            public readonly IntPtr dev_descriptor;       /*QL - added*/
+            public readonly IntPtr config_descriptor;    /*QL - added*/
             //USB_DEVICE_DESCRIPTOR dev_descriptor;
-            //unsigned char **config_descriptor;  // list of pointers to the cached config descriptors
-
-
+            //char **config_descriptor;  // list of pointers to the cached config descriptors
         }
 #endif
         #endregion
