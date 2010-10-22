@@ -205,7 +205,7 @@ namespace LibUsbDotNet
                     if (eReturn == ErrorCode.None)
                     {
                         EventHandler<EndpointDataEventArgs> temp = reader.DataReceived;
-                        if (!ReferenceEquals(temp, null))
+                        if (!ReferenceEquals(temp, null) && !overlappedTransferContext.IsCancelled)
                         {
                             temp(reader, new EndpointDataEventArgs(buf, iTransferLength));
                         }
