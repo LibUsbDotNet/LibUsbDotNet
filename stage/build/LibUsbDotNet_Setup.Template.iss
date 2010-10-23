@@ -19,9 +19,8 @@ InfoBeforeFile      = welcome.txt
 OutputBaseFilename  =$(BaseName)_Setup.$(FriendlyVersion)
 Compression         =lzma
 SolidCompression    =yes
-; requires Win98SE, Win2k, or higher
-MinVersion =4.1.2222, 5
-PrivilegesRequired=admin
+; requires Win2k, or higher
+MinVersion = 0, 5.0.2195
 OutputManifestFile=Setup-Manifest.txt
 
 ; "ArchitecturesInstallIn64BitMode=x64 ia64" requests that the install
@@ -68,26 +67,28 @@ Name: dll; Description: Runtime Files; Types: full custom; flags: exclusive
 Name: source; Description: Source and Example Code; Types: full custom
 
 [Tasks]
-Name: tasklibusb;  Description: Install LibUsbDotNet-libusb-win32 Generic USB Driver?; GroupDescription: LibUsbDotNet-libusb-win32; Components: dll
-Name: tasklibusb\insfilter; Flags:unchecked; Description: Enable libusb-win32 filter service? This allows access to USB devices without an INF file.  This can be loaded/unloaded at anytime from the LibUsbDotNet/libusb-win32 sub-menu.; GroupDescription: LibUsbDotNet-libusb-win32; Components: dll
+Name: tasklibusb;  Description: Install libusb-win32 with filter capabilities?; GroupDescription: libusb-win32; Components: dll
 
 [Files]
 ; LibUsb-win32 x86
 Source: "$(LIBUSB_WIN32_BIN)\x86\libusb0_x86.dll"; DestName: libusb0.dll; DestDir: {sys}; Flags: uninsneveruninstall replacesameversion restartreplace promptifolder; Check: IsX86; Tasks: tasklibusb
 Source: "$(LIBUSB_WIN32_BIN)\x86\libusb0.sys"; DestDir: {sys}\drivers; Flags: uninsneveruninstall replacesameversion restartreplace promptifolder; Check: IsX86; Tasks: tasklibusb
 Source: "$(LIBUSB_WIN32_BIN)\x86\install-filter.exe"; DestDir: {app}\libusb-win32; Flags: ignoreversion recursesubdirs createallsubdirs; Check: IsX86; Tasks: tasklibusb
+Source: "$(LIBUSB_WIN32_BIN)\x86\install-filter-win.exe"; DestDir: {app}\libusb-win32; Flags: ignoreversion; Check: IsX86; Tasks: tasklibusb
 
 ; LibUsb-win32 AMD 64bit
 Source: "$(LIBUSB_WIN32_BIN)\x86\libusb0_x86.dll"; DestName: libusb0.dll; DestDir: {syswow64}; Flags: uninsneveruninstall replacesameversion restartreplace promptifolder; Check: IsX64; Tasks: tasklibusb
 Source: "$(LIBUSB_WIN32_BIN)\amd64\libusb0.sys"; DestDir: {sys}\drivers; Flags: uninsneveruninstall replacesameversion restartreplace promptifolder; Check: IsX64; Tasks: tasklibusb
 Source: "$(LIBUSB_WIN32_BIN)\amd64\libusb0.dll"; DestDir: {sys}; Flags: uninsneveruninstall replacesameversion restartreplace promptifolder; Check: IsX64; Tasks: tasklibusb
 Source: "$(LIBUSB_WIN32_BIN)\amd64\install-filter.exe"; DestDir: {app}\libusb-win32; Flags: ignoreversion recursesubdirs createallsubdirs; Check: IsX64; Tasks: tasklibusb
+Source: "$(LIBUSB_WIN32_BIN)\amd64\install-filter-win.exe"; DestDir: {app}\libusb-win32; Flags: ignoreversion; Check: IsX64; Tasks: tasklibusb
 
 ; LibUsb-win32 Itanium 64bit
 Source: "$(LIBUSB_WIN32_BIN)\x86\libusb0_x86.dll"; DestName: libusb0.dll; DestDir: {syswow64}; Flags: uninsneveruninstall replacesameversion restartreplace promptifolder; Check: IsI64; Tasks: tasklibusb
 Source: "$(LIBUSB_WIN32_BIN)\ia64\libusb0.sys"; DestDir: {sys}\drivers; Flags: uninsneveruninstall replacesameversion restartreplace promptifolder; Check: IsI64; Tasks: tasklibusb
 Source: "$(LIBUSB_WIN32_BIN)\ia64\libusb0.dll"; DestDir: {sys}; Flags: uninsneveruninstall replacesameversion restartreplace promptifolder; Check: IsI64; Tasks: tasklibusb
 Source: "$(LIBUSB_WIN32_BIN)\ia64\install-filter.exe"; DestDir: {app}\libusb-win32; Flags: ignoreversion recursesubdirs createallsubdirs; Check: IsI64; Tasks: tasklibusb
+Source: "$(LIBUSB_WIN32_BIN)\ia64\install-filter-win.exe"; DestDir: {app}\libusb-win32; Flags: ignoreversion; Check: IsI64; Tasks: tasklibusb
 
 ; LibUsb-win32 Common
 Source: "$(LIBUSB_WIN32_BIN)\inf-wizard.exe"; DestDir: {app}\libusb-win32; Flags: ignoreversion recursesubdirs createallsubdirs; Tasks: tasklibusb
@@ -99,11 +100,6 @@ Source: .\bin\*; DestDir: {app}; Flags: recursesubdirs createallsubdirs ignoreve
 Source: .\src\*; DestDir: {app}\Src; Flags: ignoreversion recursesubdirs createallsubdirs; Components: source
 
 [Run]
-Filename: "rundll32"; Parameters: "libusb0.dll,usb_install_service_np_rundll"; StatusMsg: Creating kernel service (this may take a few seconds) ...; Tasks: tasklibusb\insfilter; 
+Filename: "{app}\libusb-win32\install-filter-win.exe"; Description: "Launch filter installer wizard"; Flags: postinstall nowait runascurrentuser; Tasks: tasklibusb;
 
-[UninstallRun]
-Filename: "rundll32"; Parameters: "libusb0.dll,usb_uninstall_service_np_rundll"; Tasks: tasklibusb\insfilter;
-
-[Messages]
-StatusUninstalling=Removing filter and uninstalling %1...
 
