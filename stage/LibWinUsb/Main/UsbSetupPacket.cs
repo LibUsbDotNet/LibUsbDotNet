@@ -74,7 +74,7 @@ namespace LibUsbDotNet.Main
         /// This field specifies the length of the data transferred during the second phase of the control transfer. The direction of data transfer (host-to-device or device-to-host) is indicated by the Direction bit of the <see cref="RequestType"/> field. If this field is zero, there is no data transfer phase. On an input request, a device must never return more data than is indicated by the wLength value; it may return less. On an output request, wLength will always indicate the exact amount of data to be sent by the host. Device behavior is undefined if the host should send more data than is specified in wLength.
         /// </summary>
         public short Length;
-
+/*
         /// <summary>
         /// Creates a new instance of a <see cref="UsbSetupPacket"/> and initializes all the fields with the following parameters.
         /// </summary>
@@ -90,6 +90,26 @@ namespace LibUsbDotNet.Main
             Value = value;
             Index = index;
             Length = length;
+        }
+*/
+        /// <summary>
+        /// Creates a new instance of a <see cref="UsbSetupPacket"/> and initializes all the fields with the following parameters.
+        /// </summary>
+        /// <param name="bRequestType">See <see cref="UsbSetupPacket.RequestType"/>.</param>
+        /// <param name="bRequest">See <see cref="UsbSetupPacket.Request"/>.</param>
+        /// <param name="wValue">See <see cref="UsbSetupPacket.Value"/>.</param>
+        /// <param name="wIndex">See <see cref="UsbSetupPacket.Index"/>.</param>
+        /// <param name="wlength">See <see cref="UsbSetupPacket.Length"/>.</param>
+        public UsbSetupPacket(byte bRequestType, byte bRequest, int wValue, int wIndex, int wlength)
+        {
+        	unchecked
+        	{
+	        	RequestType = (byte)(bRequestType & 0xFF);
+	            Request =  (byte)(bRequest & 0xFF);
+	            Value =  (short)(wValue & 0xFFFF);
+	            Index = (short)(wIndex & 0xFFFF);
+	            Length =  (short)(wlength & 0xFFFF);
+        	}
         }
     }
 }
