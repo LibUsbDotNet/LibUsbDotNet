@@ -5,12 +5,13 @@
       <bugs class="bullet">
         <bug>
           <bugaction>
-            <token>Fixed</token>
+            <token>Updated</token>
           </bugaction>
           <bugentry>
-            issue with DataReceived event.
+           UsbSetupPacket constructor.
             <para>
-              When disabling the DataRecevied event, the property would return before the action had been fully carried out.
+              The parameter declarations for the UsbSetupPacket constructor have been changed from bytes and shorts to shorts an ints.
+			  This makes the function more user friendly for lanugages that do not support unsigned variables.
             </para>
           </bugentry>
         </bug>
