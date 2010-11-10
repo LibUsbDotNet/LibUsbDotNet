@@ -33,8 +33,11 @@ ArchitecturesInstallIn64BitMode=x64 ia64
 Name: english; MessagesFile: compiler:Default.isl
 
 [Icons]
-Name: {group}\libUsb-win32\Enable filter (admin only); Filename: {app}\libusb-win32\install-filter.exe; Parameters: -i; WorkingDir: {app}\libusb-win32; Flags: createonlyiffileexists
-Name: {group}\libUsb-win32\Disable filter (admin only); Filename: {app}\libusb-win32\install-filter.exe; Parameters: -u; WorkingDir: {app}\libusb-win32; Flags: createonlyiffileexists
+Name: "{group}\libUsb-win32\Filter Wizard"; Filename: {app}\libusb-win32\install-filter-win.exe; Flags: createonlyiffileexists;
+Name: "{group}\libUsb-win32\Filter Console Help"; Filename: {app}\libusb-win32\install-filter-help.txt; Flags: createonlyiffileexists;
+Name: "{group}\libUsb-win32\Class Filter\Install all class filters"; Filename: {app}\libusb-win32\install-filter-win.exe; Parameters:"i -ac -p -w"; Flags: createonlyiffileexists; Comment: "Installs all libusb-win32 class filters."
+Name: "{group}\libUsb-win32\Class Filter\Remove all class filters";  Filename: {app}\libusb-win32\install-filter-win.exe; Parameters:"u -ac -w"; Flags: createonlyiffileexists; Comment: "Removes all libusb-win32 class filters."
+
 Name: {group}\libUsb-win32\Inf-Wizard; Filename: {app}\libusb-win32\inf-wizard.exe; WorkingDir: {app}\libusb-win32; Flags: createonlyiffileexists
 Name: {group}\LibUsbDotNet Help; Filename: {app}\LibUsbHelp.chm; WorkingDir: {app}\Docs; Flags: createonlyiffileexists
 Name: {group}\USB InfWizard; Filename: {app}\InfWizard.exe; WorkingDir: {app}; Flags: createonlyiffileexists
