@@ -22,10 +22,11 @@
 using System;
 using System.Runtime.InteropServices;
 using System.Threading;
+using LibUsbDotNet.Main;
 
 namespace LibUsbDotNet.Internal
 {
-    internal class SafeOverlapped : IDisposable
+    internal class SafeOverlapped : SafeContextHandle
     {
         // Find the structural starting positions in the NativeOverlapped structure.
         private static readonly int FieldOffsetEventHandle = Marshal.OffsetOf(typeof (NativeOverlapped), "EventHandle").ToInt32();
@@ -33,36 +34,32 @@ namespace LibUsbDotNet.Internal
         private static readonly int FieldOffsetInternalLow = Marshal.OffsetOf(typeof (NativeOverlapped), "InternalLow").ToInt32();
         private static readonly int FieldOffsetOffsetHigh = Marshal.OffsetOf(typeof (NativeOverlapped), "OffsetHigh").ToInt32();
         private static readonly int FieldOffsetOffsetLow = Marshal.OffsetOf(typeof (NativeOverlapped), "OffsetLow").ToInt32();
-        private IntPtr mPtrOverlapped = IntPtr.Zero;
 
-        public SafeOverlapped()
-        {
-            // Globally allocated the memory for the overlapped structure
-            mPtrOverlapped = Marshal.AllocHGlobal(Marshal.SizeOf(typeof (NativeOverlapped)));
-        }
+        // this needs to go in global memory or it'll have trouble with 64bit
+        public SafeOverlapped() : base(Marshal.AllocHGlobal(Marshal.SizeOf(typeof(NativeOverlapped)))){}
 
         public IntPtr InternalLow
         {
-            get { return Marshal.ReadIntPtr(mPtrOverlapped, FieldOffsetInternalLow); }
-            set { Marshal.WriteIntPtr(mPtrOverlapped, FieldOffsetInternalLow, value); }
+            get { return Marshal.ReadIntPtr(DangerousGetHandle(), FieldOffsetInternalLow); }
+            set { Marshal.WriteIntPtr(DangerousGetHandle(), FieldOffsetInternalLow, value); }
         }
 
         public IntPtr InternalHigh
         {
-            get { return Marshal.ReadIntPtr(mPtrOverlapped, FieldOffsetInternalHigh); }
-            set { Marshal.WriteIntPtr(mPtrOverlapped, FieldOffsetInternalHigh, value); }
+            get { return Marshal.ReadIntPtr(DangerousGetHandle(), FieldOffsetInternalHigh); }
+            set { Marshal.WriteIntPtr(DangerousGetHandle(), FieldOffsetInternalHigh, value); }
         }
 
         public int OffsetLow
         {
-            get { return Marshal.ReadInt32(mPtrOverlapped, FieldOffsetOffsetLow); }
-            set { Marshal.WriteInt32(mPtrOverlapped, FieldOffsetOffsetLow, value); }
+            get { return Marshal.ReadInt32(DangerousGetHandle(), FieldOffsetOffsetLow); }
+            set { Marshal.WriteInt32(DangerousGetHandle(), FieldOffsetOffsetLow, value); }
         }
 
         public int OffsetHigh
         {
-            get { return Marshal.ReadInt32(mPtrOverlapped, FieldOffsetOffsetHigh); }
-            set { Marshal.WriteInt32(mPtrOverlapped, FieldOffsetOffsetHigh, value); }
+            get { return Marshal.ReadInt32(DangerousGetHandle(), FieldOffsetOffsetHigh); }
+            set { Marshal.WriteInt32(DangerousGetHandle(), FieldOffsetOffsetHigh, value); }
         }
 
         /// <summary>
@@ -70,8 +67,8 @@ namespace LibUsbDotNet.Internal
         /// </summary>
         public IntPtr EventHandle
         {
-            get { return Marshal.ReadIntPtr(mPtrOverlapped, FieldOffsetEventHandle); }
-            set { Marshal.WriteIntPtr(mPtrOverlapped, FieldOffsetEventHandle, value); }
+            get { return Marshal.ReadIntPtr(DangerousGetHandle(), FieldOffsetEventHandle); }
+            set { Marshal.WriteIntPtr(DangerousGetHandle(), FieldOffsetEventHandle, value); }
         }
 
         /// <summary>
@@ -79,27 +76,24 @@ namespace LibUsbDotNet.Internal
         /// </summary>
         public IntPtr GlobalOverlapped
         {
-            get { return mPtrOverlapped; }
+            get { return DangerousGetHandle(); }
         }
 
-        #region IDisposable Members
-
-        public void Dispose()
+        protected override bool ReleaseHandle()
         {
-            if (mPtrOverlapped != IntPtr.Zero)
+            if (!IsInvalid)
             {
-                Marshal.FreeHGlobal(mPtrOverlapped);
-                mPtrOverlapped = IntPtr.Zero;
+                Marshal.FreeHGlobal(handle);
+                SetHandleAsInvalid();
             }
+            return true;
         }
-
-        #endregion
 
         /// <summary>
-        /// Set the overlapped wait handle and clear out the rest of the structure.
+        /// Sets the overlapped event handle and zeros the structure.
         /// </summary>
         /// <param name="hEventOverlapped"></param>
-        public void ClearAndSetEvent(IntPtr hEventOverlapped)
+        public void Init(IntPtr hEventOverlapped)
         {
             EventHandle = hEventOverlapped;
             InternalLow = IntPtr.Zero;
@@ -107,9 +101,5 @@ namespace LibUsbDotNet.Internal
             OffsetLow = 0;
             OffsetHigh = 0;
         }
-
-
-        // Clean up the globally allocated memory. 
-        ~SafeOverlapped() { Dispose(); }
     }
 }

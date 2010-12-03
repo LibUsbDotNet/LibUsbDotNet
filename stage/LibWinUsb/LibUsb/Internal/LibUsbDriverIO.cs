@@ -67,7 +67,7 @@ namespace LibUsbDotNet.Internal.LibUsb
         {
             SafeOverlapped deviceIoOverlapped = new SafeOverlapped();
             ManualResetEvent hEvent = new ManualResetEvent(false);
-            deviceIoOverlapped.ClearAndSetEvent(hEvent.SafeWaitHandle.DangerousGetHandle());
+            deviceIoOverlapped.Init(hEvent.SafeWaitHandle.DangerousGetHandle());
             ret = 0;
 
             if (!Kernel32.DeviceIoControlAsObject(dev, code, inBuffer, inSize, outBuffer, outSize, ref ret, deviceIoOverlapped.GlobalOverlapped))

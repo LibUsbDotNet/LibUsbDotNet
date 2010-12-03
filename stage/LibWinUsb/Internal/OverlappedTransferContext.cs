@@ -48,7 +48,7 @@ namespace LibUsbDotNet.Internal
 
             mHasWaitBeenCalled = false;
             mTransferCompleteEvent.Reset();
-            Overlapped.ClearAndSetEvent(mTransferCompleteEvent.SafeWaitHandle.DangerousGetHandle());
+            Overlapped.Init(mTransferCompleteEvent.SafeWaitHandle.DangerousGetHandle());
 
             int ret = EndpointBase.PipeTransferSubmit(NextBufPtr,
                                                       RequestCount,
