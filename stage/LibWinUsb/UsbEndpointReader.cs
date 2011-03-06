@@ -46,8 +46,8 @@ namespace LibUsbDotNet
         private Thread mReadThread;
         private ThreadPriority mReadThreadPriority = ThreadPriority.Normal;
 
-        internal UsbEndpointReader(UsbDevice usbDevice, int readBufferSize, ReadEndpointID readEndpointID, EndpointType endpointType)
-            : base(usbDevice, (Byte) readEndpointID, endpointType) { mReadBufferSize = readBufferSize; }
+        internal UsbEndpointReader(UsbDevice usbDevice, int readBufferSize, byte alternateInterfaceID, ReadEndpointID readEndpointID, EndpointType endpointType)
+            : base(usbDevice, alternateInterfaceID, (Byte)readEndpointID, endpointType) { mReadBufferSize = readBufferSize; }
 
         /// <summary>
         /// Default read buffer size when using the <see cref="DataReceived"/> event.

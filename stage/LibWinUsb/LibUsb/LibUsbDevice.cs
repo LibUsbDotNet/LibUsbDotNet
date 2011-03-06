@@ -36,7 +36,6 @@ namespace LibUsbDotNet.LibUsb
     /// </remarks> 
     public class LibUsbDevice : UsbDevice, IUsbDevice
     {
-        private readonly List<int> mClaimedInterfaces = new List<int>();
         private readonly string mDeviceFilename;
 
 
@@ -82,6 +81,17 @@ namespace LibUsbDotNet.LibUsb
         }
 
         #region IUsbDevice Members
+
+        /// <summary>
+        /// Gets the alternate interface number for the previously claimed interface. <see cref="IUsbDevice.ClaimInterface"/>
+        /// </summary>
+        /// <param name="alternateID">The alternate interface number.</param>
+        /// <returns>True on success.</returns>
+        public bool GetAltInterface(out int alternateID)
+        {
+            int interfaceID = mClaimedInterfaces.Count == 0 ? 0 : mClaimedInterfaces[mClaimedInterfaces.Count - 1];
+            return GetAltInterface(interfaceID, out alternateID);
+        }
 
         ///<summary>
         /// Opens the USB device handle.
@@ -274,7 +284,38 @@ namespace LibUsbDotNet.LibUsb
             req.Timeout = UsbConstants.DEFAULT_TIMEOUT;
 
             int ret;
-            return UsbIoSync(LibUsbIoCtl.SET_INTERFACE, req, LibUsbRequest.Size, IntPtr.Zero, 0, out ret);
+            if (UsbIoSync(LibUsbIoCtl.SET_INTERFACE, req, LibUsbRequest.Size, IntPtr.Zero, 0, out ret))
+            {
+                UsbAltInterfaceSettings[interfaceID] = (byte) alternateID;
+                return true;
+            }
+            return false;
+        }
+
+        /// <summary>
+        /// Gets the alternate interface number for the specified interfaceID.
+        /// </summary>
+        /// <param name="interfaceID">The interface number of to get the alternate setting for.</param>
+        /// <param name="alternateID">The currrently selected alternate interface number.</param>
+        /// <returns>True on success.</returns>
+        public bool GetAltInterface(int interfaceID, out int alternateID)
+        {
+            LibUsbRequest req = new LibUsbRequest();
+            req.Iface.ID = interfaceID;
+            req.Timeout = UsbConstants.DEFAULT_TIMEOUT;
+
+            int ret;
+            GCHandle gc = GCHandle.Alloc(req, GCHandleType.Pinned);
+            bool success;
+
+            alternateID = -1;
+            if ((success = UsbIoSync(LibUsbIoCtl.GET_INTERFACE, req, LibUsbRequest.Size, gc.AddrOfPinnedObject(), 1, out ret)) == true)
+            {
+                alternateID = Marshal.ReadByte(gc.AddrOfPinnedObject());
+                UsbAltInterfaceSettings[interfaceID] = (byte)alternateID;
+            }
+            gc.Free();
+            return success;
         }
 
         /// <summary>

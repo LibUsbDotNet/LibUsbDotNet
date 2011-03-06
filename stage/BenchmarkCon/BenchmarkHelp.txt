@@ -1,5 +1,6 @@
 
-USAGE: benchmark [pid=] [vid=] [intf=] [ep=] [list]
+USAGE: benchmark [list] 
+                 [pid=] [vid=] [intf=] [altf=] [ep=]
                  [read|write|loop] [notestselect]
                  [verify|verifydetail]
                  [retry=] [timeout=] [refresh=] [priority=]
@@ -49,6 +50,7 @@ Switches:
                       read from 0x81 and write to 0x01. (default is to use the
                       (first read/write endpoint(s) in the interface)
          intf       : The interface id the read/write endpoints reside in.
+         altf       : The alternate interface setting number to select.
          packetsize : For isochronous use only. Sets the iso packet size.
                       If not specified, the endpoints maximum packet size
                       is used.
@@ -62,7 +64,8 @@ WARNING:
           damage to the device.
           
 Examples:
-
+benchmark list
+benchmark list read altf=1
 benchmark vid=1234 pid=5678
 benchmark vid=0x4D2 pid=0x162E
 benchmark vid=0x4D2 pid=0x162E buffersize=65536

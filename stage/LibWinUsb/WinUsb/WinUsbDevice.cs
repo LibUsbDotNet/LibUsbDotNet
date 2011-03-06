@@ -101,6 +101,49 @@ namespace LibUsbDotNet.WinUsb
             return true;
         }
 
+        /// <summary>
+        /// sets the alternate interface number for the previously claimed interface. <see cref="IUsbDevice.ClaimInterface"/>
+        /// </summary>
+        /// <param name="alternateID">The alternate interface number.</param>
+        /// <returns>True on success.</returns>
+        public bool SetAltInterface(int alternateID)
+        {
+            bool bSuccess;
+
+            bSuccess = WinUsbAPI.WinUsb_SetCurrentAlternateSetting(mUsbHandle, (byte) alternateID);
+
+            if (!bSuccess)
+                UsbError.Error(ErrorCode.Win32Error, Marshal.GetLastWin32Error(), "SetCurrentAlternateSetting", this);
+            else
+            {
+                UsbAltInterfaceSettings[0] = (byte) alternateID;
+            }
+            return bSuccess;
+        }
+
+        /// <summary>
+        /// Gets the alternate interface number for the previously claimed interface. <see cref="IUsbDevice.ClaimInterface"/>
+        /// </summary>
+        /// <param name="alternateID">The alternate interface number.</param>
+        /// <returns>True on success.</returns>
+        public bool GetAltInterface(out int alternateID)
+        {
+            bool bSuccess;
+            byte settingNumber;
+            alternateID = -1;
+            bSuccess = WinUsbAPI.WinUsb_GetCurrentAlternateSetting(mUsbHandle, out settingNumber);
+
+            if (!bSuccess)
+                UsbError.Error(ErrorCode.Win32Error, Marshal.GetLastWin32Error(), "GetCurrentAlternateSetting", this);
+            else
+            {
+                alternateID = settingNumber;
+                UsbAltInterfaceSettings[0] = settingNumber;
+            }
+
+            return bSuccess;
+        }
+
         ///<summary>
         /// Opens the USB device handle.
         ///</summary>
@@ -200,33 +243,6 @@ namespace LibUsbDotNet.WinUsb
             }
             if (!bSuccess)
                 UsbError.Error(ErrorCode.Win32Error, Marshal.GetLastWin32Error(), "GetAssociatedInterface", this);
-
-            return bSuccess;
-        }
-
-        /// <summary>
-        /// Gets the currently selected alternate settings number for the selected inteface.
-        /// </summary>
-        /// <param name="settingNumber">The selected AlternateSetting number.</param>
-        /// <returns>True on success.</returns>
-        public bool GetCurrentAlternateSetting(out byte settingNumber)
-        {
-            bool bSuccess;
-            //settingNumber = 0;
-            //if (LockDevice() != ErrorCode.None) return false;
-
-            //try
-            //{
-            bSuccess = WinUsbAPI.WinUsb_GetCurrentAlternateSetting(mUsbHandle, out settingNumber);
-
-            if (!bSuccess)
-                UsbError.Error(ErrorCode.Win32Error, Marshal.GetLastWin32Error(), "GetCurrentAlternateSetting", this);
-            //}
-            //finally
-            //{
-            //    UnlockDevice();
-            //}
-
 
             return bSuccess;
         }

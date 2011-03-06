@@ -59,13 +59,6 @@ namespace LibUsbDotNet
         bool GetConfiguration(out byte config);
 
         /// <summary>
-        /// Sets an alternate interface for the most recent claimed interface.
-        /// </summary>
-        /// <param name="alternateID">The alternate interface to select for the most recent claimed interface See <see cref="MonoUsbDevice.ClaimInterface"/>.</param>
-        /// <returns>True on success.</returns>
-        bool SetAltInterface(int alternateID);
-
-        /// <summary>
         /// Gets the selected alternate interface of the specified interface.
         /// </summary>
         /// <param name="interfaceID">The interface settings number (index) to retrieve the selected alternate interface setting for.</param>

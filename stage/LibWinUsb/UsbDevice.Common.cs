@@ -83,6 +83,7 @@ namespace LibUsbDotNet
             get
             {
                 UsbRegDeviceList regDevList = new UsbRegDeviceList();
+
                 if (HasLibUsbWinBackDriver && ForceLibUsbWinBack)
                 {
                     List<MonoUsbDevice> deviceList = MonoUsbDevice.MonoUsbDeviceList;
@@ -106,6 +107,7 @@ namespace LibUsbDotNet
                             regDevList.Add(usbRegistry);
                     }
                 }
+
                 return regDevList;
             }
         }

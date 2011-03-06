@@ -34,8 +34,8 @@ namespace LibUsbDotNet.LudnMonoLibUsb
     {
         private MonoUsbTransferContext mMonoTransferContext;
 
-        internal MonoUsbEndpointReader(UsbDevice usbDevice, int readBufferSize, ReadEndpointID readEndpointID, EndpointType endpointType)
-            : base(usbDevice, readBufferSize, readEndpointID, endpointType) { }
+        internal MonoUsbEndpointReader(UsbDevice usbDevice, int readBufferSize, byte alternateInterfaceID, ReadEndpointID readEndpointID, EndpointType endpointType)
+            : base(usbDevice, readBufferSize, alternateInterfaceID, readEndpointID, endpointType) { }
 
         /// <summary>
         /// Frees resources associated with the endpoint.  Once disposed this class cannot be used.

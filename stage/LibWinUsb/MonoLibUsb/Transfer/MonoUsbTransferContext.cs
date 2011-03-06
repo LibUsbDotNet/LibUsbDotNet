@@ -52,12 +52,26 @@ namespace LibUsbDotNet.LudnMonoLibUsb.Internal
         private void allocTransfer(UsbEndpointBase endpointBase, bool ownsTransfer, int isoPacketSize, int count)
         {
             int numIsoPackets = 0;
-            if (isoPacketSize > 0)
-                numIsoPackets = count/isoPacketSize;
+
+            // Patch for using libusb-1.0 on windows with libusbwK.sys
+            EndpointType endpointType = endpointBase.Type;
+            if (UsbDevice.IsLinux)
+            {
+
+                if (isoPacketSize > 0)
+                    numIsoPackets = count/isoPacketSize;
+            }
+            else
+            {
+                if (endpointType == EndpointType.Isochronous)
+                    endpointType = EndpointType.Bulk;
+            }
+            ///////////////////////////////////////////////////////////////
+            
             freeTransfer();
             mTransfer = MonoUsbTransfer.Alloc(numIsoPackets);
             mOwnsTransfer = ownsTransfer;
-            mTransfer.Type = endpointBase.Type;
+            mTransfer.Type = endpointType;
             mTransfer.Endpoint = endpointBase.EpNum;
             mTransfer.NumIsoPackets = numIsoPackets;
 
@@ -65,6 +79,7 @@ namespace LibUsbDotNet.LudnMonoLibUsb.Internal
                 mCompleteEventHandle = GCHandle.Alloc(mTransferCompleteEvent);
             mTransfer.PtrUserData = GCHandle.ToIntPtr(mCompleteEventHandle);
             
+
             if (numIsoPackets > 0)
                 mTransfer.SetIsoPacketLengths(isoPacketSize);
 
@@ -101,8 +116,6 @@ namespace LibUsbDotNet.LudnMonoLibUsb.Internal
 
             mTransfer.PtrCallbackFn = Marshal.GetFunctionPointerForDelegate(mMonoUsbTransferCallbackDelegate);
 
-            mTransfer.Type = EndpointBase.Type;
-            mTransfer.Endpoint = EndpointBase.EpNum;
             
             mTransfer.ActualLength = 0;
             mTransfer.Status = 0;
@@ -127,9 +140,6 @@ namespace LibUsbDotNet.LudnMonoLibUsb.Internal
             mTransfer.PtrDeviceHandle = EndpointBase.Handle.DangerousGetHandle();
 
             mTransfer.PtrCallbackFn = Marshal.GetFunctionPointerForDelegate(mMonoUsbTransferCallbackDelegate);
-
-            mTransfer.Type = EndpointBase.Type;
-            mTransfer.Endpoint = EndpointBase.EpNum;
 
             mTransfer.ActualLength = 0;
             mTransfer.Status = 0;

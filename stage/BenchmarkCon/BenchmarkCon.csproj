@@ -69,15 +69,12 @@
     <None Include="app.config" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="Resources\ShowHelp.txt" />
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="Resources\CommandLineArgExp.txt" />
-  </ItemGroup>
-  <ItemGroup>
     <EmbeddedResource Include="BenchmarkHelp.txt" />
     <Content Include="UsbDos.ico" />
     <Content Include="UsbIco.ico" />
+  </ItemGroup>
+  <ItemGroup>
+    <Folder Include="Resources\" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
@@ -87,4 +84,10 @@
   <Target Name="AfterBuild">
   </Target>
   -->
+  <PropertyGroup>
+    <PostBuildEvent>SET  USE_ILMERGE=1
+IF NOT DEFINED USE_ILMERGE GOTO DONE
+ilmerge /out:"$(TargetDir)Bm$(TargetExt)" "$(TargetPath)" "$(TargetDir)LibUsbDotNet.dll"
+:DONE</PostBuildEvent>
+  </PropertyGroup>
 </Project>

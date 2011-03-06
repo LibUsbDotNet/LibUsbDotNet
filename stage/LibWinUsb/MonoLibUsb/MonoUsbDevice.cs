@@ -45,8 +45,6 @@ namespace LibUsbDotNet.LudnMonoLibUsb
         internal static MonoUsbProfileList mMonoUSBProfileList;
         private readonly MonoUsbProfile mMonoUSBProfile;
 
-        private int mClaimedInteface;
-
         internal MonoUsbDevice(ref MonoUsbProfile monoUSBProfile)
             : base(null, null)
         {
@@ -292,7 +290,9 @@ namespace LibUsbDotNet.LudnMonoLibUsb
                 if (activeEndpoint.EpNum == (byte)readEndpointID) 
                     return (UsbEndpointReader)activeEndpoint;
 
-            UsbEndpointReader epNew = new MonoUsbEndpointReader(this, readBufferSize, readEndpointID, endpointType);
+            byte altIntefaceID = mClaimedInterfaces.Count == 0 ? UsbAltInterfaceSettings[0] : UsbAltInterfaceSettings[mClaimedInterfaces[mClaimedInterfaces.Count - 1]];
+
+            UsbEndpointReader epNew = new MonoUsbEndpointReader(this, readBufferSize, altIntefaceID, readEndpointID, endpointType);
             return (UsbEndpointReader) ActiveEndpoints.Add(epNew);
         }
 
@@ -308,7 +308,9 @@ namespace LibUsbDotNet.LudnMonoLibUsb
                 if (activeEndpoint.EpNum == (byte)writeEndpointID)
                     return (UsbEndpointWriter)activeEndpoint;
 
-            UsbEndpointWriter epNew = new MonoUsbEndpointWriter(this, writeEndpointID, endpointType);
+            byte altIntefaceID = mClaimedInterfaces.Count == 0 ? UsbAltInterfaceSettings[0] : UsbAltInterfaceSettings[mClaimedInterfaces[mClaimedInterfaces.Count - 1]];
+
+            UsbEndpointWriter epNew = new MonoUsbEndpointWriter(this, altIntefaceID, writeEndpointID, endpointType);
             return (UsbEndpointWriter) mActiveEndpoints.Add(epNew);
         }
 
@@ -407,16 +409,35 @@ namespace LibUsbDotNet.LudnMonoLibUsb
         /// <returns>True on success.</returns>
         public bool ClaimInterface(int interfaceID)
         {
-            int ret = MonoUsbApi.ClaimInterface((MonoUsbDeviceHandle) mUsbHandle, interfaceID);
+            if (mClaimedInterfaces.Contains(interfaceID)) return true;
+
+            int ret = MonoUsbApi.ClaimInterface((MonoUsbDeviceHandle)mUsbHandle, interfaceID);
             if (ret != 0)
             {
                 UsbError.Error(ErrorCode.MonoApiError, ret, "ClaimInterface Failed", this);
                 return false;
             }
-            mClaimedInteface = interfaceID;
+            mClaimedInterfaces.Add(interfaceID);
             return true;
         }
 
+        public bool GetAltInterface(out int alternateID)
+        {
+            int interfaceID = mClaimedInterfaces.Count == 0 ? 0 : mClaimedInterfaces[mClaimedInterfaces.Count - 1];
+            return GetAltInterface(interfaceID, out alternateID);
+        }
+
+        /// <summary>
+        /// Gets the alternate interface number for the specified interfaceID.
+        /// </summary>
+        /// <param name="interfaceID">The interface number of to get the alternate setting for.</param>
+        /// <param name="alternateID">The currrently selected alternate interface number.</param>
+        /// <returns>True on success.</returns>
+        public bool GetAltInterface(int interfaceID, out int alternateID)
+        {
+            alternateID = UsbAltInterfaceSettings[interfaceID & (UsbConstants.MAX_DEVICES - 1)];
+            return true;
+        }
         /// <summary>
         /// Releases an interface that was previously claimed with <see cref="ClaimInterface"/>.
         /// </summary>
@@ -425,6 +446,8 @@ namespace LibUsbDotNet.LudnMonoLibUsb
         public bool ReleaseInterface(int interfaceID)
         {
             int ret = MonoUsbApi.ReleaseInterface((MonoUsbDeviceHandle) mUsbHandle, interfaceID);
+            if (!mClaimedInterfaces.Remove(interfaceID)) return true;
+
             if (ret != 0)
             {
                 UsbError.Error(ErrorCode.MonoApiError, ret, "ReleaseInterface Failed", this);
@@ -438,15 +461,27 @@ namespace LibUsbDotNet.LudnMonoLibUsb
         /// </summary>
         /// <param name="alternateID">The alternate interface to select for the most recent claimed interface See <see cref="ClaimInterface"/>.</param>
         /// <returns>True on success.</returns>
-        public bool SetAltInterface(int alternateID)
+        public bool SetAltInterface(int interfaceID, int alternateID)
         {
-            int ret = MonoUsbApi.SetInterfaceAltSetting((MonoUsbDeviceHandle) mUsbHandle, mClaimedInteface, alternateID);
+            int ret = MonoUsbApi.SetInterfaceAltSetting((MonoUsbDeviceHandle) mUsbHandle, interfaceID, alternateID);
             if (ret != 0)
             {
                 UsbError.Error(ErrorCode.MonoApiError, ret, "SetAltInterface Failed", this);
                 return false;
             }
+            UsbAltInterfaceSettings[interfaceID & (UsbConstants.MAX_DEVICES-1)] = (byte)alternateID;
             return true;
+        }
+
+        /// <summary>
+        /// Sets an alternate interface for the most recent claimed interface.
+        /// </summary>
+        /// <param name="alternateID">The alternate interface to select for the most recent claimed interface See <see cref="ClaimInterface"/>.</param>
+        /// <returns>True on success.</returns>
+        public bool SetAltInterface(int alternateID)
+        {
+            if (mClaimedInterfaces.Count == 0) throw new UsbException(this, "You must claim an interface before setting an alternate interface.");
+            return SetAltInterface(mClaimedInterfaces[mClaimedInterfaces.Count - 1], alternateID);
         }
 
         #endregion

@@ -30,8 +30,8 @@ namespace LibUsbDotNet
     /// </summary> 
     public class UsbEndpointWriter : UsbEndpointBase
     {
-        internal UsbEndpointWriter(UsbDevice usbDevice, WriteEndpointID writeEndpointID, EndpointType endpointType)
-            : base(usbDevice, (byte)writeEndpointID, endpointType) { }
+        internal UsbEndpointWriter(UsbDevice usbDevice, byte alternateInterfaceID, WriteEndpointID writeEndpointID, EndpointType endpointType)
+            : base(usbDevice, alternateInterfaceID, (byte)writeEndpointID, endpointType) { }
 
 
         /// <summary>

@@ -139,6 +139,20 @@ namespace LibUsbDotNet
         /// <returns>True on success.</returns>
         bool GetString(out string stringData, short langId, byte stringIndex);
 
+        /// <summary>
+        /// sets the alternate interface number for the previously claimed interface. <see cref="IUsbDevice.ClaimInterface"/>
+        /// </summary>
+        /// <param name="alternateID">The alternate interface number.</param>
+        /// <returns>True on success.</returns>
+        bool SetAltInterface(int alternateID);
+
+        /// <summary>
+        /// Gets the alternate interface number for the previously claimed interface. <see cref="IUsbDevice.ClaimInterface"/>
+        /// </summary>
+        /// <param name="alternateID">The alternate interface number.</param>
+        /// <returns>True on success.</returns>
+        bool GetAltInterface(out int alternateID);
+
         ///<summary>
         /// Opens/re-opens this USB device instance for communication.
         ///</summary>

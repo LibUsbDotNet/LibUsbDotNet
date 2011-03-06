@@ -38,9 +38,9 @@ namespace LibUsbDotNet.Main
         public const int MAX_CONFIG_SIZE = 4096;
 
         /// <summary>
-        /// Maximum number of USB devices.
+        /// Maximum number of USB devices connected to the driver at once.
         /// </summary>
-        public const int MAX_DEVICES = 128;
+        public const int MAX_DEVICES = 256;
 
         /// <summary>
         /// Maximum number of endpoints per device.
