@@ -17,9 +17,31 @@
 	<!--    DO NOT REMOVE    -->
 	<!-- CurrentReleaseNotes -->
   <releaseNotes address="LibUsbDotNet_Changes_v2.2.9">
-    <title>v2.2.9 (11/10/2010)</title>
+    <title>v2.2.9 (04/08/2011)</title>
     <content>
       <bugs class="bullet">
+        <bug>
+          <bugaction>
+            <token>Fixed</token>
+          </bugaction>
+          <bugentry>
+           PinnedHandle class with IntPtr types.
+            <para>
+              The PinnedHandle class was attempting to pin IntPtrs.
+            </para>
+          </bugentry>
+        </bug>	  
+        <bug>
+          <bugaction>
+            <token>Added</token>
+          </bugaction>
+          <bugentry>
+           Alternate interfaces.
+            <para>
+              LibUsbDotNet should now have full support for alternate interfaces across all supported drivers.
+            </para>
+          </bugentry>
+        </bug>	  
         <bug>
           <bugaction>
             <token>Updated</token>

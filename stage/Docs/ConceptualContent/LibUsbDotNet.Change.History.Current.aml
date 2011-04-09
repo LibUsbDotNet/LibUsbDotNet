@@ -5,6 +5,17 @@
       <bugs class="bullet">
         <bug>
           <bugaction>
+            <token>Fixed</token>
+          </bugaction>
+          <bugentry>
+           PinnedHandle class with IntPtr types.
+            <para>
+              The PinnedHandle class was attempting to pin IntPtrs.
+            </para>
+          </bugentry>
+        </bug>	  
+        <bug>
+          <bugaction>
             <token>Added</token>
           </bugaction>
           <bugentry>
