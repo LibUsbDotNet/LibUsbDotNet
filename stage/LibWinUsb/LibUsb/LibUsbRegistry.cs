@@ -49,6 +49,10 @@ namespace LibUsbDotNet.LibUsb
                 mDeviceProperties.Add(SYMBOLIC_NAME_KEY, symbolicName);
             }
 
+            string regKeyPathnameStr;
+            GetObjectName(usbHandle, 0, out regKeyPathnameStr);
+            mDeviceProperties.Add("DevicePlugPlayRegistryKey", regKeyPathnameStr);
+
             // If the SymbolicName key does not exists, use the first HardwareID string.
             if (!mDeviceProperties.ContainsKey(SYMBOLIC_NAME_KEY) || String.IsNullOrEmpty(symbolicName))
             {
@@ -76,6 +80,35 @@ namespace LibUsbDotNet.LibUsb
             }
         }
 
+        private bool GetObjectName(SafeFileHandle usbHandle, int objectNameIndex, out string objectName)
+        {
+            int objNameLength;
+            Byte[] regKeyPathname = new byte[512];
+            GCHandle gcRegKeyPathname = GCHandle.Alloc(regKeyPathname, GCHandleType.Pinned);
+
+#if RESERVED_FOR_FUTURE_USE
+            LibUsbRequest req=new LibUsbRequest();
+            req.ObjectName.Index = objectNameIndex;
+            Marshal.Copy(req.Bytes, 0, gcRegKeyPathname.AddrOfPinnedObject(),LibUsbRequest.Size);
+#endif
+
+            bool bSuccess = LibUsbDriverIO.UsbIOSync(usbHandle,
+                                         LibUsbIoCtl.GET_OBJECT_NAME,
+                                         regKeyPathname,
+                                         regKeyPathname.Length,
+                                         gcRegKeyPathname.AddrOfPinnedObject(),
+                                         regKeyPathname.Length,
+                                         out objNameLength);
+
+            gcRegKeyPathname.Free();
+
+            if (bSuccess && objNameLength > 1)
+                objectName = Encoding.ASCII.GetString(regKeyPathname, 0, objNameLength-1);
+            else
+                objectName = String.Empty;
+
+            return bSuccess;
+        }
         /// <summary>
         /// Gets the 0 based index of this libusb device
         /// </summary>

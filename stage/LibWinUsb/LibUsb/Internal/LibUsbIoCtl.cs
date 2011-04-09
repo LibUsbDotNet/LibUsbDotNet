@@ -58,6 +58,7 @@ namespace LibUsbDotNet.Internal.LibUsb
         public static readonly int SET_INTERFACE = CTL_CODE(FILE_DEVICE_UNKNOWN, 0x803, METHOD_BUFFERED, FILE_ANY_ACCESS);
         public static readonly int VENDOR_READ = CTL_CODE(FILE_DEVICE_UNKNOWN, 0x80D, METHOD_BUFFERED, FILE_ANY_ACCESS);
         public static readonly int VENDOR_WRITE = CTL_CODE(FILE_DEVICE_UNKNOWN, 0x80C, METHOD_BUFFERED, FILE_ANY_ACCESS);
+        public static readonly int GET_OBJECT_NAME = CTL_CODE(FILE_DEVICE_UNKNOWN, 0x8FF, METHOD_BUFFERED, FILE_ANY_ACCESS);
 
 
         private static int CTL_CODE(int DeviceType, int Function, int Method, int Access) { return ((DeviceType) << 16) | ((Access) << 14) | ((Function) << 2) | (Method); }

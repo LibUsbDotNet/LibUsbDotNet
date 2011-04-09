@@ -209,14 +209,23 @@ namespace LibUsbDotNet.Main
         }
 
     }
+
     /// <summary>
     /// Used for allocating a <see cref="GCHandle"/> to access the underlying pointer of an object.
     /// </summary>
     public class PinnedHandle : IDisposable
     {
-        private readonly IntPtr mPtr = IntPtr.Zero;
-        private bool mFreeGcBuffer;
-        private GCHandle mGcObject;
+        // unmanaged memory pointer to the resource
+        private IntPtr handle = IntPtr.Zero;
+
+        // Whether or not mGCHandle will need freed when disposing.
+        private bool isGCHandleOwner;
+
+        // Alllocated in the ctor if needed
+        private GCHandle mGCHandle;
+
+        // Track whether Dispose has been called.
+        private bool disposed;
 
 
         /// <summary>
@@ -229,8 +238,27 @@ namespace LibUsbDotNet.Main
         {
             if (!ReferenceEquals(objectToPin, null))
             {
-                mFreeGcBuffer = GetPinnedObjectHandle(objectToPin, out mGcObject);
-                mPtr = mGcObject.AddrOfPinnedObject();
+                if (objectToPin is GCHandle)
+                {
+                    // This object is already a GCHandle, just use its AddrOfPinnedObject()
+                    // This class will not free this GCHandle when dispposing.
+                    mGCHandle = (GCHandle)objectToPin;
+                    handle = mGCHandle.AddrOfPinnedObject();
+                }
+                else if (objectToPin is IntPtr)
+                {
+                    // This object is an IntPtr, the user is manging this on his own.
+                    handle = (IntPtr)objectToPin;
+                }
+                else
+                {
+                    // This is a blittable class or structure, or an array fo blittable class or structures.
+                    mGCHandle = GCHandle.Alloc(objectToPin, GCHandleType.Pinned);
+                    handle = mGCHandle.AddrOfPinnedObject();
+
+                    // This class will free the GcHandle when its disposed.
+                    isGCHandleOwner = true;
+                }
             }
         }
 
@@ -239,7 +267,7 @@ namespace LibUsbDotNet.Main
         /// </summary>
         public IntPtr Handle
         {
-            get { return mPtr; }
+            get { return handle; }
         }
 
         #region IDisposable Members
@@ -250,34 +278,62 @@ namespace LibUsbDotNet.Main
         /// <filterpriority>2</filterpriority>
         public void Dispose()
         {
-            if ((mFreeGcBuffer) && mGcObject.IsAllocated)
-            {
-                mFreeGcBuffer = false;
-                mGcObject.Free();
-            }
+            Dispose(true);
+            // This object will be cleaned up by the Dispose method.
+            // Therefore, you should call GC.SupressFinalize to
+            // take this object off the finalization queue
+            // and prevent finalization code for this object
+            // from executing a second time.
             GC.SuppressFinalize(this);
         }
 
+        // Dispose(bool disposing) executes in two distinct scenarios.
+        // If disposing equals true, the method has been called directly
+        // or indirectly by a user's code. Managed and unmanaged resources
+        // can be disposed.
+        // If disposing equals false, the method has been called by the
+        // runtime from inside the finalizer and you should not reference
+        // other objects. Only unmanaged resources can be disposed.
+        protected virtual void Dispose(bool disposing)
+        {
+            // Check to see if Dispose has already been called.
+            if (!this.disposed)
+            {
+                // If disposing equals true, dispose all managed
+                // and unmanaged resources.
+                if (disposing)
+                {
+                    // Dispose managed resources.
+                }
+
+                // Call the appropriate methods to clean up
+                // unmanaged resources here.
+                // If disposing is false,
+                // only the following code is executed.
+                if (isGCHandleOwner && handle != IntPtr.Zero)
+                {
+                    isGCHandleOwner = false;
+                    handle = IntPtr.Zero;
+                    mGCHandle.Free();
+                }
+
+
+                // disposing has been done.
+                disposed = true;
+
+            }
+        }
         #endregion
 
-        /// <summary>
-        /// Disposes the gchande for the object if ibe is allocated.
-        /// </summary>
-        ~PinnedHandle() { Dispose(); }
-
-        private static bool GetPinnedObjectHandle(object objectToPin, out GCHandle pinnedObject)
+        ~PinnedHandle()
         {
-            bool bFreeGcBuffer = false;
+            // This destructor will run only if the Dispose method
+            // does not get called.
 
-            if (objectToPin is GCHandle)
-                pinnedObject = (GCHandle)objectToPin;
-            else
-            {
-                pinnedObject = GCHandle.Alloc(objectToPin, GCHandleType.Pinned);
-                bFreeGcBuffer = true;
-            }
-
-            return bFreeGcBuffer;
+            // Do not re-create Dispose clean-up code here.
+            // Calling Dispose(false) is optimal in terms of
+            // readability and maintainability.
+            Dispose(false);
         }
     }
 }

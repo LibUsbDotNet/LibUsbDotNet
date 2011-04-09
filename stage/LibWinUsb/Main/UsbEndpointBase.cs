@@ -342,6 +342,19 @@ namespace LibUsbDotNet.Main
         }
 
         /// <summary>
+        /// Looks up endpoint/interface information in a configuration.
+        /// </summary>
+        /// <param name="currentConfigInfo">The config to seach.</param>
+        /// <param name="endpointAddress">The endpoint address to look for.</param>
+        /// <param name="usbInterfaceInfo">On success, the <see cref="UsbInterfaceInfo"/> class for this endpoint.</param>
+        /// <param name="usbEndpointInfo">On success, the <see cref="UsbEndpointInfo"/> class for this endpoint.</param>
+        /// <returns>True of the endpoint was found, otherwise false.</returns>
+        public static bool LookupEndpointInfo(UsbConfigInfo currentConfigInfo, byte endpointAddress, out UsbInterfaceInfo usbInterfaceInfo, out UsbEndpointInfo usbEndpointInfo)
+        {
+            return LookupEndpointInfo(currentConfigInfo, -1, endpointAddress, out usbInterfaceInfo, out usbEndpointInfo);
+        }
+
+        /// <summary>
         /// Synchronous bulk/interrupt transfer function.
         /// </summary>
         /// <param name="buffer">A caller-allocated buffer for the transfer data. This object is pinned using <see cref="PinnedHandle"/>.</param>

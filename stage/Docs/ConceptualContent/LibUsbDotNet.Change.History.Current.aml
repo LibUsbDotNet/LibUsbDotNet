@@ -5,6 +5,17 @@
       <bugs class="bullet">
         <bug>
           <bugaction>
+            <token>Added</token>
+          </bugaction>
+          <bugentry>
+           Alternate interfaces.
+            <para>
+              LibUsbDotNet should now have full support for alternate interfaces across all supported drivers.
+            </para>
+          </bugentry>
+        </bug>	  
+        <bug>
+          <bugaction>
             <token>Updated</token>
           </bugaction>
           <bugentry>
