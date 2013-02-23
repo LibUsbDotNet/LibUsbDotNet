@@ -41,14 +41,40 @@ namespace LibUsbDotNet.LudnMonoLibUsb.Internal
         {
         }
 
+
         #region IDisposable Members
 
-        public new void Dispose()
+        /// <summary>Explicitly closes and frees the handle.</summary>
+        public new virtual void Dispose()
         {
-            freeTransfer();
+            Dispose(true);
+            GC.SuppressFinalize(this);
         }
 
+        private bool mbDisposed2;
+        /// <summary>
+        /// Cancels any pending transfer and frees resources.
+        /// </summary>
+        protected override void Dispose(bool disposing)
+        {
+            if (!mbDisposed2)
+            {
+                mbDisposed2 = true;
+                freeTransfer();
+                if (disposing)
+                {
+                    // Dispose managed resources.
+                }
+                base.Dispose();
+            }
+        }
+
+
         #endregion
+
+        ~MonoUsbTransferContext() { Dispose(false); }
+
+
         private void allocTransfer(UsbEndpointBase endpointBase, bool ownsTransfer, int isoPacketSize, int count)
         {
             int numIsoPackets = 0;
@@ -145,9 +171,6 @@ namespace LibUsbDotNet.LudnMonoLibUsb.Internal
             mTransfer.Status = 0;
             mTransfer.Flags = MonoUsbTransferFlags.None;
         }
-        // Clean up the globally allocated memory. 
-
-        ~MonoUsbTransferContext() { Dispose(); }
 
         /// <summary>
         /// Submits the transfer.

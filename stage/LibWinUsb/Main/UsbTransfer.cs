@@ -60,6 +60,8 @@ namespace LibUsbDotNet.Main
         /// <summary></summary>
         protected internal ManualResetEvent mTransferCompleteEvent = new ManualResetEvent(true);
 
+        protected bool mbDisposed;
+
         /// <summary></summary>
         protected UsbTransfer(UsbEndpointBase endpointBase) { mEndpointBase = endpointBase; }
 
@@ -121,22 +123,46 @@ namespace LibUsbDotNet.Main
 
         #region IDisposable Members
 
+        /// <summary>Explicitly closes and frees the handle.</summary>
+        public virtual void Dispose()
+        {
+            Dispose(true);
+            GC.SuppressFinalize(this);
+        }
+
         /// <summary>
         /// Cancels any pending transfer and frees resources.
         /// </summary>
-        public virtual void Dispose()
+        protected virtual void Dispose(bool disposing)
         {
-            if (!IsCancelled) Cancel();
+            if (!mbDisposed)
+            {
+                mbDisposed = true;
+                try
+                {
+                    if (!IsCancelled) Cancel();
 
-            int dummy;
-            if (!mHasWaitBeenCalled) Wait(out dummy);
-            if (mPinnedHandle != null) mPinnedHandle.Dispose();
-            mPinnedHandle = null;
+                    int dummy;
+                    if (!mHasWaitBeenCalled) Wait(out dummy);
+                    if (disposing)
+                    {
+                        // Dispose managed resources.
+                        if (mPinnedHandle != null) mPinnedHandle.Dispose();
+                    }
+                    mPinnedHandle = null;
+                }
+                catch(Exception ex)
+                {
+                    Debug.Print(ex.Message);
+                }
+  
+            }
         }
+
 
         #endregion
 
-        ~UsbTransfer() { Dispose(); }
+        ~UsbTransfer() { Dispose(false); }
 
         /// <summary>
         /// Cancels a pending transfer that was previously submitted with <see cref="Submit"/>.
@@ -145,7 +171,7 @@ namespace LibUsbDotNet.Main
         public virtual ErrorCode Cancel()
         {
             mTransferCancelEvent.Set();
-            mTransferCompleteEvent.WaitOne(5000, false);
+            //mTransferCompleteEvent.WaitOne(5000, false);
 
             return ErrorCode.Success;
         }
