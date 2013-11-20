@@ -138,22 +138,25 @@ namespace LibUsbDotNet.Main
             if (!mbDisposed)
             {
                 mbDisposed = true;
-                try
+                if (disposing)
                 {
-                    if (!IsCancelled) Cancel();
-
-                    int dummy;
-                    if (!mHasWaitBeenCalled) Wait(out dummy);
-                    if (disposing)
+                    try
                     {
-                        // Dispose managed resources.
-                        if (mPinnedHandle != null) mPinnedHandle.Dispose();
+                        if (!IsCancelled) Cancel();
+
+                        int dummy;
+                        if (!mHasWaitBeenCalled) Wait(out dummy);
+                        if (disposing)
+                        {
+                            // Dispose managed resources.
+                            if (mPinnedHandle != null) mPinnedHandle.Dispose();
+                        }
+                        mPinnedHandle = null;
                     }
-                    mPinnedHandle = null;
-                }
-                catch(Exception ex)
-                {
-                    Debug.Print(ex.Message);
+                    catch (Exception ex)
+                    {
+                        Debug.Print(ex.Message);
+                    }
                 }
   
             }
