@@ -80,7 +80,7 @@ namespace LibUsbDotNet.DeviceNotify.Linux
             EventHandler<DeviceNotifyEventArgs> deviceNotify = OnDeviceNotify;
             if (!ReferenceEquals(deviceNotify, null))
             {
-                string deviceFileName = String.Format("usbdev{0}.{1}", e.MonoUSBProfile.BusNumber, e.MonoUSBProfile.DeviceAddress);
+                string deviceFileName = e.MonoUSBProfile.MakeDevicePath();
 
                 LinuxDevItem linuxDevItem = new LinuxDevItem(deviceFileName,
                                                              e.MonoUSBProfile.BusNumber,

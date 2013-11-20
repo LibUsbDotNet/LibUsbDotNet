@@ -68,7 +68,7 @@ namespace LibUsbDotNet.WinUsb
         /// <summary>
         /// Gets the device path used to open this <see cref="WinUsbDevice"/>.
         /// </summary>
-        public string DevicePath
+        public override string DevicePath
         {
             get { return mDevicePath; }
         }

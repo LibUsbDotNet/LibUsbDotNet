@@ -241,5 +241,10 @@ namespace LibUsbDotNet.Main
             }
             deviceProperties.Add(SYMBOLIC_NAME_KEY, fakeSymbolicName);
         }
+
+        public override string DevicePath
+        {
+            get { return mUSBDevice.DevicePath; }
+        }
     }
 }

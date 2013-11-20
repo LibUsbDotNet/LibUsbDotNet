@@ -214,7 +214,7 @@ namespace LibUsbDotNet.LibUsb
         }
 
         /// <summary>
-        /// Opens the USB device for communucation.
+        /// Opens the USB device for communication.
         /// </summary>
         /// <param name="usbDevice">The newly created UsbDevice.</param>
         /// <returns>True on success.</returns>
@@ -349,6 +349,14 @@ namespace LibUsbDotNet.LibUsb
                 mDeviceProperties.Add(prop.Key, oValue);
             }
             gcPropBuffer.Free();
+        }
+
+        /// <summary>
+        /// Gets the "device path" for this device.
+        /// </summary>
+        public override string DevicePath
+        {
+            get { return mDeviceFilename; }
         }
     }
 }

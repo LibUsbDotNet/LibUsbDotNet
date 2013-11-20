@@ -182,5 +182,10 @@ namespace MonoLibUsb.Profile
             if (ReferenceEquals(this, other)) return true;
             return other.mBusNumber == mBusNumber && other.mDeviceAddress == mDeviceAddress;
         }
+
+        public string MakeDevicePath()
+        {
+            return string.Format("usbdev{0}.{1}", BusNumber, DeviceAddress); 
+        }
     }
 }

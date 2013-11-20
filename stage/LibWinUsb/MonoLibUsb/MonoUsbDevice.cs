@@ -553,5 +553,13 @@ namespace LibUsbDotNet.LudnMonoLibUsb
         /// <para>Usually there is no need to call this functions externally.</para> 
         /// </remarks>
         public static void Init() { MonoUsbApi.InitAndStart(); }
+
+        /// <summary>
+        /// Gets the "device path" for this device (constructed)
+        /// </summary>
+        public override string DevicePath
+        {
+            get { return mMonoUSBProfile.MakeDevicePath(); }
+        }
     }
 }

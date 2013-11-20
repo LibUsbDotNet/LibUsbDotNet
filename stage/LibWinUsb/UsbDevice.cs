@@ -39,7 +39,7 @@ namespace LibUsbDotNet
     /// If more functionality is required, it is up to the application to handle multi-driver
     /// and/or multi-platfrom requirements.
     /// </remarks>
-    public abstract partial class UsbDevice
+    public abstract partial class UsbDevice : IDisposable
     {
         #region Enumerations
 
@@ -497,6 +497,23 @@ namespace LibUsbDotNet
                 MonoUsbDevice.mMonoUSBProfileList = null;
             }
             MonoUsbApi.StopAndExit();
+        }
+
+        /// <summary>
+        /// Gets the device path.
+        /// </summary>
+        /// <remarks>
+        /// If two devices are physically connected to the same system at the same time,
+        /// they will have different device paths.
+        /// 
+        /// This makes it possible to distinguish two devices of the same kind (same vid, pid, rev, serial#),
+        /// (especially when the manufacturer is lazy and does not bother to assign serial numbers).
+        /// </remarks>
+        public abstract string DevicePath { get; }
+
+        void IDisposable.Dispose()
+        {
+            Close();
         }
     }
 }

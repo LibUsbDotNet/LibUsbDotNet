@@ -107,6 +107,19 @@ namespace LibUsbDotNet.DeviceNotify.Info
         ///</returns>
         public override string ToString() { return SymbolicName.ToString(); }
 
+        /// <summary>
+        /// Opens the USB device for communication.
+        /// </summary>
+        /// <param name="usbDevice">The newly created UsbDevice.</param>
+        /// <returns>True on success.</returns>
+        public bool Open(out UsbDevice usbDevice)
+        {
+            LibUsbDotNet.LibUsb.LibUsbDevice libUsbDevice;
+            bool result = LibUsbDotNet.LibUsb.LibUsbDevice.Open(Name, out libUsbDevice);
+            usbDevice = libUsbDevice;
+            return result;
+        }
+
         #endregion
     }
 }

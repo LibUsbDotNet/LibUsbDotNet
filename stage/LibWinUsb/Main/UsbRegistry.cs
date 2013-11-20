@@ -100,6 +100,18 @@ namespace LibUsbDotNet.Main
         }
 
         /// <summary>
+        /// Gets the "device path" for the device.
+        /// </summary>
+        /// <remarks>
+        /// If two devices are physically connected to the same system at the same time,
+        /// they will have different values for DevicePath.
+        ///
+        /// The value returned by this property will be consistent with the "Name" property of the
+        /// "Device" member of a DeviceNotifyEventArgs.
+        /// </remarks>
+        public abstract string DevicePath { get; }
+
+        /// <summary>
         /// The unique "SymbolicName" of the device.
         /// </summary>
         public abstract Guid[] DeviceInterfaceGuids { get; }

@@ -122,6 +122,22 @@ namespace LibUsbDotNet.DeviceNotify.Linux
             return string.Format("Name:{0} BusNumber:{1} DeviceAddress:{2}\n{3}", values);
         }
 
+        /// <summary>
+        /// Attempts to open the device referenced.
+        /// </summary>
+        /// <param name="usbDevice">The open UsbDevice object.</param>
+        /// <returns>True if success.</returns>
+        public bool Open(out UsbDevice usbDevice)
+        {
+            foreach (UsbRegistry reg in UsbDevice.AllDevices)
+            {
+                if (reg.DevicePath == this.Name)
+                    return reg.Open(out usbDevice);
+            }
+            usbDevice = null;
+            return false;
+        }
+
         #endregion
     }
 }

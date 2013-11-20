@@ -66,5 +66,12 @@ namespace LibUsbDotNet.DeviceNotify.Info
         ///A <see cref="System.String"/> that represents the current <see cref="UsbDeviceNotifyInfo"/>.
         ///</returns>
         string ToString();
+
+        /// <summary>
+        /// Opens the USB device for communication.
+        /// </summary>
+        /// <param name="usbDevice">The newly created UsbDevice.</param>
+        /// <returns>True on success.</returns>
+        bool Open(out UsbDevice usbDevice);
     }
 }

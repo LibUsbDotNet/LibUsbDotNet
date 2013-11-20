@@ -514,5 +514,12 @@ namespace LibUsbDotNet.WinUsb
             return false;
         }
 
+        /// <summary>
+        /// For WinUsbRegistry objects, this always returns <see cref='SymbolicName' />.
+        /// </summary>
+        public override string DevicePath
+        {
+            get { return SymbolicName; }
+        }
     }
 }

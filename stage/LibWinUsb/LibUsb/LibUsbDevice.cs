@@ -357,5 +357,13 @@ namespace LibUsbDotNet.LibUsb
         }
 
         internal bool UsbIoSync(int controlCode, Object inBuffer, int inSize, IntPtr outBuffer, int outSize, out int ret) { return LibUsbDriverIO.UsbIOSync(mUsbHandle, controlCode, inBuffer, inSize, outBuffer, outSize, out ret); }
+
+        /// <summary>
+        /// Gets the device filename for this <see cref="LibUsbDevice"/>.
+        /// </summary>
+        public override string DevicePath
+        {
+            get { return mDeviceFilename; }
+        }
     }
 }
