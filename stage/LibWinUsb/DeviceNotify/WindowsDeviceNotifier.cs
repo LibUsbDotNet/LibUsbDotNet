@@ -112,7 +112,7 @@ namespace LibUsbDotNet.DeviceNotify
         private void OnDeviceChange(ref Message m)
         {
             if (!mEnabled) return;
-            if (m.LParam.ToInt32() != 0)
+            if (m.LParam != IntPtr.Zero)
             {
                 EventHandler<DeviceNotifyEventArgs> temp = OnDeviceNotify;
                 if (!ReferenceEquals(temp, null))
