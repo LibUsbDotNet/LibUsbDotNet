@@ -37,6 +37,20 @@ namespace LibUsbDotNet.LibUsb
         private readonly string mDeviceFilename;
         private readonly int mDeviceIndex;
 
+        private static string FixSymbolicName(string symbolicName)
+        {
+            // 2016-03-22 (SO): There's a bug somewhere here. On my machine (Win32), the path that this returns
+            // is slightly incorrect: it begins with \??\ instead of \\?\.  This causes registrations to not
+            // match device notification events (which come straight from Windows) 
+            if (symbolicName.Length >= 3 && symbolicName[0] == '\\' && symbolicName[1] == '?' && symbolicName[2] == '?')
+            {
+                StringBuilder sb = new StringBuilder(symbolicName);
+                sb[1] = '\\';
+                symbolicName = sb.ToString();
+            }
+            return symbolicName;
+        }
+
         private LibUsbRegistry(SafeFileHandle usbHandle, string deviceFileName, int deviceIndex)
         {
             mDeviceFilename = deviceFileName;
@@ -46,6 +60,8 @@ namespace LibUsbDotNet.LibUsb
 
             if (GetCustomDeviceKeyValue(usbHandle, SYMBOLIC_NAME_KEY, out symbolicName, 512) == ErrorCode.None)
             {
+                symbolicName = FixSymbolicName(symbolicName);
+
                 mDeviceProperties.Add(SYMBOLIC_NAME_KEY, symbolicName);
             }
 
