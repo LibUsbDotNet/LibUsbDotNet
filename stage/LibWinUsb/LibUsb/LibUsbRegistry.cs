@@ -267,7 +267,10 @@ namespace LibUsbDotNet.LibUsb
             if (eReturn == ErrorCode.None)
             {
                 propData = Encoding.Unicode.GetString(propDataBytes);
-                propData.TrimEnd(new char[] {'\0'});
+                // if there is an embedded NUL character, the string effectively terminates there
+                int nul_idx = propData.IndexOf('\0');
+                if (nul_idx >= 0)
+                    propData = propData.Substring(0, nul_idx);
             }
             else
             {
