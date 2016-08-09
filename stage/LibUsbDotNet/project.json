@@ -1,0 +1,45 @@
+{
+  "title": "LibUsbDotNet for .NET Core",
+  "description": ".NET C# USB library for WinUSB, LibUsb-Win32, and libusb-1.0. Using the common device classes, applications work with all operating systems and drivers without modification. Lots of example code. Open source software at sourceforge.net.",
+  "version": "2.2.8-*",
+  "buildOptions": {
+    "debugType": "portable",
+    "define": [ "LIBUSBDOTNET" ]
+  },
+  "frameworks": {
+    "netstandard1.5": {
+      "dependencies": {
+        "System.Runtime.InteropServices": "4.1.0",
+        "System.Text.RegularExpressions": {
+          "version": "4.1.0",
+          "type": "platform"
+        },
+        "System.Threading": "4.0.11",
+        "System.Threading.Thread": "4.0.0",
+        "System.Threading.Timer": "4.0.1",
+        "Microsoft.Win32.Registry": "4.0.0",
+        "System.IO.FileSystem": "4.0.1",
+        "System.Collections": "4.0.11",
+        "System.Diagnostics.Debug": "4.0.11",
+        "System.IO.FileSystem.Watcher": "4.0.0",
+        "System.Resources.ResourceManager": "4.0.1",
+        "System.Threading.Overlapped": "4.0.1",
+        "System.Runtime.Extensions": "4.1.0",
+        "System.Runtime.InteropServices.RuntimeInformation": "4.0.0"
+      }
+    },
+    "net45": {
+      "frameworkAssemblies": {
+        "System.Windows.Forms": "4.0.0.0"
+      }
+    },
+    "net35": {
+      "frameworkAssemblies": {
+        "System.Windows.Forms": "2.0.0.0"
+      }
+    }
+  },
+  "runtimes": {
+    "win": {}
+  }
+}
