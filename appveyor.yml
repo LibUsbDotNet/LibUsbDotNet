@@ -2,7 +2,7 @@ build_script:
   - msbuild stage\LibUsbDotNet.sln /p:Configuration=Release /p:Platform="Any CPU" /logger:"C:\Program Files\AppVeyor\BuildAgent\Appveyor.MSBuildLogger.dll"
   - dotnet restore stage\LibUsbDotNet\project.json
   - dotnet build stage\LibUsbDotNet\project.json
-  - dotnet pack stage\LibUsbDotNet\project.json -Version r%APPVEYOR_BUILD_VERSION%
+  - dotnet pack stage\LibUsbDotNet\project.json --version-suffix r%APPVEYOR_BUILD_VERSION%
 
 on_success:
   - ps: Push-AppveyourArtifact stage\LibUsbDotNet\bin\Debug\LibUsbDotNet.2.2.8-r$($env:APPVEYOR_BUILD_VERSION).nupkg
