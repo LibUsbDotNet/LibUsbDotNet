@@ -5,5 +5,5 @@ build_script:
   - dotnet pack stage\LibUsbDotNet\project.json --version-suffix r%APPVEYOR_BUILD_VERSION%
 
 on_success:
-  - ps: Push-AppveyourArtifact stage\LibUsbDotNet\bin\Debug\LibUsbDotNet.2.2.8-r$($env:APPVEYOR_BUILD_VERSION).nupkg
-  - ps: Push-AppveyourArtifact stage\LibUsbDotNet\bin\Debug\LibUsbDotNet.2.2.8-r$($env:APPVEYOR_BUILD_VERSION).symbols.nupkg
+  - ps: Push-AppVeyorArtifact stage\LibUsbDotNet\bin\Debug\LibUsbDotNet.2.2.8-r$($env:APPVEYOR_BUILD_VERSION).nupkg
+  - ps: Push-AppVeyorArtifact stage\LibUsbDotNet\bin\Debug\LibUsbDotNet.2.2.8-r$($env:APPVEYOR_BUILD_VERSION).symbols.nupkg
