@@ -112,7 +112,11 @@ namespace LibUsbDotNet.Main
         public static Dictionary<string, int> GetEnumData(Type type)
         {
             Dictionary<string, int> dictEnum = new Dictionary<string, int>();
+#if !NETSTANDARD1_5
+            FieldInfo[] enumFields = type.GetFields();
+#else
             FieldInfo[] enumFields = type.GetTypeInfo().GetFields();
+#endif
             for (int iField = 1; iField < enumFields.Length; iField++)
             {
                 object oValue = enumFields[iField].GetRawConstantValue();

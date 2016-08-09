@@ -501,7 +501,7 @@ namespace LibUsbDotNet.LudnMonoLibUsb
             {
                 MonoUsbConfigHandle nextConfigHandle;
                 int ret = MonoUsbApi.GetConfigDescriptor(usbDevice.mMonoUSBProfile.ProfileHandle, (byte) iConfig, out nextConfigHandle);
-                Debug.WriteLine("GetConfigDescriptor:{0}", ret);
+                Debug.WriteLine(string.Format("GetConfigDescriptor:{0}", ret));
                 if (ret != 0 || nextConfigHandle.IsInvalid)
                 {
                     usbError = UsbError.Error(ErrorCode.MonoApiError,

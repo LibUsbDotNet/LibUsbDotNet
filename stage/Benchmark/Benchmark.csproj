@@ -15,8 +15,9 @@
     <OldToolsVersion>3.5</OldToolsVersion>
     <UpgradeBackupLocation>
     </UpgradeBackupLocation>
-    <TargetFrameworkVersion>v2.0</TargetFrameworkVersion>
+    <TargetFrameworkVersion>v3.5</TargetFrameworkVersion>
     <ApplicationIcon>UsbIco.ico</ApplicationIcon>
+    <TargetFrameworkProfile />
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <DebugSymbols>true</DebugSymbols>
@@ -105,8 +106,8 @@
     <Content Include="UsbIco.ico" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\LibWinUsb\LibUsbDotNet.csproj">
-      <Project>{0A78F6FF-5586-4052-8104-E23FF83A7CE1}</Project>
+    <ProjectReference Include="..\LibUsbDotNet\LibUsbDotNet.csproj">
+      <Project>{0a78f6ff-5586-4052-8104-e23ff83a7ce1}</Project>
       <Name>LibUsbDotNet</Name>
     </ProjectReference>
   </ItemGroup>

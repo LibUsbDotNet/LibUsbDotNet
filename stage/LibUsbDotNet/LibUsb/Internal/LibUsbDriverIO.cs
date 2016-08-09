@@ -82,17 +82,29 @@ namespace LibUsbDotNet.Internal.LibUsb
                         if (code == LibUsbIoCtl.GET_CUSTOM_REG_PROPERTY) break;
                         UsbError.Error(ErrorCode.Win32Error, iError, String.Format("DeviceIoControl code {0:X8} failed:{1}", code, Kernel32.FormatSystemMessage(iError)), typeof(LibUsbDriverIO));
                     } while (false);
+#if !NETSTANDARD1_5
+                    hEvent.Close();
+#else
                     hEvent.Dispose();
+#endif
                     return false;
                 }
             }
             if (Kernel32.GetOverlappedResult(dev, deviceIoOverlapped.GlobalOverlapped, out ret, true))
             {
+#if !NETSTANDARD1_5
+                hEvent.Close();
+#else
                 hEvent.Dispose();
+#endif
                 return true;
             }
             UsbError.Error(ErrorCode.Win32Error, Marshal.GetLastWin32Error(), "GetOverlappedResult failed.\nIoCtlCode:" + code, typeof(LibUsbDriverIO));
+#if !NETSTANDARD1_5
+            hEvent.Close();
+#else
             hEvent.Dispose();
+#endif
             return false;
         }
     }

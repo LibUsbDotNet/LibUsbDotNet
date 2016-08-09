@@ -16,8 +16,9 @@
     <UpgradeBackupLocation>
     </UpgradeBackupLocation>
     <ApplicationIcon>InfWizard.ico</ApplicationIcon>
-    <TargetFrameworkVersion>v2.0</TargetFrameworkVersion>
+    <TargetFrameworkVersion>v3.5</TargetFrameworkVersion>
     <ApplicationManifest>app.manifest</ApplicationManifest>
+    <TargetFrameworkProfile />
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <DebugSymbols>true</DebugSymbols>
@@ -62,8 +63,8 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="..\LibWinUsb\Internal\UsbRegex\NamedGroup.cs" />
-    <Compile Include="..\LibWinUsb\Internal\UsbRegex\RegHardwareID.cs" />
+    <Compile Include="..\LibUsbDotNet\Internal\UsbRegex\NamedGroup.cs" />
+    <Compile Include="..\LibUsbDotNet\Internal\UsbRegex\RegHardwareID.cs" />
     <Compile Include="DriverResource\DriverResManager.cs" />
     <Compile Include="DriverResource\DriverResource.cs" />
     <Compile Include="DriverResource\DriverResourceDownload.cs" />
@@ -209,6 +210,12 @@
     <Content Include="InfWizard.ico" />
     <Content Include="Wizard\Wizard.bmp" />
     <Content Include="Wizard\wizBigOnlineFolder.gif" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\LibUsbDotNet\LibUsbDotNet.csproj">
+      <Project>{0a78f6ff-5586-4052-8104-e23ff83a7ce1}</Project>
+      <Name>LibUsbDotNet</Name>
+    </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
