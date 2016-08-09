@@ -1,0 +1,2 @@
+build_script:
+  - msbuild stage\LibUsbDotNet.sln /p:Configuration=Release /p:Platform="Any CPU" /logger:"C:\Program Files\AppVeyor\BuildAgent\Appveyor.MSBuildLogger.dll"
