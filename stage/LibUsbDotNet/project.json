@@ -1,4 +1,5 @@
 {
+  "name": "CoreCompat.LibUsbDotNet",
   "title": "LibUsbDotNet for .NET Core",
   "description": ".NET C# USB library for WinUSB, LibUsb-Win32, and libusb-1.0. Using the common device classes, applications work with all operating systems and drivers without modification. Lots of example code. Open source software at sourceforge.net.",
   "version": "2.2.8-*",
