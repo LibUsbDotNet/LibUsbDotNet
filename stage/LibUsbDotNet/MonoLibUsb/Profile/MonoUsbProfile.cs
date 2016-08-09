@@ -160,7 +160,7 @@ namespace MonoLibUsb.Profile
         public void Close()
         {
             if (!mMonoUSBProfileHandle.IsClosed)
-                mMonoUSBProfileHandle.Close();
+                mMonoUSBProfileHandle.Dispose();
         }
 
         /// <summary>

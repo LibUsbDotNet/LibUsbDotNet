@@ -30,13 +30,15 @@ using Microsoft.Win32.SafeHandles;
 
 namespace LibUsbDotNet.Internal
 {
+#if !NETSTANDARD1_5
     [SuppressUnmanagedCodeSecurity]
+#endif
     internal static class Kernel32
     {
         private const int FORMAT_MESSAGE_FROM_SYSTEM = 0x00001000;
         private static readonly StringBuilder m_sbSysMsg = new StringBuilder(1024);
 
-        [DllImport("kernel32.dll", SetLastError = true, CharSet = CharSet.Auto)]
+        [DllImport("kernel32.dll", SetLastError = true, CharSet = CharSet.Unicode)]
         public static extern SafeFileHandle CreateFile(string fileName,
                                                        [MarshalAs(UnmanagedType.U4)] NativeFileAccess fileAccess,
                                                        [MarshalAs(UnmanagedType.U4)] NativeFileShare fileShare,
@@ -45,7 +47,7 @@ namespace LibUsbDotNet.Internal
                                                        NativeFileFlag flags,
                                                        IntPtr template);
 
-        [DllImport("kernel32.dll", SetLastError = true, CharSet = CharSet.Auto)]
+        [DllImport("kernel32.dll", SetLastError = true, CharSet = CharSet.Unicode)]
         private static extern int FormatMessage(int dwFlags,
                                                 IntPtr lpSource,
                                                 int dwMessageId,
@@ -65,7 +67,11 @@ namespace LibUsbDotNet.Internal
                 int ret = FormatMessage(FORMAT_MESSAGE_FROM_SYSTEM,
                                         IntPtr.Zero,
                                         dwMessageId,
+#if !NETSTANDARD1_5
                                         CultureInfo.CurrentCulture.LCID,
+#else
+                                        0,
+#endif
                                         m_sbSysMsg,
                                         m_sbSysMsg.Capacity - 1,
                                         IntPtr.Zero);
@@ -75,7 +81,7 @@ namespace LibUsbDotNet.Internal
             }
         }
 
-        #region DeviceIoControl
+#region DeviceIoControl
 
         [DllImport("kernel32.dll", SetLastError = true, CharSet = CharSet.Ansi)]
         public static extern bool DeviceIoControl(SafeHandle hDevice,
@@ -117,7 +123,7 @@ namespace LibUsbDotNet.Internal
                                                           ref int pBytesReturned,
                                                           IntPtr Overlapped);
 
-        #endregion
+#endregion
     }
 
     [Flags]

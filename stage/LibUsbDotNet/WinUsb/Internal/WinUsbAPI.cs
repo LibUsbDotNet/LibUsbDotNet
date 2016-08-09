@@ -32,7 +32,9 @@ using Microsoft.Win32.SafeHandles;
 
 namespace LibUsbDotNet.WinUsb.Internal
 {
+#if !NETSTANDARD1_5
     [SuppressUnmanagedCodeSecurity]
+#endif
     internal class WinUsbAPI : UsbApiBase
     {
 #if USE_LUSBW_FOR_WINUSB

@@ -19,6 +19,7 @@
 // visit www.gnu.org.
 // 
 // 
+#if !NETSTANDARD1_5
 using System;
 using System.Windows.Forms;
 
@@ -77,3 +78,4 @@ namespace LibUsbDotNet.DeviceNotify.Internal
         #endregion
     }
 }
+#endif

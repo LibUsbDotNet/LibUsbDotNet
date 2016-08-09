@@ -152,7 +152,7 @@ namespace LibUsbDotNet.LibUsb
             {
                 ReleaseAllInterfaces();
                 ActiveEndpoints.Clear();
-                mUsbHandle.Close();
+                mUsbHandle.Dispose();
             }
             return true;
         }

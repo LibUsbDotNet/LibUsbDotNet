@@ -39,7 +39,7 @@ namespace LibUsbDotNet.DeviceNotify.Info
         {
             Marshal.PtrToStructure(lParam, mBaseHdr);
             IntPtr pName = new IntPtr(lParam.ToInt64() + Marshal.OffsetOf(typeof (DevBroadcastDeviceinterface), "mNameHolder").ToInt64());
-            mName = Marshal.PtrToStringAuto(pName);
+            mName = Marshal.PtrToStringUni(pName);
         }
 
         #region IUsbDeviceNotifyInfo Members

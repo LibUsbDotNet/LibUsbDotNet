@@ -19,6 +19,7 @@
 // visit www.gnu.org.
 // 
 // 
+#if WINDOWS_TESTING
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
@@ -101,7 +102,7 @@ namespace LibUsbDotNet.Main
             {
                 if (priv.usb_interfaces[i].path == IntPtr.Zero) break;
                 path = Marshal.PtrToStringAnsi(priv.usb_interfaces[i].path);
-                Debug.Print("Intf:{0} Path:{1}",i,path);
+                Debug.WriteLine("Intf:{0} Path:{1}",i,path);
             }
             path = Marshal.PtrToStringAnsi(priv.path);
 
@@ -208,3 +209,4 @@ namespace LibUsbDotNet.Main
         }
     }
 }
+#endif

@@ -105,7 +105,7 @@ namespace MonoLibUsb.Transfer
             {
                 Marshal.FreeHGlobal(handle);
                 SetHandleAsInvalid();
-                Debug.Print(GetType().Name + " : ReleaseHandle");
+                Debug.WriteLine(GetType().Name + " : ReleaseHandle");
             }
             return true;
         }

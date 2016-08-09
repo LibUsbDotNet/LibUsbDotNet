@@ -33,6 +33,8 @@ namespace LibUsbDotNet.Main
     public static class Helper
     {
         private static object mIsLinux;
+
+#if !NETSTANDARD1_5
         private static OperatingSystem mOs;
 
         /// <summary>
@@ -48,6 +50,7 @@ namespace LibUsbDotNet.Main
                 return mOs;
             }
         }
+#endif
 
         /// <summary>
         /// True if running on a unix-like operating system.
@@ -57,6 +60,7 @@ namespace LibUsbDotNet.Main
         {
             get
             {
+#if !NETSTANDARD1_5
                 if (ReferenceEquals(mIsLinux, null))
                 {
                     switch (OSVersion.Platform.ToString())
@@ -77,6 +81,9 @@ namespace LibUsbDotNet.Main
                     }
                 }
                 return (bool)mIsLinux;
+#else
+                return RuntimeInformation.IsOSPlatform(OSPlatform.Linux);
+#endif
             }
         }
 
@@ -105,7 +112,7 @@ namespace LibUsbDotNet.Main
         public static Dictionary<string, int> GetEnumData(Type type)
         {
             Dictionary<string, int> dictEnum = new Dictionary<string, int>();
-            FieldInfo[] enumFields = type.GetFields();
+            FieldInfo[] enumFields = type.GetTypeInfo().GetFields();
             for (int iField = 1; iField < enumFields.Length; iField++)
             {
                 object oValue = enumFields[iField].GetRawConstantValue();
@@ -165,7 +172,7 @@ namespace LibUsbDotNet.Main
             return sb.ToString();
         }
 
-        #region Nested Types
+#region Nested Types
 
         [StructLayout(LayoutKind.Explicit, Pack = 1)]
         internal struct HostEndian16BitValue
@@ -187,7 +194,7 @@ namespace LibUsbDotNet.Main
             public readonly byte B1;
         }
 
-        #endregion
+#endregion
 
         /// <summary>
         /// Builds a formatted hexidecimal string from an array of bytes. 
@@ -270,7 +277,7 @@ namespace LibUsbDotNet.Main
             get { return handle; }
         }
 
-        #region IDisposable Members
+#region IDisposable Members
 
         /// <summary>
         /// Frees and disposes the <see cref="GCHandle"/> for this pinned object.
@@ -323,7 +330,7 @@ namespace LibUsbDotNet.Main
 
             }
         }
-        #endregion
+#endregion
 
         ~PinnedHandle()
         {

@@ -67,7 +67,7 @@ namespace LibUsbDotNet.Internal.LibUsb
         {
             SafeOverlapped deviceIoOverlapped = new SafeOverlapped();
             ManualResetEvent hEvent = new ManualResetEvent(false);
-            deviceIoOverlapped.Init(hEvent.SafeWaitHandle.DangerousGetHandle());
+            deviceIoOverlapped.Init(hEvent.GetSafeWaitHandle().DangerousGetHandle());
             ret = 0;
 
             if (!Kernel32.DeviceIoControlAsObject(dev, code, inBuffer, inSize, outBuffer, outSize, ref ret, deviceIoOverlapped.GlobalOverlapped))
@@ -82,18 +82,17 @@ namespace LibUsbDotNet.Internal.LibUsb
                         if (code == LibUsbIoCtl.GET_CUSTOM_REG_PROPERTY) break;
                         UsbError.Error(ErrorCode.Win32Error, iError, String.Format("DeviceIoControl code {0:X8} failed:{1}", code, Kernel32.FormatSystemMessage(iError)), typeof(LibUsbDriverIO));
                     } while (false);
-
-                    hEvent.Close();
+                    hEvent.Dispose();
                     return false;
                 }
             }
             if (Kernel32.GetOverlappedResult(dev, deviceIoOverlapped.GlobalOverlapped, out ret, true))
             {
-                hEvent.Close();
+                hEvent.Dispose();
                 return true;
             }
             UsbError.Error(ErrorCode.Win32Error, Marshal.GetLastWin32Error(), "GetOverlappedResult failed.\nIoCtlCode:" + code, typeof(LibUsbDriverIO));
-            hEvent.Close();
+            hEvent.Dispose();
             return false;
         }
     }

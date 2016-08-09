@@ -922,7 +922,7 @@ namespace MonoLibUsb
 
             if (MonoUsbEventHandler.IsStopped)
             {
-                while (!completeEvent.WaitOne(0, false))
+                while (!completeEvent.WaitOne(0))
                 {
                     r = HandleEvents(pSessionHandle);
                     if (r < 0)
@@ -930,7 +930,7 @@ namespace MonoLibUsb
                         if (r == (int)MonoUsbError.ErrorInterrupted)
                             continue;
                         transfer.Cancel();
-                        while (!completeEvent.WaitOne(0, false))
+                        while (!completeEvent.WaitOne(0))
                             if (HandleEvents(pSessionHandle) < 0)
                                 break;
                         transfer.Free();
@@ -941,7 +941,7 @@ namespace MonoLibUsb
             }
             else
             {
-                completeEvent.WaitOne(Timeout.Infinite, UsbConstants.EXIT_CONTEXT);
+                completeEvent.WaitOne(Timeout.Infinite);
             }
 
             if (transfer.Status == MonoUsbTansferStatus.TransferCompleted)

@@ -71,22 +71,22 @@ namespace LibUsbDotNet.Internal
 
         public bool IsCancelled
         {
-            get { return mTransferCancelEvent.WaitOne(0, UsbConstants.EXIT_CONTEXT); }
+            get { return mTransferCancelEvent.WaitOne(0); }
         }
 
         public bool IsComplete
         {
-            get { return mTransferCompleteEvent.WaitOne(0, UsbConstants.EXIT_CONTEXT); }
+            get { return mTransferCompleteEvent.WaitOne(0); }
         }
 
         public SafeWaitHandle CancelWaitHandle
         {
-            get { return mTransferCancelEvent.SafeWaitHandle; }
+            get { return mTransferCancelEvent.GetSafeWaitHandle(); }
         }
 
         public SafeWaitHandle CompleteWaitHandle
         {
-            get { return mTransferCompleteEvent.SafeWaitHandle; }
+            get { return mTransferCompleteEvent.GetSafeWaitHandle(); }
         }
 
         #region IDisposable Members

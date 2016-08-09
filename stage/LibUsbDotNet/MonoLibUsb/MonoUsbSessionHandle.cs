@@ -106,7 +106,7 @@ namespace MonoLibUsb
                     MonoUsbApi.Exit(handle);
                     SetHandleAsInvalid();
                     mSessionCount--;
-                    Debug.Print(GetType().Name + " : ReleaseHandle #{0}", mSessionCount);
+                    Debug.WriteLine(GetType().Name + " : ReleaseHandle #{0}", mSessionCount);
 
                 }
             }

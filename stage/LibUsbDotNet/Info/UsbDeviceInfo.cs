@@ -87,10 +87,11 @@ namespace LibUsbDotNet.Info
             {
                 if (mCurrentCultureLangID == NO_LANG)
                 {
-                    short currentCultureLangID = (short) CultureInfo.CurrentCulture.LCID;
                     short[] deviceLangIDs;
                     if (mUsbDevice.GetLangIDs(out deviceLangIDs))
                     {
+#if !NETSTANDARD1_5
+                        short currentCultureLangID = (short) CultureInfo.CurrentCulture.LCID;
                         foreach (short deviceLangID in deviceLangIDs)
                         {
                             if (deviceLangID == currentCultureLangID)
@@ -99,7 +100,9 @@ namespace LibUsbDotNet.Info
                                 return mCurrentCultureLangID;
                             }
                         }
+#endif
                     }
+
                     mCurrentCultureLangID = deviceLangIDs.Length > 0 ? deviceLangIDs[0] : (short) 0;
                 }
                 return mCurrentCultureLangID;

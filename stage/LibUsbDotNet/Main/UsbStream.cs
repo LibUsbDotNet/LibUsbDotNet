@@ -19,6 +19,7 @@
 // visit www.gnu.org.
 // 
 // 
+#if !NETSTANDARD1_5
 using System;
 using System.IO;
 using System.Runtime.InteropServices;
@@ -284,3 +285,4 @@ namespace LibUsbDotNet.Main
         #endregion
     }
 }
+#endif

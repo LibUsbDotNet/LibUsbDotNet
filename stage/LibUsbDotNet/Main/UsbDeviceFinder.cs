@@ -22,8 +22,10 @@
 using System;
 using System.Collections.Generic;
 using System.IO;
+#if !NETSTANDARD1_5
 using System.Runtime.Serialization;
 using System.Runtime.Serialization.Formatters.Binary;
+#endif
 
 namespace LibUsbDotNet.Main
 {
@@ -52,7 +54,10 @@ namespace LibUsbDotNet.Main
     /// <example>
     /// <code source="..\Examples\Show.Info\ShowInfo.cs" lang="cs"/>
     /// </example>
-    public class UsbDeviceFinder : ISerializable
+    public class UsbDeviceFinder
+#if !NETSTANDARD1_5
+        : ISerializable
+#endif
     {
         ///<summary> The "exclude from search" value for <see cref="Pid"/>. </summary>
         public const int NO_PID = int.MaxValue;
@@ -139,6 +144,7 @@ namespace LibUsbDotNet.Main
         public UsbDeviceFinder(Guid deviceInterfaceGuid)
             : this(int.MaxValue, int.MaxValue, int.MaxValue, null, deviceInterfaceGuid) { }
 
+#if !NETSTANDARD1_5
         /// <summary>
         /// Use a serialization stream to fill the <see cref="UsbDeviceFinder"/> class. 
         /// </summary>
@@ -155,6 +161,7 @@ namespace LibUsbDotNet.Main
             mSerialNumber = (string) info.GetValue("SerialNumber", typeof (string));
             mDeviceInterfaceGuid = (Guid) info.GetValue("DeviceInterfaceGuid", typeof (Guid));
         }
+#endif
 
         /// <summary>
         /// 
@@ -218,7 +225,8 @@ namespace LibUsbDotNet.Main
             set { mVid = value; }
         }
 
-        #region ISerializable Members
+#if !NETSTANDARD1_5
+#region ISerializable Members
 
         /// <summary>
         /// Store this class as a binary serializtion object.
@@ -237,8 +245,10 @@ namespace LibUsbDotNet.Main
             info.AddValue("DeviceInterfaceGuid", mDeviceInterfaceGuid);
         }
 
-        #endregion
+#endregion
+#endif
 
+#if !NETSTANDARD1_5
         /// <summary>
         /// Load usb device finder properties from a binary stream.
         /// </summary>
@@ -261,6 +271,7 @@ namespace LibUsbDotNet.Main
             BinaryFormatter formatter = new BinaryFormatter();
             formatter.Serialize(outStream, usbDeviceFinder);
         }
+#endif
 
         /// <summary>
         /// Dynamic predicate find function. Pass this function into any method that has a <see cref="Predicate{UsbRegistry}"/> parameter.

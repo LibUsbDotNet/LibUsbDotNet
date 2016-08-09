@@ -74,10 +74,13 @@ namespace LibUsbDotNet.DeviceNotify.Linux
         {
             try
             {
-                FileStream f = File.Open(fullPath, FileMode.Open, FileAccess.Read, FileShare.ReadWrite);
-                deviceDescriptorBytes = new byte[UsbDeviceDescriptor.Size];
-                int iRead = f.Read(deviceDescriptorBytes, 0, UsbDeviceDescriptor.Size);
-                f.Close();
+                int iRead = 0;
+
+                using (FileStream f = File.Open(fullPath, FileMode.Open, FileAccess.Read, FileShare.ReadWrite))
+                {
+                    deviceDescriptorBytes = new byte[UsbDeviceDescriptor.Size];
+                    iRead = f.Read(deviceDescriptorBytes, 0, UsbDeviceDescriptor.Size);
+                }
 
                 return iRead == UsbDeviceDescriptor.Size;
             }

@@ -170,7 +170,7 @@ namespace LibUsbDotNet.LudnMonoLibUsb
         public override bool Close()
         {
             ActiveEndpoints.Clear();
-            if (IsOpen) mUsbHandle.Close();
+            if (IsOpen) mUsbHandle.Dispose();
 
             return true;
         }
@@ -263,7 +263,7 @@ namespace LibUsbDotNet.LudnMonoLibUsb
             mUsbHandle = handle;
             if (IsOpen) return true;
 
-            mUsbHandle.Close();
+            mUsbHandle.Dispose();
             return false;
         }
 
@@ -501,7 +501,7 @@ namespace LibUsbDotNet.LudnMonoLibUsb
             {
                 MonoUsbConfigHandle nextConfigHandle;
                 int ret = MonoUsbApi.GetConfigDescriptor(usbDevice.mMonoUSBProfile.ProfileHandle, (byte) iConfig, out nextConfigHandle);
-                Debug.Print("GetConfigDescriptor:{0}", ret);
+                Debug.WriteLine("GetConfigDescriptor:{0}", ret);
                 if (ret != 0 || nextConfigHandle.IsInvalid)
                 {
                     usbError = UsbError.Error(ErrorCode.MonoApiError,
@@ -525,7 +525,7 @@ namespace LibUsbDotNet.LudnMonoLibUsb
                 finally
                 {
                     if (!nextConfigHandle.IsInvalid)
-                        nextConfigHandle.Close();
+                        nextConfigHandle.Dispose();
                 }
             }
 

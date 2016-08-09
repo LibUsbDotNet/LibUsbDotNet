@@ -20,7 +20,7 @@
 // 
 // 
 using System;
-using System.Timers;
+using System.Threading;
 using LibUsbDotNet.LudnMonoLibUsb;
 using MonoLibUsb.Profile;
 
@@ -45,19 +45,17 @@ namespace LibUsbDotNet.DeviceNotify.Linux
                 MonoUsbDevice.RefreshProfileList();
 
                 MonoUsbDevice.ProfileList.AddRemoveEvent += OnAddRemoveEvent;
-                mDeviceListPollTimer = new Timer(PollingInterval);
-                mDeviceListPollTimer.Elapsed += PollTimer_Elapsed;
-                mDeviceListPollTimer.Start();
+                mDeviceListPollTimer = new Timer(PollTimer_Elapsed, null, PollingInterval, PollingInterval);
             }
         }
 
-        private void PollTimer_Elapsed(object sender, ElapsedEventArgs e)
+        private void PollTimer_Elapsed(object state)
         {
             lock (PollTimerLock)
             {
-                mDeviceListPollTimer.Stop();
+                mDeviceListPollTimer.Change(-1, -1);
                 MonoUsbDevice.RefreshProfileList();
-                mDeviceListPollTimer.Start();
+                mDeviceListPollTimer.Change(PollingInterval, PollingInterval);
             }
         }
 
@@ -66,8 +64,7 @@ namespace LibUsbDotNet.DeviceNotify.Linux
             lock (PollTimerLock)
             {
                 if (mDeviceListPollTimer == null) return;
-                mDeviceListPollTimer.Stop();
-                mDeviceListPollTimer.Elapsed -= PollTimer_Elapsed;
+                mDeviceListPollTimer.Change(Timeout.Infinite, Timeout.Infinite);
                 mDeviceListPollTimer.Dispose();
                 MonoUsbDevice.ProfileList.AddRemoveEvent -= OnAddRemoveEvent;
                 mDeviceListPollTimer = null;

@@ -83,7 +83,7 @@ namespace MonoLibUsb.Profile
                     MonoUsbApi.UnrefDevice(handle);
                     mDeviceProfileRefCount--;
                     SetHandleAsInvalid();
-                    Debug.Print(GetType().Name + " : ReleaseHandle #{0}", mDeviceProfileRefCount);
+                    Debug.WriteLine(string.Format(GetType().Name + " : ReleaseHandle #{0}", mDeviceProfileRefCount));
                 }
                 return true;
             }

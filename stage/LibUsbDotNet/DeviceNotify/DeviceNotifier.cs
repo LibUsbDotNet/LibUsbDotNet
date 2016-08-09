@@ -19,6 +19,7 @@
 // visit www.gnu.org.
 // 
 // 
+#if !NETSTANDARD1_5
 using LibUsbDotNet.DeviceNotify.Linux;
 
 namespace LibUsbDotNet.DeviceNotify
@@ -46,3 +47,4 @@ namespace LibUsbDotNet.DeviceNotify
         }
     }
 }
+#endif

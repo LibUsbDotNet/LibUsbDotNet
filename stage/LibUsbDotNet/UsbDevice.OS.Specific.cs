@@ -276,7 +276,7 @@ namespace LibUsbDotNet
             }
         }
 
-
+#if !NETSTANDARD1_5
         ///<summary>
         /// Gets a <see cref="System.OperatingSystem"/> object that contains the current platform identifier and version number.
         ///</summary>
@@ -287,5 +287,6 @@ namespace LibUsbDotNet
                 return Helper.OSVersion;
             }
         }
+#endif
     }
 }

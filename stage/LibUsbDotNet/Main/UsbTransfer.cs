@@ -98,7 +98,7 @@ namespace LibUsbDotNet.Main
         ///</summary>
         public bool IsCancelled
         {
-            get { return mTransferCancelEvent.WaitOne(0, UsbConstants.EXIT_CONTEXT); }
+            get { return mTransferCancelEvent.WaitOne(0); }
         }
 
         /// <summary>
@@ -155,7 +155,7 @@ namespace LibUsbDotNet.Main
                     }
                     catch (Exception ex)
                     {
-                        Debug.Print(ex.Message);
+                        Debug.WriteLine(ex.Message);
                     }
                 }
   
@@ -384,7 +384,7 @@ namespace LibUsbDotNet.Main
         /// <filterpriority>2</filterpriority>
         public bool IsCompleted
         {
-            get { return mTransferCompleteEvent.WaitOne(0, UsbConstants.EXIT_CONTEXT); }
+            get { return mTransferCompleteEvent.WaitOne(0); }
         }
 
 

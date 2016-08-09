@@ -19,6 +19,7 @@
 // visit www.gnu.org.
 // 
 // 
+#if !NETSTANDARD1_5
 using System;
 using Microsoft.Win32.SafeHandles;
 
@@ -43,3 +44,4 @@ namespace LibUsbDotNet.DeviceNotify.Internal
         }
     }
 }
+#endif

@@ -43,12 +43,12 @@ namespace LibUsbDotNet.Internal
             int iTransferred;
             ErrorCode eReturn = ErrorCode.Success;
 
-            if (mTransferCancelEvent.WaitOne(0, false)) return ErrorCode.IoCancelled;
-            if (!mTransferCompleteEvent.WaitOne(0, UsbConstants.EXIT_CONTEXT)) return ErrorCode.ResourceBusy;
+            if (mTransferCancelEvent.WaitOne(0)) return ErrorCode.IoCancelled;
+            if (!mTransferCompleteEvent.WaitOne(0)) return ErrorCode.ResourceBusy;
 
             mHasWaitBeenCalled = false;
             mTransferCompleteEvent.Reset();
-            Overlapped.Init(mTransferCompleteEvent.SafeWaitHandle.DangerousGetHandle());
+            Overlapped.Init(mTransferCompleteEvent.GetSafeWaitHandle().DangerousGetHandle());
 
             int ret = EndpointBase.PipeTransferSubmit(NextBufPtr,
                                                       RequestCount,
@@ -72,7 +72,7 @@ namespace LibUsbDotNet.Internal
             transferredCount = 0;
             bool bSuccess;
             // Temporarily release the transfer lock while we wait for something to happen.
-            int iWait = WaitHandle.WaitAny(new WaitHandle[] { mTransferCompleteEvent, mTransferCancelEvent }, mTimeout, UsbConstants.EXIT_CONTEXT);
+            int iWait = WaitHandle.WaitAny(new WaitHandle[] { mTransferCompleteEvent, mTransferCancelEvent }, mTimeout);
             if (iWait == WaitHandle.WaitTimeout && !cancel)
             {
                 return ErrorCode.IoTimedOut;
@@ -82,7 +82,7 @@ namespace LibUsbDotNet.Internal
             if (iWait != 0)
             {
                 bSuccess = EndpointBase.mUsbApi.AbortPipe(EndpointBase.Handle, EndpointBase.EpNum);
-                bool bTransferComplete = mTransferCompleteEvent.WaitOne(100, UsbConstants.EXIT_CONTEXT);
+                bool bTransferComplete = mTransferCompleteEvent.WaitOne(100);
                 mTransferCompleteEvent.Set();
                 if (!bSuccess || !bTransferComplete)
                 {

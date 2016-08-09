@@ -115,7 +115,7 @@ namespace LibUsbDotNet.LudnMonoLibUsb.Internal
         {
             if (mTransfer.IsInvalid || mOwnsTransfer == false) return;
             mTransferCancelEvent.Set();
-            mTransferCompleteEvent.WaitOne(200, UsbConstants.EXIT_CONTEXT);
+            mTransferCompleteEvent.WaitOne(200);
             mTransfer.Free();
 
             if (mCompleteEventHandle.IsAllocated)
@@ -184,9 +184,9 @@ namespace LibUsbDotNet.LudnMonoLibUsb.Internal
         /// </returns>
         public override ErrorCode Submit()
         {
-            if (mTransferCancelEvent.WaitOne(0, false)) return ErrorCode.IoCancelled;
+            if (mTransferCancelEvent.WaitOne(0)) return ErrorCode.IoCancelled;
 
-            if (!mTransferCompleteEvent.WaitOne(0, UsbConstants.EXIT_CONTEXT)) return ErrorCode.ResourceBusy;
+            if (!mTransferCompleteEvent.WaitOne(0)) return ErrorCode.ResourceBusy;
 
             mTransfer.PtrBuffer = NextBufPtr;
             mTransfer.Length = RequestCount;
@@ -218,8 +218,7 @@ namespace LibUsbDotNet.LudnMonoLibUsb.Internal
             ErrorCode ec;
 
             int iWait = WaitHandle.WaitAny(new WaitHandle[] {mTransferCompleteEvent, mTransferCancelEvent},
-                                           Timeout.Infinite,
-                                           UsbConstants.EXIT_CONTEXT);
+                                           Timeout.Infinite);
             switch (iWait)
             {
                 case 0: // TransferCompleteEvent
@@ -237,7 +236,7 @@ namespace LibUsbDotNet.LudnMonoLibUsb.Internal
                     return ec;
                 case 1: // TransferCancelEvent
                     ret = (int)mTransfer.Cancel();
-                    bool bTransferComplete = mTransferCompleteEvent.WaitOne(100, UsbConstants.EXIT_CONTEXT);
+                    bool bTransferComplete = mTransferCompleteEvent.WaitOne(100);
                     mTransferCompleteEvent.Set();
 
                     if (ret != 0 || !bTransferComplete)

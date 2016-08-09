@@ -148,10 +148,10 @@ namespace LibUsbDotNet.Main
                             }
                             catch (Exception ex)
                             {
-                                Debug.Print(ex.Message);
+                                Debug.WriteLine(ex.Message);
                             }
                         }
-                        if (deviceHandle != null && !deviceHandle.IsClosed) deviceHandle.Close();
+                        if (deviceHandle != null && !deviceHandle.IsClosed) deviceHandle.Dispose();
                     }
                 }
                 return deviceList;

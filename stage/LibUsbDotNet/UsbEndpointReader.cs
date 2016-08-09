@@ -22,7 +22,9 @@
 using System;
 using System.Runtime.InteropServices;
 using System.Threading;
+#if !NETSTANDARD1_5
 using System.Windows.Forms;
+#endif
 using LibUsbDotNet.Internal;
 using LibUsbDotNet.Main;
 
@@ -44,7 +46,9 @@ namespace LibUsbDotNet
         private bool mDataReceivedEnabled;
         private int mReadBufferSize;
         private Thread mReadThread;
+#if !NETSTANDARD1_5
         private ThreadPriority mReadThreadPriority = ThreadPriority.Normal;
+#endif
 
         internal UsbEndpointReader(UsbDevice usbDevice, int readBufferSize, byte alternateInterfaceID, ReadEndpointID readEndpointID, EndpointType endpointType)
             : base(usbDevice, alternateInterfaceID, (Byte)readEndpointID, endpointType) { mReadBufferSize = readBufferSize; }
@@ -93,6 +97,7 @@ namespace LibUsbDotNet
             set { mReadBufferSize = value; }
         }
 
+#if !NETSTANDARD1_5
         /// <summary>
         /// Gets/Sets the Priority level for the read thread when <see cref="DataReceivedEnabled"/> is true.
         /// </summary>
@@ -101,7 +106,7 @@ namespace LibUsbDotNet
             get { return mReadThreadPriority; }
             set { mReadThreadPriority = value; }
         }
-
+#endif
 
         /// <summary>
         /// Reads data from the current <see cref="UsbEndpointReader"/>.
@@ -214,10 +219,12 @@ namespace LibUsbDotNet
                     if (eReturn != ErrorCode.IoTimedOut) break;
                 }
             }
+#if !NETSTANDARD1_5
             catch (ThreadAbortException)
             {
                 UsbError.Error(ErrorCode.ReceiveThreadTerminated,0, "ReadData:Read thread aborted.", reader);
             }
+#endif
             finally
             {
                 reader.Abort();
@@ -233,27 +240,37 @@ namespace LibUsbDotNet
         private void StartReadThread()
         {
             mReadThread = new Thread(ReadData);
+#if !NETSTANDARD1_5
             mReadThread.Priority = ReadThreadPriority;
+#endif
             mReadThread.Start(TransferContext);
             Thread.Sleep(1);
+#if !NETSTANDARD1_5
             Application.DoEvents();
+#endif
         }
 
         private bool StopReadThread()
         {
             Abort();
             Thread.Sleep(1);
+#if !NETSTANDARD1_5
             Application.DoEvents();
+#endif
             DateTime dtStart = DateTime.Now;
             while (mReadThread.IsAlive && ((DateTime.Now - dtStart).TotalSeconds < 5)) // 5 sec fail-safe
             {
                 Thread.Sleep(100);
+#if !NETSTANDARD1_5
                 Application.DoEvents();
+#endif
             }
             if (mReadThread.IsAlive)
             {
                 UsbError.Error(ErrorCode.ReceiveThreadTerminated,0, "Failed stopping read thread.", this);
+#if !NETSTANDARD1_5
                 mReadThread.Abort();
+#endif
                 return false;
             }
             return true;

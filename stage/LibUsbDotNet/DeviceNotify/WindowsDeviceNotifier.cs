@@ -19,6 +19,7 @@
 // visit www.gnu.org.
 // 
 // 
+#if !NETSTANDARD1_5
 using System;
 using System.Diagnostics;
 using System.Runtime.InteropServices;
@@ -144,3 +145,4 @@ namespace LibUsbDotNet.DeviceNotify
         }
     }
 }
+#endif

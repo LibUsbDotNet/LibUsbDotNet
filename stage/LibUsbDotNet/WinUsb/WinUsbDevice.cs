@@ -92,11 +92,11 @@ namespace LibUsbDotNet.WinUsb
             if (IsOpen)
             {
                 ActiveEndpoints.Clear();
-                mUsbHandle.Close();
+                mUsbHandle.Dispose();
 
                 if (mSafeDevHandle != null)
                     if (!mSafeDevHandle.IsClosed)
-                        mSafeDevHandle.Close();
+                        mSafeDevHandle.Dispose();
             }
             return true;
         }

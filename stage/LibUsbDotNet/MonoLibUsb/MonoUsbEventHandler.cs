@@ -38,7 +38,9 @@ namespace MonoLibUsb
         private static bool mRunning;
         private static MonoUsbSessionHandle mSessionHandle;
         internal static Thread mUsbEventThread;
+#if !NETSTANDARD1_5
         private static ThreadPriority mPriority = ThreadPriority.Normal;
+#endif
 
         private static UnixNativeTimeval mWaitUnixNativeTimeval;
 
@@ -58,9 +60,10 @@ namespace MonoLibUsb
         /// </summary>
         public static bool IsStopped
         {
-            get { return mIsStoppedEvent.WaitOne(0, false); }
+            get { return mIsStoppedEvent.WaitOne(0); }
         }
 
+#if !NETSTANDARD1_5
         /// <summary>
         /// Thread proirity to use for the handle events thread.
         /// </summary>
@@ -69,6 +72,7 @@ namespace MonoLibUsb
             get { return mPriority; }
             set {mPriority=value;}
         }
+#endif
 
         /// <summary>
         /// Stops the handle events thread and closes the session handle.
@@ -79,7 +83,7 @@ namespace MonoLibUsb
             if (mSessionHandle == null) return;
 
             if (mSessionHandle.IsInvalid) return;
-            mSessionHandle.Close();
+            mSessionHandle.Dispose();
             mSessionHandle = null;
         }
 
@@ -148,7 +152,9 @@ namespace MonoLibUsb
             {
                 mRunning = true;
                 mUsbEventThread = new Thread(HandleEventFn);
+#if !NETSTANDARD1_5
                 mUsbEventThread.Priority = mPriority;
+#endif
                 mUsbEventThread.Start(mSessionHandle);
 
             }
@@ -178,7 +184,9 @@ namespace MonoLibUsb
                     //bool bSuccess = mIsStoppedEvent.WaitOne((int)((mWaitUnixNativeTimeval.tv_sec * 1000 + mWaitUnixNativeTimeval.tv_usec) * 1.2), false);
                     if (!bSuccess)
                     {
+#if !NETSTANDARD1_5
                         mUsbEventThread.Abort();
+#endif
                         throw new UsbException(typeof(MonoUsbEventHandler), "Critical timeout failure! MonoUsbApi.HandleEventsTimeout did not return within the allotted time.");
                         //LibUsbDotNet.UsbError.Error(ErrorCode.UnknownError, 0, "Critical timeout failure!", typeof(MonoUsbEventHandler));
                         //mIsStoppedEvent.Set();
