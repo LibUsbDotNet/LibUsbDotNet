@@ -1,17 +1,17 @@
 ﻿
-Microsoft Visual Studio Solution File, Format Version 10.00
-# Visual Studio 2008
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio 14
+VisualStudioVersion = 14.0.25420.1
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Examples", "Examples", "{5E024A6D-DD45-421A-BF51-73DBA0A27E53}"
+EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Test_Bulk", "Test_Bulk\Test_Bulk.csproj", "{2AA77B1D-5F6B-4206-954C-ED8D6E7DEA1B}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Benchmark", "Benchmark\Benchmark.csproj", "{A379842D-C4E3-41E1-BE82-4041293AC225}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "LibUsbDotNet", "LibWinUsb\LibUsbDotNet.csproj", "{0A78F6FF-5586-4052-8104-E23FF83A7CE1}"
-EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Test_DeviceNotify", "Test_DeviceNotify\Test_DeviceNotify.csproj", "{7E081E3A-C557-4303-93EB-FFE2DA8DAB68}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Test_Info", "Test_Info\Test_Info.csproj", "{3EFEDA92-CAE3-4585-A519-439ACD58468A}"
-EndProject
-Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Examples", "Examples", "{5E024A6D-DD45-421A-BF51-73DBA0A27E53}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Read.Write", "Examples\Read.Write\Read.Write.csproj", "{4030AC2F-4073-4F33-A529-6AF5B5D99B45}"
 EndProject
@@ -30,6 +30,8 @@ EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BenchmarkCon", "BenchmarkCon\BenchmarkCon.csproj", "{D1D2E921-F735-4D04-B6B4-6F9A4B70F749}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Read.Isochronous", "Examples\Read.Isochronous\Read.Isochronous.csproj", "{4581EC5B-EB14-4B1A-A85B-9D3B1087DBBE}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "LibUsbDotNet", "LibUsbDotNet\LibUsbDotNet.csproj", "{0A78F6FF-5586-4052-8104-E23FF83A7CE1}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -55,14 +57,6 @@ Global
 		{A379842D-C4E3-41E1-BE82-4041293AC225}.Release|Any CPU.Build.0 = Release|Any CPU
 		{A379842D-C4E3-41E1-BE82-4041293AC225}.Release|x86.ActiveCfg = Release|x86
 		{A379842D-C4E3-41E1-BE82-4041293AC225}.Release|x86.Build.0 = Release|x86
-		{0A78F6FF-5586-4052-8104-E23FF83A7CE1}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{0A78F6FF-5586-4052-8104-E23FF83A7CE1}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{0A78F6FF-5586-4052-8104-E23FF83A7CE1}.Debug|x86.ActiveCfg = Debug|x86
-		{0A78F6FF-5586-4052-8104-E23FF83A7CE1}.Debug|x86.Build.0 = Debug|x86
-		{0A78F6FF-5586-4052-8104-E23FF83A7CE1}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{0A78F6FF-5586-4052-8104-E23FF83A7CE1}.Release|Any CPU.Build.0 = Release|Any CPU
-		{0A78F6FF-5586-4052-8104-E23FF83A7CE1}.Release|x86.ActiveCfg = Release|x86
-		{0A78F6FF-5586-4052-8104-E23FF83A7CE1}.Release|x86.Build.0 = Release|x86
 		{7E081E3A-C557-4303-93EB-FFE2DA8DAB68}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{7E081E3A-C557-4303-93EB-FFE2DA8DAB68}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{7E081E3A-C557-4303-93EB-FFE2DA8DAB68}.Debug|x86.ActiveCfg = Debug|x86
@@ -151,6 +145,14 @@ Global
 		{4581EC5B-EB14-4B1A-A85B-9D3B1087DBBE}.Release|Any CPU.Build.0 = Release|Any CPU
 		{4581EC5B-EB14-4B1A-A85B-9D3B1087DBBE}.Release|x86.ActiveCfg = Release|x86
 		{4581EC5B-EB14-4B1A-A85B-9D3B1087DBBE}.Release|x86.Build.0 = Release|x86
+		{0A78F6FF-5586-4052-8104-E23FF83A7CE1}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{0A78F6FF-5586-4052-8104-E23FF83A7CE1}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{0A78F6FF-5586-4052-8104-E23FF83A7CE1}.Debug|x86.ActiveCfg = Debug|x86
+		{0A78F6FF-5586-4052-8104-E23FF83A7CE1}.Debug|x86.Build.0 = Debug|x86
+		{0A78F6FF-5586-4052-8104-E23FF83A7CE1}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{0A78F6FF-5586-4052-8104-E23FF83A7CE1}.Release|Any CPU.Build.0 = Release|Any CPU
+		{0A78F6FF-5586-4052-8104-E23FF83A7CE1}.Release|x86.ActiveCfg = Release|x86
+		{0A78F6FF-5586-4052-8104-E23FF83A7CE1}.Release|x86.Build.0 = Release|x86
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
