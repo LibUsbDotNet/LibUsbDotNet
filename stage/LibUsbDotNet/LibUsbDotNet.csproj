@@ -123,6 +123,9 @@
     <Compile Include="Main\UsbCtrlFlags.cs" />
     <Compile Include="Main\UsbEndpointDirection.cs" />
     <Compile Include="Main\UsbRequestRecipient.cs" />
+    <Compile Include="MonoLibUsb\MonoUsbVersion.cs" />
+    <Compile Include="MonoLibUsb\MonoLibUsbApiHelpers.cs" />
+    <Compile Include="MonoLibUsb\MonoUsbCapability.cs" />
     <Compile Include="MonoLibUsb\Profile\PollfdItem.cs" />
     <Compile Include="MonoLibUsb\Profile\AddRemoveEventArgs.cs" />
     <Compile Include="MonoLibUsb\CallbackDelegates.cs" />
