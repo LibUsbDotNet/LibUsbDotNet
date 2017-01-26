@@ -18,3 +18,7 @@
 .DS_Store
 *.suo
 *.user
+
+# DNX
+project.lock.json
+artifacts/
