@@ -1,25 +1,32 @@
-{
+﻿{
   "name": "CoreCompat.LibUsbDotNet",
   "title": "LibUsbDotNet for .NET Core",
   "description": ".NET C# USB library for WinUSB, LibUsb-Win32, and libusb-1.0. Using the common device classes, applications work with all operating systems and drivers without modification. Lots of example code. Open source software at sourceforge.net.",
   "version": "2.2.8-*",
-  "authors": [ "Travis Robinson", "Stevie-O", "Quamotion" ],
+  "authors": [
+    "Travis Robinson",
+    "Stevie-O",
+    "Quamotion"
+  ],
   "buildOptions": {
     "debugType": "portable",
-    "define": [ "LIBUSBDOTNET" ]
+    "define": [
+      "LIBUSBDOTNET"
+    ]
   },
   "packOptions": {
-     "owners": [ "Quamotion" ],
-     "projectUrl": "https://github.com/CoreCompat/LibUsbDotNet/",
-     "licenseUrl": "https://github.com/CoreCompat/LibUsbDotNet/blob/master/stage/gpl-3.0.txt",
-     "repository": 
-     {
-        "type": "git",
-        "url": "https://github.com/CoreCompat/LibUsbDotNet/"
-     }
+    "owners": [
+      "Quamotion"
+    ],
+    "projectUrl": "https://github.com/CoreCompat/LibUsbDotNet/",
+    "licenseUrl": "https://github.com/CoreCompat/LibUsbDotNet/blob/master/stage/gpl-3.0.txt",
+    "repository": {
+      "type": "git",
+      "url": "https://github.com/CoreCompat/LibUsbDotNet/"
+    }
   },
   "frameworks": {
-    "netstandard1.5": {
+    "netstandard1.6": {
       "dependencies": {
         "System.Runtime.InteropServices": "4.1.0",
         "System.Text.RegularExpressions": {
@@ -44,14 +51,12 @@
       "frameworkAssemblies": {
         "System.Windows.Forms": "4.0.0.0"
       }
-    },
-    "net35": {
-      "frameworkAssemblies": {
-        "System.Windows.Forms": "2.0.0.0"
-      }
     }
   },
   "runtimes": {
     "win": {}
+  },
+  "dependencies": {
+    "NUnit": "3.6.0"
   }
 }
