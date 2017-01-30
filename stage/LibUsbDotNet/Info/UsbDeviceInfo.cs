@@ -90,7 +90,7 @@ namespace LibUsbDotNet.Info
                     short[] deviceLangIDs;
                     if (mUsbDevice.GetLangIDs(out deviceLangIDs))
                     {
-#if !NETSTANDARD1_5
+#if !NETSTANDARD1_5 && !NETSTANDARD1_6
                         short currentCultureLangID = (short) CultureInfo.CurrentCulture.LCID;
                         foreach (short deviceLangID in deviceLangIDs)
                         {

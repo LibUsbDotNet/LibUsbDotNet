@@ -19,7 +19,7 @@
 // visit www.gnu.org.
 // 
 // 
-#if !NETSTANDARD1_5
+#if !NETSTANDARD1_5 && !NETSTANDARD1_6
 using LibUsbDotNet.DeviceNotify.Linux;
 
 namespace LibUsbDotNet.DeviceNotify
