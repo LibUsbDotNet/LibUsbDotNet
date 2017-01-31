@@ -34,7 +34,7 @@ namespace LibUsbDotNet.Main
     {
         private static object mIsLinux;
 
-#if !NETSTANDARD1_5
+#if !NETSTANDARD1_5 && !NETSTANDARD1_6
         private static OperatingSystem mOs;
 
         /// <summary>
@@ -60,7 +60,7 @@ namespace LibUsbDotNet.Main
         {
             get
             {
-#if !NETSTANDARD1_5
+#if !NETSTANDARD1_5 && !NETSTANDARD1_6
                 if (ReferenceEquals(mIsLinux, null))
                 {
                     switch (OSVersion.Platform.ToString())
@@ -112,7 +112,7 @@ namespace LibUsbDotNet.Main
         public static Dictionary<string, int> GetEnumData(Type type)
         {
             Dictionary<string, int> dictEnum = new Dictionary<string, int>();
-#if !NETSTANDARD1_5
+#if !NETSTANDARD1_5 && !NETSTANDARD1_6
             FieldInfo[] enumFields = type.GetFields();
 #else
             FieldInfo[] enumFields = type.GetTypeInfo().GetFields();

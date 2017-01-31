@@ -1,4 +1,4 @@
-﻿#if NETSTANDARD1_5
+﻿#if NETSTANDARD1_5 || NETSTANDARD1_6
 namespace LibUsbDotNet.Internal
 {
     internal enum RegistryKeyPermissionCheck

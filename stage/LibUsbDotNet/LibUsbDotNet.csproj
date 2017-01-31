@@ -15,7 +15,7 @@
     <OldToolsVersion>3.5</OldToolsVersion>
     <UpgradeBackupLocation>
     </UpgradeBackupLocation>
-    <TargetFrameworkVersion>v3.5</TargetFrameworkVersion>
+    <TargetFrameworkVersion>v4.5</TargetFrameworkVersion>
     <SignAssembly>false</SignAssembly>
     <AssemblyOriginatorKeyFile>LibUsbDotNet.snk</AssemblyOriginatorKeyFile>
     <TargetFrameworkProfile />
@@ -30,6 +30,7 @@
     <WarningLevel>4</WarningLevel>
     <UseVSHostingProcess>false</UseVSHostingProcess>
     <AllowUnsafeBlocks>false</AllowUnsafeBlocks>
+    <Prefer32Bit>false</Prefer32Bit>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
     <DebugType>pdbonly</DebugType>
@@ -42,6 +43,7 @@
     <GenerateSerializationAssemblies>Auto</GenerateSerializationAssemblies>
     <RegisterForComInterop>false</RegisterForComInterop>
     <AllowUnsafeBlocks>false</AllowUnsafeBlocks>
+    <Prefer32Bit>false</Prefer32Bit>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|x86' ">
     <DebugSymbols>true</DebugSymbols>
@@ -51,6 +53,7 @@
     <PlatformTarget>x86</PlatformTarget>
     <UseVSHostingProcess>false</UseVSHostingProcess>
     <ErrorReport>prompt</ErrorReport>
+    <Prefer32Bit>false</Prefer32Bit>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|x86' ">
     <OutputPath>bin\x86\Release\</OutputPath>
@@ -60,6 +63,7 @@
     <DebugType>pdbonly</DebugType>
     <PlatformTarget>x86</PlatformTarget>
     <ErrorReport>prompt</ErrorReport>
+    <Prefer32Bit>false</Prefer32Bit>
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="System" />
@@ -115,14 +119,20 @@
     <Compile Include="Info\UsbEndpointInfo.cs" />
     <Compile Include="Info\UsbInterfaceInfo.cs" />
     <Compile Include="Internal\RegistryKeyPermissionCheck.cs" />
+    <Compile Include="Main\ControlEpLockType.cs" />
+    <Compile Include="Main\DataEpLockType.cs" />
     <Compile Include="Main\DataReceivedEnabledChangedEventArgs.cs" />
+    <Compile Include="Main\DeviceLockType.cs" />
     <Compile Include="Main\ManualResetEventExtensions.cs" />
     <Compile Include="Main\SafeContextHandle.cs" />
     <Compile Include="Internal\SetupApi.cs" />
     <Compile Include="LibUsb\LibUsbKernelType.cs" />
+    <Compile Include="Main\SetupApiRegistry.cs" />
     <Compile Include="Main\UsbCtrlFlags.cs" />
     <Compile Include="Main\UsbEndpointDirection.cs" />
+    <Compile Include="Main\UsbLockStyle.cs" />
     <Compile Include="Main\UsbRequestRecipient.cs" />
+    <Compile Include="Main\UsbStream.cs" />
     <Compile Include="MonoLibUsb\MonoUsbVersion.cs" />
     <Compile Include="MonoLibUsb\MonoLibUsbApiHelpers.cs" />
     <Compile Include="MonoLibUsb\MonoUsbCapability.cs" />

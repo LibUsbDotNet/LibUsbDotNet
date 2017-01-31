@@ -22,7 +22,7 @@
 using System;
 using System.Collections.Generic;
 using System.IO;
-#if !NETSTANDARD1_5
+#if !NETSTANDARD1_5 && !NETSTANDARD1_6
 using System.Runtime.Serialization;
 using System.Runtime.Serialization.Formatters.Binary;
 #endif
@@ -55,7 +55,7 @@ namespace LibUsbDotNet.Main
     /// <code source="..\Examples\Show.Info\ShowInfo.cs" lang="cs"/>
     /// </example>
     public class UsbDeviceFinder
-#if !NETSTANDARD1_5
+#if !NETSTANDARD1_5 && !NETSTANDARD1_6
         : ISerializable
 #endif
     {
@@ -144,7 +144,7 @@ namespace LibUsbDotNet.Main
         public UsbDeviceFinder(Guid deviceInterfaceGuid)
             : this(int.MaxValue, int.MaxValue, int.MaxValue, null, deviceInterfaceGuid) { }
 
-#if !NETSTANDARD1_5
+#if !NETSTANDARD1_5 && !NETSTANDARD1_6
         /// <summary>
         /// Use a serialization stream to fill the <see cref="UsbDeviceFinder"/> class. 
         /// </summary>
@@ -225,7 +225,7 @@ namespace LibUsbDotNet.Main
             set { mVid = value; }
         }
 
-#if !NETSTANDARD1_5
+#if !NETSTANDARD1_5 && !NETSTANDARD1_6
 #region ISerializable Members
 
         /// <summary>
@@ -248,7 +248,7 @@ namespace LibUsbDotNet.Main
 #endregion
 #endif
 
-#if !NETSTANDARD1_5
+#if !NETSTANDARD1_5 && !NETSTANDARD1_6
         /// <summary>
         /// Load usb device finder properties from a binary stream.
         /// </summary>
