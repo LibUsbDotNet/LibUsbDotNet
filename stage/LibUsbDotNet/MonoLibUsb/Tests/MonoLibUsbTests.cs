@@ -39,7 +39,9 @@ namespace MonoLibUsb.Tests
         [Test]
         public void GetVersion()
         {
-            MonoLibUsb.Descriptors.MonoUsbVersion version = MonoLibUsb.MonoUsbApi.GetVersion();
+            MonoLibUsb.Descriptors.MonoUsbVersion version = new Descriptors.MonoUsbVersion();
+            var versionPtr = MonoLibUsb.MonoUsbApi.GetVersion();
+            System.Runtime.InteropServices.Marshal.PtrToStructure(versionPtr, version);
 
             Assert.AreEqual(version.Major, 1);
             Assert.AreEqual(version.Minor, 0);

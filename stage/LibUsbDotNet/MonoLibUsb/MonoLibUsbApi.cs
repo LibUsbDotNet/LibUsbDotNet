@@ -78,7 +78,7 @@ namespace MonoLibUsb
         /// </summary>
         /// <returns></returns>
         [DllImport(LIBUSB_DLL, CallingConvention = CC, SetLastError = false, EntryPoint = "libusb_get_version")]
-        public static extern MonoUsbVersion GetVersion();
+        internal static extern IntPtr GetVersion();
 
         /// <summary>
         /// Check at runtime if the loaded library has a given capability. This call should be performed after \ref libusb_init(), to ensure the backend has updated its capability set.
@@ -86,17 +86,17 @@ namespace MonoLibUsb
         /// <param name="capability"></param>
         /// <returns></returns>
         [DllImport(LIBUSB_DLL, CallingConvention = CC, SetLastError = false, EntryPoint = "libusb_has_capability")]
-        public static extern int HasCapability(MonoUsbCapability capability);
+        internal static extern int HasCapability(MonoUsbCapability capability);
 
         #endregion
 
         #region API LIBRARY FUNCTIONS - Error Handling
 
         [DllImport(LIBUSB_DLL, CallingConvention = CC, SetLastError = false, EntryPoint = "libusb_error_name")]
-        public static extern string ErrorName(int errcode);
+        internal static extern string ErrorName(int errcode);
 
         [DllImport(LIBUSB_DLL, CallingConvention = CC, SetLastError = false, EntryPoint = "libusb_setlocale")]
-        public static extern int SetLocale(string locale);
+        internal static extern int SetLocale(string locale);
 
         [DllImport(LIBUSB_DLL, CallingConvention = CC, SetLastError = false, EntryPoint = "libusb_strerror")]
         private static extern IntPtr StrError(int errcode);

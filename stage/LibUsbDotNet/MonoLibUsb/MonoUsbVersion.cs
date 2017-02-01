@@ -6,8 +6,9 @@ namespace MonoLibUsb.Descriptors
     /// Structure providing the version of the libusb runtime
     /// </summary>
     [StructLayout(LayoutKind.Sequential, Pack = MonoUsbApi.LIBUSB_PACK, CharSet = CharSet.Ansi)]
-    public struct MonoUsbVersion
+    public class MonoUsbVersion
     {
+
         /// <summary>
         /// Library major version.
         /// </summary>
@@ -27,7 +28,7 @@ namespace MonoLibUsb.Descriptors
         /// Library nano version.
         /// </summary>
         public readonly ushort Nano;
-        /*
+
         /// <summary>
         /// Library release candidate suffix string, e.g. "-rc4".
         /// </summary>
@@ -39,6 +40,5 @@ namespace MonoLibUsb.Descriptors
         /// </summary>
         [MarshalAs(UnmanagedType.LPStr)]
         public readonly string Describe;
-        */
     }
 }
