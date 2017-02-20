@@ -1,7 +1,7 @@
 # LibUsbDotNet
 [![Build status](https://ci.appveyor.com/api/projects/status/5fe0th33i60h24bw?svg=true)](https://ci.appveyor.com/project/qmfrederik/libusbdotnet)
 ![NuGet version](https://img.shields.io/nuget/v/CoreCompat.LibUsbDotNet.svg)
-![LGPLv3 license](https://img.shields.io/github/license/CoreCompat/LibUsbDotNet.svg)
+![LGPLv3 license](https://img.shields.io/github/license/LibUsbDotNet/LibUsbDotNet.svg)
 
 > __NOTE__ This repository contains a fork of LibUsbDotNet; the original repository is located on [SourceForge](https://sourceforge.net/p/libusbdotnet/).
 > This repository adds some minor bug fixes and support for .NET Core.
