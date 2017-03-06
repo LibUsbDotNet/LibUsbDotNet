@@ -150,6 +150,7 @@
     <Compile Include="MonoLibUsb\Profile\MonoUsbConfigHandle.cs">
       <SubType>Code</SubType>
     </Compile>
+    <Compile Include="MonoLibUsb\Tests\MonoLibUsbTests.cs" />
     <Compile Include="MonoLibUsb\Transfer\Internal\libusb_iso_packet_descriptor.cs" />
     <Compile Include="MonoLibUsb\Transfer\Internal\libusb_control_setup.cs" />
     <Compile Include="MonoLibUsb\Transfer\MonoUsbControlSetupHandle.cs" />
@@ -235,6 +236,9 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="LibUsbDotNet.snk" />
+  </ItemGroup>
+  <ItemGroup>
+    <Service Include="{82A7F48D-3B50-4B1E-B82E-3ADA8210C358}" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

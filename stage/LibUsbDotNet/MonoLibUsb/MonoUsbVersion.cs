@@ -2,21 +2,43 @@
 
 namespace MonoLibUsb.Descriptors
 {
-    [StructLayout(LayoutKind.Sequential, Pack = MonoUsbApi.LIBUSB_PACK)]
+    /// <summary>
+    /// Structure providing the version of the libusb runtime
+    /// </summary>
+    [StructLayout(LayoutKind.Sequential, Pack = MonoUsbApi.LIBUSB_PACK, CharSet = CharSet.Ansi)]
     public class MonoUsbVersion
     {
-        internal MonoUsbVersion()
-        {
-        }
 
-        public readonly int Major;
+        /// <summary>
+        /// Library major version.
+        /// </summary>
+        public readonly ushort Major;
 
-        public readonly int Minor;
+        /// <summary>
+        /// Library minor version.
+        /// </summary>
+        public readonly ushort Minor;
 
-        public readonly int Micro;
+        /// <summary>
+        /// Library micro version.
+        /// </summary>
+        public readonly ushort Micro;
 
-        public readonly int Nano;
+        /// <summary>
+        /// Library nano version.
+        /// </summary>
+        public readonly ushort Nano;
 
-        public readonly int RC;
+        /// <summary>
+        /// Library release candidate suffix string, e.g. "-rc4".
+        /// </summary>
+        [MarshalAs(UnmanagedType.LPStr)]
+        public readonly string RC;
+
+        /// <summary>
+        /// For ABI compatibility only.
+        /// </summary>
+        [MarshalAs(UnmanagedType.LPStr)]
+        public readonly string Describe;
     }
 }

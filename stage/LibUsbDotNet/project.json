@@ -1,5 +1,5 @@
 ﻿{
-  "name": "CoreCompat.LibUsbDotNet",
+  "name": "LibUsbDotNet.LibUsbDotNet",
   "title": "LibUsbDotNet for .NET Core",
   "description": ".NET C# USB library for WinUSB, LibUsb-Win32, and libusb-1.0. Using the common device classes, applications work with all operating systems and drivers without modification. Lots of example code. Open source software at sourceforge.net.",
   "version": "2.2.8-*",
@@ -18,11 +18,11 @@
     "owners": [
       "Quamotion"
     ],
-    "projectUrl": "https://github.com/CoreCompat/LibUsbDotNet/",
-    "licenseUrl": "https://github.com/CoreCompat/LibUsbDotNet/blob/master/stage/gpl-3.0.txt",
+    "projectUrl": "https://github.com/LibUsbDotNet/LibUsbDotNet/",
+    "licenseUrl": "https://github.com/LibUsbDotNet/LibUsbDotNet/blob/master/stage/gpl-3.0.txt",
     "repository": {
       "type": "git",
-      "url": "https://github.com/CoreCompat/LibUsbDotNet/"
+      "url": "https://github.com/LibUsbDotNet/LibUsbDotNet/"
     }
   },
   "frameworks": {
@@ -56,5 +56,9 @@
   "runtimes": {
     "win": {}
   },
-  "dependencies": {}
+  "dependencies": {
+    "NUnit": "3.6.0",
+    "NUnit.Runners": "3.6.0",
+    "NUnit3TestAdapter": "3.7.0"
+  }
 }
