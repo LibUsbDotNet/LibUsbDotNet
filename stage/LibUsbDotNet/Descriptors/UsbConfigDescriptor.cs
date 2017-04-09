@@ -36,7 +36,7 @@ namespace LibUsbDotNet.Descriptors
         /// <summary>
         /// Total size of this structure in bytes.
         /// </summary>
-        public new static readonly int Size = Marshal.SizeOf(typeof (UsbConfigDescriptor));
+        public new static readonly int Size = Marshal.SizeOf<UsbConfigDescriptor>();
 
         /// <summary>
         /// Total length in bytes of data returned

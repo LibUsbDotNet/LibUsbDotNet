@@ -32,19 +32,19 @@ namespace MonoLibUsb.Transfer.Internal
     [StructLayout(LayoutKind.Sequential, Pack = MonoUsbApi.LIBUSB_PACK)]
     internal class libusb_transfer
     {
-        IntPtr deviceHandle;
-        MonoUsbTransferFlags flags;
-        byte endpoint;
-        EndpointType type;
-        uint timeout;
-        MonoUsbTansferStatus status;
-        int length;
-        int actual_length;
-        IntPtr pCallbackFn;
-        IntPtr pUserData;
-        IntPtr pBuffer;
-        int num_iso_packets;
-        IntPtr iso_packets;
+        public IntPtr deviceHandle;
+        public MonoUsbTransferFlags flags;
+        public byte endpoint;
+        public EndpointType type;
+        public uint timeout;
+        public MonoUsbTansferStatus status;
+        public int length;
+        public int actual_length;
+        public IntPtr pCallbackFn;
+        public IntPtr pUserData;
+        public IntPtr pBuffer;
+        public int num_iso_packets;
+        public IntPtr iso_packets;
 
         private libusb_transfer() { }
 

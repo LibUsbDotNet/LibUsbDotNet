@@ -35,7 +35,7 @@ namespace MonoLibUsb.Descriptors
         /// <summary>
         /// Total size of this structure in bytes.
         /// </summary>
-        public static readonly int Size = Marshal.SizeOf(typeof (MonoUsbDeviceDescriptor));
+        public static readonly int Size = Marshal.SizeOf<MonoUsbDeviceDescriptor>();
 
         /// <summary>
         /// Length of structure reported by the associated usb device.

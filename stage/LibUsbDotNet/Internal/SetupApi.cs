@@ -538,7 +538,7 @@ namespace LibUsbDotNet.Internal
             public DeviceInterfaceDetailHelper(int maximumLength)
             {
                 mpStructure = Marshal.AllocHGlobal(maximumLength);
-                mpDevicePath = new IntPtr(mpStructure.ToInt64() + Marshal.SizeOf(typeof (int)));
+                mpDevicePath = new IntPtr(mpStructure.ToInt64() + Marshal.SizeOf<int>());
             }
 
             public DEVICE_INTERFACE_DETAIL_HANDLE Handle
@@ -585,7 +585,7 @@ namespace LibUsbDotNet.Internal
         [StructLayout(LayoutKind.Sequential)]
         public struct SP_DEVICE_INTERFACE_DATA
         {
-            public static readonly SP_DEVICE_INTERFACE_DATA Empty = new SP_DEVICE_INTERFACE_DATA(Marshal.SizeOf(typeof (SP_DEVICE_INTERFACE_DATA)));
+            public static readonly SP_DEVICE_INTERFACE_DATA Empty = new SP_DEVICE_INTERFACE_DATA(Marshal.SizeOf<SP_DEVICE_INTERFACE_DATA>());
 
             public UInt32 cbSize;
             public Guid interfaceClassGuid;
@@ -627,7 +627,7 @@ namespace LibUsbDotNet.Internal
         [StructLayout(LayoutKind.Sequential)]
         public struct SP_DEVINFO_DATA
         {
-            public static readonly SP_DEVINFO_DATA Empty = new SP_DEVINFO_DATA(Marshal.SizeOf(typeof (SP_DEVINFO_DATA)));
+            public static readonly SP_DEVINFO_DATA Empty = new SP_DEVINFO_DATA(Marshal.SizeOf<SP_DEVINFO_DATA>());
 
             public UInt32 cbSize;
             public Guid ClassGuid;

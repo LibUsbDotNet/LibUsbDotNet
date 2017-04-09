@@ -69,7 +69,7 @@ namespace LibUsbDotNet.WinUsb
         {
             get
             {
-                int iValueLength = Marshal.SizeOf(typeof (int));
+                int iValueLength = Marshal.SizeOf<int>();
                 Marshal.WriteInt32(mBufferPtr, 0);
                 bool bSuccess = mUsbDevice.GetPowerPolicy(PowerPolicyType.SuspendDelay, ref iValueLength, mBufferPtr);
                 if (bSuccess)
@@ -78,7 +78,7 @@ namespace LibUsbDotNet.WinUsb
             }
             set
             {
-                int iValueLength = Marshal.SizeOf(typeof (int));
+                int iValueLength = Marshal.SizeOf<int>();
                 Marshal.WriteInt32(mBufferPtr, value);
                 mUsbDevice.SetPowerPolicy(PowerPolicyType.SuspendDelay, iValueLength, mBufferPtr);
             }

@@ -30,7 +30,7 @@ namespace LibUsbDotNet.DeviceNotify.Internal
     internal class DevBroadcastDeviceinterface : DevBroadcastHdr
     {
         public Guid ClassGuid = Guid.Empty;
-        private char mNameHolder;
+        public char mNameHolder;
 
         public DevBroadcastDeviceinterface()
         {

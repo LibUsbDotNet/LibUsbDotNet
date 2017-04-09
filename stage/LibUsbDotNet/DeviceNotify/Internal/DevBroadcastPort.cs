@@ -28,7 +28,7 @@ namespace LibUsbDotNet.DeviceNotify.Internal
     [StructLayout(LayoutKind.Sequential)]
     internal class DevBroadcastPort : DevBroadcastHdr
     {
-        private char mNameHolder;
+        public char mNameHolder;
 
         public DevBroadcastPort()
         {

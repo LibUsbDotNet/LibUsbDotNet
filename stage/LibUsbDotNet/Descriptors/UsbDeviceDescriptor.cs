@@ -36,7 +36,7 @@ namespace LibUsbDotNet.Descriptors
         /// <summary>
         /// Total size of this structure in bytes.
         /// </summary>
-        public new static readonly int Size = Marshal.SizeOf(typeof (UsbDeviceDescriptor));
+        public new static readonly int Size = Marshal.SizeOf<UsbDeviceDescriptor>();
 
         /// <summary>
         /// USB Specification Number which device complies too.

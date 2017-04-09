@@ -32,7 +32,7 @@ namespace LibUsbDotNet.WinUsb
         /// <summary>
         /// Size of the structure in bytes.
         /// </summary>
-        public static readonly int Size = Marshal.SizeOf(typeof (PipeInformation));
+        public static readonly int Size = Marshal.SizeOf<PipeInformation>();
 
         /// <summary>
         /// Specifies the pipe type.

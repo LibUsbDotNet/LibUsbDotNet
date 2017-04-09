@@ -29,14 +29,14 @@ namespace LibUsbDotNet.Internal
     internal class SafeOverlapped : SafeContextHandle
     {
         // Find the structural starting positions in the NativeOverlapped structure.
-        private static readonly int FieldOffsetEventHandle = Marshal.OffsetOf(typeof (NativeOverlapped), "EventHandle").ToInt32();
-        private static readonly int FieldOffsetInternalHigh = Marshal.OffsetOf(typeof (NativeOverlapped), "InternalHigh").ToInt32();
-        private static readonly int FieldOffsetInternalLow = Marshal.OffsetOf(typeof (NativeOverlapped), "InternalLow").ToInt32();
-        private static readonly int FieldOffsetOffsetHigh = Marshal.OffsetOf(typeof (NativeOverlapped), "OffsetHigh").ToInt32();
-        private static readonly int FieldOffsetOffsetLow = Marshal.OffsetOf(typeof (NativeOverlapped), "OffsetLow").ToInt32();
+        private static readonly int FieldOffsetEventHandle = Marshal.OffsetOf<NativeOverlapped>(nameof (NativeOverlapped.EventHandle)).ToInt32();
+        private static readonly int FieldOffsetInternalHigh = Marshal.OffsetOf<NativeOverlapped>(nameof(NativeOverlapped.InternalHigh)).ToInt32();
+        private static readonly int FieldOffsetInternalLow = Marshal.OffsetOf<NativeOverlapped>(nameof(NativeOverlapped.InternalLow)).ToInt32();
+        private static readonly int FieldOffsetOffsetHigh = Marshal.OffsetOf<NativeOverlapped>(nameof(NativeOverlapped.OffsetHigh)).ToInt32();
+        private static readonly int FieldOffsetOffsetLow = Marshal.OffsetOf<NativeOverlapped>(nameof(NativeOverlapped.OffsetLow)).ToInt32();
 
         // this needs to go in global memory or it'll have trouble with 64bit
-        public SafeOverlapped() : base(Marshal.AllocHGlobal(Marshal.SizeOf(typeof(NativeOverlapped)))){}
+        public SafeOverlapped() : base(Marshal.AllocHGlobal(Marshal.SizeOf<NativeOverlapped>())){}
 
         public IntPtr InternalLow
         {

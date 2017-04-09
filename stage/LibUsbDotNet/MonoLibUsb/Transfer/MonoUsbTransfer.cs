@@ -42,19 +42,19 @@ namespace MonoLibUsb.Transfer
     [StructLayout(LayoutKind.Sequential)]
     public struct MonoUsbTransfer 
     {
-        private static readonly int OfsActualLength = Marshal.OffsetOf(typeof (libusb_transfer), "actual_length").ToInt32();
-        private static readonly int OfsEndpoint = Marshal.OffsetOf(typeof (libusb_transfer), "endpoint").ToInt32();
-        private static readonly int OfsFlags = Marshal.OffsetOf(typeof (libusb_transfer), "flags").ToInt32();
-        private static readonly int OfsLength = Marshal.OffsetOf(typeof (libusb_transfer), "length").ToInt32();
-        private static readonly int OfsPtrBuffer = Marshal.OffsetOf(typeof (libusb_transfer), "pBuffer").ToInt32();
-        private static readonly int OfsPtrCallbackFn = Marshal.OffsetOf(typeof (libusb_transfer), "pCallbackFn").ToInt32();
-        private static readonly int OfsPtrDeviceHandle = Marshal.OffsetOf(typeof (libusb_transfer), "deviceHandle").ToInt32();
-        private static readonly int OfsPtrUserData = Marshal.OffsetOf(typeof (libusb_transfer), "pUserData").ToInt32();
-        private static readonly int OfsStatus = Marshal.OffsetOf(typeof (libusb_transfer), "status").ToInt32();
-        private static readonly int OfsTimeout = Marshal.OffsetOf(typeof (libusb_transfer), "timeout").ToInt32();
-        private static readonly int OfsType = Marshal.OffsetOf(typeof (libusb_transfer), "type").ToInt32();
-        private static readonly int OfsNumIsoPackets = Marshal.OffsetOf(typeof (libusb_transfer), "num_iso_packets").ToInt32();
-        private static readonly int OfsIsoPackets = Marshal.OffsetOf(typeof (libusb_transfer), "iso_packets").ToInt32();
+        private static readonly int OfsActualLength = Marshal.OffsetOf<libusb_transfer>(nameof(libusb_transfer.actual_length)).ToInt32();
+        private static readonly int OfsEndpoint = Marshal.OffsetOf<libusb_transfer>(nameof(libusb_transfer.endpoint)).ToInt32();
+        private static readonly int OfsFlags = Marshal.OffsetOf<libusb_transfer>(nameof(libusb_transfer.flags)).ToInt32();
+        private static readonly int OfsLength = Marshal.OffsetOf<libusb_transfer>(nameof(libusb_transfer.length)).ToInt32();
+        private static readonly int OfsPtrBuffer = Marshal.OffsetOf<libusb_transfer>(nameof(libusb_transfer.pBuffer)).ToInt32();
+        private static readonly int OfsPtrCallbackFn = Marshal.OffsetOf<libusb_transfer>(nameof(libusb_transfer.pCallbackFn)).ToInt32();
+        private static readonly int OfsPtrDeviceHandle = Marshal.OffsetOf<libusb_transfer>(nameof(libusb_transfer.deviceHandle)).ToInt32();
+        private static readonly int OfsPtrUserData = Marshal.OffsetOf<libusb_transfer>(nameof(libusb_transfer.pUserData)).ToInt32();
+        private static readonly int OfsStatus = Marshal.OffsetOf<libusb_transfer>(nameof(libusb_transfer.status)).ToInt32();
+        private static readonly int OfsTimeout = Marshal.OffsetOf<libusb_transfer>(nameof(libusb_transfer.timeout)).ToInt32();
+        private static readonly int OfsType = Marshal.OffsetOf<libusb_transfer>(nameof(libusb_transfer.type)).ToInt32();
+        private static readonly int OfsNumIsoPackets = Marshal.OffsetOf<libusb_transfer>(nameof(libusb_transfer.num_iso_packets)).ToInt32();
+        private static readonly int OfsIsoPackets = Marshal.OffsetOf<libusb_transfer>(nameof(libusb_transfer.iso_packets)).ToInt32();
 
         private IntPtr handle;
         /// <summary>
@@ -232,7 +232,7 @@ namespace MonoLibUsb.Transfer
         {
             if (packetNumber > NumIsoPackets) throw new ArgumentOutOfRangeException("packetNumber");
             IntPtr pIsoPacket =
-                new IntPtr(handle.ToInt64() + OfsIsoPackets + (packetNumber * Marshal.SizeOf(typeof(libusb_iso_packet_descriptor))));
+                new IntPtr(handle.ToInt64() + OfsIsoPackets + (packetNumber * Marshal.SizeOf<libusb_iso_packet_descriptor>()));
 
             return new MonoUsbIsoPacket(pIsoPacket);
         }

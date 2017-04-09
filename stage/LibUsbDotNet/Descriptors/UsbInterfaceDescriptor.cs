@@ -38,7 +38,7 @@ namespace LibUsbDotNet.Descriptors
         /// <summary>
         /// Total size of this structure in bytes.
         /// </summary>
-        public new static readonly int Size = Marshal.SizeOf(typeof (UsbInterfaceDescriptor));
+        public new static readonly int Size = Marshal.SizeOf<UsbInterfaceDescriptor>();
 
         /// <summary>
         /// Number of Interface

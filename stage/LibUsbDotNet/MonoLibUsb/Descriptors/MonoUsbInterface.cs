@@ -45,7 +45,7 @@ namespace MonoLibUsb.Descriptors
                 int iAltInterface;
                 for (iAltInterface = 0; iAltInterface < num_altsetting; iAltInterface++)
                 {
-                    IntPtr pNextInterface = new IntPtr(pAltSetting.ToInt64() + (Marshal.SizeOf(typeof (MonoUsbAltInterfaceDescriptor))*iAltInterface));
+                    IntPtr pNextInterface = new IntPtr(pAltSetting.ToInt64() + (Marshal.SizeOf<MonoUsbAltInterfaceDescriptor>()*iAltInterface));
                     MonoUsbAltInterfaceDescriptor monoUSBAltInterfaceDescriptor = new MonoUsbAltInterfaceDescriptor();
                     Marshal.PtrToStructure(pNextInterface, monoUSBAltInterfaceDescriptor);
 

@@ -102,7 +102,7 @@ namespace MonoLibUsb.Descriptors
                 int iInterface;
                 for (iInterface = 0; iInterface < bNumInterfaces; iInterface++)
                 {
-                    IntPtr pNextInterface = new IntPtr(pInterfaces.ToInt64() + (Marshal.SizeOf(typeof (MonoUsbInterface))*iInterface));
+                    IntPtr pNextInterface = new IntPtr(pInterfaces.ToInt64() + (Marshal.SizeOf<MonoUsbInterface>()*iInterface));
                     MonoUsbInterface monoUsbInterface = new MonoUsbInterface();
                     Marshal.PtrToStructure(pNextInterface, monoUsbInterface);
                     interfaceList.Add(monoUsbInterface);

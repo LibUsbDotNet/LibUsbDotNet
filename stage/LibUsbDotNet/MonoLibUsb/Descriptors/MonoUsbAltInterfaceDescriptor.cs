@@ -90,7 +90,7 @@ namespace MonoLibUsb.Descriptors
                 int iEndpoint;
                 for (iEndpoint = 0; iEndpoint < bNumEndpoints; iEndpoint++)
                 {
-                    IntPtr pNextInterface = new IntPtr(pEndpointDescriptors.ToInt64() + (Marshal.SizeOf(typeof (MonoUsbEndpointDescriptor))*iEndpoint));
+                    IntPtr pNextInterface = new IntPtr(pEndpointDescriptors.ToInt64() + (Marshal.SizeOf<MonoUsbEndpointDescriptor>()*iEndpoint));
                     MonoUsbEndpointDescriptor monoUsbEndpoint = new MonoUsbEndpointDescriptor();
                     Marshal.PtrToStructure(pNextInterface, monoUsbEndpoint);
                     endpointList.Add(monoUsbEndpoint);

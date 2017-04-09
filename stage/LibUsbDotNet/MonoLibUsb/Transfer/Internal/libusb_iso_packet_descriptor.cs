@@ -11,17 +11,17 @@ namespace MonoLibUsb.Transfer.Internal
         /// <summary>
         /// Length of data to request in this packet 
         /// </summary>
-        uint length;
+        public uint length;
 
         /// <summary>
         /// Amount of data that was actually transferred 
         /// </summary>
-        uint actual_length;
+        public uint actual_length;
 
         /// <summary>
         /// Status code for this packet 
         /// </summary>
-        MonoUsbTansferStatus status;
+        public MonoUsbTansferStatus status;
 
         private libusb_iso_packet_descriptor() { }
 

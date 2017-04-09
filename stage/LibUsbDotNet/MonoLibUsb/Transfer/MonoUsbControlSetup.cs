@@ -19,13 +19,13 @@ namespace MonoLibUsb.Transfer
         /// <summary>
         /// Size of a Libusb-1.0 setup packet.
         /// </summary>
-        public static int SETUP_PACKET_SIZE = Marshal.SizeOf(typeof(libusb_control_setup));
+        public static int SETUP_PACKET_SIZE = Marshal.SizeOf<libusb_control_setup>();
         
-        private static readonly int OfsRequestType = Marshal.OffsetOf(typeof(libusb_control_setup), "bmRequestType").ToInt32();
-        private static readonly int OfsRequest = Marshal.OffsetOf(typeof(libusb_control_setup), "bRequest").ToInt32();
-        private static readonly int OfsValue = Marshal.OffsetOf(typeof(libusb_control_setup), "wValue").ToInt32();
-        private static readonly int OfsIndex = Marshal.OffsetOf(typeof(libusb_control_setup), "wIndex").ToInt32();
-        private static readonly int OfsLength = Marshal.OffsetOf(typeof(libusb_control_setup), "wLength").ToInt32();
+        private static readonly int OfsRequestType = Marshal.OffsetOf<libusb_control_setup>(nameof(libusb_control_setup.bmRequestType)).ToInt32();
+        private static readonly int OfsRequest = Marshal.OffsetOf<libusb_control_setup>(nameof(libusb_control_setup.bRequest)).ToInt32();
+        private static readonly int OfsValue = Marshal.OffsetOf<libusb_control_setup>(nameof(libusb_control_setup.wValue)).ToInt32();
+        private static readonly int OfsIndex = Marshal.OffsetOf<libusb_control_setup>(nameof(libusb_control_setup.wIndex)).ToInt32();
+        private static readonly int OfsLength = Marshal.OffsetOf< libusb_control_setup>(nameof(libusb_control_setup.wLength)).ToInt32();
         private static readonly int OfsPtrData = SETUP_PACKET_SIZE;
 
 

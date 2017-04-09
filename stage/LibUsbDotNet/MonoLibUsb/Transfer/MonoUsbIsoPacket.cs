@@ -10,9 +10,9 @@ namespace MonoLibUsb.Transfer
     [StructLayout(LayoutKind.Sequential)]
     public class MonoUsbIsoPacket
     {
-        private static readonly int OfsActualLength = Marshal.OffsetOf(typeof(libusb_iso_packet_descriptor), "actual_length").ToInt32();
-        private static readonly int OfsLength = Marshal.OffsetOf(typeof(libusb_iso_packet_descriptor), "length").ToInt32();
-        private static readonly int OfsStatus = Marshal.OffsetOf(typeof(libusb_iso_packet_descriptor), "status").ToInt32();
+        private static readonly int OfsActualLength = Marshal.OffsetOf<libusb_iso_packet_descriptor>(nameof(libusb_iso_packet_descriptor.actual_length)).ToInt32();
+        private static readonly int OfsLength = Marshal.OffsetOf<libusb_iso_packet_descriptor>(nameof(libusb_iso_packet_descriptor.length)).ToInt32();
+        private static readonly int OfsStatus = Marshal.OffsetOf< libusb_iso_packet_descriptor>(nameof(libusb_iso_packet_descriptor.status)).ToInt32();
 
         private IntPtr mpMonoUsbIsoPacket = IntPtr.Zero;
 

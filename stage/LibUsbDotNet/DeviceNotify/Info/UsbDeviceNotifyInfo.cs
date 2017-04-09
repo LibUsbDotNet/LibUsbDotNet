@@ -38,7 +38,7 @@ namespace LibUsbDotNet.DeviceNotify.Info
         internal UsbDeviceNotifyInfo(IntPtr lParam)
         {
             Marshal.PtrToStructure(lParam, mBaseHdr);
-            IntPtr pName = new IntPtr(lParam.ToInt64() + Marshal.OffsetOf(typeof (DevBroadcastDeviceinterface), "mNameHolder").ToInt64());
+            IntPtr pName = new IntPtr(lParam.ToInt64() + Marshal.OffsetOf<DevBroadcastDeviceinterface>(nameof (DevBroadcastDeviceinterface.mNameHolder)).ToInt64());
             mName = Marshal.PtrToStringUni(pName);
         }
 

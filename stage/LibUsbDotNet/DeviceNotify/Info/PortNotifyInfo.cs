@@ -35,7 +35,7 @@ namespace LibUsbDotNet.DeviceNotify.Info
         internal PortNotifyInfo(IntPtr lParam)
         {
             Marshal.PtrToStructure(lParam, mBaseHdr);
-            IntPtr pName = new IntPtr(lParam.ToInt64() + Marshal.OffsetOf(typeof (DevBroadcastPort), "mNameHolder").ToInt64());
+            IntPtr pName = new IntPtr(lParam.ToInt64() + Marshal.OffsetOf<DevBroadcastPort>(nameof(DevBroadcastPort.mNameHolder)).ToInt64());
             mName = Marshal.PtrToStringUni(pName);
         }
 

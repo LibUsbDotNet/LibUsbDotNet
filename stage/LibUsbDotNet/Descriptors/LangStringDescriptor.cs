@@ -63,8 +63,8 @@ namespace LibUsbDotNet.Descriptors
     {
         #region FIELD_OFFSETS
 
-        private static readonly int OfsDescriptorType = Marshal.OffsetOf(typeof (UsbDescriptor), "DescriptorType").ToInt32();
-        private static readonly int OfsLength = Marshal.OffsetOf(typeof (UsbDescriptor), "Length").ToInt32();
+        private static readonly int OfsDescriptorType = Marshal.OffsetOf<UsbDescriptor>(nameof(UsbDescriptor.DescriptorType)).ToInt32();
+        private static readonly int OfsLength = Marshal.OffsetOf<UsbDescriptor>(nameof(UsbDescriptor.Length)).ToInt32();
 
         #endregion
 
