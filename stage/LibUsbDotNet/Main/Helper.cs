@@ -82,7 +82,7 @@ namespace LibUsbDotNet.Main
                 }
                 return (bool)mIsLinux;
 #else
-                return RuntimeInformation.IsOSPlatform(OSPlatform.Linux);
+                return RuntimeInformation.IsOSPlatform(OSPlatform.Linux) || RuntimeInformation.IsOSPlatform(OSPlatform.OSX);
 #endif
             }
         }
