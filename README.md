@@ -1,10 +1,7 @@
 # LibUsbDotNet
-[![Build status](https://ci.appveyor.com/api/projects/status/5fe0th33i60h24bw?svg=true)](https://ci.appveyor.com/project/qmfrederik/libusbdotnet)
-![NuGet version](https://img.shields.io/nuget/v/CoreCompat.LibUsbDotNet.svg)
+[![Build status](https://ci.appveyor.com/api/projects/status/bmdk6l5odm6ia6jf?svg=true)](https://ci.appveyor.com/project/qmfrederik/libusbdotnet-sjtox)
+![NuGet version](https://img.shields.io/nuget/v/LibUsbDotNet.svg)
 ![LGPLv3 license](https://img.shields.io/github/license/LibUsbDotNet/LibUsbDotNet.svg)
-
-> __NOTE__ This repository contains a fork of LibUsbDotNet; the original repository is located on [SourceForge](https://sourceforge.net/p/libusbdotnet/).
-> This repository adds some minor bug fixes and support for .NET Core.
 
 [LibUsbDotNet](http://sourceforge.net/projects/libusbdotnet) is a .NET C# USB library for WinUsb, libusb-win32, and Linux libusb v1.x developers. 
 All basic USB device functionality can be performed through common device classes allowing you to write OS and driver independent code.

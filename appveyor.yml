@@ -1,9 +1,9 @@
+image: Visual Studio 2017
+
 build_script:
-  - msbuild stage\LibUsbDotNet.sln /p:Configuration=Release /p:Platform="Any CPU" /logger:"C:\Program Files\AppVeyor\BuildAgent\Appveyor.MSBuildLogger.dll"
-  - dotnet restore stage\LibUsbDotNet\project.json
-  - dotnet build stage\LibUsbDotNet\project.json
-  - dotnet pack stage\LibUsbDotNet\project.json --version-suffix r%APPVEYOR_BUILD_VERSION%
+  - dotnet restore stage\LibUsbDotNet\LibUsbDotNet.csproj
+  - dotnet build stage\LibUsbDotNet\LibUsbDotNet.csproj /p:Configuration=Release
+  - dotnet pack stage\LibUsbDotNet\LibUsbDotNet.csproj /p:Configuration=Release --version-suffix r%APPVEYOR_BUILD_NUMBER%
 
 on_success:
-  - ps: Push-AppVeyorArtifact stage\LibUsbDotNet\bin\Debug\CoreCompat.LibUsbDotNet.2.2.8-r$($env:APPVEYOR_BUILD_VERSION).nupkg
-  - ps: Push-AppVeyorArtifact stage\LibUsbDotNet\bin\Debug\CoreCompat.LibUsbDotNet.2.2.8-r$($env:APPVEYOR_BUILD_VERSION).symbols.nupkg
+  - ps: Push-AppVeyorArtifact stage\LibUsbDotNet\bin\Release\LibUsbDotNet.2.2.9-r$($env:APPVEYOR_BUILD_NUMBER).nupkg
