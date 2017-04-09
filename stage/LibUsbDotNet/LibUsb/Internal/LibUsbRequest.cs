@@ -26,51 +26,67 @@ using LibUsbDotNet.Main;
 
 namespace LibUsbDotNet.Internal.LibUsb
 {
-    [StructLayout(LayoutKind.Explicit, Pack = 1, Size = sizeof (int)*6)]
+    [StructLayout(LayoutKind.Explicit, Pack = 1, Size = sizeof(int) * 6)]
     internal class LibUsbRequest
     {
-        public static int Size = Marshal.SizeOf(typeof (LibUsbRequest));
+        public static int Size =
+#if NETSTANDARD1_6
+            Marshal.SizeOf<LibUsbRequest>();
+#else
+            Marshal.SizeOf(typeof(LibUsbRequest));
+#endif
+
         [FieldOffset(0)] public int Timeout = UsbConstants.DEFAULT_TIMEOUT;
 
-        #region Union Struct
+#region Union Struct
 
-        [FieldOffset(sizeof (int))] public Control Control;
+        [FieldOffset(sizeof(int))] public Control Control;
 
-        [FieldOffset(sizeof (int))] public Config Config;
+        [FieldOffset(sizeof(int))] public Config Config;
 
-        [FieldOffset(sizeof (int))] public Debug Debug;
+        [FieldOffset(sizeof(int))] public Debug Debug;
 
-        [FieldOffset(sizeof (int))] public Descriptor Descriptor;
+        [FieldOffset(sizeof(int))] public Descriptor Descriptor;
 
-        [FieldOffset(sizeof (int))] public Endpoint Endpoint;
+        [FieldOffset(sizeof(int))] public Endpoint Endpoint;
 
-        [FieldOffset(sizeof (int))] public Feature Feature;
+        [FieldOffset(sizeof(int))] public Feature Feature;
 
-        [FieldOffset(sizeof (int))] public Iface Iface;
+        [FieldOffset(sizeof(int))] public Iface Iface;
 
-        [FieldOffset(sizeof (int))] public Status Status;
+        [FieldOffset(sizeof(int))] public Status Status;
 
-        [FieldOffset(sizeof (int))] public Vendor Vendor;
+        [FieldOffset(sizeof(int))] public Vendor Vendor;
 
-        [FieldOffset(sizeof (int))] public UsbKernelVersion Version;
+        [FieldOffset(sizeof(int))] public UsbKernelVersion Version;
 
-        [FieldOffset(sizeof (int))] public DeviceProperty DeviceProperty;
+        [FieldOffset(sizeof(int))] public DeviceProperty DeviceProperty;
 
-        [FieldOffset(sizeof (int))] public DeviceRegKey DeviceRegKey;
+        [FieldOffset(sizeof(int))] public DeviceRegKey DeviceRegKey;
 
-        [FieldOffset(sizeof (int))] public BusQueryID BusQueryID;
-        #endregion
+        [FieldOffset(sizeof(int))] public BusQueryID BusQueryID;
+#endregion
 
         public Byte[] Bytes
         {
             get
             {
-                Byte[] rtn = new byte[Size];
+                byte[] arr = new byte[Size];
 
-                for (int i = 0; i < Size; i++)
-                    rtn[i] = Marshal.ReadByte(this, i);
+                IntPtr ptr = IntPtr.Zero;
 
-                return rtn;
+                try
+                {
+                    ptr = Marshal.AllocHGlobal(Size);
+                    Marshal.StructureToPtr(this, ptr, true);
+                    Marshal.Copy(ptr, arr, 0, Size);
+                }
+                finally
+                {
+                    Marshal.FreeHGlobal(ptr);
+                }
+
+                return arr;
             }
         }
 
@@ -79,7 +95,7 @@ namespace LibUsbDotNet.Internal.LibUsb
         {
             Timeout = UsbConstants.DEFAULT_TIMEOUT;
 
-            int value = ((int) DescriptorType.Configuration << 8) + index;
+            int value = ((int)DescriptorType.Configuration << 8) + index;
 
             Descriptor.Recipient = (byte)UsbEndpointDirection.EndpointIn & 0x1F;
             Descriptor.Type = (value >> 8) & 0xFF;
@@ -91,7 +107,7 @@ namespace LibUsbDotNet.Internal.LibUsb
         {
             Timeout = UsbConstants.DEFAULT_TIMEOUT;
 
-            int value = ((int) DescriptorType.String << 8) + index;
+            int value = ((int)DescriptorType.String << 8) + index;
 
             Descriptor.Recipient = (byte)UsbEndpointDirection.EndpointIn & 0x1F;
             Descriptor.Type = value >> 8 & 0xFF;
@@ -113,7 +129,7 @@ namespace LibUsbDotNet.Internal.LibUsb
     internal struct Config
     {
         public int ID;
-    } ;
+    };
 
     [StructLayout(LayoutKind.Sequential, Pack = 1)]
     internal struct Control
@@ -123,27 +139,27 @@ namespace LibUsbDotNet.Internal.LibUsb
         public ushort Value;
         public ushort Index;
         public ushort Length;
-    } ;
+    };
 
     [StructLayout(LayoutKind.Sequential, Pack = 1)]
     internal struct DeviceProperty
     {
         public int ID;
-    } ;
+    };
 
     [StructLayout(LayoutKind.Sequential, Pack = 1)]
     internal struct Iface
     {
         public int ID;
         public int AlternateID;
-    } ;
+    };
 
     [StructLayout(LayoutKind.Sequential, Pack = 1)]
     internal struct Endpoint
     {
         public int ID;
         public int PacketSize;
-    } ;
+    };
 
     [StructLayout(LayoutKind.Sequential, Pack = 1)]
     internal struct Vendor
@@ -153,7 +169,7 @@ namespace LibUsbDotNet.Internal.LibUsb
         public int Request;
         public int ID;
         public int Index;
-    } ;
+    };
 
     [StructLayout(LayoutKind.Sequential, Pack = 1)]
     internal struct Feature
@@ -161,7 +177,7 @@ namespace LibUsbDotNet.Internal.LibUsb
         public int Recipient;
         public int ID;
         public int Index;
-    } ;
+    };
 
     [StructLayout(LayoutKind.Sequential, Pack = 1)]
     internal struct Status
@@ -169,13 +185,13 @@ namespace LibUsbDotNet.Internal.LibUsb
         public int Recipient;
         public int Index;
         public int ID;
-    } ;
+    };
 
     [StructLayout(LayoutKind.Sequential, Pack = 1)]
     internal struct Debug
     {
         public int Level;
-    } ;
+    };
 
     [StructLayout(LayoutKind.Sequential, Pack = 1)]
     internal struct DeviceRegKey
@@ -184,12 +200,12 @@ namespace LibUsbDotNet.Internal.LibUsb
         public int NameOffset;
         public int ValueOffset;
         public int ValueLength;
-    } ;
+    };
 
     [StructLayout(LayoutKind.Sequential, Pack = 1)]
     internal struct BusQueryID
     {
         public ushort IDType;
-    } ;
-    
+    };
+
 }
