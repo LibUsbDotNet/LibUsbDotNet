@@ -25,6 +25,7 @@ using System.Runtime.InteropServices;
 using LibUsbDotNet.Descriptors;
 using LibUsbDotNet.Main;
 using MonoLibUsb.Descriptors;
+using LibUsb.Common;
 
 namespace LibUsbDotNet.Info
 {
@@ -33,7 +34,7 @@ namespace LibUsbDotNet.Info
     public class UsbDeviceInfo
     {
         private const short NO_LANG = short.MaxValue;
-        private readonly UsbDeviceDescriptor mDeviceDescriptor;
+        private readonly IUsbDeviceDescriptor mDeviceDescriptor;
         private short mCurrentCultureLangID = NO_LANG;
         private String mManufacturerString;
         private String mProductString;
@@ -50,27 +51,13 @@ namespace LibUsbDotNet.Info
         {
             mUsbDevice = usbDevice;
 
-            mDeviceDescriptor = new UsbDeviceDescriptor();
-            mDeviceDescriptor.BcdDevice = usbDeviceDescriptor.BcdDevice;
-            mDeviceDescriptor.BcdUsb = usbDeviceDescriptor.BcdUsb;
-            mDeviceDescriptor.Class = usbDeviceDescriptor.Class;
-            mDeviceDescriptor.ConfigurationCount = usbDeviceDescriptor.ConfigurationCount;
-            mDeviceDescriptor.DescriptorType = usbDeviceDescriptor.DescriptorType;
-            mDeviceDescriptor.Length = usbDeviceDescriptor.Length;
-            mDeviceDescriptor.ManufacturerStringIndex = usbDeviceDescriptor.ManufacturerStringIndex;
-            mDeviceDescriptor.MaxPacketSize0 = usbDeviceDescriptor.MaxPacketSize0;
-            mDeviceDescriptor.ProductID = usbDeviceDescriptor.ProductID;
-            mDeviceDescriptor.ProductStringIndex = usbDeviceDescriptor.ProductStringIndex;
-            mDeviceDescriptor.Protocol = usbDeviceDescriptor.Protocol;
-            mDeviceDescriptor.SerialStringIndex = usbDeviceDescriptor.SerialStringIndex;
-            mDeviceDescriptor.SubClass = usbDeviceDescriptor.SubClass;
-            mDeviceDescriptor.VendorID = usbDeviceDescriptor.VendorID;
+            mDeviceDescriptor = new UsbDeviceDescriptorBase(usbDeviceDescriptor);
         }
 
         /// <summary>
-        /// The raw <see cref="UsbDeviceDescriptor"/> for the current <see cref="UsbDevice"/>.
+        /// The raw <see cref="IUsbDeviceDescriptor"/> for the current <see cref="UsbDevice"/>.
         /// </summary>
-        public UsbDeviceDescriptor Descriptor
+        public IUsbDeviceDescriptor Descriptor
         {
             get { return mDeviceDescriptor; }
         }
@@ -191,14 +178,14 @@ namespace LibUsbDotNet.Info
                    Helper.ToString(prefixSeperator, names, entitySperator, values, suffixSeperator);
         }
 
-        internal static bool GetDeviceDescriptor(UsbDevice usbDevice, out UsbDeviceDescriptor deviceDescriptor)
+        internal static bool GetDeviceDescriptor(UsbDevice usbDevice, out IUsbDeviceDescriptor deviceDescriptor)
         {
             if (usbDevice.mCachedDeviceDescriptor!=null)
             {
                 deviceDescriptor = usbDevice.mCachedDeviceDescriptor;
                 return true;
             }
-            deviceDescriptor = new UsbDeviceDescriptor();
+            deviceDescriptor = new UsbDeviceDescriptorBase();
 
             GCHandle gcDeviceDescriptor = GCHandle.Alloc(deviceDescriptor, GCHandleType.Pinned);
             int ret;
@@ -206,7 +193,7 @@ namespace LibUsbDotNet.Info
                                                     0,
                                                     0,
                                                     gcDeviceDescriptor.AddrOfPinnedObject(),
-                                                    UsbDeviceDescriptor.Size,
+                                                    UsbDeviceDescriptorBase.Size,
                                                     out ret);
             gcDeviceDescriptor.Free();
 

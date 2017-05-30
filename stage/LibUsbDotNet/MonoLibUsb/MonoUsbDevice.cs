@@ -49,7 +49,7 @@ namespace LibUsbDotNet.LudnMonoLibUsb
             : base(null, null)
         {
             mMonoUSBProfile = monoUSBProfile;
-            mCachedDeviceDescriptor = new UsbDeviceDescriptor(monoUSBProfile.DeviceDescriptor);
+            mCachedDeviceDescriptor = new UsbDeviceDescriptorBase(monoUSBProfile.DeviceDescriptor);
         }
 
         internal static MonoUsbProfileList ProfileList

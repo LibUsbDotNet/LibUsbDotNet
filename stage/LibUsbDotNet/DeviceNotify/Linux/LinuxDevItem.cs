@@ -22,6 +22,8 @@
 using System.Runtime.InteropServices;
 using LibUsbDotNet.Descriptors;
 using MonoLibUsb.Descriptors;
+using LibUsb.Common;
+
 
 namespace LibUsbDotNet.DeviceNotify.Linux
 {
@@ -29,7 +31,7 @@ namespace LibUsbDotNet.DeviceNotify.Linux
     {
         public readonly byte BusNumber;
         public readonly byte DeviceAddress;
-        public readonly UsbDeviceDescriptor DeviceDescriptor;
+        public readonly IUsbDeviceDescriptor DeviceDescriptor;
         public readonly string DeviceFileName;
 
         public LinuxDevItem(string deviceFileName, byte busNumber, byte deviceAddress, byte[] fileDescriptor)
@@ -39,7 +41,7 @@ namespace LibUsbDotNet.DeviceNotify.Linux
             DeviceAddress = deviceAddress;
 
 
-            DeviceDescriptor = new UsbDeviceDescriptor();
+            DeviceDescriptor = new UsbDeviceDescriptorBase();
             GCHandle gcFileDescriptor = GCHandle.Alloc(DeviceDescriptor, GCHandleType.Pinned);
             Marshal.Copy(fileDescriptor, 0, gcFileDescriptor.AddrOfPinnedObject(), Marshal.SizeOf(DeviceDescriptor));
 
@@ -53,7 +55,7 @@ namespace LibUsbDotNet.DeviceNotify.Linux
             DeviceAddress = deviceAddress;
 
 
-            DeviceDescriptor = new UsbDeviceDescriptor(monoUsbDeviceDescriptor);
+            DeviceDescriptor = new UsbDeviceDescriptorBase(monoUsbDeviceDescriptor);
         }
 
         public bool Equals(LinuxDevItem other)

@@ -23,6 +23,8 @@ using System;
 using LibUsbDotNet.Descriptors;
 using LibUsbDotNet.DeviceNotify.Info;
 using LibUsbDotNet.Main;
+using LibUsb.Common;
+
 
 namespace LibUsbDotNet.DeviceNotify.Linux
 {
@@ -38,7 +40,7 @@ namespace LibUsbDotNet.DeviceNotify.Linux
         ///<summary>
         /// Gets the <see cref="UsbDeviceDescriptor"/> for the device that caused the event.
         ///</summary>
-        public UsbDeviceDescriptor DeviceDescriptor
+        public IUsbDeviceDescriptor DeviceDescriptor
         {
             get { return mLinuxDevItem.DeviceDescriptor; }
         }

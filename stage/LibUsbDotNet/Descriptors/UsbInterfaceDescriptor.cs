@@ -23,6 +23,7 @@ using System;
 using System.Runtime.InteropServices;
 using LibUsbDotNet.Main;
 using MonoLibUsb.Descriptors;
+using LibUsb.Common;
 
 #pragma warning disable 649
 
