@@ -31,7 +31,7 @@ namespace LibUsbDotNet.Descriptors
     /// </summary> 
     /// <remarks> This is the actual descriptor as described in the USB 2.0 Specifications.
     /// </remarks> 
-    [StructLayout(LayoutKind.Sequential, Pack = 1)]
+    [StructLayout(LayoutKind.Sequential)]
     public abstract class UsbDescriptor
     {
         /// <summary>

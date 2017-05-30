@@ -29,6 +29,8 @@ using LibUsbDotNet.Internal;
 using LibUsbDotNet.LudnMonoLibUsb;
 using LibUsbDotNet.Main;
 using MonoLibUsb;
+using LibUsb.Common;
+
 
 namespace LibUsbDotNet
 {
@@ -74,7 +76,7 @@ namespace LibUsbDotNet
 
         internal readonly UsbEndpointList mActiveEndpoints;
         internal readonly UsbApiBase mUsbApi;
-        internal UsbDeviceDescriptor mCachedDeviceDescriptor;
+        internal IUsbDeviceDescriptor mCachedDeviceDescriptor;
         internal List<UsbConfigInfo> mConfigs;
         internal int mCurrentConfigValue = -1;
         internal UsbDeviceInfo mDeviceInfo;

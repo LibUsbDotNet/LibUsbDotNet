@@ -53,4 +53,8 @@
   <ItemGroup>
     <Compile Remove="MonoLibUsb\Tests\MonoLibUsbTests.cs" />
   </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\LibUsb.Common\LibUsb.Common.csproj" />
+  </ItemGroup>
 </Project>
