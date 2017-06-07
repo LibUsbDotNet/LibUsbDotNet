@@ -322,6 +322,7 @@ namespace MonoLibUsb
         /// <remarks>
         /// <para>You must claim the interface you wish to use before you can perform I/O on any of its endpoints.</para>
         /// <para>It is legal to attempt to claim an already-claimed interface, in which case libusb just returns 0 without doing anything.</para>
+        /// <para>If <see cref="SetAutoDetachKernelDriver">auto_detach_kernel_driver</see> is set to 1 for <tt>dev</tt>, the kernel driver will be detached if necessary, on failure the detach error is returned.</para>
         /// <para>Claiming of interfaces is a purely logical operation; it does not cause any requests to be sent over the bus. Interface claiming is used to instruct the underlying operating system that your application wishes to take ownership of the interface.</para>
         /// <note type="tip" title="Libusb-1.0 API:"><seelibusb10 group="dev"/></note>
         /// </remarks>
@@ -345,6 +346,7 @@ namespace MonoLibUsb
         /// <remarks>
         /// <para>You should release all claimed interfaces before closing a device handle.</para>
         /// <para>This is a blocking function. A SET_INTERFACE control request will be sent to the device, resetting interface state to the first alternate setting.</para>
+        /// <para>If <see cref="SetAutoDetachKernelDriver">auto_detach_kernel_driver</see> is set to 1 for <tt>dev</tt>, the kernel driver will be re-attached after releasing the interface.</para>
         /// <note type="tip" title="Libusb-1.0 API:"><seelibusb10 group="dev"/></note>
         /// </remarks>
         /// <param name="deviceHandle">A device handle.</param>
@@ -489,6 +491,29 @@ namespace MonoLibUsb
         [DllImport(LIBUSB_DLL, CallingConvention = CC, SetLastError = false, EntryPoint = "libusb_attach_kernel_driver")]
         public static extern int AttachKernelDriver([In] MonoUsbDeviceHandle deviceHandle, int interfaceNumber);
 
+        /// <summary>
+        /// Enable/disable libusb's automatic kernel driver detachment. When this is 
+        /// enabled libusb will automatically detach the kernel driver on an interface
+        /// when claiming the interface, and attach it when releasing the interface.
+        /// <remaks>
+        /// <note type="tip" title="Libusb-1.0 API:"><seelibusb10 group="dev"/></note>
+        /// <para>Automatic kernel driver detachment is disabled on newly opened device 
+        /// handles by default.</para>
+        /// <para>On platforms which do not have <see cref="MonoUsbCapability.LIBUSB_CAP_SUPPORTS_DETACH_KERNEL_DRIVER"/>
+        /// this function will return <see cref="MonoUsbError.ErrorNotSupported"/>, and libusb will
+        /// continue as if this function was never called.</para>
+        /// </remaks>
+        /// </summary>
+        /// <param name="deviceHandle">A device handle.</param>
+        /// <param name="enable">Whether to enable or disable auto kernel driver detachment.</param>
+        /// <returns>
+        /// <list type="bullet">
+        /// <item><see cref="MonoUsbError.Success"/> on success.</item>
+        /// <item><see cref="MonoUsbError.ErrorNotSupported"/> on platforms where the functionality is not available.</item>
+        /// </list>
+        /// </returns>
+        [DllImport(LIBUSB_DLL, CallingConvention = CC, SetLastError = false, EntryPoint = "libusb_set_auto_detach_kernel_driver")]
+        public static extern int SetAutoDetachKernelDriver([In]MonoUsbDeviceHandle deviceHandle, int enable);
         #endregion
 
         #region API LIBRARY FUNCTIONS - Asynchronous device I/O
