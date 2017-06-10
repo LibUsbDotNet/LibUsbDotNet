@@ -83,11 +83,11 @@ namespace MonoLibUsb.Descriptors
         }
 
         ///<summary> Array of endpoint descriptors. This length of this array is determined by the bNumEndpoints field.</summary>
-        public List<MonoUsbEndpointDescriptor> EndpointList
+        public List<IUsbEndpointDescriptor> EndpointList
         {
             get
             {
-                List<MonoUsbEndpointDescriptor> endpointList = new List<MonoUsbEndpointDescriptor>();
+                List<IUsbEndpointDescriptor> endpointList = new List<IUsbEndpointDescriptor>();
                 int iEndpoint;
                 for (iEndpoint = 0; iEndpoint < bNumEndpoints; iEndpoint++)
                 {

@@ -101,6 +101,10 @@
     <Content Include="UsbIco.ico" />
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\LibUsb.Common\LibUsb.Common.csproj">
+      <Project>{a8548f83-62b7-43d2-ab56-254a1424762a}</Project>
+      <Name>LibUsb.Common</Name>
+    </ProjectReference>
     <ProjectReference Include="..\LibUsbDotNet\LibUsbDotNet.csproj">
       <Project>{0A78F6FF-5586-4052-8104-E23FF83A7CE1}</Project>
       <Name>LibUsbDotNet</Name>
