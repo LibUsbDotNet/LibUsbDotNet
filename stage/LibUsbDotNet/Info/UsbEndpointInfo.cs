@@ -23,6 +23,7 @@ using System;
 using LibUsbDotNet.Descriptors;
 using LibUsbDotNet.Main;
 using MonoLibUsb.Descriptors;
+using LibUsb.Common;
 
 namespace LibUsbDotNet.Info
 {
@@ -30,7 +31,7 @@ namespace LibUsbDotNet.Info
     /// </summary> 
     public class UsbEndpointInfo : UsbBaseInfo
     {
-        internal UsbEndpointDescriptor mUsbEndpointDescriptor;
+        internal IUsbEndpointDescriptor mUsbEndpointDescriptor;
 
         internal UsbEndpointInfo(byte[] descriptor)
         {
@@ -38,12 +39,14 @@ namespace LibUsbDotNet.Info
             Helper.BytesToObject(descriptor, 0, Math.Min(UsbEndpointDescriptor.Size, descriptor[0]), mUsbEndpointDescriptor);
         }
 
-        internal UsbEndpointInfo(MonoUsbEndpointDescriptor monoUsbEndpointDescriptor) { mUsbEndpointDescriptor = new UsbEndpointDescriptor(monoUsbEndpointDescriptor); }
+        internal UsbEndpointInfo(MonoUsbEndpointDescriptor monoUsbEndpointDescriptor) {
+            mUsbEndpointDescriptor = monoUsbEndpointDescriptor;
+        }
 
         /// <summary>
         /// Gets the <see cref="UsbEndpointDescriptor"/> information.
         /// </summary>
-        public UsbEndpointDescriptor Descriptor
+        public IUsbEndpointDescriptor Descriptor
         {
             get { return mUsbEndpointDescriptor; }
         }

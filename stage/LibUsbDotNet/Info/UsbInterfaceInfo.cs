@@ -25,6 +25,7 @@ using System.Collections.ObjectModel;
 using LibUsbDotNet.Descriptors;
 using LibUsbDotNet.Main;
 using MonoLibUsb.Descriptors;
+using LibUsb.Common;
 
 namespace LibUsbDotNet.Info
 {
@@ -49,7 +50,7 @@ namespace LibUsbDotNet.Info
             mUsbDevice = usbDevice;
 
             mUsbInterfaceDescriptor = new UsbInterfaceDescriptor(monoUSBAltInterfaceDescriptor);
-            List<MonoUsbEndpointDescriptor> monoUsbEndpoints = monoUSBAltInterfaceDescriptor.EndpointList;
+            List<IUsbEndpointDescriptor> monoUsbEndpoints = monoUSBAltInterfaceDescriptor.EndpointList;
             foreach (MonoUsbEndpointDescriptor monoUSBEndpoint in monoUsbEndpoints)
             {
                 mEndpointInfo.Add(new UsbEndpointInfo(monoUSBEndpoint));

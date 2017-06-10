@@ -23,17 +23,21 @@ using System;
 using System.Runtime.InteropServices;
 using LibUsbDotNet.Main;
 using MonoLibUsb.Descriptors;
+using LibUsb.Common;
 
 #pragma warning disable 649
 
 namespace LibUsbDotNet.Descriptors
 {
-    /// <summary> Usb Endpoint Descriptor
+    /// <summary>
+    /// A structure representing the standard USB endpoint descriptor. This
+    /// descriptor is documented in section 9.6.3 of the USB 2.0 specification.
+    /// All multiple-byte fields are represented in host-endian format.
     /// </summary> 
     /// <remarks> This is the actual descriptor as described in the USB 2.0 Specifications.
     /// </remarks> 
     [StructLayout(LayoutKind.Sequential, Pack = 1)]
-    public class UsbEndpointDescriptor : UsbDescriptor
+    public class UsbEndpointDescriptor : UsbDescriptor, IUsbEndpointDescriptor
     {
         /// <summary>
         /// Total size of this structure in bytes.
@@ -46,7 +50,7 @@ namespace LibUsbDotNet.Descriptors
         /// Bits 4..6b Reserved. Set to Zero
         /// Bits 7 Direction 0 = Out, 1 = In (Ignored for Control Endpoints)
         /// </summary>
-        public readonly byte EndpointID;
+        public byte EndpointID { get; private set; }
 
         /// <summary>
         /// Bits 0..1 Transfer Type 
@@ -68,40 +72,29 @@ namespace LibUsbDotNet.Descriptors
         /// 10 = Explicit Feedback Data Endpoint
         /// 11 = Reserved
         /// </summary>
-        public readonly byte Attributes;
+        public byte Attributes { get; private set; }
 
         /// <summary>
         /// Maximum Packet Size this endpoint is capable of sending or receiving
         /// </summary>
-        public readonly short MaxPacketSize;
+        public short MaxPacketSize { get; private set; }
 
         /// <summary>
         /// Interval for polling endpoint data transfers. Value in frame counts. Ignored for Bulk and Control Endpoints. Isochronous must equal 1 and field may range from 1 to 255 for interrupt endpoints.
         /// </summary>
-        public readonly byte Interval;
+        public byte Interval { get; private set; }
 
         /// <summary>
         /// Audio endpoint specific.
         /// </summary>
-        public readonly byte Refresh;
+        public byte Refresh { get; private set; }
 
         /// <summary>
         /// Audio endpoint specific.
         /// </summary>
-        public readonly byte SynchAddress;
+        public byte SynchAddress { get; private set; }
 
         internal UsbEndpointDescriptor() { }
-
-        internal UsbEndpointDescriptor(MonoUsbEndpointDescriptor descriptor)
-        {
-            Attributes = descriptor.bmAttributes;
-            DescriptorType = descriptor.bDescriptorType;
-            EndpointID = descriptor.bEndpointAddress;
-            Interval = descriptor.bInterval;
-            Length = descriptor.bLength;
-            MaxPacketSize = (short) descriptor.wMaxPacketSize;
-            SynchAddress = descriptor.bSynchAddress;
-        }
 
         ///<summary>
         ///Returns a <see cref="T:System.String"/> that represents the current <see cref="UsbEndpointDescriptor"/>.

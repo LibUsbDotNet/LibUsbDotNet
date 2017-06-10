@@ -32,7 +32,7 @@ namespace LibUsbDotNet.Descriptors
     /// <summary> Usb Device Descriptor
     /// </summary> 
     [StructLayout(LayoutKind.Sequential)]
-    internal class UsbDeviceDescriptorBase : UsbDescriptor, IUsbDeviceDescriptor
+    public class UsbDeviceDescriptorBase : UsbDescriptor, IUsbDeviceDescriptor
     {
         /// <summary>
         /// Total size of this structure in bytes.

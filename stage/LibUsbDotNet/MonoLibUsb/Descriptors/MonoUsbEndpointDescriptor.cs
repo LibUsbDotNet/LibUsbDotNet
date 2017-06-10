@@ -31,31 +31,8 @@ namespace MonoLibUsb.Descriptors
     /// All multiple-byte fields are represented in host-endian format.
     /// </summary>
     [StructLayout(LayoutKind.Sequential, Pack = MonoUsbApi.LIBUSB_PACK)]
-    public class MonoUsbEndpointDescriptor
+    public class MonoUsbEndpointDescriptor : UsbEndpointDescriptor
     {
-        ///<summary> Size of this descriptor (in bytes)</summary>
-        public readonly Byte bLength;
-
-        ///<summary> Descriptor type. Will have value LIBUSB_DT_ENDPOINT in this context.</summary>
-        public readonly DescriptorType bDescriptorType;
-
-        ///<summary> The address of the endpoint described by this descriptor. Bits 0:3 are the endpoint number. Bits 4:6 are reserved. Bit 7 indicates direction, see \ref libusb_endpoint_direction.</summary>
-        public readonly Byte bEndpointAddress;
-
-        ///<summary> Attributes which apply to the endpoint when it is configured using the bConfigurationValue. Bits 0:1 determine the transfer type and correspond to \ref libusb_transfer_type. Bits 2:3 are only used for isochronous endpoints and correspond to \ref libusb_iso_sync_type. Bits 4:5 are also only used for isochronous endpoints and correspond to \ref libusb_iso_usage_type. Bits 6:7 are reserved.</summary>
-        public readonly Byte bmAttributes;
-
-        ///<summary> Maximum packet size this endpoint is capable of sending/receiving.</summary>
-        public readonly short wMaxPacketSize;
-
-        ///<summary> Interval for polling endpoint for data transfers.</summary>
-        public readonly Byte bInterval;
-
-        ///<summary> For audio devices only: the rate at which synchronization feedback is provided.</summary>
-        public readonly Byte bRefresh;
-
-        ///<summary> For audio devices only: the address if the synch endpoint</summary>
-        public readonly Byte bSynchAddress;
 
         ///<summary> Extra descriptors. If libusb encounters unknown endpoint descriptors, it will store them here, should you wish to parse them.</summary>
         private readonly IntPtr pExtraBytes;
