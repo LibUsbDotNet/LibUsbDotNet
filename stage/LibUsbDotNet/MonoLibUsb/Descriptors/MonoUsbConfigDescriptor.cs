@@ -34,45 +34,8 @@ namespace MonoLibUsb.Descriptors
     ///All multiple-byte fields are represented in host-endian format.</summary>
     /// <example><code source="..\MonoLibUsb\MonoUsb.ShowConfig\ShowConfig.cs" lang="cs"/></example>
     [StructLayout(LayoutKind.Sequential, Pack = MonoUsbApi.LIBUSB_PACK)]
-    public class MonoUsbConfigDescriptor
+    public class MonoUsbConfigDescriptor: UsbConfigDescriptor
     {
-        internal MonoUsbConfigDescriptor()
-        {
-        }
-
-        /// <summary>
-        /// Create a new <see cref="MonoUsbConfigDescriptor"/> instance from a <see cref="MonoUsbConfigHandle"/>.
-        /// </summary>
-        /// <param name="configHandle">A config handle.</param>
-        public MonoUsbConfigDescriptor(MonoUsbConfigHandle configHandle)
-        {
-            Marshal.PtrToStructure(configHandle.DangerousGetHandle(), this);
-        }
-
-        ///<summary> Size of this descriptor (in bytes)</summary>
-        public readonly byte bLength;
-
-        ///<summary> Descriptor type. Will have value LIBUSB_DT_CONFIG in this context.</summary>
-        public readonly DescriptorType bDescriptorType;
-
-        ///<summary> Total length of data returned for this configuration</summary>
-        public readonly short wTotalLength;
-
-        ///<summary> Number of interfaces supported by this configuration</summary>
-        public readonly byte bNumInterfaces;
-
-        ///<summary> Identifier value for this configuration</summary>
-        public readonly byte bConfigurationValue;
-
-        ///<summary> Index of string descriptor describing this configuration</summary>
-        public readonly byte iConfiguration;
-
-        ///<summary> Configuration characteristics</summary>
-        public readonly byte bmAttributes;
-
-        ///<summary> Maximum power consumption of the USB device from this bus in this configuration when the device is fully opreation. Expressed in units of 2 mA.</summary>
-        public readonly byte MaxPower;
-
         ///<summary> Array of interfaces supported by this configuration. The length of this array is determined by the bNumInterfaces field.</summary>
         private readonly IntPtr pInterfaces;
 
@@ -100,7 +63,7 @@ namespace MonoLibUsb.Descriptors
             {
                 List<MonoUsbInterface> interfaceList = new List<MonoUsbInterface>();
                 int iInterface;
-                for (iInterface = 0; iInterface < bNumInterfaces; iInterface++)
+                for (iInterface = 0; iInterface < InterfaceCount; iInterface++)
                 {
                     IntPtr pNextInterface = new IntPtr(pInterfaces.ToInt64() + (Marshal.SizeOf(typeof (MonoUsbInterface))*iInterface));
                     MonoUsbInterface monoUsbInterface = new MonoUsbInterface();

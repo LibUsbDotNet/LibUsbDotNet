@@ -35,11 +35,11 @@ namespace LibUsbDotNet.Info
     public class UsbConfigInfo : UsbBaseInfo
     {
         private readonly List<UsbInterfaceInfo> mInterfaceList = new List<UsbInterfaceInfo>();
-        internal readonly UsbConfigDescriptor mUsbConfigDescriptor;
+        internal readonly IUsbConfigDescriptor mUsbConfigDescriptor;
         private String mConfigString;
         internal UsbDevice mUsbDevice;
 
-        internal UsbConfigInfo(UsbDevice usbDevice, UsbConfigDescriptor descriptor, ref List<byte[]> rawDescriptors)
+        internal UsbConfigInfo(UsbDevice usbDevice, IUsbConfigDescriptor descriptor, ref List<byte[]> rawDescriptors)
         {
             mUsbDevice = usbDevice;
             mUsbConfigDescriptor = descriptor;
@@ -82,7 +82,7 @@ namespace LibUsbDotNet.Info
         {
             mUsbDevice = usbDevice;
 
-            mUsbConfigDescriptor = new UsbConfigDescriptor(configDescriptor);
+            mUsbConfigDescriptor = configDescriptor;
 
             List<MonoUsbInterface> monoUSBInterfaces = configDescriptor.InterfaceList;
             foreach (MonoUsbInterface usbInterface in monoUSBInterfaces)
@@ -97,9 +97,9 @@ namespace LibUsbDotNet.Info
         }
 
         /// <summary>
-        /// Gets the actual <see cref="UsbConfigDescriptor"/> for the current config.
+        /// Gets the actual <see cref="IUsbConfigDescriptor"/> for the current config.
         /// </summary>
-        public UsbConfigDescriptor Descriptor
+        public IUsbConfigDescriptor Descriptor
         {
             get { return mUsbConfigDescriptor; }
         }
