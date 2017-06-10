@@ -34,7 +34,7 @@ namespace LibUsbDotNet.Descriptors
     /// <remarks> This is the actual descriptor as described in the USB 2.0 Specifications.
     /// </remarks> 
     [StructLayout(LayoutKind.Sequential, Pack = 1)]
-    public class UsbInterfaceDescriptor : UsbDescriptor
+    public class UsbInterfaceDescriptor : UsbDescriptor, IUsbInterfaceDescriptor
     {
         /// <summary>
         /// Total size of this structure in bytes.
@@ -44,37 +44,37 @@ namespace LibUsbDotNet.Descriptors
         /// <summary>
         /// Number of Interface
         /// </summary>
-        public readonly byte InterfaceID;
+        public byte InterfaceID { get; internal set; }
 
         /// <summary>
         /// Value used to select alternative setting
         /// </summary>
-        public readonly byte AlternateID;
+        public byte AlternateID { get; internal set; }
 
         /// <summary>
         /// Number of Endpoints used for this interface
         /// </summary>
-        public readonly byte EndpointCount;
+        public byte EndpointCount { get; internal set; }
 
         /// <summary>
         /// Class Code (Assigned by USB Org)
         /// </summary>
-        public readonly ClassCodeType Class;
+        public ClassCodeType Class { get; internal set; }
 
         /// <summary>
         /// Subclass Code (Assigned by USB Org)
         /// </summary>
-        public readonly byte SubClass;
+        public byte SubClass { get; internal set; }
 
         /// <summary>
         /// Protocol Code (Assigned by USB Org)
         /// </summary>
-        public readonly byte Protocol;
+        public byte Protocol { get; internal set; }
 
         /// <summary>
         /// Index of String Descriptor Describing this interface
         /// </summary>
-        public readonly byte StringIndex;
+        public byte StringIndex { get; internal set; }
 
         ///<summary>
         ///Returns a <see cref="T:System.String"/> that represents the current <see cref="UsbInterfaceDescriptor"/>.
@@ -110,18 +110,5 @@ namespace LibUsbDotNet.Descriptors
 
 
         internal UsbInterfaceDescriptor() { }
-
-        internal UsbInterfaceDescriptor(MonoUsbAltInterfaceDescriptor altInterfaceDescriptor)
-        {
-            AlternateID = altInterfaceDescriptor.bAlternateSetting;
-            Class = altInterfaceDescriptor.bInterfaceClass;
-            DescriptorType = altInterfaceDescriptor.bDescriptorType;
-            EndpointCount = altInterfaceDescriptor.bNumEndpoints;
-            InterfaceID = altInterfaceDescriptor.bInterfaceNumber;
-            Length = altInterfaceDescriptor.bLength;
-            Protocol = altInterfaceDescriptor.bInterfaceProtocol;
-            StringIndex = altInterfaceDescriptor.iInterface;
-            SubClass = altInterfaceDescriptor.bInterfaceSubClass;
-        }
     }
 }

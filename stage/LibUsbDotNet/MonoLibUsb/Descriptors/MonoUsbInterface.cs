@@ -22,6 +22,7 @@
 using System;
 using System.Collections.Generic;
 using System.Runtime.InteropServices;
+using LibUsb.Common;
 
 namespace MonoLibUsb.Descriptors
 {

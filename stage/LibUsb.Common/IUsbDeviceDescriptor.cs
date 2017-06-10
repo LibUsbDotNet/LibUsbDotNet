@@ -2,7 +2,7 @@
 
 namespace LibUsb.Common
 {
-    public interface IUsbDeviceDescriptor
+    public interface IUsbDeviceDescriptor : IUsbDescriptor
     {
         /// <summary>
         /// USB Specification Number which device complies too.
@@ -64,15 +64,5 @@ namespace LibUsb.Common
         /// Number of Possible Configurations
         /// </summary>
         byte ConfigurationCount { get; }
-
-        ///<summary>
-        ///Returns a <see cref="T:System.String"/> that represents the current <see cref="UsbDeviceDescriptor"/>.
-        ///</summary>
-        ///
-        ///<param name="prefixSeperator">The field prefix string.</param>
-        ///<param name="entitySperator">The field/value seperator string.</param>
-        ///<param name="suffixSeperator">The value suffix string.</param>
-        ///<returns>A formatted representation of the <see cref="UsbDeviceDescriptor"/>.</returns>
-        string ToString(string prefixSeperator, string entitySperator, string suffixSeperator);
     }
 }

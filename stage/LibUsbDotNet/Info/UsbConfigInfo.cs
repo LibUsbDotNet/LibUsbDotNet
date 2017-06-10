@@ -26,6 +26,7 @@ using LibUsbDotNet.Descriptors;
 using LibUsbDotNet.Main;
 using LibUsbDotNet.LudnMonoLibUsb;
 using MonoLibUsb.Descriptors;
+using LibUsb.Common;
 
 namespace LibUsbDotNet.Info
 {
