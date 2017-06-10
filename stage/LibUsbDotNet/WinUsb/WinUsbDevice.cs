@@ -28,6 +28,7 @@ using LibUsbDotNet.Internal.WinUsb;
 using LibUsbDotNet.Main;
 using LibUsbDotNet.WinUsb.Internal;
 using Microsoft.Win32.SafeHandles;
+using LibUsb.Common;
 
 namespace LibUsbDotNet.WinUsb
 {
@@ -270,30 +271,22 @@ namespace LibUsbDotNet.WinUsb
         }
 
         /// <summary>
-        /// Gets a <see cref="UsbInterfaceDescriptor"/> for the specified AlternateInterfaceNumber,
+        /// Gets a <see cref="IUsbInterfaceDescriptor"/> for the specified AlternateInterfaceNumber,
         /// </summary>
-        /// <param name="alternateInterfaceNumber">The alternate interface index for the <see cref="UsbInterfaceDescriptor"/> to retrieve. </param>
-        /// <param name="usbAltInterfaceDescriptor">The <see cref="UsbInterfaceDescriptor"/> for the specified AlternateInterfaceNumber.</param>
+        /// <param name="alternateInterfaceNumber">The alternate interface index for the <see cref="IUsbInterfaceDescriptor"/> to retrieve. </param>
+        /// <param name="usbAltInterfaceDescriptor">The <see cref="IUsbInterfaceDescriptor"/> for the specified AlternateInterfaceNumber.</param>
         /// <returns>True on success.</returns>
-        public bool QueryInterfaceSettings(byte alternateInterfaceNumber, ref UsbInterfaceDescriptor usbAltInterfaceDescriptor)
+        public bool QueryInterfaceSettings(byte alternateInterfaceNumber, ref IUsbInterfaceDescriptor usbAltInterfaceDescriptor)
         {
             bool bSuccess;
-            //if (mSemDeviceLock != null)
-            //{
-            //    if (LockDevice() != ErrorCode.None) return false;
-            //}
 
-            //try
-            //{
-            bSuccess = WinUsbAPI.WinUsb_QueryInterfaceSettings(Handle, alternateInterfaceNumber, usbAltInterfaceDescriptor);
+            UsbInterfaceDescriptor usbInterfaceDescriptor = new UsbInterfaceDescriptor();
+
+            bSuccess = WinUsbAPI.WinUsb_QueryInterfaceSettings(Handle, alternateInterfaceNumber, usbInterfaceDescriptor);
             if (!bSuccess)
                 UsbError.Error(ErrorCode.Win32Error, Marshal.GetLastWin32Error(), "QueryInterfaceSettings", this);
-            //}
-            //finally
-            //{
-            //    if (mSemDeviceLock != null) UnlockDevice();
-            //}
 
+            usbAltInterfaceDescriptor = usbInterfaceDescriptor;
             return bSuccess;
         }
 

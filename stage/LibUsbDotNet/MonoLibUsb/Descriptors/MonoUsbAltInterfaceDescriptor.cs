@@ -33,35 +33,8 @@ namespace MonoLibUsb.Descriptors
     /// All multiple-byte fields are represented in host-endian format.
     /// </summary>
     [StructLayout(LayoutKind.Sequential, Pack = MonoUsbApi.LIBUSB_PACK)]
-    public class MonoUsbAltInterfaceDescriptor
+    public class MonoUsbAltInterfaceDescriptor : UsbInterfaceDescriptor
     {
-        ///<summary>Size of this descriptor (in bytes)</summary>
-        public readonly Byte bLength;
-
-        ///<summary>Descriptor type. Will have value LIBUSB_DT_INTERFACE in this context.</summary>
-        public readonly DescriptorType bDescriptorType;
-
-        ///<summary>Number of this interface</summary>
-        public readonly Byte bInterfaceNumber;
-
-        ///<summary>Value used to select this alternate setting for this interface</summary>
-        public readonly Byte bAlternateSetting;
-
-        ///<summary> Number of endpoints used by this interface (excluding the control endpoint).</summary>
-        public readonly Byte bNumEndpoints;
-
-        ///<summary> USB-IF class code for this interface. See ClassCodeType.</summary>
-        public readonly ClassCodeType bInterfaceClass;
-
-        ///<summary> USB-IF subclass code for this interface, qualified by the bInterfaceClass value</summary>
-        public readonly Byte bInterfaceSubClass;
-
-        ///<summary> USB-IF protocol code for this interface, qualified by the bInterfaceClass and bInterfaceSubClass values</summary>
-        public readonly Byte bInterfaceProtocol;
-
-        ///<summary> Index of string descriptor describing this interface</summary>
-        public readonly Byte iInterface;
-
         ///<summary> Array of endpoint descriptors. This length of this array is determined by the bNumEndpoints field.</summary>
         private readonly IntPtr pEndpointDescriptors;
 
@@ -89,7 +62,7 @@ namespace MonoLibUsb.Descriptors
             {
                 List<IUsbEndpointDescriptor> endpointList = new List<IUsbEndpointDescriptor>();
                 int iEndpoint;
-                for (iEndpoint = 0; iEndpoint < bNumEndpoints; iEndpoint++)
+                for (iEndpoint = 0; iEndpoint < EndpointCount; iEndpoint++)
                 {
                     IntPtr pNextInterface = new IntPtr(pEndpointDescriptors.ToInt64() + (Marshal.SizeOf(typeof (MonoUsbEndpointDescriptor))*iEndpoint));
                     MonoUsbEndpointDescriptor monoUsbEndpoint = new MonoUsbEndpointDescriptor();

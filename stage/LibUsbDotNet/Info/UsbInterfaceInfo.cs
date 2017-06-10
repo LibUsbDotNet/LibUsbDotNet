@@ -33,7 +33,7 @@ namespace LibUsbDotNet.Info
     /// </summary> 
     public class UsbInterfaceInfo : UsbBaseInfo
     {
-        internal readonly UsbInterfaceDescriptor mUsbInterfaceDescriptor;
+        internal readonly IUsbInterfaceDescriptor mUsbInterfaceDescriptor;
         internal List<UsbEndpointInfo> mEndpointInfo = new List<UsbEndpointInfo>();
         private String mInterfaceString;
         internal UsbDevice mUsbDevice;
@@ -49,7 +49,7 @@ namespace LibUsbDotNet.Info
         {
             mUsbDevice = usbDevice;
 
-            mUsbInterfaceDescriptor = new UsbInterfaceDescriptor(monoUSBAltInterfaceDescriptor);
+            mUsbInterfaceDescriptor = monoUSBAltInterfaceDescriptor;
             List<IUsbEndpointDescriptor> monoUsbEndpoints = monoUSBAltInterfaceDescriptor.EndpointList;
             foreach (MonoUsbEndpointDescriptor monoUSBEndpoint in monoUsbEndpoints)
             {
@@ -60,7 +60,7 @@ namespace LibUsbDotNet.Info
         /// <summary>
         /// Gets the actual interface descriptor.
         /// </summary>
-        public UsbInterfaceDescriptor Descriptor
+        public IUsbInterfaceDescriptor Descriptor
         {
             get { return mUsbInterfaceDescriptor; }
         }
@@ -74,7 +74,7 @@ namespace LibUsbDotNet.Info
         }
 
         /// <summary>
-        /// Gets the string representation of the <see cref="UsbInterfaceDescriptor.StringIndex"/> string index.
+        /// Gets the string representation of the <see cref="IUsbInterfaceDescriptor.StringIndex"/> string index.
         /// </summary>
         public String InterfaceString
         {
