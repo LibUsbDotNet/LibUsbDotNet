@@ -1,4 +1,4 @@
-// Copyright © 2006-2010 Travis Robinson. All rights reserved.
+// Copyright Â© 2006-2010 Travis Robinson. All rights reserved.
 // 
 // website: http://sourceforge.net/projects/libusbdotnet
 // e-mail:  libusbdotnet@gmail.com
@@ -22,6 +22,7 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
 using System.Runtime.InteropServices;
 using LibUsbDotNet;
 using LibUsbDotNet.Main;
@@ -85,7 +86,7 @@ namespace MonoLibUsb.Profile
             newList.mList.RemoveAll(FindDiscoveredFn);
             newList.Close();
 
-            foreach (MonoUsbProfile deviceProfile in mList)
+            foreach (MonoUsbProfile deviceProfile in mList.ToList())
             {
                 if (!deviceProfile.mDiscovered)
                 {
