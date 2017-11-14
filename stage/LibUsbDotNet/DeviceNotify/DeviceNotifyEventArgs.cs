@@ -29,23 +29,13 @@ namespace LibUsbDotNet.DeviceNotify
     /// </summary> 
     public abstract class DeviceNotifyEventArgs : EventArgs
     {
-        internal IUsbDeviceNotifyInfo mDevice;
-        internal DeviceType mDeviceType;
-        internal EventType mEventType;
-        internal object mObject;
-        internal IPortNotifyInfo mPort;
-        internal IVolumeNotifyInfo mVolume;
-
         /// <summary>
         /// Gets the <see cref="VolumeNotifyInfo"/> class.
         /// </summary>
         /// <remarks>
         /// This value is null if the <see cref="DeviceNotifyEventArgs.DeviceType"/> is not set to <see cref="DeviceNotify.DeviceType.Volume"/>
         /// </remarks>
-        public IVolumeNotifyInfo Volume
-        {
-            get { return mVolume; }
-        }
+        public IVolumeNotifyInfo Volume { get; protected set; }
 
         /// <summary>
         /// Gets the <see cref="PortNotifyInfo"/> class.
@@ -53,10 +43,7 @@ namespace LibUsbDotNet.DeviceNotify
         /// <remarks>
         /// This value is null if the <see cref="DeviceNotifyEventArgs.DeviceType"/> is not set to <see cref="DeviceNotify.DeviceType.Port"/>
         /// </remarks>
-        public IPortNotifyInfo Port
-        {
-            get { return mPort; }
-        }
+        public IPortNotifyInfo Port { get; protected set; }
 
         /// <summary>
         /// Gets the <see cref="UsbDeviceNotifyInfo"/> class.
@@ -64,26 +51,16 @@ namespace LibUsbDotNet.DeviceNotify
         /// <remarks>
         /// This value is null if the <see cref="DeviceNotifyEventArgs.DeviceType"/> is not set to <see cref="DeviceNotify.DeviceType.DeviceInterface"/>
         /// </remarks>
-        public IUsbDeviceNotifyInfo Device
-        {
-            get { return mDevice; }
-        }
-
+        public IUsbDeviceNotifyInfo Device { get; protected set; }
         /// <summary>
         /// Gets the <see cref="EventType"/> for this notification.
         /// </summary>
-        public EventType EventType
-        {
-            get { return mEventType; }
-        }
+        public EventType EventType { get; protected set; }
 
         /// <summary>
         /// Gets the <see cref="DeviceType"/> for this notification.
         /// </summary>
-        public DeviceType DeviceType
-        {
-            get { return mDeviceType; }
-        }
+        public DeviceType DeviceType { get; protected set; }
 
         /// <summary>
         /// Gets the notification class as an object.
@@ -91,10 +68,7 @@ namespace LibUsbDotNet.DeviceNotify
         /// <remarks>
         /// This value is never null.
         /// </remarks>
-        public object Object
-        {
-            get { return mObject; }
-        }
+        public object Object { get; protected set; }
 
         ///<summary>
         ///Returns a <see cref="T:System.String"/> that represents the current <see cref="DeviceNotifyEventArgs"/>.
@@ -103,10 +77,6 @@ namespace LibUsbDotNet.DeviceNotify
         ///<returns>
         ///A <see cref="System.String"/> that represents the current <see cref="DeviceNotifyEventArgs"/>.
         ///</returns>
-        public override string ToString()
-        {
-            object[] o = {DeviceType, EventType, mObject.ToString()};
-            return string.Format("[DeviceType:{0}] [EventType:{1}] {2}", o);
-        }
+        public override string ToString() => $"[DeviceType:{DeviceType}] [EventType:{EventType}] {Object}";
     }
 }
