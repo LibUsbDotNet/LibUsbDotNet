@@ -1,9 +1,21 @@
 image: Visual Studio 2017
 
 build_script:
-  - dotnet restore stage\LibUsbDotNet\LibUsbDotNet.csproj
-  - dotnet build stage\LibUsbDotNet\LibUsbDotNet.csproj /p:Configuration=Release
+  - dotnet restore stage\LibUsb.Common\LibUsb.Common.csproj /p:VersionSuffix=r%APPVEYOR_BUILD_NUMBER%
+  - dotnet restore stage\LibUsbDotNet\LibUsbDotNet.csproj /p:VersionSuffix=r%APPVEYOR_BUILD_NUMBER%
+  - dotnet build stage\LibUsb.Common\LibUsb.Common.csproj /p:Configuration=Release --version-suffix r%APPVEYOR_BUILD_NUMBER%
+  - dotnet pack stage\LibUsb.Common\LibUsb.Common.csproj /p:Configuration=Release --version-suffix r%APPVEYOR_BUILD_NUMBER%
+  - dotnet build stage\LibUsbDotNet\LibUsbDotNet.csproj /p:Configuration=Release --version-suffix r%APPVEYOR_BUILD_NUMBER%
   - dotnet pack stage\LibUsbDotNet\LibUsbDotNet.csproj /p:Configuration=Release --version-suffix r%APPVEYOR_BUILD_NUMBER%
 
-on_success:
-  - ps: Push-AppVeyorArtifact stage\LibUsbDotNet\bin\Release\LibUsbDotNet.2.2.9-r$($env:APPVEYOR_BUILD_NUMBER).nupkg
+artifacts:
+  - path: stage\LibUsbDotNet\bin\Release\LibUsbDotNet.2.2.10-*.nupkg
+  - path: stage\LibUsb.Common\bin\Release\LibUsb.Common.2.2.10-*.nupkg
+
+deploy:
+  provider: NuGet
+  on:
+    branch: master
+  api_key:
+    secure: 0wE8RLp9KRRDy9yQG29TCLGJ1+2uhCC6vMEinDSPVU57txXoQBVGK9jkpED+zrib
+  skip_symbols: true
