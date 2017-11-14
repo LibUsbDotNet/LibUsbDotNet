@@ -9,5 +9,5 @@ build_script:
   - dotnet pack stage\LibUsbDotNet\LibUsbDotNet.csproj /p:Configuration=Release --version-suffix r%APPVEYOR_BUILD_NUMBER%
 
 artifacts:
-  - path: stage\LibUsbDotNet\bin\Release\LibUsbDotNet.2.2.10-r$($env:APPVEYOR_BUILD_NUMBER).nupkg
-  - path: stage\LibUsb.Common\bin\Release\LibUsb.Common.2.2.10-r$($env:APPVEYOR_BUILD_NUMBER).nupkg
+  - path: stage\LibUsbDotNet\bin\Release\LibUsbDotNet.2.2.10-*.nupkg
+  - path: stage\LibUsb.Common\bin\Release\LibUsb.Common.2.2.10-*.nupkg
