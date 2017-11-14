@@ -186,8 +186,18 @@ namespace LibUsbDotNet.WinUsb.Internal
                                            int BufferLength,
                                            out int LengthTransferred) { return WinUsb_GetDescriptor(InterfaceHandle, DescriptorType, Index, LanguageID, Buffer, BufferLength, out LengthTransferred); }
 
-        public override bool GetOverlappedResult(SafeHandle InterfaceHandle, IntPtr pOVERLAPPED, out int numberOfBytesTransferred, bool Wait) { return WinUsb_GetOverlappedResult(InterfaceHandle, pOVERLAPPED, out numberOfBytesTransferred, Wait); }
-
+        public override bool GetOverlappedResult(SafeHandle InterfaceHandle, IntPtr pOVERLAPPED, out int numberOfBytesTransferred, bool Wait) 
+		{ 
+			if (!InterfaceHandle.IsClosed) 
+			{
+				return WinUsb_GetOverlappedResult(InterfaceHandle, pOVERLAPPED, out numberOfBytesTransferred, Wait);
+			}
+			else
+			{
+				numberOfBytesTransferred = 0;
+				return true;
+			}			
+		}
         //public override bool ReadPipe(UsbEndpointBase endPointBase,
         //                              byte[] Buffer,
         //                              int BufferLength,
