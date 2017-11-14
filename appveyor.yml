@@ -11,3 +11,11 @@ build_script:
 artifacts:
   - path: stage\LibUsbDotNet\bin\Release\LibUsbDotNet.2.2.10-*.nupkg
   - path: stage\LibUsb.Common\bin\Release\LibUsb.Common.2.2.10-*.nupkg
+
+deploy:
+  provider: NuGet
+  on:
+    branch: master
+  api_key:
+    secure: EE+SrSChcQWBbROVoNVqVmUNJLh7humtKClEyJoc05VUbV5gQWbhjndwQFuiu2kz
+  skip_symbols: true
