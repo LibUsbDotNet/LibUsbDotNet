@@ -30,17 +30,17 @@ namespace LibUsbDotNet.DeviceNotify.Linux
     {
         internal LinuxDeviceNotifyEventArgs(LinuxDevItem linuxDevItem, DeviceType deviceType, EventType eventType)
         {
-            mEventType = eventType;
-            mDeviceType = deviceType;
-            switch (mDeviceType)
+            EventType = eventType;
+            DeviceType = deviceType;
+            switch (DeviceType)
             {
                 case DeviceType.Volume:
-                    throw new NotImplementedException(mDeviceType.ToString());
+                    throw new NotImplementedException(DeviceType.ToString());
                 case DeviceType.Port:
-                    throw new NotImplementedException(mDeviceType.ToString());
+                    throw new NotImplementedException(DeviceType.ToString());
                 case DeviceType.DeviceInterface:
-                    mDevice = new LinuxUsbDeviceNotifyInfo(linuxDevItem);
-                    mObject = mDevice;
+                    Device = new LinuxUsbDeviceNotifyInfo(linuxDevItem);
+                    Object = Device;
                     break;
             }
         }

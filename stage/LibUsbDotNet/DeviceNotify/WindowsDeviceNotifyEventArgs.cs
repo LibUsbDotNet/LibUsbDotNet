@@ -35,21 +35,21 @@ namespace LibUsbDotNet.DeviceNotify
         internal WindowsDeviceNotifyEventArgs(DevBroadcastHdr hdr, IntPtr ptrHdr, EventType eventType)
         {
             mBaseHdr = hdr;
-            mEventType = eventType;
-            mDeviceType = mBaseHdr.DeviceType;
-            switch (mDeviceType)
+            EventType = eventType;
+            DeviceType = mBaseHdr.DeviceType;
+            switch (DeviceType)
             {
                 case DeviceType.Volume:
-                    mVolume = new VolumeNotifyInfo(ptrHdr);
-                    mObject = mVolume;
+                    Volume = new VolumeNotifyInfo(ptrHdr);
+                    Object = Volume;
                     break;
                 case DeviceType.Port:
-                    mPort = new PortNotifyInfo(ptrHdr);
-                    mObject = mPort;
+                    Port = new PortNotifyInfo(ptrHdr);
+                    Object = Port;
                     break;
                 case DeviceType.DeviceInterface:
-                    mDevice = new UsbDeviceNotifyInfo(ptrHdr);
-                    mObject = mDevice;
+                    Device = new UsbDeviceNotifyInfo(ptrHdr);
+                    Object = Device;
                     break;
             }
         }
