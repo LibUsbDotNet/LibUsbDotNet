@@ -25,3 +25,18 @@ All basic USB device functionality can be performed through common device classe
   * Device Interface GUID
 
 Source package includes many small example applications.
+
+### Linux users
+
+If you have installed `libusb-1.0` and you still have an error about loading library, it may be needed to make a symlink to allow runtime load the library.
+
+First, find the location of the library. For example : `sudo find / -name "libusb-1.0*.so*"` can give you :
+```
+/lib/x86_64-linux-gnu/libusb-1.0.so.0.1.0
+/lib/x86_64-linux-gnu/libusb-1.0.so.0
+```
+Then go to the directory, and make the symlink. it should match the library name, with extension (.so) without version :
+```
+cd /lib/x86_64-linux-gnu
+sudo ln -s libusb-1.0.so.0 libusb-1.0.so
+```
