@@ -1,5 +1,5 @@
-// Copyright © 2006-2010 Travis Robinson <libusbdotnet@gmail.com>
-// Copyright © 2017 Andras Fuchs <andras.fuchs@gmail.com>
+// Copyright Â© 2006-2010 Travis Robinson <libusbdotnet@gmail.com>
+// Copyright Â© 2017 Andras Fuchs <andras.fuchs@gmail.com>
 // 
 // Website: http://sourceforge.net/projects/libusbdotnet
 // GitHub repo: https://github.com/CoreCompat/LibUsbDotNet
@@ -33,7 +33,7 @@ namespace MonoLibUsb
     public static partial class MonoUsbApi
     {
         internal const CallingConvention CC = 0;
-        internal const string LIBUSB_DLL = "libusb-1.0.dll";
+        internal const string LIBUSB_DLL = "libusb-1.0";
 
         #region API LIBRARY FUNCTIONS - Initialization & Deinitialization
 
