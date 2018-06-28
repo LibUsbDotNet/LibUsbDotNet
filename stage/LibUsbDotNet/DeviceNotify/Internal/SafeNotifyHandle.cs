@@ -19,7 +19,7 @@
 // visit www.gnu.org.
 // 
 // 
-#if !NETSTANDARD1_5 && !NETSTANDARD1_6
+#if !NETSTANDARD
 using System;
 using Microsoft.Win32.SafeHandles;
 

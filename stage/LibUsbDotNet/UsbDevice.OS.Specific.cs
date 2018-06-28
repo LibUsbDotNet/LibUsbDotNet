@@ -276,7 +276,7 @@ namespace LibUsbDotNet
             }
         }
 
-#if !NETSTANDARD1_5 && !NETSTANDARD1_6
+#if !NETSTANDARD
         ///<summary>
         /// Gets a <see cref="System.OperatingSystem"/> object that contains the current platform identifier and version number.
         ///</summary>

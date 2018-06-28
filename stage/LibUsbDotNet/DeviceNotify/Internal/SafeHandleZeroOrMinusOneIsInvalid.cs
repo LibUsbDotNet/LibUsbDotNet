@@ -1,4 +1,4 @@
-﻿#if NETSTANDARD1_5 || NETSTANDARD1_6
+﻿#if NETSTANDARD
 using System;
 using System.Runtime.InteropServices;
 using System.Security;

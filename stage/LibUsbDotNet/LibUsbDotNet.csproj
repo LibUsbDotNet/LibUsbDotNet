@@ -5,8 +5,7 @@
     <AssemblyTitle>LibUsbDotNet for .NET Core</AssemblyTitle>
     <VersionPrefix>2.2.10</VersionPrefix>
     <Authors>Travis Robinson;Stevie-O;Quamotion</Authors>
-    <TargetFrameworks>netstandard1.6;net45</TargetFrameworks>
-    <DefineConstants>$(DefineConstants);LIBUSBDOTNET</DefineConstants>
+    <TargetFrameworks>netstandard2.0;netstandard1.6;net45</TargetFrameworks>
     <DebugType>portable</DebugType>
     <AssemblyName>LibUsbDotNet.LibUsbDotNet</AssemblyName>
     <PackageId>LibUsbDotNet</PackageId>
@@ -26,8 +25,17 @@
     <GenerateAssemblyFileVersionAttribute>false</GenerateAssemblyFileVersionAttribute>
     <GenerateNeutralResourcesLanguageAttribute>false</GenerateNeutralResourcesLanguageAttribute>
   </PropertyGroup>
+  
+  <!-- Conditionally defining constants based on target framework lets us avoid altering every precompile directive 
+    when we add support for another framework that requires no code changes.  Unfortunately we can't just append to constants... -->
+  <PropertyGroup Condition="!$([System.Text.RegularExpressions.Regex]::IsMatch('$(TargetFramework)', '^netstandard\d'))">
+    <DefineConstants>$(DefineConstants);LIBUSBDOTNET</DefineConstants>
+  </PropertyGroup>
+  <PropertyGroup Condition="$([System.Text.RegularExpressions.Regex]::IsMatch('$(TargetFramework)', '^netstandard\d'))">
+    <DefineConstants>$(DefineConstants);LIBUSBDOTNET;NETSTANDARD</DefineConstants>
+  </PropertyGroup>
 
-  <ItemGroup Condition=" '$(TargetFramework)' == 'netstandard1.6' ">
+  <ItemGroup Condition="$([System.Text.RegularExpressions.Regex]::IsMatch('$(TargetFramework)', '^netstandard\d'))">
     <PackageReference Include="System.Runtime.InteropServices" Version="4.3.0" />
     <PackageReference Include="System.Text.RegularExpressions" Version="4.3.0" />
     <PackageReference Include="System.Threading" Version="4.3.0" />
