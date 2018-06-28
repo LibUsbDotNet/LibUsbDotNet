@@ -30,7 +30,7 @@ using Microsoft.Win32.SafeHandles;
 
 namespace LibUsbDotNet.Internal
 {
-#if !NETSTANDARD1_5 && !NETSTANDARD1_6
+#if !NETSTANDARD
     [SuppressUnmanagedCodeSecurity]
 #endif
     internal static class Kernel32
@@ -67,7 +67,7 @@ namespace LibUsbDotNet.Internal
                 int ret = FormatMessage(FORMAT_MESSAGE_FROM_SYSTEM,
                                         IntPtr.Zero,
                                         dwMessageId,
-#if !NETSTANDARD1_5 && !NETSTANDARD1_6
+#if !NETSTANDARD
                                         CultureInfo.CurrentCulture.LCID,
 #else
                                         0,
