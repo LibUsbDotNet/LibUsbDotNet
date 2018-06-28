@@ -81,6 +81,10 @@
     <Folder Include="Resources\" />
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\LibUsb.Common\LibUsb.Common.csproj">
+      <Project>{a8548f83-62b7-43d2-ab56-254a1424762a}</Project>
+      <Name>LibUsb.Common</Name>
+    </ProjectReference>
     <ProjectReference Include="..\LibUsbDotNet\LibUsbDotNet.csproj">
       <Project>{0a78f6ff-5586-4052-8104-e23ff83a7ce1}</Project>
       <Name>LibUsbDotNet</Name>
