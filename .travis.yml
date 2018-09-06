@@ -1,0 +1,12 @@
+language: csharp
+mono: none
+dotnet: 2.1.400
+
+git:
+  depth: false
+
+script:
+  - cd stage/
+  - dotnet restore LibUsbDotNet/LibUsbDotNet.csproj
+  - dotnet build LibUsbDotNet/LibUsbDotNet.csproj -c Release
+  - dotnet pack LibUsbDotNet/LibUsbDotNet.csproj -c Release
