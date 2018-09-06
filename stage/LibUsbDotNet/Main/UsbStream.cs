@@ -19,7 +19,7 @@
 // visit www.gnu.org.
 // 
 // 
-#if !NETSTANDARD1_5 && !NETSTANDARD1_6
+#if !NETSTANDARD && !NETCOREAPP
 using System;
 using System.IO;
 using System.Runtime.InteropServices;
