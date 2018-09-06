@@ -1,12 +1,16 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
-    <TargetFrameworks>netstandard1.6;net45</TargetFrameworks>
+    <TargetFrameworks>netstandard1.6;netstandard2.0;netcoreapp2.0;net45</TargetFrameworks>
     <VersionPrefix>2.2.10</VersionPrefix>
   </PropertyGroup>
 
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
     <DefineConstants>TRACE;DEBUG;LIBUSBDOTNET;NETSTANDARD1_6</DefineConstants>
   </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Nerdbank.GitVersioning" Version="2.2.13" PrivateAssets="all"/>
+  </ItemGroup>
 
 </Project>
