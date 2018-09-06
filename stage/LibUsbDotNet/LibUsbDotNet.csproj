@@ -5,7 +5,7 @@
     <AssemblyTitle>LibUsbDotNet for .NET Core</AssemblyTitle>
     <VersionPrefix>2.2.10</VersionPrefix>
     <Authors>Travis Robinson;Stevie-O;Quamotion</Authors>
-    <TargetFrameworks>netstandard1.6;net45</TargetFrameworks>
+    <TargetFrameworks>netstandard1.6;netstandard2.0;netcoreapp2.0;net45</TargetFrameworks>
     <DefineConstants>$(DefineConstants);LIBUSBDOTNET</DefineConstants>
     <DebugType>portable</DebugType>
     <AssemblyName>LibUsbDotNet.LibUsbDotNet</AssemblyName>
@@ -50,6 +50,10 @@
     <Reference Include="Microsoft.CSharp" />
   </ItemGroup>
 
+  <ItemGroup>
+    <PackageReference Include="Nerdbank.GitVersioning" Version="2.2.13" PrivateAssets="all"/>
+  </ItemGroup>
+  
   <ItemGroup>
     <Compile Remove="MonoLibUsb\Tests\MonoLibUsbTests.cs" />
   </ItemGroup>
