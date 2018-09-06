@@ -3,7 +3,15 @@ image: Visual Studio 2017
 build_script:
   - dotnet restore stage\LibUsbDotNet\LibUsbDotNet.csproj
   - dotnet build stage\LibUsbDotNet\LibUsbDotNet.csproj /p:Configuration=Release
-  - dotnet pack stage\LibUsbDotNet\LibUsbDotNet.csproj /p:Configuration=Release --version-suffix r%APPVEYOR_BUILD_NUMBER%
+  - dotnet pack stage\LibUsbDotNet\LibUsbDotNet.csproj /p:Configuration=Release
 
-on_success:
-  - ps: Push-AppVeyorArtifact stage\LibUsbDotNet\bin\Release\LibUsbDotNet.2.2.9-r$($env:APPVEYOR_BUILD_NUMBER).nupkg
+artifacts:
+  - path: stage\LibUsbDotNet\bin\Release\LibUsbDotNet.*.nupkg
+
+deploy:
+  provider: NuGet
+  on:
+    branch: master
+  api_key:
+    secure: 0wE8RLp9KRRDy9yQG29TCLGJ1+2uhCC6vMEinDSPVU57txXoQBVGK9jkpED+zrib
+  skip_symbols: true
