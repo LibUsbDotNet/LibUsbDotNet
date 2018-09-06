@@ -23,9 +23,14 @@
 using LibUsbDotNet;
 using LibUsbDotNet.Main;
 using MonoLibUsb.Descriptors;
+#if !NETSTANDARD1_6
+using System;
+using System.Runtime.InteropServices;
+#endif
 
 namespace MonoLibUsb.Profile
 {
+
     /// <summary>
     /// Representing a USB device that can be opened and used by Libusb-1.0.
     /// </summary>
@@ -143,7 +148,16 @@ namespace MonoLibUsb.Profile
 
             monoUsbDeviceDescriptor = new MonoUsbDeviceDescriptor();
             //Console.WriteLine("MonoUsbProfile:GetDeviceDescriptor");
+
+            #if NETSTANDARD1_6
             ec = (MonoUsbError) MonoUsbApi.GetDeviceDescriptor(mMonoUSBProfileHandle, monoUsbDeviceDescriptor);
+            #else
+            IntPtr ptr = Marshal.AllocHGlobal(Marshal.SizeOf(monoUsbDeviceDescriptor));
+            ec = (MonoUsbError) MonoUsbApi.GetDeviceDescriptor(mMonoUSBProfileHandle, ptr);
+            Marshal.PtrToStructure(ptr, monoUsbDeviceDescriptor);
+            Marshal.FreeHGlobal(ptr);
+            #endif
+
             if (ec != MonoUsbError.Success)
             {
 #if LIBUSBDOTNET
