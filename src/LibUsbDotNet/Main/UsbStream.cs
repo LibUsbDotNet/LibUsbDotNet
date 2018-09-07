@@ -19,12 +19,13 @@
 // visit www.gnu.org.
 // 
 // 
-#if !NETSTANDARD && !NETCOREAPP
 using System;
 using System.IO;
 using System.Runtime.InteropServices;
 using System.Threading;
+#if !NETCOREAPP && !NETSTANDARD
 using System.Windows.Forms;
+#endif
 
 namespace LibUsbDotNet.Main
 {
@@ -74,7 +75,7 @@ namespace LibUsbDotNet.Main
             get { return mTrasferredLength; }
         }
 
-        #region IAsyncResult Members
+#region IAsyncResult Members
 
         public bool IsCompleted
         {
@@ -96,7 +97,7 @@ namespace LibUsbDotNet.Main
             get { return false; }
         }
 
-        #endregion
+#endregion
 
         public ErrorCode SyncTransfer()
         {
@@ -117,7 +118,7 @@ namespace LibUsbDotNet.Main
 
         public UsbStream(UsbEndpointBase usbEndpoint) { mUsbEndpoint = usbEndpoint; }
 
-        #region NOT SUPPORTED
+#region NOT SUPPORTED
 
         public override long Length
         {
@@ -135,10 +136,11 @@ namespace LibUsbDotNet.Main
 
         public override void SetLength(long value) { throw new NotSupportedException(); }
 
-        #endregion
+#endregion
 
-        #region Overridden Members
+#region Overridden Members
 
+#if !NETCOREAPP && !NETSTANDARD
         public override IAsyncResult BeginRead(byte[] buffer, int offset, int count, AsyncCallback callback, object state)
         {
             UsbStreamAsyncTransfer asyncTransfer = new UsbStreamAsyncTransfer(mUsbEndpoint, buffer, offset, count, callback, state, ReadTimeout);
@@ -163,6 +165,7 @@ namespace LibUsbDotNet.Main
             WaitThread.Start(asyncTransfer);
             return asyncTransfer;
         }
+#endif
 
         public override bool CanRead
         {
@@ -184,6 +187,7 @@ namespace LibUsbDotNet.Main
             get { return (mUsbEndpoint.EpNum & 0x80) == 0; }
         }
 
+#if !NETCOREAPP && !NETSTANDARD
         public override int EndRead(IAsyncResult asyncResult)
         {
             UsbStreamAsyncTransfer asyncTransfer = (UsbStreamAsyncTransfer) asyncResult;
@@ -218,6 +222,7 @@ namespace LibUsbDotNet.Main
 
             throw new IOException(String.Format("{0}:Failed writing to endpoint 0x{1:X2}", asyncTransfer.Result, mUsbEndpoint.EpNum));
         }
+#endif
 
         public override void Flush() { return; }
 
@@ -272,9 +277,9 @@ namespace LibUsbDotNet.Main
             set { mTimeout = value; }
         }
 
-        #endregion
+#endregion
 
-        #region STATIC Members
+#region STATIC Members
 
         private static void AsyncTransferFn(object oContext)
         {
@@ -282,7 +287,6 @@ namespace LibUsbDotNet.Main
             context.SyncTransfer();
         }
 
-        #endregion
+#endregion
     }
 }
-#endif
