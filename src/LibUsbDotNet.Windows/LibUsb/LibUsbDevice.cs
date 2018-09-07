@@ -36,6 +36,7 @@ namespace LibUsbDotNet.LibUsb
     /// </remarks> 
     public class LibUsbDevice : UsbDevice, IUsbDevice
     {
+        internal static readonly LibUsbAPI LibUsbApi = new LibUsbAPI();
         private readonly string mDeviceFilename;
 
 
@@ -60,7 +61,7 @@ namespace LibUsbDotNet.LibUsb
                 {
                     LibUsbDevice newLibUsbDevice;
                     string deviceFileName = LibUsbDriverIO.GetDeviceNameString(i);
-                    if (!Open(deviceFileName, out newLibUsbDevice)) continue;
+                    if (!Open(deviceFileName, null, out newLibUsbDevice)) continue;
 
                     newLibUsbDevice.mDeviceInfo = new UsbDeviceInfo(newLibUsbDevice);
                     newLibUsbDevice.Close();
@@ -225,13 +226,14 @@ namespace LibUsbDotNet.LibUsb
         /// <param name="deviceFilename">The LibUsb device filename to open.</param>
         /// <param name="usbDevice">The newly created UsbDevice.</param>
         /// <returns>True on success.</returns>
-        public static bool Open(string deviceFilename, out LibUsbDevice usbDevice)
+        public static bool Open(string deviceFilename, LibUsbRegistry usbRegistry, out LibUsbDevice usbDevice)
         {
             usbDevice = null;
             SafeFileHandle sfh = LibUsbDriverIO.OpenDevice(deviceFilename);
             if (!sfh.IsClosed && !sfh.IsInvalid)
             {
                 usbDevice = new LibUsbDevice(LibUsbApi, sfh, deviceFilename);
+                usbDevice.mUsbRegistry = usbRegistry;
                 return true;
             }
             else

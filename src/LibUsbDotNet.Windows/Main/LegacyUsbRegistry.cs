@@ -208,7 +208,7 @@ namespace LibUsbDotNet.Main
             if (bSuccess)
             {
                 usbDevice = mUSBDevice;
-                usbDevice.mUsbRegistry = this;
+                // usbDevice.mUsbRegistry = this;
             }
 
             return bSuccess;

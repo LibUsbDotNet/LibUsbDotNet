@@ -43,6 +43,8 @@ namespace LibUsbDotNet.WinUsb
     /// </remarks> 
     public class WinUsbDevice : UsbDevice, IUsbInterface
     {
+        internal static readonly WinUsbAPI WinUsbApi = new WinUsbAPI();
+
         private readonly string mDevicePath;
         private PowerPolicies mPowerPolicies;
         private SafeFileHandle mSafeDevHandle;
@@ -186,7 +188,7 @@ namespace LibUsbDotNet.WinUsb
         /// <param name="devicePath">Device path (symbolic link) of the WinUsb device to open.</param>
         /// <param name="usbDevice">Returns an opened WinUsb device on success, null on failure.</param>
         /// <returns>True on success.</returns>
-        public static bool Open(string devicePath, out WinUsbDevice usbDevice)
+        public static bool Open(string devicePath, UsbRegistry usbRegistry, out WinUsbDevice usbDevice)
         {
             usbDevice = null;
 
@@ -199,7 +201,8 @@ namespace LibUsbDotNet.WinUsb
                 bSuccess = WinUsbAPI.WinUsb_Initialize(sfhDev, ref handle);
                 if (bSuccess)
                 {
-                    usbDevice = new WinUsbDevice(WinUsbApi, sfhDev, handle, devicePath);
+                    usbDevice = new WinUsbDevice(WinUsbDevice.WinUsbApi, sfhDev, handle, devicePath);
+                    usbDevice.mUsbRegistry = usbRegistry;
                 }
                 else
                     UsbError.Error(ErrorCode.Win32Error, Marshal.GetLastWin32Error(), "Open:Initialize", typeof(UsbDevice));
@@ -240,7 +243,7 @@ namespace LibUsbDotNet.WinUsb
             {
                 SafeWinUsbInterfaceHandle tempHandle = new SafeWinUsbInterfaceHandle(pHandle);
 
-                usbDevice = new WinUsbDevice(mUsbApi, null, tempHandle, mDevicePath);
+                usbDevice = new WinUsbDevice(WinUsbDevice.WinUsbApi, null, tempHandle, mDevicePath);
             }
             if (!bSuccess)
                 UsbError.Error(ErrorCode.Win32Error, Marshal.GetLastWin32Error(), "GetAssociatedInterface", this);

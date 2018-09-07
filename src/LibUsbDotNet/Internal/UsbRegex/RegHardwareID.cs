@@ -27,7 +27,7 @@ namespace LibUsbDotNet.Internal.UsbRegex
     /// <summary>
     /// Regular expression class for quick parsing of usb hardware ids.
     /// </summary>
-    internal class RegHardwareID : Regex
+    public class RegHardwareID : Regex
     {
         #region Enumerations
 

@@ -21,22 +21,16 @@
 // 
 using System;
 using System.Collections.Generic;
-using LibUsbDotNet.Internal.LibUsb;
-using LibUsbDotNet.LibUsb;
 using LibUsbDotNet.Main;
-using LibUsbDotNet.WinUsb.Internal;
 using Debug=System.Diagnostics.Debug;
 
 namespace LibUsbDotNet
 {
     public abstract partial class UsbDevice
     {
-        private static LibUsbAPI _libUsbApi;
-        private static WinUsbAPI _winUsbApi;
         private static object mHasWinUsbDriver;
         private static object mHasLibUsbWinBackDriver;
 
-        private static LibUsbKernelType mLibUsbKernelType;
         private static UsbKernelVersion mUsbKernelVersion;
 
         /// <summary>
@@ -130,6 +124,7 @@ namespace LibUsbDotNet
             get { return UsbError.mLastErrorString; }
         }
 
+#if HAS_UNIFIED_FRONTEND
         internal static LibUsbAPI LibUsbApi
         {
             get
@@ -149,8 +144,6 @@ namespace LibUsbDotNet
                 return _winUsbApi;
             }
         }
-
-#if HAS_UNIFIED_FRONTEND
         /// <summary>
         /// Opens the usb device that matches the <see cref="UsbDeviceFinder"/>.
         /// </summary>

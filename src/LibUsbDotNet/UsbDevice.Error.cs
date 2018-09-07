@@ -141,7 +141,7 @@ namespace LibUsbDotNet
             return String.Format("{0}:{1}", ErrorCode, Description);
         }
 
-        internal static UsbError Error(ErrorCode errorCode, int ret, string description, object sender)
+        public static UsbError Error(ErrorCode errorCode, int ret, string description, object sender)
         {
             string win32Error = String.Empty;
             if (errorCode == ErrorCode.Win32Error && !UsbDevice.IsLinux && ret != 0)

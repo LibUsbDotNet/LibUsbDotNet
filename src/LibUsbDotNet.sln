@@ -39,6 +39,8 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "LibUsbDotNet.LibUsb", "LibU
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "LibUsbDotNet.LibUsb.Tests", "LibUsbDotNet.LibUsb.Tests\LibUsbDotNet.LibUsb.Tests.csproj", "{3CF00F6C-A3E6-4C0D-BC1A-A91013511BD1}"
 EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "LibUsbDotNet.Windows", "LibUsbDotNet.Windows\LibUsbDotNet.Windows.csproj", "{CFBD22D4-698A-45FC-8E92-2B37967ACD50}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -183,6 +185,14 @@ Global
 		{3CF00F6C-A3E6-4C0D-BC1A-A91013511BD1}.Release|Any CPU.Build.0 = Release|Any CPU
 		{3CF00F6C-A3E6-4C0D-BC1A-A91013511BD1}.Release|x86.ActiveCfg = Release|Any CPU
 		{3CF00F6C-A3E6-4C0D-BC1A-A91013511BD1}.Release|x86.Build.0 = Release|Any CPU
+		{CFBD22D4-698A-45FC-8E92-2B37967ACD50}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{CFBD22D4-698A-45FC-8E92-2B37967ACD50}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{CFBD22D4-698A-45FC-8E92-2B37967ACD50}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{CFBD22D4-698A-45FC-8E92-2B37967ACD50}.Debug|x86.Build.0 = Debug|Any CPU
+		{CFBD22D4-698A-45FC-8E92-2B37967ACD50}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{CFBD22D4-698A-45FC-8E92-2B37967ACD50}.Release|Any CPU.Build.0 = Release|Any CPU
+		{CFBD22D4-698A-45FC-8E92-2B37967ACD50}.Release|x86.ActiveCfg = Release|Any CPU
+		{CFBD22D4-698A-45FC-8E92-2B37967ACD50}.Release|x86.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
