@@ -1,0 +1,15 @@
+<Project Sdk="MSBuild.Sdk.Extras">
+
+  <PropertyGroup>
+    <TargetFrameworks>netstandard1.6;netstandard2.0;netcoreapp2.0</TargetFrameworks>
+    <TargetFrameworks Condition="'$(OS)' == 'Windows_NT'">$(TargetFrameworks);net45</TargetFrameworks>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Nerdbank.GitVersioning" Version="2.2.13" PrivateAssets="all" />
+
+    <Compile Include="..\LibUsbDotNet.LibUsb\**\*.cs" Exclude="..\LibUsbDotNet.LibUsb\obj\**" />
+
+    <ProjectReference Include="..\LibUsbDotNet\LibUsbDotNet.csproj" />
+  </ItemGroup>
+</Project>

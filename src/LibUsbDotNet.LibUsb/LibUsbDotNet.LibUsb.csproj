@@ -1,11 +1,14 @@
-﻿<Project Sdk="Microsoft.NET.Sdk">
+﻿<Project Sdk="MSBuild.Sdk.Extras">
 
   <PropertyGroup>
     <Description>.NET C# USB library for WinUSB, LibUsb-Win32, and libusb-1.0. Using the common device classes, applications work with all operating systems and drivers without modification. Lots of example code. Open source software at sourceforge.net.</Description>
     <AssemblyTitle>LibUsbDotNet for .NET Core</AssemblyTitle>
     <Authors>Travis Robinson;Stevie-O;Quamotion</Authors>
-    <TargetFrameworks>netstandard1.6;netstandard2.0;netcoreapp2.0</TargetFrameworks>
+    <TargetFrameworks>netstandard1.6;netstandard2.0</TargetFrameworks>
     <TargetFrameworks Condition="'$(OS)' == 'Windows_NT'">$(TargetFrameworks);net45</TargetFrameworks>
+    <RuntimeIdentifiers>win;linux;osx</RuntimeIdentifiers>
+    <DefineConstants Condition="'$(BuildingInsideVisualStudio)' == 'true'">$(DefineConstants);WIN</DefineConstants>
+    <ExtrasBuildEachRuntimeIdentifier Condition="'$(BuildingInsideVisualStudio)' != 'true' AND ($(TargetFramework.StartsWith('netstandard')) OR $(TargetFramework.StartsWith('netcoreapp')))">true</ExtrasBuildEachRuntimeIdentifier>
     <PackageProjectUrl>https://github.com/LibUsbDotNet/LibUsbDotNet/</PackageProjectUrl>
     <PackageLicenseUrl>https://github.com/LibUsbDotNet/LibUsbDotNet/blob/master/stage/gpl-3.0.txt</PackageLicenseUrl>
     <PackageIconUrl>http://c.fsdn.com/allura/p/libusbdotnet/icon</PackageIconUrl>
@@ -22,5 +25,19 @@
   <ItemGroup>
     <ProjectReference Include="..\LibUsbDotNet\LibUsbDotNet.csproj" />
   </ItemGroup>
+  
+  <ItemGroup>
+    <!-- Because (lib)usb-1.0.[dll,so,dylib] includes a dot in the core assembly name (usb-1.0),
+         name resolution does not work correctly for [DllImport] attributes in .NET Core and we
+         need separate assemblies on Windows and Unix platforms.
 
+         This means we also need a reference assembly.
+
+         See https://oren.codes/2018/07/03/create-and-pack-reference-assemblies/
+         and https://oren.codes/2018/07/09/create-and-pack-reference-assemblies-made-easy/ -->
+    
+    <!--
+    <ReferenceAssemblyProjectReference Include="..\refs\LibUsbDotNet.LibUsb.refs.csproj" />
+    -->
+  </ItemGroup>
 </Project>

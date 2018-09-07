@@ -1,10 +1,15 @@
 image: Visual Studio 2017
 
 build_script:
+  - vcpkg install libusb:x64-windows
+
   - dotnet pack src\LibUsb.Common\LibUsb.Common.csproj -c Release
   - dotnet pack src\LibUsbDotNet\LibUsbDotNet.csproj -c Release
   - dotnet pack src\LibUsbDotNet.LibUsb\LibUsbDotNet.LibUsb.csproj -c Release
   - dotnet pack src\LibUsbDotNet.Windows\LibUsbDotNet.Windows.csproj -c Release
+
+  - set PATH=%PATH%;C:\tools\vcpkg\installed\x64-windows\bin
+  - dotnet test src\LibUsbDotNet.LibUsb.Tests\LibUsbDotNet.LibUsb.Tests.csproj -p:RuntimeIdentifier=win7-x64
 
 artifacts:
   - path: src\LibUsb.Common\bin\Release\LibUsb.Common.*.nupkg
