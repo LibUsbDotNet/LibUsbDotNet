@@ -32,7 +32,7 @@ namespace LibUsbDotNet.Main
         /// <summary>
         /// LibUsbDotNet USB exception.
         /// </summary>
-        internal UsbException(object sender, string description)
+        public UsbException(object sender, string description)
             : base(description) { mSender = sender; }
 
         /// <summary>

@@ -105,7 +105,7 @@ namespace LibUsbDotNet.Main
         }
 
 
-        internal SafeHandle Handle
+        public SafeHandle Handle
         {
             get { return mUsbHandle; }
         }
@@ -157,7 +157,7 @@ namespace LibUsbDotNet.Main
 
         #endregion
 
-        internal abstract UsbTransfer CreateTransferContext();
+        protected abstract UsbTransfer CreateTransferContext();
 
         /// <summary>
         /// Aborts pending IO operation on this enpoint of one exists.

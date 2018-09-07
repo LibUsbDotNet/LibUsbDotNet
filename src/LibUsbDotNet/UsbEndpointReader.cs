@@ -50,7 +50,7 @@ namespace LibUsbDotNet
         private ThreadPriority mReadThreadPriority = ThreadPriority.Normal;
 #endif
 
-        internal UsbEndpointReader(UsbDevice usbDevice, int readBufferSize, byte alternateInterfaceID, ReadEndpointID readEndpointID, EndpointType endpointType)
+        public UsbEndpointReader(UsbDevice usbDevice, int readBufferSize, byte alternateInterfaceID, ReadEndpointID readEndpointID, EndpointType endpointType)
             : base(usbDevice, alternateInterfaceID, (Byte)readEndpointID, endpointType) { mReadBufferSize = readBufferSize; }
 
         /// <summary>
@@ -302,6 +302,6 @@ namespace LibUsbDotNet
         /// </summary>
         public virtual event EventHandler<DataReceivedEnabledChangedEventArgs> DataReceivedEnabledChanged;
 
-        internal override UsbTransfer CreateTransferContext() { return new OverlappedTransferContext(this); }
+        protected override UsbTransfer CreateTransferContext() { return new OverlappedTransferContext(this); }
     }
 }

@@ -24,6 +24,9 @@ using System.Collections.Generic;
 using System.Runtime.InteropServices;
 using LibUsbDotNet.Descriptors;
 using LibUsb.Common;
+using LibUsbDotNet.Info;
+using LibUsbDotNet;
+using System.Linq;
 
 namespace MonoLibUsb.Descriptors
 {
@@ -72,6 +75,11 @@ namespace MonoLibUsb.Descriptors
 
                 return endpointList;
             }
+        }
+
+        public UsbInterfaceInfo ToUsbInterfaceInfo(UsbDevice usbDevice)
+        {
+            return new UsbInterfaceInfo(usbDevice, this, this.EndpointList);
         }
     }
 }

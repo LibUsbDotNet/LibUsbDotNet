@@ -23,7 +23,6 @@ using System;
 using System.Collections.Generic;
 using LibUsbDotNet.Internal.LibUsb;
 using LibUsbDotNet.LibUsb;
-using LibUsbDotNet.LudnMonoLibUsb;
 using Microsoft.Win32.SafeHandles;
 using Debug=System.Diagnostics.Debug;
 
@@ -88,6 +87,7 @@ namespace LibUsbDotNet.Main
             }
         }
 
+#if HAS_UNIFIED_FRONTEND
         /// <summary>
         /// Check this value to determine if the usb device is still connected to the bus and ready to open.
         /// </summary>
@@ -115,7 +115,6 @@ namespace LibUsbDotNet.Main
         /// <summary>
         /// Gets a list of available LibUsb devices.
         /// </summary>
-        ///
         public static List<LegacyUsbRegistry> DeviceList
         {
             get
@@ -157,6 +156,7 @@ namespace LibUsbDotNet.Main
                 return deviceList;
             }
         }
+#endif
 
         ///// <summary>
         ///// ProductID

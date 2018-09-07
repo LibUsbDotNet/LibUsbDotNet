@@ -131,7 +131,7 @@ namespace LibUsbDotNet.Main
         }
 
 
-        internal UsbEndpointBase Add(UsbEndpointBase item)
+        public UsbEndpointBase Add(UsbEndpointBase item)
         {
             foreach (UsbEndpointBase endpoint in mEpList)
             {

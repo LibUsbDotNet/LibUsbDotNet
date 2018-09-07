@@ -26,9 +26,7 @@ using System.Runtime.InteropServices;
 using LibUsbDotNet.Descriptors;
 using LibUsbDotNet.Info;
 using LibUsbDotNet.Internal;
-using LibUsbDotNet.LudnMonoLibUsb;
 using LibUsbDotNet.Main;
-using MonoLibUsb;
 using LibUsb.Common;
 
 
@@ -74,23 +72,28 @@ namespace LibUsbDotNet
 
         #endregion
 
-        internal readonly UsbEndpointList mActiveEndpoints;
+        protected readonly UsbEndpointList mActiveEndpoints;
         internal readonly UsbApiBase mUsbApi;
-        internal IUsbDeviceDescriptor mCachedDeviceDescriptor;
-        internal List<UsbConfigInfo> mConfigs;
-        internal int mCurrentConfigValue = -1;
-        internal UsbDeviceInfo mDeviceInfo;
-        internal SafeHandle mUsbHandle;
+        protected IUsbDeviceDescriptor mCachedDeviceDescriptor;
+        protected List<UsbConfigInfo> mConfigs;
+        protected int mCurrentConfigValue = -1;
+        protected UsbDeviceInfo mDeviceInfo;
+        protected SafeHandle mUsbHandle;
         internal UsbRegistry mUsbRegistry;
 
         protected readonly Byte[] UsbAltInterfaceSettings = new byte[UsbConstants.MAX_DEVICES];
         protected readonly List<int> mClaimedInterfaces = new List<int>();
 
-        internal UsbDevice(UsbApiBase usbApi, SafeHandle usbHandle)
+        protected UsbDevice(UsbApiBase usbApi, SafeHandle usbHandle)
         {
             mUsbApi = usbApi;
             mUsbHandle = usbHandle;
             mActiveEndpoints = new UsbEndpointList();
+        }
+
+        internal IUsbDeviceDescriptor CachedDeviceDescriptor
+        {
+            get { return mCachedDeviceDescriptor; }
         }
 
         ///<summary>
@@ -152,7 +155,7 @@ namespace LibUsbDotNet
         }
 
 
-        internal SafeHandle Handle
+        public SafeHandle Handle
         {
             get { return mUsbHandle; }
         }
@@ -481,24 +484,6 @@ namespace LibUsbDotNet
                 selectedAltInterfaceID = 0;
 
             return bSuccess;
-        }
-
-        /// <summary>
-        /// De-initializes the USB driver. 
-        /// </summary>
-        /// <remarks>
-        /// If this method is not called before the application exits, it can cause it to hang indefinitely.
-        /// <para>Calling this method multiple times will have no effect.</para>
-        /// </remarks>
-        public static void Exit()
-        {
-            lock (MonoUsbDevice.OLockDeviceList)
-            {
-                if (MonoUsbDevice.mMonoUSBProfileList != null)
-                    MonoUsbDevice.mMonoUSBProfileList.Close();
-                MonoUsbDevice.mMonoUSBProfileList = null;
-            }
-            MonoUsbApi.StopAndExit();
         }
 
         /// <summary>

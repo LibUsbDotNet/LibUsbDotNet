@@ -1,58 +1,55 @@
-﻿using NUnit.Framework;
+﻿using System;
+using Xunit;
 
 namespace MonoLibUsb.Tests
 {
-    [TestFixture]
-    class MonoLibUsbTests
+    public class MonoLibUsbTests : IDisposable
     {
         MonoUsbSessionHandle usbSession = null;
 
-        [SetUp]
-        public void CreateAnUsbSession()
+        public MonoLibUsbTests()
         {
             usbSession = new MonoUsbSessionHandle();
         }
 
-        [TearDown]
-        public void Exit()
+        public void Dispose()
         {
             usbSession.Close();
         }
 
-        [Test]
+        [Fact]
         public void InitAndExit()
         {
             System.IntPtr usbSessionPointer = System.IntPtr.Zero;
             var lastReturnCode = (MonoLibUsb.MonoUsbError)MonoLibUsb.MonoUsbApi.Init(ref usbSessionPointer);
 
-            Assert.AreEqual(lastReturnCode, MonoUsbError.Success);
+            Assert.Equal(MonoUsbError.Success, lastReturnCode);
 
             MonoLibUsb.MonoUsbApi.Exit(usbSessionPointer);
         }
 
-        [Test]
+        [Fact]
         public void SetDebug()
         {
             MonoLibUsb.MonoUsbApi.SetDebug(usbSession, 3);
         }
 
-        [Test]
+        [Fact]
         public void GetVersion()
         {
             MonoLibUsb.Descriptors.MonoUsbVersion version = new Descriptors.MonoUsbVersion();
             var versionPtr = MonoLibUsb.MonoUsbApi.GetVersion();
             System.Runtime.InteropServices.Marshal.PtrToStructure(versionPtr, version);
 
-            Assert.AreEqual(version.Major, 1);
-            Assert.AreEqual(version.Minor, 0);
+            Assert.Equal(1, version.Major);
         }
 
-        [Test]
+        [Fact]
         public void HasCapability()
         {
             int result = MonoLibUsb.MonoUsbApi.HasCapability(MonoUsbCapability.LIBUSB_CAP_HAS_CAPABILITY);
 
-            Assert.AreEqual(result, 1);
+            Assert.Equal(1, result);
         }
     }
 }

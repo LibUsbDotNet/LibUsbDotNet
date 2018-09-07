@@ -22,6 +22,7 @@
 using System;
 using System.Runtime.InteropServices;
 using LibUsbDotNet.Descriptors;
+using LibUsbDotNet.Info;
 
 namespace MonoLibUsb.Descriptors
 {
@@ -49,6 +50,11 @@ namespace MonoLibUsb.Descriptors
                 Marshal.Copy(pExtraBytes, bytes, 0, bytes.Length);
                 return bytes;
             }
+        }
+
+        public UsbEndpointInfo ToUsbEndpointInfo()
+        {
+            return new UsbEndpointInfo(this);
         }
     }
 }

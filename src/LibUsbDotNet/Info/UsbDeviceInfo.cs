@@ -24,7 +24,6 @@ using System.Globalization;
 using System.Runtime.InteropServices;
 using LibUsbDotNet.Descriptors;
 using LibUsbDotNet.Main;
-using MonoLibUsb.Descriptors;
 using LibUsb.Common;
 
 namespace LibUsbDotNet.Info
@@ -41,13 +40,13 @@ namespace LibUsbDotNet.Info
         private String mSerialString;
         internal UsbDevice mUsbDevice;
 
-        internal UsbDeviceInfo(UsbDevice usbDevice)
+        public UsbDeviceInfo(UsbDevice usbDevice)
         {
             mUsbDevice = usbDevice;
             GetDeviceDescriptor(mUsbDevice, out mDeviceDescriptor);
         }
 
-        internal UsbDeviceInfo(UsbDevice usbDevice, MonoUsbDeviceDescriptor usbDeviceDescriptor)
+        public UsbDeviceInfo(UsbDevice usbDevice, UsbDeviceDescriptorBase usbDeviceDescriptor)
         {
             mUsbDevice = usbDevice;
 
@@ -180,9 +179,9 @@ namespace LibUsbDotNet.Info
 
         internal static bool GetDeviceDescriptor(UsbDevice usbDevice, out IUsbDeviceDescriptor deviceDescriptor)
         {
-            if (usbDevice.mCachedDeviceDescriptor!=null)
+            if (usbDevice.CachedDeviceDescriptor!=null)
             {
-                deviceDescriptor = usbDevice.mCachedDeviceDescriptor;
+                deviceDescriptor = usbDevice.CachedDeviceDescriptor;
                 return true;
             }
             deviceDescriptor = new UsbDeviceDescriptorBase();

@@ -22,7 +22,6 @@
 using System;
 using System.Runtime.InteropServices;
 using LibUsbDotNet.Main;
-using MonoLibUsb.Descriptors;
 using LibUsb.Common;
 
 #pragma warning disable 649
@@ -94,7 +93,7 @@ namespace LibUsbDotNet.Descriptors
         /// </summary>
         public byte SynchAddress { get; private set; }
 
-        internal UsbEndpointDescriptor() { }
+        public UsbEndpointDescriptor() { }
 
         ///<summary>
         ///Returns a <see cref="T:System.String"/> that represents the current <see cref="UsbEndpointDescriptor"/>.

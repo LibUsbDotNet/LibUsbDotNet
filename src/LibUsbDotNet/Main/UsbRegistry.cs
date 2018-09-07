@@ -84,7 +84,7 @@ namespace LibUsbDotNet.Main
         /// Uses the symbolic name as a unique id to determine if this device instance is still attached.
         /// </remarks>
         /// <exception cref="UsbException">An exception is thrown if the <see cref="UsbRegistry.SymbolicName"/> property is null or empty.</exception>
-        public abstract bool IsAlive { get; }
+        public virtual bool IsAlive { get; } = true;
 
         /// <summary>
         /// The unique "SymbolicName" of the device.

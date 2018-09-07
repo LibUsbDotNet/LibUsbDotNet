@@ -24,7 +24,6 @@ using System.Collections.Generic;
 using LibUsbDotNet.Internal.LibUsb;
 using LibUsbDotNet.LibUsb;
 using LibUsbDotNet.Main;
-using LibUsbDotNet.LudnMonoLibUsb;
 using LibUsbDotNet.WinUsb.Internal;
 using Debug=System.Diagnostics.Debug;
 
@@ -48,6 +47,7 @@ namespace LibUsbDotNet
         /// Using this property as opposed to <see cref="AllLibUsbDevices"/> and <see cref="AllWinUsbDevices"/>
         /// will ensure your source code is platform-independent.
         /// </remarks>
+#if HAS_UNIFIED_FRONTEND
         public static UsbRegDeviceList AllDevices
         {
             get
@@ -77,6 +77,7 @@ namespace LibUsbDotNet
         /// <para>
         /// On linux/mac, gets a list of libusb-1.0 devices.
         /// </para>
+        /// </remarks>
         /// </remarks>
         public static UsbRegDeviceList AllLibUsbDevices
         {
@@ -111,6 +112,7 @@ namespace LibUsbDotNet
                 return regDevList;
             }
         }
+#endif
 
         /// <summary>
         /// Returns the last error number reported by LibUsbDotNet.
@@ -148,8 +150,7 @@ namespace LibUsbDotNet
             }
         }
 
-
-
+#if HAS_UNIFIED_FRONTEND
         /// <summary>
         /// Opens the usb device that matches the <see cref="UsbDeviceFinder"/>.
         /// </summary>
@@ -213,6 +214,7 @@ namespace LibUsbDotNet
 
             return false;
         }
+#endif
 
         /// <summary>
         /// Global static error event for all Usb errors.

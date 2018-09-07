@@ -528,15 +528,10 @@ namespace MonoLibUsb
         /// </summary>
         internal static void StopAndExit()
         {
-#if LIBUSBDOTNET
             if (LibUsbDotNet.LudnMonoLibUsb.MonoUsbDevice.mMonoUSBProfileList != null) LibUsbDotNet.LudnMonoLibUsb.MonoUsbDevice.mMonoUSBProfileList.Close();
             LibUsbDotNet.LudnMonoLibUsb.MonoUsbDevice.mMonoUSBProfileList = null;
-#endif
-            MonoUsbEventHandler.Stop(true);
-            MonoUsbEventHandler.Exit();
         }
-
-#if LIBUSBDOTNET
+        
         internal static ErrorCode ErrorCodeFromLibUsbError(int ret, out string description)
         {
             description = string.Empty;
@@ -588,6 +583,5 @@ namespace MonoLibUsb
                     return ErrorCode.UnknownError;
             }
         }
-#endif
     }
 }

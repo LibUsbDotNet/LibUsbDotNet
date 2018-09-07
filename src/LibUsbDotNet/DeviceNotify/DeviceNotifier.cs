@@ -19,7 +19,7 @@
 // visit www.gnu.org.
 // 
 // 
-#if !NETSTANDARD && !NETCOREAPP
+#if HAVE_DEVICE_NOTIFY
 using LibUsbDotNet.DeviceNotify.Linux;
 
 namespace LibUsbDotNet.DeviceNotify

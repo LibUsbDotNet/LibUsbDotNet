@@ -197,7 +197,7 @@ namespace LibUsbDotNet.LudnMonoLibUsb.Internal
             if (ret < 0)
             {
                 mTransferCompleteEvent.Set();
-                UsbError usbErr = UsbError.Error(ErrorCode.MonoApiError, ret, "SubmitTransfer", EndpointBase);
+                UsbError usbErr = MonoUsbErrorMessage.Error(ErrorCode.MonoApiError, ret, "SubmitTransfer", EndpointBase);
                 return usbErr.ErrorCode;
             }
 
@@ -232,7 +232,7 @@ namespace LibUsbDotNet.LudnMonoLibUsb.Internal
                     string s;
                     monoError = MonoUsbApi.MonoLibUsbErrorFromTransferStatus(mTransfer.Status);
                     ec = MonoUsbApi.ErrorCodeFromLibUsbError((int)monoError, out s);
-                    UsbError.Error(ErrorCode.MonoApiError, (int)monoError, "Wait:" + s, EndpointBase);
+                    MonoUsbErrorMessage.Error(ErrorCode.MonoApiError, (int)monoError, "Wait:" + s, EndpointBase);
                     return ec;
                 case 1: // TransferCancelEvent
                     ret = (int)mTransfer.Cancel();
@@ -242,15 +242,15 @@ namespace LibUsbDotNet.LudnMonoLibUsb.Internal
                     if (ret != 0 || !bTransferComplete)
                     {
                         ec = ret == 0 ? ErrorCode.CancelIoFailed : ErrorCode.MonoApiError;
-                        UsbError.Error(ec, ret, String.Format("Wait:Unable to cancel transfer or the transfer did not return after it was cancelled. Cancelled:{0} TransferCompleted:{1}", (MonoUsbError)ret, bTransferComplete), EndpointBase);
+                        MonoUsbErrorMessage.Error(ec, ret, String.Format("Wait:Unable to cancel transfer or the transfer did not return after it was cancelled. Cancelled:{0} TransferCompleted:{1}", (MonoUsbError)ret, bTransferComplete), EndpointBase);
                         return ec;
                     }
                     return ErrorCode.IoCancelled;
                 default: // Critical failure timeout
                     mTransfer.Cancel();
-                    ec = ((EndpointBase.mEpNum & (byte)UsbCtrlFlags.Direction_In) > 0) ? ErrorCode.ReadFailed : ErrorCode.WriteFailed;
+                    ec = ((EndpointBase.EpNum & (byte)UsbCtrlFlags.Direction_In) > 0) ? ErrorCode.ReadFailed : ErrorCode.WriteFailed;
                     mTransferCompleteEvent.Set();
-                    UsbError.Error(ec, ret, String.Format("Wait:Critical timeout failure! The transfer callback function was not called within the allotted time."), EndpointBase);
+                    MonoUsbErrorMessage.Error(ec, ret, String.Format("Wait:Critical timeout failure! The transfer callback function was not called within the allotted time."), EndpointBase);
                     return ec;
             }
         }

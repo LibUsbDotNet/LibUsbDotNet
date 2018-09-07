@@ -146,9 +146,7 @@ namespace MonoLibUsb.Profile
             ec = (MonoUsbError) MonoUsbApi.GetDeviceDescriptor(mMonoUSBProfileHandle, monoUsbDeviceDescriptor);
             if (ec != MonoUsbError.Success)
             {
-#if LIBUSBDOTNET
-                UsbError.Error(ErrorCode.MonoApiError, (int) ec, "GetDeviceDescriptor Failed", this);
-#endif
+                MonoUsbErrorMessage.Error(ErrorCode.MonoApiError, (int) ec, "GetDeviceDescriptor Failed", this);
                 monoUsbDeviceDescriptor = null;
             }
             return ec;

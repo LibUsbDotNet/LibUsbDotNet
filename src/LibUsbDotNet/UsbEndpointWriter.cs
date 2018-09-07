@@ -30,7 +30,7 @@ namespace LibUsbDotNet
     /// </summary> 
     public class UsbEndpointWriter : UsbEndpointBase
     {
-        internal UsbEndpointWriter(UsbDevice usbDevice, byte alternateInterfaceID, WriteEndpointID writeEndpointID, EndpointType endpointType)
+        public UsbEndpointWriter(UsbDevice usbDevice, byte alternateInterfaceID, WriteEndpointID writeEndpointID, EndpointType endpointType)
             : base(usbDevice, alternateInterfaceID, (byte)writeEndpointID, endpointType) { }
 
 
@@ -95,6 +95,6 @@ namespace LibUsbDotNet
         /// </returns>
         public virtual ErrorCode Write(object buffer, int timeout, out int transferLength) { return Write(buffer, 0, Marshal.SizeOf(buffer), timeout, out transferLength); }
 
-        internal override UsbTransfer CreateTransferContext() { return new OverlappedTransferContext(this); }
+        protected override UsbTransfer CreateTransferContext() { return new OverlappedTransferContext(this); }
     }
 }

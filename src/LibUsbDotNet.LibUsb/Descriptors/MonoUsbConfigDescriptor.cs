@@ -25,6 +25,8 @@ using System.Runtime.InteropServices;
 
 
 using LibUsbDotNet.Descriptors;
+using LibUsbDotNet.Info;
+using LibUsbDotNet.LudnMonoLibUsb;
 using MonoLibUsb.Profile;
 
 namespace MonoLibUsb.Descriptors
@@ -73,6 +75,23 @@ namespace MonoLibUsb.Descriptors
 
                 return interfaceList;
             }
+        }
+
+        public UsbConfigInfo ToUsbConfigInfo(MonoUsbDevice usbDevice)
+        {
+            List<UsbInterfaceInfo> usbInterfaceInfos = new List<UsbInterfaceInfo>();
+
+            foreach (MonoUsbInterface usbInterface in InterfaceList)
+            {
+                List<MonoUsbAltInterfaceDescriptor> monoUSBAltInterfaces = usbInterface.AltInterfaceList;
+                foreach (MonoUsbAltInterfaceDescriptor monoUSBAltInterface in monoUSBAltInterfaces)
+                {
+                    UsbInterfaceInfo usbInterfaceInfo = monoUSBAltInterface.ToUsbInterfaceInfo(usbDevice);
+                    usbInterfaceInfos.Add(usbInterfaceInfo);
+                }
+            }
+
+            return new UsbConfigInfo(usbDevice, this, usbInterfaceInfos);
         }
     }
 }

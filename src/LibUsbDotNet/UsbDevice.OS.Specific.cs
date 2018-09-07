@@ -26,9 +26,7 @@ using System.Runtime.InteropServices;
 using LibUsbDotNet.Internal.LibUsb;
 using LibUsbDotNet.LibUsb;
 using LibUsbDotNet.Main;
-using LibUsbDotNet.LudnMonoLibUsb;
 using LibUsbDotNet.WinUsb;
-using MonoLibUsb;
 
 namespace LibUsbDotNet
 {
@@ -151,6 +149,7 @@ namespace LibUsbDotNet
         /// <summary>
         /// True if the libusb-1.0 API is available.
         /// </summary>
+#if HAS_UNIFIED_FRONTEND
         public static bool HasLibUsbWinBackDriver
         {
             get
@@ -178,6 +177,8 @@ namespace LibUsbDotNet
                 return (bool)mHasLibUsbWinBackDriver;
             }
         }
+#endif
+
         ///<summary>
         /// Returns true if the system is a linux/unix-like operating system. 
         ///</summary>

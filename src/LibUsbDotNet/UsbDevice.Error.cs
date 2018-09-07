@@ -20,9 +20,9 @@
 // 
 // 
 using System;
+using System.Diagnostics;
 using LibUsbDotNet.Internal;
 using LibUsbDotNet.Main;
-using MonoLibUsb;
 
 namespace LibUsbDotNet
 {
@@ -55,7 +55,7 @@ namespace LibUsbDotNet
         internal int mWin32ErrorNumber;
         internal string mWin32ErrorString = "None";
 
-        internal UsbError(ErrorCode errorCode, int win32ErrorNumber, string win32ErrorString, string description, object sender)
+        public UsbError(ErrorCode errorCode, int win32ErrorNumber, string win32ErrorString, string description, object sender)
         {
             mSender = sender;
             string senderText = String.Empty;
@@ -150,7 +150,8 @@ namespace LibUsbDotNet
             }
             else if (errorCode == ErrorCode.MonoApiError && ret != 0)
             {
-                win32Error = ((MonoUsbError) ret) + ":" + MonoUsbApi.StrError((MonoUsbError) ret);
+                Debug.Assert(false, "libusb-1.0 error codes should be resolved within LibUsbDotNet.LibUsb");
+                // win32Error = ((MonoUsbError) ret) + ":" + MonoUsbApi.StrError((MonoUsbError) ret);
             }
             UsbError err = new UsbError(errorCode, ret, win32Error, description, sender);
             lock (mLastErrorString)

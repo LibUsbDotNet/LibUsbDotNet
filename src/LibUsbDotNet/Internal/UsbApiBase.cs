@@ -25,7 +25,7 @@ using LibUsbDotNet.Main;
 
 namespace LibUsbDotNet.Internal
 {
-    internal abstract class UsbApiBase
+    public abstract class UsbApiBase
     {
         public abstract bool AbortPipe(SafeHandle interfaceHandle, byte pipeID);
 

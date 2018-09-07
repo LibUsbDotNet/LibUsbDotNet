@@ -65,12 +65,12 @@ namespace LibUsbDotNet.LudnMonoLibUsb
             int ret = MonoUsbApi.ClearHalt((MonoUsbDeviceHandle) Device.Handle, EpNum);
             if (ret < 0)
             {
-                UsbError.Error(ErrorCode.MonoApiError, ret, "Endpoint Reset Failed", this);
+                MonoUsbErrorMessage.Error(ErrorCode.MonoApiError, ret, "Endpoint Reset Failed", this);
                 return false;
             }
             return true;
         }
 
-        internal override UsbTransfer CreateTransferContext() { return new MonoUsbTransferContext(this); }
+        protected override UsbTransfer CreateTransferContext() { return new MonoUsbTransferContext(this); }
     }
 }

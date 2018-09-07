@@ -22,7 +22,6 @@
 using System;
 using System.Runtime.InteropServices;
 using LibUsbDotNet.Main;
-using MonoLibUsb.Descriptors;
 using LibUsb.Common;
 
 #pragma warning disable 649
@@ -100,9 +99,9 @@ namespace LibUsbDotNet.Descriptors
         /// </summary>
         public byte ConfigurationCount { get; set; }
 
-        internal UsbDeviceDescriptorBase() { }
+        public UsbDeviceDescriptorBase() { }
 
-        internal UsbDeviceDescriptorBase(MonoUsbDeviceDescriptor usbDeviceDescriptor)
+        public UsbDeviceDescriptorBase(UsbDeviceDescriptorBase usbDeviceDescriptor)
         {
             BcdDevice = usbDeviceDescriptor.BcdDevice;
             BcdUsb = usbDeviceDescriptor.BcdUsb;

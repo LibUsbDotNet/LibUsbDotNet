@@ -139,7 +139,7 @@ namespace LibUsbDotNet.LudnMonoLibUsb
 
             if ((ret = MonoUsbApi.ResetDevice((MonoUsbDeviceHandle) mUsbHandle)) != 0)
             {
-                UsbError.Error(ErrorCode.MonoApiError, ret, "ResetDevice Failed", this);
+                MonoUsbErrorMessage.Error(ErrorCode.MonoApiError, ret, "ResetDevice Failed", this);
             }
             else
             {
@@ -200,7 +200,7 @@ namespace LibUsbDotNet.LudnMonoLibUsb
             Debug.WriteLine(GetType().Name + ".ControlTransfer() Error:" + ((MonoUsbError) ret).ToString(), "Libusb-1.0");
             if (ret < 0)
             {
-                UsbError.Error(ErrorCode.MonoApiError, ret, "ControlTransfer Failed", this);
+                MonoUsbErrorMessage.Error(ErrorCode.MonoApiError, ret, "ControlTransfer Failed", this);
                 lengthTransferred = 0;
                 return false;
             }
@@ -230,7 +230,7 @@ namespace LibUsbDotNet.LudnMonoLibUsb
 
             if (ret < 0)
             {
-                UsbError.Error(ErrorCode.MonoApiError, ret, "GetDescriptor Failed", this);
+                MonoUsbErrorMessage.Error(ErrorCode.MonoApiError, ret, "GetDescriptor Failed", this);
             }
             else
             {
@@ -256,7 +256,7 @@ namespace LibUsbDotNet.LudnMonoLibUsb
             MonoUsbDeviceHandle handle = new MonoUsbDeviceHandle(mMonoUSBProfile.ProfileHandle);
             if (handle.IsInvalid)
             {
-                UsbError.Error(ErrorCode.MonoApiError, (int) MonoUsbDeviceHandle.LastErrorCode, "MonoUsbDevice.Open Failed", this);
+                MonoUsbErrorMessage.Error(ErrorCode.MonoApiError, (int) MonoUsbDeviceHandle.LastErrorCode, "MonoUsbDevice.Open Failed", this);
                 mUsbHandle = null;
                 return false;
             }
@@ -327,7 +327,7 @@ namespace LibUsbDotNet.LudnMonoLibUsb
             int ret = MonoUsbApi.SetConfiguration((MonoUsbDeviceHandle) mUsbHandle, config);
             if (ret != 0)
             {
-                UsbError.Error(ErrorCode.MonoApiError, ret, "SetConfiguration Failed", this);
+                MonoUsbErrorMessage.Error(ErrorCode.MonoApiError, ret, "SetConfiguration Failed", this);
                 return false;
             }
             mCurrentConfigValue = config;
@@ -346,7 +346,7 @@ namespace LibUsbDotNet.LudnMonoLibUsb
             int ret = MonoUsbApi.GetConfiguration((MonoUsbDeviceHandle) mUsbHandle, ref iconfig);
             if (ret != 0)
             {
-                UsbError.Error(ErrorCode.MonoApiError, ret, "GetConfiguration Failed", this);
+                MonoUsbErrorMessage.Error(ErrorCode.MonoApiError, ret, "GetConfiguration Failed", this);
                 return false;
             }
             config = (byte) iconfig;
@@ -414,7 +414,7 @@ namespace LibUsbDotNet.LudnMonoLibUsb
             int ret = MonoUsbApi.ClaimInterface((MonoUsbDeviceHandle)mUsbHandle, interfaceID);
             if (ret != 0)
             {
-                UsbError.Error(ErrorCode.MonoApiError, ret, "ClaimInterface Failed", this);
+                MonoUsbErrorMessage.Error(ErrorCode.MonoApiError, ret, "ClaimInterface Failed", this);
                 return false;
             }
             mClaimedInterfaces.Add(interfaceID);
@@ -450,7 +450,7 @@ namespace LibUsbDotNet.LudnMonoLibUsb
 
             if (ret != 0)
             {
-                UsbError.Error(ErrorCode.MonoApiError, ret, "ReleaseInterface Failed", this);
+                MonoUsbErrorMessage.Error(ErrorCode.MonoApiError, ret, "ReleaseInterface Failed", this);
                 return false;
             }
             return true;
@@ -466,7 +466,7 @@ namespace LibUsbDotNet.LudnMonoLibUsb
             int ret = MonoUsbApi.SetInterfaceAltSetting((MonoUsbDeviceHandle) mUsbHandle, interfaceID, alternateID);
             if (ret != 0)
             {
-                UsbError.Error(ErrorCode.MonoApiError, ret, "SetAltInterface Failed", this);
+                MonoUsbErrorMessage.Error(ErrorCode.MonoApiError, ret, "SetAltInterface Failed", this);
                 return false;
             }
             UsbAltInterfaceSettings[interfaceID & (UsbConstants.MAX_DEVICES-1)] = (byte)alternateID;
@@ -504,7 +504,7 @@ namespace LibUsbDotNet.LudnMonoLibUsb
                 Debug.WriteLine(string.Format("GetConfigDescriptor:{0}", ret));
                 if (ret != 0 || nextConfigHandle.IsInvalid)
                 {
-                    usbError = UsbError.Error(ErrorCode.MonoApiError,
+                    usbError = MonoUsbErrorMessage.Error(ErrorCode.MonoApiError,
                                               ret,
                                               String.Format("GetConfigDescriptor Failed at index:{0}", iConfig),
                                               usbDevice);
@@ -515,12 +515,12 @@ namespace LibUsbDotNet.LudnMonoLibUsb
                     MonoUsbConfigDescriptor nextConfig = new MonoUsbConfigDescriptor();
                     Marshal.PtrToStructure(nextConfigHandle.DangerousGetHandle(), nextConfig);
 
-                    UsbConfigInfo nextConfigInfo = new UsbConfigInfo(usbDevice, nextConfig);
+                    UsbConfigInfo nextConfigInfo = nextConfig.ToUsbConfigInfo(usbDevice);
                     configInfoListRtn.Add(nextConfigInfo);
                 }
                 catch (Exception ex)
                 {
-                    UsbError.Error(ErrorCode.InvalidConfig, Marshal.GetLastWin32Error(), ex.ToString(), usbDevice);
+                    MonoUsbErrorMessage.Error(ErrorCode.InvalidConfig, Marshal.GetLastWin32Error(), ex.ToString(), usbDevice);
                 }
                 finally
                 {
@@ -553,6 +553,24 @@ namespace LibUsbDotNet.LudnMonoLibUsb
         /// <para>Usually there is no need to call this functions externally.</para> 
         /// </remarks>
         public static void Init() { MonoUsbApi.InitAndStart(); }
+
+        /// <summary>
+        /// De-initializes the USB driver. 
+        /// </summary>
+        /// <remarks>
+        /// If this method is not called before the application exits, it can cause it to hang indefinitely.
+        /// <para>Calling this method multiple times will have no effect.</para>
+        /// </remarks>
+        public static void Exit()
+        {
+            lock (MonoUsbDevice.OLockDeviceList)
+            {
+                if (MonoUsbDevice.mMonoUSBProfileList != null)
+                    MonoUsbDevice.mMonoUSBProfileList.Close();
+                MonoUsbDevice.mMonoUSBProfileList = null;
+            }
+            MonoUsbApi.StopAndExit();
+        }
 
         /// <summary>
         /// Gets the "device path" for this device (constructed)

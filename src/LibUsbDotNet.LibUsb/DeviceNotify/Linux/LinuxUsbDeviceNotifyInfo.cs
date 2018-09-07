@@ -24,7 +24,7 @@ using LibUsbDotNet.Descriptors;
 using LibUsbDotNet.DeviceNotify.Info;
 using LibUsbDotNet.Main;
 using LibUsb.Common;
-
+using LibUsbDotNet.LudnMonoLibUsb;
 
 namespace LibUsbDotNet.DeviceNotify.Linux
 {
@@ -131,15 +131,17 @@ namespace LibUsbDotNet.DeviceNotify.Linux
         /// <returns>True if success.</returns>
         public bool Open(out UsbDevice usbDevice)
         {
-            foreach (UsbRegistry reg in UsbDevice.AllDevices)
+            foreach (var reg in MonoUsbDevice.MonoUsbDeviceList)
             {
                 if (reg.DevicePath == this.Name)
-                    return reg.Open(out usbDevice);
+                {
+                    usbDevice = reg;
+                    return reg.Open();
+                }
             }
             usbDevice = null;
             return false;
         }
-
         #endregion
     }
 }

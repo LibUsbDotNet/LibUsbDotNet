@@ -125,13 +125,7 @@ namespace MonoLibUsb.Profile
                 int ret = MonoUsbApi.GetDeviceList(sessionHandle, out monoUSBProfileListHandle);
                 if (ret < 0 || monoUSBProfileListHandle.IsInvalid)
                 {
-#if LIBUSBDOTNET
-                    UsbError.Error(ErrorCode.MonoApiError, ret, "Refresh:GetDeviceList Failed", this);
-#else
-                    System.Diagnostics.Debug.WriteLine("libusb_get_device_list failed:{0} {1}",
-                                                   (MonoUsbError) ret,
-                                                   MonoUsbApi.StrError((MonoUsbError) ret));
-#endif
+                    MonoUsbErrorMessage.Error(ErrorCode.MonoApiError, ret, "Refresh:GetDeviceList Failed", this);
                     return ret;
                 }
                 int stopCount = ret;
