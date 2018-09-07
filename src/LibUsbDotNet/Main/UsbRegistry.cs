@@ -30,11 +30,11 @@ namespace LibUsbDotNet.Main
     /// </summary> 
     public abstract class UsbRegistry //: IEquatable<UsbRegistry>
     {
-        internal const string DEVICE_INTERFACE_GUIDS = "DeviceInterfaceGuids";
-        internal const string LIBUSB_INTERFACE_GUIDS = "LibUsbInterfaceGUIDs";
+        protected const string DEVICE_INTERFACE_GUIDS = "DeviceInterfaceGuids";
+        protected const string LIBUSB_INTERFACE_GUIDS = "LibUsbInterfaceGUIDs";
 
-        internal const string SYMBOLIC_NAME_KEY = "SymbolicName";
-        internal const string DEVICE_ID_KEY = "DeviceID";
+        protected const string SYMBOLIC_NAME_KEY = "SymbolicName";
+        protected const string DEVICE_ID_KEY = "DeviceID";
 
         private static readonly char[] ChNull = new char[] {'\0'};
 
@@ -63,9 +63,9 @@ namespace LibUsbDotNet.Main
         /// <summary>
         /// Guid array of all <see cref="DeviceInterfaceGuids"/> assigned to this device.
         /// </summary>
-        internal Guid[] mDeviceInterfaceGuids=new Guid[0];
+        protected Guid[] mDeviceInterfaceGuids=new Guid[0];
 
-        internal Dictionary<string, object> mDeviceProperties = new Dictionary<string, object>();
+        protected Dictionary<string, object> mDeviceProperties = new Dictionary<string, object>();
 
         private UsbSymbolicName mSymHardwareId;
 
@@ -311,7 +311,7 @@ namespace LibUsbDotNet.Main
         /// <returns>True on success.</returns>
         public abstract bool Open(out UsbDevice usbDevice);
 
-        internal static Guid GetAsGuid(byte[] buffer, int len)
+        public static Guid GetAsGuid(byte[] buffer, int len)
         {
             Guid rtn = Guid.Empty;
             if (len == 16)
@@ -324,16 +324,16 @@ namespace LibUsbDotNet.Main
             return rtn;
         }
 
-        internal static string GetAsString(byte[] buffer, int len)
+        public static string GetAsString(byte[] buffer, int len)
         {
             if (len > 2) return Encoding.Unicode.GetString(buffer, 0, len).TrimEnd(ChNull);
 
             return "";
         }
 
-        internal static string[] GetAsStringArray(byte[] buffer, int len) { return GetAsString(buffer, len).Split(new char[] {'\0'}, StringSplitOptions.RemoveEmptyEntries); }
+        public static string[] GetAsStringArray(byte[] buffer, int len) { return GetAsString(buffer, len).Split(new char[] {'\0'}, StringSplitOptions.RemoveEmptyEntries); }
 
-        internal static Int32 GetAsStringInt32(byte[] buffer, int len)
+        public static Int32 GetAsStringInt32(byte[] buffer, int len)
         {
             Int32 iRtn = 0;
             if (len == 4)

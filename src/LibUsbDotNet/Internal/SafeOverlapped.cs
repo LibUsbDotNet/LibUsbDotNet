@@ -26,7 +26,7 @@ using LibUsbDotNet.Main;
 
 namespace LibUsbDotNet.Internal
 {
-    internal class SafeOverlapped : SafeContextHandle
+    public class SafeOverlapped : SafeContextHandle
     {
         // Find the structural starting positions in the NativeOverlapped structure.
         private static readonly int FieldOffsetEventHandle = Marshal.OffsetOf(typeof (NativeOverlapped), "EventHandle").ToInt32();

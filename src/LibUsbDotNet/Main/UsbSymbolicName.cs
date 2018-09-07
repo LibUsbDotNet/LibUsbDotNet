@@ -43,7 +43,7 @@ namespace LibUsbDotNet.Main
         private string mSerialNumber = String.Empty;
         private int mVendorID;
 
-        internal UsbSymbolicName(string symbolicName) { mSymbolicName = symbolicName; }
+        public UsbSymbolicName(string symbolicName) { mSymbolicName = symbolicName; }
 
         private static RegSymbolicName RegSymbolicName
         {

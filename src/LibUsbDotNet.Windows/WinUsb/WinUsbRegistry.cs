@@ -357,12 +357,7 @@ namespace LibUsbDotNet.WinUsb
             usbDevice = null;
 
             if (String.IsNullOrEmpty(SymbolicName)) return false;
-            if (WinUsbDevice.Open(SymbolicName, out usbDevice))
-            {
-                usbDevice.mUsbRegistry = this;
-                return true;
-            }
-            return false;
+            return WinUsbDevice.Open(SymbolicName, this, out usbDevice);
         }
 
         /*

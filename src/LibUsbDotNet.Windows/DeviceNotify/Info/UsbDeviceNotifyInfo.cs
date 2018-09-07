@@ -115,7 +115,7 @@ namespace LibUsbDotNet.DeviceNotify.Info
         public bool Open(out UsbDevice usbDevice)
         {
             LibUsbDotNet.LibUsb.LibUsbDevice libUsbDevice;
-            bool result = LibUsbDotNet.LibUsb.LibUsbDevice.Open(Name, out libUsbDevice);
+            bool result = LibUsbDotNet.LibUsb.LibUsbDevice.Open(Name, null, out libUsbDevice);
             usbDevice = libUsbDevice;
             return result;
         }

@@ -23,10 +23,7 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Runtime.InteropServices;
-using LibUsbDotNet.Internal.LibUsb;
-using LibUsbDotNet.LibUsb;
 using LibUsbDotNet.Main;
-using LibUsbDotNet.WinUsb;
 
 namespace LibUsbDotNet
 {
@@ -44,8 +41,8 @@ namespace LibUsbDotNet
         /// If this is <see langword="true"/>, <see cref="AllDevices"/> will return only <see cref="MonoUsbDevice"/>s in the list.
         /// </remarks>
         public static bool ForceLibUsbWinBack = false;
-        
 
+#if HAS_UNIFIED_FRONTEND
         /// <summary>
         /// Gets a list of all available WinUSB USB devices.
         /// </summary>
@@ -149,7 +146,6 @@ namespace LibUsbDotNet
         /// <summary>
         /// True if the libusb-1.0 API is available.
         /// </summary>
-#if HAS_UNIFIED_FRONTEND
         public static bool HasLibUsbWinBackDriver
         {
             get
@@ -179,6 +175,7 @@ namespace LibUsbDotNet
         }
 #endif
 
+
         ///<summary>
         /// Returns true if the system is a linux/unix-like operating system. 
         ///</summary>
@@ -192,6 +189,7 @@ namespace LibUsbDotNet
             }
         }
 
+#if HAS_UNIFIED_FRONTEND
         /// <summary>
         /// Gets the kernel driver type in use by LibUsbDotNet. 
         /// If <see cref="LibUsbKernelType.NativeLibUsb"/> is returned, LibUsbDotNet using using its
@@ -276,6 +274,7 @@ namespace LibUsbDotNet
                 return mUsbKernelVersion;
             }
         }
+#endif
 
 #if !NETSTANDARD1_5 && !NETSTANDARD1_6
         ///<summary>

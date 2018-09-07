@@ -79,7 +79,7 @@ namespace LibUsbDotNet
         protected int mCurrentConfigValue = -1;
         protected UsbDeviceInfo mDeviceInfo;
         protected SafeHandle mUsbHandle;
-        internal UsbRegistry mUsbRegistry;
+        protected UsbRegistry mUsbRegistry;
 
         protected readonly Byte[] UsbAltInterfaceSettings = new byte[UsbConstants.MAX_DEVICES];
         protected readonly List<int> mClaimedInterfaces = new List<int>();

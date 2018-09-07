@@ -76,7 +76,7 @@ namespace LibUsbDotNet.LibUsb
 
                 if ((hwIDs == null) || hwIDs.Length==0)
                 {
-                    LibUsbDevice usbDevice = new LibUsbDevice(UsbDevice.LibUsbApi, usbHandle, deviceFileName);
+                    LibUsbDevice usbDevice = new LibUsbDevice(LibUsbDevice.LibUsbApi, usbHandle, deviceFileName);
                     LegacyUsbRegistry.GetPropertiesSPDRP(usbDevice, mDeviceProperties);
                     return;
                 }
@@ -236,13 +236,7 @@ namespace LibUsbDotNet.LibUsb
         /// <returns>True on success.</returns>
         public bool Open(out LibUsbDevice usbDevice)
         {
-            bool bSuccess = LibUsbDevice.Open(mDeviceFilename, out usbDevice);
-            if (bSuccess)
-            {
-                usbDevice.mUsbRegistry = this;
-            }
-
-            return bSuccess;
+            return LibUsbDevice.Open(mDeviceFilename, this, out usbDevice);
         }
 
         /// <summary>
