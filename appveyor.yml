@@ -4,11 +4,13 @@ build_script:
   - dotnet pack src\LibUsb.Common\LibUsb.Common.csproj -c Release
   - dotnet pack src\LibUsbDotNet\LibUsbDotNet.csproj -c Release
   - dotnet pack src\LibUsbDotNet.LibUsb\LibUsbDotNet.LibUsb.csproj -c Release
+  - dotnet pack src\LibUsbDotNet.Windows\LibUsbDotNet.Windows.csproj -c Release
 
 artifacts:
   - path: src\LibUsb.Common\bin\Release\LibUsb.Common.*.nupkg
   - path: src\LibUsbDotNet\bin\Release\LibUsbDotNet.*.nupkg
   - path: src\LibUsbDotNet.LibUsb\bin\Release\LibUsbDotNet.LibUsb.*.nupkg
+  - path: src\LibUsbDotNet.Windows\bin\Release\LibUsbDotNet.Windows.*.nupkg
 
 # deploy:
 #  provider: NuGet
