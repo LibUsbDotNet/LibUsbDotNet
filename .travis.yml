@@ -1,20 +1,22 @@
-language: csharp
-mono: none
-dotnet: 2.1.400
-sudo: required 
+language: C
+sudo: required
 
 git:
   depth: false
 
+matrix:
+  include:
+    - os: osx
+    - os: linux
+      env: TARGET_ARCH=amd64 RID=ubuntu.16.04-x64   RELEASE=xenial  VERSION=16.04
+    - os: linux
+      env: TARGET_ARCH=arm64 RID=ubuntu.16.04-arm64 RELEASE=xenial  VERSION=16.04
+
 install:
-  - ./ci/linux.sh
+  - ./ci/$(TRAVIS_OS_NAME).sh
  
 before_script:
   - lsusb
 
 script:
-  - cd src/
-  - dotnet pack LibUsb.Common/LibUsb.Common.csproj -c Release
-  - dotnet pack LibUsbDotNet/LibUsbDotNet.csproj -c Release
-  - dotnet pack LibUsbDotNet.LibUsb/LibUsbDotNet.LibUsb.csproj -c Release
-  - dotnet pack LibUsbDotNet.Windows/LibUsbDotNet.Windows.csproj -c Release
+  - schroot -c $RID -- VERSION=$VERSION; RID=$RID; echo Running on version $VERSION with rid $RID; ci/build.sh

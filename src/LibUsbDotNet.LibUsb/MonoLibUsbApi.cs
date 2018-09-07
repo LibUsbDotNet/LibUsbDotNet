@@ -33,10 +33,10 @@ namespace MonoLibUsb
     public static partial class MonoUsbApi
     {
         internal const CallingConvention CC = 0;
-#if WIN || NET45 || WIN7_X64 // win7-x64 during testing only.
+#if WIN || NET45 || WIN7 // win7-x64 during testing only.
         internal const string LIBUSB_DLL = "libusb-1.0.dll";
 #endif
-#if LINUX
+#if LINUX || UBUNTU || UBUNTU_16_04_X64 || UBUNTU_16_04_ARM64 // ubuntu during testing only.
         internal const string LIBUSB_DLL = "libusb-1.0.so";
 #endif
 #if OSX
