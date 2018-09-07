@@ -1,21 +1,19 @@
 image: Visual Studio 2017
 
 build_script:
-  - dotnet restore stage\LibUsb.Common\LibUsb.Common.csproj
-  - dotnet restore stage\LibUsbDotNet\LibUsbDotNet.csproj
-  - dotnet build stage\LibUsb.Common\LibUsb.Common.csproj /p:Configuration=Release
-  - dotnet pack stage\LibUsb.Common\LibUsb.Common.csproj /p:Configuration=Release
-  - dotnet build stage\LibUsbDotNet\LibUsbDotNet.csproj /p:Configuration=Release
-  - dotnet pack stage\LibUsbDotNet\LibUsbDotNet.csproj /p:Configuration=Release
+  - dotnet pack src\LibUsb.Common\LibUsb.Common.csproj -c Release
+  - dotnet pack src\LibUsbDotNet\LibUsbDotNet.csproj -c Release
+  - dotnet pack src\LibUsbDotNet.LibUsb\LibUsbDotNet.LibUsb.csproj -c Release
 
 artifacts:
-  - path: stage\LibUsbDotNet\bin\Release\LibUsbDotNet.*.nupkg
-  - path: stage\LibUsb.Common\bin\Release\LibUsb.Common.*.nupkg
+  - path: src\LibUsb.Common\bin\Release\LibUsb.Common.*.nupkg
+  - path: src\LibUsbDotNet\bin\Release\LibUsbDotNet.*.nupkg
+  - path: src\LibUsbDotNet.LibUsb\bin\Release\LibUsbDotNet.LibUsb.*.nupkg
 
-deploy:
-  provider: NuGet
-  on:
-    branch: master
-  api_key:
-    secure: 0wE8RLp9KRRDy9yQG29TCLGJ1+2uhCC6vMEinDSPVU57txXoQBVGK9jkpED+zrib
-  skip_symbols: true
+# deploy:
+#  provider: NuGet
+#  on:
+#    branch: master
+#  api_key:
+#    secure: 0wE8RLp9KRRDy9yQG29TCLGJ1+2uhCC6vMEinDSPVU57txXoQBVGK9jkpED+zrib
+#  skip_symbols: true

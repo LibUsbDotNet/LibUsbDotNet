@@ -6,7 +6,7 @@ git:
   depth: false
 
 script:
-  - cd stage/
-  - dotnet restore LibUsbDotNet/LibUsbDotNet.csproj
-  - dotnet build LibUsbDotNet/LibUsbDotNet.csproj -c Release
+  - cd src/
+  - dotnet pack LibUsb.Common/LibUsb.Common.csproj -c Release
   - dotnet pack LibUsbDotNet/LibUsbDotNet.csproj -c Release
+  - dotnet pack LibUsbDotNet.LibUsb/LibUsbDotNet.LibUsb.csproj -c Release
