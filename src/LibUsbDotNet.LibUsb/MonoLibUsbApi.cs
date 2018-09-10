@@ -39,7 +39,7 @@ namespace MonoLibUsb
 #if LINUX || UBUNTU || UBUNTU_16_04_X64 || UBUNTU_16_04_ARM64 // ubuntu during testing only.
         internal const string LIBUSB_DLL = "libusb-1.0.so";
 #endif
-#if OSX
+#if OSX || OSX_10_12_X64 // osx during testing only
         internal const string LIBUSB_DLL = "libusb-1.0.dylib";
 #endif
 
