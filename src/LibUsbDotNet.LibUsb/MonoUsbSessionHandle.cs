@@ -1,6 +1,7 @@
 using System;
 using System.Diagnostics;
 using System.Runtime.InteropServices;
+using LibUsbDotNet.LibUsb;
 using LibUsbDotNet.Main;
 
 namespace MonoLibUsb
@@ -21,17 +22,17 @@ namespace MonoLibUsb
     /// </remarks>
     public class MonoUsbSessionHandle:SafeContextHandle
     {
-        private static Object sessionLOCK = new object();
-        private static MonoUsbError mLastReturnCode;
-        private static String mLastReturnString=String.Empty;
-        private static int mSessionCount;
-        private static string DLL_NOT_FOUND_LINUX = "libusb-1.0 library not found.  This is often an indication that libusb-1.0 was installed to '/usr/local/lib' and mono.net is not looking for it there. To resolve this, add the path '/usr/local/lib' to '/etc/ld.so.conf' and run 'ldconfig' as root. (http://www.mono-project.com/DllNotFoundException)";
-        private static string DLL_NOT_FOUND_WINDOWS = "libusb-1.0.dll not found. If this is a 64bit operating system, ensure that the 64bit version of libusb-1.0.dll exists in the '\\Windows\\System32' directory.";
+        private Object sessionLOCK = new object();
+        private MonoUsbError mLastReturnCode;
+        private String mLastReturnString=String.Empty;
+        private int mSessionCount;
+        private const string DLL_NOT_FOUND_LINUX = "libusb-1.0 library not found.  This is often an indication that libusb-1.0 was installed to '/usr/local/lib' and mono.net is not looking for it there. To resolve this, add the path '/usr/local/lib' to '/etc/ld.so.conf' and run 'ldconfig' as root. (http://www.mono-project.com/DllNotFoundException)";
+        private const string DLL_NOT_FOUND_WINDOWS = "libusb-1.0.dll not found. If this is a 64bit operating system, ensure that the 64bit version of libusb-1.0.dll exists in the '\\Windows\\System32' directory.";
 
         /// <summary>
         /// If the session handle is <see cref="SafeContextHandle.IsInvalid"/>, gets the <see cref="MonoUsbError"/> status code indicating the reason.
         /// </summary>
-        public static MonoUsbError LastErrorCode
+        public MonoUsbError LastErrorCode
         {
             get
             {
@@ -41,10 +42,11 @@ namespace MonoLibUsb
                 }
             }
         }
+
         /// <summary>
         /// If the session handle is <see cref="SafeContextHandle.IsInvalid"/>, gets a descriptive string for the <see cref="LastErrorCode"/>.
         /// </summary>
-        public static string LastErrorString
+        public string LastErrorString
         {
             get
             {
@@ -81,10 +83,9 @@ namespace MonoLibUsb
                         throw new DllNotFoundException(DLL_NOT_FOUND_WINDOWS, dllNotFound);
                     }
                 }
-                if ((int)mLastReturnCode < 0)
+                if (mLastReturnCode != MonoUsbError.Success)
                 {
-                    mLastReturnString = MonoUsbApi.StrError(mLastReturnCode);
-                    SetHandleAsInvalid();
+                    throw new MonoUsbException(mLastReturnCode);
                 }
                 else
                 {
