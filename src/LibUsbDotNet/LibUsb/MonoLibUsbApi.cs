@@ -22,6 +22,7 @@
 // 
 using System;
 using System.Runtime.InteropServices;
+using LibUsbDotNet;
 using MonoLibUsb.Descriptors;
 using MonoLibUsb.Profile;
 
@@ -94,7 +95,7 @@ namespace MonoLibUsb
         /// <param name="capability"></param>
         /// <returns></returns>
         [DllImport(LIBUSB_DLL, CallingConvention = CC, SetLastError = false, EntryPoint = "libusb_has_capability")]
-        internal static extern int HasCapability(MonoUsbCapability capability);
+        internal static extern int HasCapability(Capability capability);
 
 #endregion
 

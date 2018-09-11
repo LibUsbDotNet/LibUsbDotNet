@@ -313,10 +313,10 @@ namespace LibUsbDotNet
             for (int iConfig = 0; iConfig < iConfigs; iConfig++)
             {
                 int iBytesTransmitted;
-                bool bSuccess = usbDevice.GetDescriptor((byte) DescriptorType.Configuration, 0, 0, cfgBuffer, cfgBuffer.Length, out iBytesTransmitted);
+                bool bSuccess = usbDevice.GetDescriptor((byte) DescriptorType.Config, 0, 0, cfgBuffer, cfgBuffer.Length, out iBytesTransmitted);
                 if (bSuccess)
                 {
-                    if (iBytesTransmitted >= UsbConfigDescriptor.Size && cfgBuffer[1] == (byte) DescriptorType.Configuration)
+                    if (iBytesTransmitted >= UsbConfigDescriptor.Size && cfgBuffer[1] == (byte) DescriptorType.Config)
                     {
                         UsbConfigDescriptor configDescriptor = new UsbConfigDescriptor();
                         Helper.BytesToObject(cfgBuffer, 0, Math.Min(UsbConfigDescriptor.Size, cfgBuffer[0]), configDescriptor);

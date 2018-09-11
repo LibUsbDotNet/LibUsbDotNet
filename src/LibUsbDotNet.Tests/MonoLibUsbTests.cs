@@ -1,4 +1,5 @@
-﻿using System;
+﻿using LibUsbDotNet;
+using System;
 using Xunit;
 
 namespace MonoLibUsb.Tests
@@ -47,7 +48,7 @@ namespace MonoLibUsb.Tests
         [Fact]
         public void HasCapability()
         {
-            int result = MonoLibUsb.MonoUsbApi.HasCapability(MonoUsbCapability.LIBUSB_CAP_HAS_CAPABILITY);
+            int result = MonoLibUsb.MonoUsbApi.HasCapability(Capability.HasCapability);
 
             Assert.Equal(1, result);
         }
