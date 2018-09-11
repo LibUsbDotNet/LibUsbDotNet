@@ -16,7 +16,7 @@ namespace LibUsbDotNet.LibUsb
         {
         }
 
-        public MonoUsbException(MonoUsbError errorCode)
+        public MonoUsbException(Error errorCode)
             : this(GetErrorMessage(errorCode))
         {
             this.ErrorCode = errorCode;
@@ -40,13 +40,13 @@ namespace LibUsbDotNet.LibUsb
         }
 #endif
 
-        public MonoUsbError ErrorCode
+        public Error ErrorCode
         {
             get;
             private set;
         }
 
-        private static string GetErrorMessage(MonoUsbError errorCode)
+        private static string GetErrorMessage(Error errorCode)
         {
             if (MonoUsbApi.ErrorCodeFromLibUsbError((int)errorCode, out string errorMessage) == Main.ErrorCode.Success)
             {

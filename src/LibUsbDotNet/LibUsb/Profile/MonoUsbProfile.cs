@@ -137,14 +137,14 @@ namespace MonoLibUsb.Profile
         ///<returns>True if the <see cref="MonoUsbProfile"/> types are not equal.</returns>
         public static bool operator !=(MonoUsbProfile left, MonoUsbProfile right) { return !Equals(left, right); }
 
-        private MonoUsbError GetDeviceDescriptor(out MonoUsbDeviceDescriptor monoUsbDeviceDescriptor)
+        private Error GetDeviceDescriptor(out MonoUsbDeviceDescriptor monoUsbDeviceDescriptor)
         {
-            MonoUsbError ec = MonoUsbError.Success;
+            Error ec = Error.Success;
 
             monoUsbDeviceDescriptor = new MonoUsbDeviceDescriptor();
             //Console.WriteLine("MonoUsbProfile:GetDeviceDescriptor");
-            ec = (MonoUsbError) MonoUsbApi.GetDeviceDescriptor(mMonoUSBProfileHandle, monoUsbDeviceDescriptor);
-            if (ec != MonoUsbError.Success)
+            ec = (Error) MonoUsbApi.GetDeviceDescriptor(mMonoUSBProfileHandle, monoUsbDeviceDescriptor);
+            if (ec != Error.Success)
             {
                 MonoUsbErrorMessage.Error(ErrorCode.MonoApiError, (int) ec, "GetDeviceDescriptor Failed", this);
                 monoUsbDeviceDescriptor = null;

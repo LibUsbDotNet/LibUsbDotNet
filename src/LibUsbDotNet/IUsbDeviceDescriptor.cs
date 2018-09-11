@@ -1,4 +1,4 @@
-﻿using System;
+﻿using LibUsbDotNet;
 
 namespace LibUsb.Common
 {
@@ -13,7 +13,7 @@ namespace LibUsb.Common
         /// Class Code (Assigned by USB Org)
         /// If equal to Zero, each interface specifies it’s own class code; If equal to 0xFF, the class code is vendor specified; Otherwise field is valid Class Code.
         /// </summary>
-        ClassCodeType Class { get; }
+        ClassCode Class { get; }
 
         /// <summary>
         /// Subclass Code (Assigned by USB Org)

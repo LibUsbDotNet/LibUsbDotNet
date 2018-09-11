@@ -1,6 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
+﻿using LibUsbDotNet;
 
 namespace LibUsb.Common
 {
@@ -24,7 +22,7 @@ namespace LibUsb.Common
         /// <summary>
         /// Class Code (Assigned by USB Org)
         /// </summary>
-        ClassCodeType Class { get; }
+        ClassCode Class { get; }
 
         /// <summary>
         /// Subclass Code (Assigned by USB Org)

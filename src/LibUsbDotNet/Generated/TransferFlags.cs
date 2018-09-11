@@ -47,5 +47,6 @@ namespace LibUsbDotNet
         ///  Available since libusb-1.0.9.
         /// </summary>
         AddZeroPacket = 0x8,
+        None = 0x0,
     }
 }

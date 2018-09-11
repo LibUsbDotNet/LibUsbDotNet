@@ -231,9 +231,9 @@ namespace LibUsbDotNet
             int uTransferLength;
 
             UsbSetupPacket setupPkt = new UsbSetupPacket();
-            setupPkt.RequestType = (byte) UsbEndpointDirection.EndpointIn | (byte) UsbRequestType.TypeStandard |
+            setupPkt.RequestType = (byte) EndpointDirection.In | (byte) UsbRequestType.TypeStandard |
                                    (byte) UsbRequestRecipient.RecipDevice;
-            setupPkt.Request = (byte) UsbStandardRequest.GetConfiguration;
+            setupPkt.Request = (byte) StandardRequest.GetConfiguration;
             setupPkt.Value = 0;
             setupPkt.Index = 0;
             setupPkt.Length = 1;
@@ -471,9 +471,9 @@ namespace LibUsbDotNet
             int uTransferLength;
 
             UsbSetupPacket setupPkt = new UsbSetupPacket();
-            setupPkt.RequestType = (byte) UsbEndpointDirection.EndpointIn | (byte) UsbRequestType.TypeStandard |
+            setupPkt.RequestType = (byte) EndpointDirection.In | (byte) UsbRequestType.TypeStandard |
                                    (byte) UsbRequestRecipient.RecipInterface;
-            setupPkt.Request = (byte) UsbStandardRequest.GetInterface;
+            setupPkt.Request = (byte) StandardRequest.GetInterface;
             setupPkt.Value = 0;
             setupPkt.Index = interfaceID;
             setupPkt.Length = 1;

@@ -111,6 +111,16 @@ namespace LibUsbDotNet.Generator
                     });
                 visitor.VisitChildren(cursor);
 
+                // Add a missing 'None' value
+                if (nativeName == "libusb_transfer_flags")
+                {
+                    enumDeclaration.Values.Add(new EnumValue()
+                    {
+                        Description = "None",
+                        Value = "0x0"
+                    });
+                }
+
                 this.generator.AddType(nativeName, enumDeclaration);
             }
 
