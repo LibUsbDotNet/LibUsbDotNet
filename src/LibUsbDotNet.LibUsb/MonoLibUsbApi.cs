@@ -1,4 +1,4 @@
-// Copyright © 2006-2010 Travis Robinson <libusbdotnet@gmail.com>
+﻿// Copyright © 2006-2010 Travis Robinson <libusbdotnet@gmail.com>
 // Copyright © 2017 Andras Fuchs <andras.fuchs@gmail.com>
 // 
 // Website: http://sourceforge.net/projects/libusbdotnet
@@ -33,7 +33,15 @@ namespace MonoLibUsb
     public static partial class MonoUsbApi
     {
         internal const CallingConvention CC = 0;
-        internal const string LIBUSB_DLL = "libusb-1.0";
+#if WIN || NET45 || WIN7_X64 // win7-x64 during testing only.
+        internal const string LIBUSB_DLL = "libusb-1.0.dll";
+#endif
+#if LINUX || UBUNTU || UBUNTU_16_04_X64 || UBUNTU_16_04_ARM64 // ubuntu during testing only.
+        internal const string LIBUSB_DLL = "libusb-1.0.so";
+#endif
+#if OSX || OSX_10_12_X64 // osx during testing only
+        internal const string LIBUSB_DLL = "libusb-1.0.dylib";
+#endif
 
         #region API LIBRARY FUNCTIONS - Initialization & Deinitialization
 
@@ -88,9 +96,9 @@ namespace MonoLibUsb
         [DllImport(LIBUSB_DLL, CallingConvention = CC, SetLastError = false, EntryPoint = "libusb_has_capability")]
         internal static extern int HasCapability(MonoUsbCapability capability);
 
-        #endregion
+#endregion
 
-        #region API LIBRARY FUNCTIONS - Error Handling
+#region API LIBRARY FUNCTIONS - Error Handling
 
         [DllImport(LIBUSB_DLL, CallingConvention = CC, SetLastError = false, EntryPoint = "libusb_error_name")]
         internal static extern string ErrorName(int errcode);
@@ -101,9 +109,9 @@ namespace MonoLibUsb
         [DllImport(LIBUSB_DLL, CallingConvention = CC, SetLastError = false, EntryPoint = "libusb_strerror")]
         private static extern IntPtr StrError(int errcode);
 
-        #endregion
+#endregion
 
-        #region API LIBRARY FUNCTIONS - Device handling and enumeration (part 1)
+#region API LIBRARY FUNCTIONS - Device handling and enumeration (part 1)
 
         /// <summary>
         /// Returns a list of USB devices currently attached to the system. 
@@ -148,9 +156,9 @@ namespace MonoLibUsb
         [DllImport(LIBUSB_DLL, CallingConvention = CC, SetLastError = false, EntryPoint = "libusb_get_configuration")]
         public static extern int GetConfiguration([In] MonoUsbDeviceHandle deviceHandle, ref int configuration);
 
-        #endregion
+#endregion
 
-        #region API LIBRARY FUNCTIONS - USB descriptors
+#region API LIBRARY FUNCTIONS - USB descriptors
 
         /// <summary>
         /// Gets the standard device descriptor.
@@ -227,9 +235,9 @@ namespace MonoLibUsb
         [DllImport(LIBUSB_DLL, CallingConvention = CC, SetLastError = false, EntryPoint = "libusb_free_config_descriptor")]
         internal static extern void FreeConfigDescriptor(IntPtr pConfigDescriptor);
 
-        #endregion
+#endregion
 
-        #region API LIBRARY FUNCTIONS - Device handling and enumeration (part 2)
+#region API LIBRARY FUNCTIONS - Device handling and enumeration (part 2)
 
         /// <summary>
         /// Get the number of the bus that a device is connected to. 
@@ -514,9 +522,9 @@ namespace MonoLibUsb
         /// </returns>
         [DllImport(LIBUSB_DLL, CallingConvention = CC, SetLastError = false, EntryPoint = "libusb_set_auto_detach_kernel_driver")]
         public static extern int SetAutoDetachKernelDriver([In]MonoUsbDeviceHandle deviceHandle, int enable);
-        #endregion
+#endregion
 
-        #region API LIBRARY FUNCTIONS - Asynchronous device I/O
+#region API LIBRARY FUNCTIONS - Asynchronous device I/O
 
         [DllImport(LIBUSB_DLL, CallingConvention = CC, SetLastError = false, EntryPoint = "libusb_alloc_transfer")]
         internal static extern IntPtr AllocTransfer(int isoPackets);
@@ -530,9 +538,9 @@ namespace MonoLibUsb
         [DllImport(LIBUSB_DLL, CallingConvention = CC, SetLastError = false, EntryPoint = "libusb_free_transfer")]
         internal static extern void FreeTransfer(IntPtr pTransfer);
 
-        #endregion
+#endregion
 
-        #region API LIBRARY FUNCTIONS - Synchronous device I/O
+#region API LIBRARY FUNCTIONS - Synchronous device I/O
 
         /// <summary>
         /// Perform a USB control transfer.
@@ -641,9 +649,9 @@ namespace MonoLibUsb
         [DllImport(LIBUSB_DLL, CallingConvention = CC, SetLastError = false, EntryPoint = "libusb_interrupt_transfer")]
         public static extern int InterruptTransfer([In] MonoUsbDeviceHandle deviceHandle, byte endpoint, IntPtr pData, int length, out int actualLength, int timeout);
 
-        #endregion
+#endregion
 
-        #region API LIBRARY FUNCTIONS - Polling and timing
+#region API LIBRARY FUNCTIONS - Polling and timing
 
         /// <summary>
         /// Attempt to acquire the event handling lock.
@@ -867,6 +875,6 @@ namespace MonoLibUsb
         [DllImport(LIBUSB_DLL, CallingConvention = CC, SetLastError = false, EntryPoint = "libusb_set_pollfd_notifiers")]
         public static extern void SetPollfdNotifiers([In]MonoUsbSessionHandle sessionHandle, PollfdAddedDelegate addedDelegate, PollfdRemovedDelegate removedDelegate, IntPtr pUserData);
 
-        #endregion
+#endregion
     }
 }
