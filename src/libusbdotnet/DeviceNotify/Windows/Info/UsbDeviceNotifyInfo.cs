@@ -22,7 +22,9 @@
 using System;
 using System.Runtime.InteropServices;
 using LibUsbDotNet.DeviceNotify.Internal;
+using LibUsbDotNet.LudnMonoLibUsb;
 using LibUsbDotNet.Main;
+using MonoLibUsb.Profile;
 
 namespace LibUsbDotNet.DeviceNotify.Info
 {
@@ -114,10 +116,7 @@ namespace LibUsbDotNet.DeviceNotify.Info
         /// <returns>True on success.</returns>
         public bool Open(out UsbDevice usbDevice)
         {
-            LibUsbDotNet.LibUsb.LibUsbDevice libUsbDevice;
-            bool result = LibUsbDotNet.LibUsb.LibUsbDevice.Open(Name, null, out libUsbDevice);
-            usbDevice = libUsbDevice;
-            return result;
+            throw new NotImplementedException();
         }
 
         #endregion
