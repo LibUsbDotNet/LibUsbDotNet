@@ -19,8 +19,8 @@
 // visit www.gnu.org.
 // 
 // 
-#if HAVE_DEVICE_NOTIFY
 using LibUsbDotNet.DeviceNotify.Linux;
+using System;
 
 namespace LibUsbDotNet.DeviceNotify
 {
@@ -42,9 +42,8 @@ namespace LibUsbDotNet.DeviceNotify
             }
             else
             {
-                return new WindowsDeviceNotifier();
+                throw new PlatformNotSupportedException();
             }
         }
     }
 }
-#endif

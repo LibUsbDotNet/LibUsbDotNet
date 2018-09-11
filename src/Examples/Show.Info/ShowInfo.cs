@@ -8,20 +8,19 @@ namespace Examples
 {
     internal class ShowInfo
     {
-        public static UsbDevice MyUsbDevice;
-
         public static void Main(string[] args)
         {
             // Dump all devices and descriptor information to console output.
-            UsbRegDeviceList allDevices = UsbDevice.AllDevices;
-            foreach (UsbRegistry usbRegistry in allDevices)
+            var allDevices = UsbDevice.AllDevices;
+            foreach (var usbRegistry in allDevices)
             {
-                if (usbRegistry.Open(out MyUsbDevice))
+                Console.WriteLine(usbRegistry.Info.ToString());
+
+                if (usbRegistry.Open())
                 {
-                    Console.WriteLine(MyUsbDevice.Info.ToString());
-                    for (int iConfig = 0; iConfig < MyUsbDevice.Configs.Count; iConfig++)
+                    for (int iConfig = 0; iConfig < usbRegistry.Configs.Count; iConfig++)
                     {
-                        UsbConfigInfo configInfo = MyUsbDevice.Configs[iConfig];
+                        UsbConfigInfo configInfo = usbRegistry.Configs[iConfig];
                         Console.WriteLine(configInfo.ToString());
 
                         ReadOnlyCollection<UsbInterfaceInfo> interfaceList = configInfo.InterfaceInfoList;
@@ -29,7 +28,7 @@ namespace Examples
                         {
                             UsbInterfaceInfo interfaceInfo = interfaceList[iInterface];
                             Console.WriteLine(interfaceInfo.ToString());
-                        
+
                             ReadOnlyCollection<UsbEndpointInfo> endpointList = interfaceInfo.EndpointInfoList;
                             for (int iEndpoint = 0; iEndpoint < endpointList.Count; iEndpoint++)
                             {
@@ -37,15 +36,18 @@ namespace Examples
                             }
                         }
                     }
+
+                    usbRegistry.Close();
                 }
             }
 
-           
+
             // Free usb resources.
             // This is necessary for libusb-1.0 and Linux compatibility.
             UsbDevice.Exit();
 
             // Wait for user input..
+            Console.WriteLine("Press any key to exit");
             Console.ReadKey();
         }
     }
