@@ -82,9 +82,5 @@
       <Project>{0a78f6ff-5586-4052-8104-e23ff83a7ce1}</Project>
       <Name>LibUsbDotNet</Name>
     </ProjectReference>
-    <ProjectReference Include="..\Device.Notification\Device.Notification.csproj">
-      <Project>{a893cfaa-fcdf-4055-a8d4-435cde59445f}</Project>
-      <Name>Device.Notification</Name>
-    </ProjectReference>
   </ItemGroup>
 </Project>
