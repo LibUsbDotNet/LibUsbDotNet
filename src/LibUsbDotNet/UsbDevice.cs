@@ -28,7 +28,8 @@ using LibUsbDotNet.Info;
 using LibUsbDotNet.Internal;
 using LibUsbDotNet.Main;
 using LibUsb.Common;
-
+using LibUsbDotNet.LudnMonoLibUsb;
+using MonoLibUsb;
 
 namespace LibUsbDotNet
 {
@@ -484,6 +485,24 @@ namespace LibUsbDotNet
                 selectedAltInterfaceID = 0;
 
             return bSuccess;
+        }
+
+        /// <summary>
+        /// De-initializes the USB driver. 
+        /// </summary>
+        /// <remarks>
+        /// If this method is not called before the application exits, it can cause it to hang indefinitely.
+        /// <para>Calling this method multiple times will have no effect.</para>
+        /// </remarks>
+        public static void Exit()
+        {
+            lock (MonoUsbDevice.OLockDeviceList)
+            {
+                if (MonoUsbDevice.mMonoUSBProfileList != null)
+                    MonoUsbDevice.mMonoUSBProfileList.Close();
+                MonoUsbDevice.mMonoUSBProfileList = null;
+            }
+            MonoUsbApi.StopAndExit();
         }
 
         /// <summary>
