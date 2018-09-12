@@ -22,9 +22,9 @@ namespace MonoLibUsb.Tests
         public void InitAndExit()
         {
             System.IntPtr usbSessionPointer = System.IntPtr.Zero;
-            var lastReturnCode = (MonoLibUsb.MonoUsbError)MonoLibUsb.MonoUsbApi.Init(ref usbSessionPointer);
+            var lastReturnCode = (Error)MonoLibUsb.MonoUsbApi.Init(ref usbSessionPointer);
 
-            Assert.Equal(MonoUsbError.Success, lastReturnCode);
+            Assert.Equal(Error.Success, lastReturnCode);
 
             MonoLibUsb.MonoUsbApi.Exit(usbSessionPointer);
         }
