@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Runtime.InteropServices;
 using System.Threading;
+using LibUsbDotNet;
 using LibUsbDotNet.Main;
 using MonoLibUsb.Profile;
 using MonoLibUsb.Transfer;
@@ -25,39 +26,37 @@ namespace MonoLibUsb
 
         #region API LIBRARY FUNCTIONS - Error Handling
         /// <summary>
-        /// Get a string describing a <see cref="MonoUsbError"/>.
+        /// Get a string describing a <see cref="Error"/>.
         /// </summary>
-        /// <param name="errcode">The <see cref="MonoUsbError"/> code to retrieve a description for.</param>
-        /// <returns>A string describing the <see cref="MonoUsbError"/> code.</returns>
-        public static string StrError(MonoUsbError errcode)
+        /// <param name="errcode">The <see cref="Error"/> code to retrieve a description for.</param>
+        /// <returns>A string describing the <see cref="Error"/> code.</returns>
+        public static string StrError(Error errcode)
         {
             switch (errcode)
             {
-                case MonoUsbError.Success:
+                case Error.Success:
                     return "Success";
-                case MonoUsbError.ErrorIO:
+                case Error.Io:
                     return "Input/output error";
-                case MonoUsbError.ErrorInvalidParam:
+                case Error.InvalidParam:
                     return "Invalid parameter";
-                case MonoUsbError.ErrorAccess:
+                case Error.Access:
                     return "Access denied (insufficient permissions)";
-                case MonoUsbError.ErrorNoDevice:
+                case Error.NoDevice:
                     return "No such device (it may have been disconnected)";
-                case MonoUsbError.ErrorBusy:
+                case Error.Busy:
                     return "Resource busy";
-                case MonoUsbError.ErrorTimeout:
+                case Error.Timeout:
                     return "Operation timed out";
-                case MonoUsbError.ErrorOverflow:
+                case Error.Overflow:
                     return "Overflow";
-                case MonoUsbError.ErrorPipe:
+                case Error.Pipe:
                     return "Pipe error or endpoint halted";
-                case MonoUsbError.ErrorInterrupted:
+                case Error.Interrupted:
                     return "System call interrupted (perhaps due to signal)";
-                case MonoUsbError.ErrorNoMem:
+                case Error.NoMem:
                     return "Insufficient memory";
-                case MonoUsbError.ErrorIOCancelled:
-                    return "Transfer was canceled";
-                case MonoUsbError.ErrorNotSupported:
+                case Error.NotSupported:
                     return "Operation not supported or unimplemented on this platform";
                 default:
                     return "Unknown error:" + errcode;
@@ -79,12 +78,12 @@ namespace MonoLibUsb
         /// <param name="descIndex">The index of the descriptor to retrieve.</param>
         /// <param name="pData">Output buffer for descriptor.</param>
         /// <param name="length">Size of data buffer.</param>
-        /// <returns>Number of bytes returned in data, or a <see cref="MonoUsbError"/> code on failure.</returns>
+        /// <returns>Number of bytes returned in data, or a <see cref="Error"/> code on failure.</returns>
         public static int GetDescriptor(MonoUsbDeviceHandle deviceHandle, byte descType, byte descIndex, IntPtr pData, int length)
         {
             return ControlTransfer(deviceHandle,
-                                           (byte)UsbEndpointDirection.EndpointIn,
-                                           (byte)UsbStandardRequest.GetDescriptor,
+                                           (byte)EndpointDirection.In,
+                                           (byte)StandardRequest.GetDescriptor,
                                            (short)((descType << 8) | descIndex),
                                            0,
                                            pData,
@@ -104,7 +103,7 @@ namespace MonoLibUsb
         /// <param name="descIndex">The index of the descriptor to retrieve.</param>
         /// <param name="data">Output buffer for descriptor. This object is pinned using <see cref="PinnedHandle"/>.</param>
         /// <param name="length">Size of data buffer.</param>
-        /// <returns>Number of bytes returned in data, or <see cref="MonoUsbError"/> code on failure.</returns>
+        /// <returns>Number of bytes returned in data, or <see cref="Error"/> code on failure.</returns>
         public static int GetDescriptor(MonoUsbDeviceHandle deviceHandle, byte descType, byte descIndex, object data, int length)
         {
             PinnedHandle p = new PinnedHandle(data);
@@ -187,11 +186,11 @@ namespace MonoLibUsb
         /// <returns>
         /// <list type="bullet">
         /// <item>0 on success (and populates <paramref name="actualLength"/>)</item>
-        /// <item><see cref="MonoUsbError.ErrorTimeout"/> if the transfer timed out</item>
-        /// <item><see cref="MonoUsbError.ErrorPipe"/> if the endpoint halted</item>
-        /// <item><see cref="MonoUsbError.ErrorOverflow"/>if the device offered more data, see <a href="http://libusb.sourceforge.net/api-1.0/packetoverflow.html">Packets and overflows</a></item>
-        /// <item><see cref="MonoUsbError.ErrorNoDevice"/> if the device has been disconnected</item>
-        /// <item>another <see cref="MonoUsbError"/> code on other failures</item>
+        /// <item><see cref="Error.Timeout"/> if the transfer timed out</item>
+        /// <item><see cref="Error.Pipe"/> if the endpoint halted</item>
+        /// <item><see cref="Error.Overflow"/>if the device offered more data, see <a href="http://libusb.sourceforge.net/api-1.0/packetoverflow.html">Packets and overflows</a></item>
+        /// <item><see cref="Error.NoDevice"/> if the device has been disconnected</item>
+        /// <item>another <see cref="Error"/> code on other failures</item>
         /// </list>
         /// </returns>
         public static int BulkTransfer([In] MonoUsbDeviceHandle deviceHandle, byte endpoint, object data, int length, out int actualLength, int timeout)
@@ -239,11 +238,11 @@ namespace MonoLibUsb
         /// <returns>
         /// <list type="bullet">
         /// <item>0 on success (and populates <paramref name="actualLength"/>)</item>
-        /// <item><see cref="MonoUsbError.ErrorTimeout"/> if the transfer timed out</item>
-        /// <item><see cref="MonoUsbError.ErrorPipe"/> if the endpoint halted</item>
-        /// <item><see cref="MonoUsbError.ErrorOverflow"/>if the device offered more data, see <a href="http://libusb.sourceforge.net/api-1.0/packetoverflow.html">Packets and overflows</a></item>
-        /// <item><see cref="MonoUsbError.ErrorNoDevice"/> if the device has been disconnected</item>
-        /// <item>another <see cref="MonoUsbError"/> code on other failures</item>
+        /// <item><see cref="Error.Timeout"/> if the transfer timed out</item>
+        /// <item><see cref="Error.Pipe"/> if the endpoint halted</item>
+        /// <item><see cref="Error.Overflow"/>if the device offered more data, see <a href="http://libusb.sourceforge.net/api-1.0/packetoverflow.html">Packets and overflows</a></item>
+        /// <item><see cref="Error.NoDevice"/> if the device has been disconnected</item>
+        /// <item>another <see cref="Error"/> code on other failures</item>
         /// </list>
         /// </returns>
         public static int InterruptTransfer([In] MonoUsbDeviceHandle deviceHandle, byte endpoint, object data, int length, out int actualLength, int timeout)
@@ -273,10 +272,10 @@ namespace MonoLibUsb
         /// <returns>
         /// <list type="bullet">
         /// <item>on success, the number of bytes actually transferred</item>
-        /// <item><see cref="MonoUsbError.ErrorTimeout"/> if the transfer timed out</item>
-        /// <item><see cref="MonoUsbError.ErrorPipe"/> if the control request was not supported by the device.</item>
-        /// <item><see cref="MonoUsbError.ErrorNoDevice"/> if the device has been disconnected</item>
-        /// <item>another <see cref="MonoUsbError"/> code on other failures</item>
+        /// <item><see cref="Error.Timeout"/> if the transfer timed out</item>
+        /// <item><see cref="Error.Pipe"/> if the control request was not supported by the device.</item>
+        /// <item><see cref="Error.NoDevice"/> if the device has been disconnected</item>
+        /// <item>another <see cref="Error"/> code on other failures</item>
         /// </list>
         /// </returns>
         public static int ControlTransferAsync([In] MonoUsbDeviceHandle deviceHandle, byte requestType, byte request, short value, short index, IntPtr pData, short dataLength, int timeout)
@@ -309,7 +308,7 @@ namespace MonoLibUsb
                     r = HandleEvents(pSessionHandle);
                     if (r < 0)
                     {
-                        if (r == (int)MonoUsbError.ErrorInterrupted)
+                        if (r == (int)Error.Interrupted)
                             continue;
                         transfer.Cancel();
                         while (!completeEvent.WaitOne(0))
@@ -326,7 +325,7 @@ namespace MonoLibUsb
                 completeEvent.WaitOne(Timeout.Infinite);
             }
 
-            if (transfer.Status == MonoUsbTansferStatus.TransferCompleted)
+            if (transfer.Status == TransferStatus.Completed)
             {
                 r = transfer.ActualLength;
                 if (r > 0)
@@ -371,10 +370,10 @@ namespace MonoLibUsb
         /// <returns>
         /// <list type="bullet">
         /// <item>on success, the number of bytes actually transferred</item>
-        /// <item><see cref="MonoUsbError.ErrorTimeout"/> if the transfer timed out</item>
-        /// <item><see cref="MonoUsbError.ErrorPipe"/> if the control request was not supported by the device.</item>
-        /// <item><see cref="MonoUsbError.ErrorNoDevice"/> if the device has been disconnected</item>
-        /// <item>another <see cref="MonoUsbError"/> code on other failures</item>
+        /// <item><see cref="Error.Timeout"/> if the transfer timed out</item>
+        /// <item><see cref="Error.Pipe"/> if the control request was not supported by the device.</item>
+        /// <item><see cref="Error.NoDevice"/> if the device has been disconnected</item>
+        /// <item>another <see cref="Error"/> code on other failures</item>
         /// </list>
         /// </returns>
         public static int ControlTransfer([In] MonoUsbDeviceHandle deviceHandle, byte requestType, byte request, short value, short index, object data, short dataLength, int timeout)
@@ -486,30 +485,30 @@ namespace MonoLibUsb
         #endregion
 
         /// <summary>
-        /// Converts a <see cref="MonoUsbTansferStatus"/> enum to a <see cref="MonoUsbError"/> enum.
+        /// Converts a <see cref="MonoUsbTansferStatus"/> enum to a <see cref="Error"/> enum.
         /// </summary>
         /// <param name="status">the <see cref="MonoUsbTansferStatus"/> to convert.</param>
-        /// <returns>A <see cref="MonoUsbError"/> that represents <paramref name="status"/>.</returns>
-        public static MonoUsbError MonoLibUsbErrorFromTransferStatus(MonoUsbTansferStatus status)
+        /// <returns>A <see cref="Error"/> that represents <paramref name="status"/>.</returns>
+        public static Error MonoLibUsbErrorFromTransferStatus(TransferStatus status)
         {
             switch (status)
             {
-                case MonoUsbTansferStatus.TransferCompleted:
-                    return MonoUsbError.Success;
-                case MonoUsbTansferStatus.TransferError:
-                    return MonoUsbError.ErrorPipe;
-                case MonoUsbTansferStatus.TransferTimedOut:
-                    return MonoUsbError.ErrorTimeout;
-                case MonoUsbTansferStatus.TransferCancelled:
-                    return MonoUsbError.ErrorIOCancelled;
-                case MonoUsbTansferStatus.TransferStall:
-                    return MonoUsbError.ErrorPipe;
-                case MonoUsbTansferStatus.TransferNoDevice:
-                    return MonoUsbError.ErrorNoDevice;
-                case MonoUsbTansferStatus.TransferOverflow:
-                    return MonoUsbError.ErrorOverflow;
+                case TransferStatus.Completed:
+                    return Error.Success;
+                case TransferStatus.Error:
+                    return Error.Pipe;
+                case TransferStatus.TimedOut:
+                    return Error.Timeout;
+                case TransferStatus.Cancelled:
+                    return Error.Io;
+                case TransferStatus.Stall:
+                    return Error.Pipe;
+                case TransferStatus.NoDevice:
+                    return Error.NoDevice;
+                case TransferStatus.Overflow:
+                    return Error.Overflow;
                 default:
-                    return MonoUsbError.ErrorOther;
+                    return Error.Other;
             }
         }
 
@@ -537,45 +536,42 @@ namespace MonoLibUsb
             description = string.Empty;
             if (ret == 0) return ErrorCode.Success;
 
-            switch ((MonoUsbError)ret)
+            switch ((Error)ret)
             {
-                case MonoUsbError.Success:
+                case Error.Success:
                     description += "Success";
                     return ErrorCode.Success;
-                case MonoUsbError.ErrorIO:
+                case Error.Io:
                     description += "Input/output error";
                     return ErrorCode.IoSyncFailed;
-                case MonoUsbError.ErrorInvalidParam:
+                case Error.InvalidParam:
                     description += "Invalid parameter";
                     return ErrorCode.InvalidParam;
-                case MonoUsbError.ErrorAccess:
+                case Error.Access:
                     description += "Access denied (insufficient permissions)";
                     return ErrorCode.AccessDenied;
-                case MonoUsbError.ErrorNoDevice:
+                case Error.NoDevice:
                     description += "No such device (it may have been disconnected)";
                     return ErrorCode.DeviceNotFound;
-                case MonoUsbError.ErrorBusy:
+                case Error.Busy:
                     description += "Resource busy";
                     return ErrorCode.ResourceBusy;
-                case MonoUsbError.ErrorTimeout:
+                case Error.Timeout:
                     description += "Operation timed out";
                     return ErrorCode.IoTimedOut;
-                case MonoUsbError.ErrorOverflow:
+                case Error.Overflow:
                     description += "Overflow";
                     return ErrorCode.Overflow;
-                case MonoUsbError.ErrorPipe:
+                case Error.Pipe:
                     description += "Pipe error or endpoint halted";
                     return ErrorCode.PipeError;
-                case MonoUsbError.ErrorInterrupted:
+                case Error.Interrupted:
                     description += "System call interrupted (perhaps due to signal)";
                     return ErrorCode.Interrupted;
-                case MonoUsbError.ErrorNoMem:
+                case Error.NoMem:
                     description += "Insufficient memory";
                     return ErrorCode.InsufficientMemory;
-                case MonoUsbError.ErrorIOCancelled:
-                    description += "Transfer was canceled";
-                    return ErrorCode.IoCancelled;
-                case MonoUsbError.ErrorNotSupported:
+                case Error.NotSupported:
                     description += "Operation not supported or unimplemented on this platform";
                     return ErrorCode.NotSupported;
                 default:

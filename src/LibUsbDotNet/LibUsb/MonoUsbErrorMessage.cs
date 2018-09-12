@@ -13,7 +13,7 @@ namespace MonoLibUsb
 
             if (errorCode == ErrorCode.MonoApiError)
             {
-                win32Error = ((MonoUsbError)ret) + ":" + MonoUsbApi.StrError((MonoUsbError)ret);
+                win32Error = ((Error)ret) + ":" + MonoUsbApi.StrError((Error)ret);
             }
 
             UsbError err = new UsbError(errorCode, ret, win32Error, description, sender);

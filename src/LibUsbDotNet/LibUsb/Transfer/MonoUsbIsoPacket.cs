@@ -1,5 +1,6 @@
 using System;
 using System.Runtime.InteropServices;
+using LibUsbDotNet;
 using MonoLibUsb.Transfer.Internal;
 
 namespace MonoLibUsb.Transfer
@@ -48,9 +49,9 @@ namespace MonoLibUsb.Transfer
         /// <summary>
         /// Status code for this packet. 
         /// </summary>
-        public MonoUsbTansferStatus Status
+        public TransferStatus Status
         {
-            get { return (MonoUsbTansferStatus)Marshal.ReadInt32(mpMonoUsbIsoPacket, OfsStatus); }
+            get { return (TransferStatus)Marshal.ReadInt32(mpMonoUsbIsoPacket, OfsStatus); }
             set { Marshal.WriteInt32(mpMonoUsbIsoPacket, OfsStatus, (int)value); }
         }
 

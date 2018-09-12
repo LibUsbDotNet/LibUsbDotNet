@@ -231,9 +231,9 @@ namespace LibUsbDotNet
             int uTransferLength;
 
             UsbSetupPacket setupPkt = new UsbSetupPacket();
-            setupPkt.RequestType = (byte) UsbEndpointDirection.EndpointIn | (byte) UsbRequestType.TypeStandard |
+            setupPkt.RequestType = (byte) EndpointDirection.In | (byte) UsbRequestType.TypeStandard |
                                    (byte) UsbRequestRecipient.RecipDevice;
-            setupPkt.Request = (byte) UsbStandardRequest.GetConfiguration;
+            setupPkt.Request = (byte) StandardRequest.GetConfiguration;
             setupPkt.Value = 0;
             setupPkt.Index = 0;
             setupPkt.Length = 1;
@@ -313,10 +313,10 @@ namespace LibUsbDotNet
             for (int iConfig = 0; iConfig < iConfigs; iConfig++)
             {
                 int iBytesTransmitted;
-                bool bSuccess = usbDevice.GetDescriptor((byte) DescriptorType.Configuration, 0, 0, cfgBuffer, cfgBuffer.Length, out iBytesTransmitted);
+                bool bSuccess = usbDevice.GetDescriptor((byte) DescriptorType.Config, 0, 0, cfgBuffer, cfgBuffer.Length, out iBytesTransmitted);
                 if (bSuccess)
                 {
-                    if (iBytesTransmitted >= UsbConfigDescriptor.Size && cfgBuffer[1] == (byte) DescriptorType.Configuration)
+                    if (iBytesTransmitted >= UsbConfigDescriptor.Size && cfgBuffer[1] == (byte) DescriptorType.Config)
                     {
                         UsbConfigDescriptor configDescriptor = new UsbConfigDescriptor();
                         Helper.BytesToObject(cfgBuffer, 0, Math.Min(UsbConfigDescriptor.Size, cfgBuffer[0]), configDescriptor);
@@ -471,9 +471,9 @@ namespace LibUsbDotNet
             int uTransferLength;
 
             UsbSetupPacket setupPkt = new UsbSetupPacket();
-            setupPkt.RequestType = (byte) UsbEndpointDirection.EndpointIn | (byte) UsbRequestType.TypeStandard |
+            setupPkt.RequestType = (byte) EndpointDirection.In | (byte) UsbRequestType.TypeStandard |
                                    (byte) UsbRequestRecipient.RecipInterface;
-            setupPkt.Request = (byte) UsbStandardRequest.GetInterface;
+            setupPkt.Request = (byte) StandardRequest.GetInterface;
             setupPkt.Value = 0;
             setupPkt.Index = interfaceID;
             setupPkt.Length = 1;

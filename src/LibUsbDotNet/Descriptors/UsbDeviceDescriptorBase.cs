@@ -47,7 +47,7 @@ namespace LibUsbDotNet.Descriptors
         /// Class Code (Assigned by USB Org)
         /// If equal to Zero, each interface specifies it’s own class code; If equal to 0xFF, the class code is vendor specified; Otherwise field is valid Class Code.
         /// </summary>
-        public ClassCodeType Class { get; set; }
+        public ClassCode Class { get; set; }
 
         /// <summary>
         /// Subclass Code (Assigned by USB Org)

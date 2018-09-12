@@ -1,4 +1,5 @@
-﻿using System;
+﻿using LibUsbDotNet;
+using System;
 using Xunit;
 
 namespace MonoLibUsb.Tests
@@ -21,9 +22,9 @@ namespace MonoLibUsb.Tests
         public void InitAndExit()
         {
             System.IntPtr usbSessionPointer = System.IntPtr.Zero;
-            var lastReturnCode = (MonoLibUsb.MonoUsbError)MonoLibUsb.MonoUsbApi.Init(ref usbSessionPointer);
+            var lastReturnCode = (Error)MonoLibUsb.MonoUsbApi.Init(ref usbSessionPointer);
 
-            Assert.Equal(MonoUsbError.Success, lastReturnCode);
+            Assert.Equal(Error.Success, lastReturnCode);
 
             MonoLibUsb.MonoUsbApi.Exit(usbSessionPointer);
         }
@@ -47,7 +48,7 @@ namespace MonoLibUsb.Tests
         [Fact]
         public void HasCapability()
         {
-            int result = MonoLibUsb.MonoUsbApi.HasCapability(MonoUsbCapability.LIBUSB_CAP_HAS_CAPABILITY);
+            int result = MonoLibUsb.MonoUsbApi.HasCapability(Capability.HasCapability);
 
             Assert.Equal(1, result);
         }

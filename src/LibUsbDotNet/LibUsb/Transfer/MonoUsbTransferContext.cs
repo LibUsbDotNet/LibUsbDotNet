@@ -145,7 +145,7 @@ namespace LibUsbDotNet.LudnMonoLibUsb.Internal
             
             mTransfer.ActualLength = 0;
             mTransfer.Status = 0;
-            mTransfer.Flags = MonoUsbTransferFlags.None;
+            mTransfer.Flags = TransferFlags.None;
         }
 
         /// <summary>
@@ -169,7 +169,7 @@ namespace LibUsbDotNet.LudnMonoLibUsb.Internal
 
             mTransfer.ActualLength = 0;
             mTransfer.Status = 0;
-            mTransfer.Flags = MonoUsbTransferFlags.None;
+            mTransfer.Flags = TransferFlags.None;
         }
 
         /// <summary>
@@ -214,7 +214,7 @@ namespace LibUsbDotNet.LudnMonoLibUsb.Internal
         {
             transferredCount = 0;
             int ret = 0;
-            MonoUsbError monoError;
+            Error monoError;
             ErrorCode ec;
 
             int iWait = WaitHandle.WaitAny(new WaitHandle[] {mTransferCompleteEvent, mTransferCancelEvent},
@@ -223,7 +223,7 @@ namespace LibUsbDotNet.LudnMonoLibUsb.Internal
             {
                 case 0: // TransferCompleteEvent
 
-                    if (mTransfer.Status == MonoUsbTansferStatus.TransferCompleted)
+                    if (mTransfer.Status == TransferStatus.Completed)
                     {
                         transferredCount = mTransfer.ActualLength;
                         return ErrorCode.Success;
@@ -242,7 +242,7 @@ namespace LibUsbDotNet.LudnMonoLibUsb.Internal
                     if (ret != 0 || !bTransferComplete)
                     {
                         ec = ret == 0 ? ErrorCode.CancelIoFailed : ErrorCode.MonoApiError;
-                        MonoUsbErrorMessage.Error(ec, ret, String.Format("Wait:Unable to cancel transfer or the transfer did not return after it was cancelled. Cancelled:{0} TransferCompleted:{1}", (MonoUsbError)ret, bTransferComplete), EndpointBase);
+                        MonoUsbErrorMessage.Error(ec, ret, String.Format("Wait:Unable to cancel transfer or the transfer did not return after it was cancelled. Cancelled:{0} TransferCompleted:{1}", (Error)ret, bTransferComplete), EndpointBase);
                         return ec;
                     }
                     return ErrorCode.IoCancelled;

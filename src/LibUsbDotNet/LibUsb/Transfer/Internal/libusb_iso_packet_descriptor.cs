@@ -1,3 +1,4 @@
+using LibUsbDotNet;
 using System.Runtime.InteropServices;
 
 namespace MonoLibUsb.Transfer.Internal
@@ -21,7 +22,7 @@ namespace MonoLibUsb.Transfer.Internal
         /// <summary>
         /// Status code for this packet 
         /// </summary>
-        MonoUsbTansferStatus status;
+        TransferStatus status;
 
         private libusb_iso_packet_descriptor() { }
 

@@ -21,7 +21,7 @@
 // 
 using System;
 using System.Runtime.InteropServices;
-
+using LibUsbDotNet;
 using LibUsbDotNet.Main;
 
 namespace MonoLibUsb.Transfer.Internal
@@ -33,11 +33,11 @@ namespace MonoLibUsb.Transfer.Internal
     internal class libusb_transfer
     {
         IntPtr deviceHandle;
-        MonoUsbTransferFlags flags;
+        TransferFlags flags;
         byte endpoint;
         EndpointType type;
         uint timeout;
-        MonoUsbTansferStatus status;
+        TransferStatus status;
         int length;
         int actual_length;
         IntPtr pCallbackFn;

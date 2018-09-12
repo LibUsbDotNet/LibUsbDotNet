@@ -58,7 +58,7 @@ namespace LibUsbDotNet.Descriptors
         /// <summary>
         /// Class Code (Assigned by USB Org)
         /// </summary>
-        public ClassCodeType Class { get; internal set; }
+        public ClassCode Class { get; internal set; }
 
         /// <summary>
         /// Subclass Code (Assigned by USB Org)

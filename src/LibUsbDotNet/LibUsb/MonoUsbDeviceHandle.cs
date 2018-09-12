@@ -22,6 +22,7 @@
 using System;
 using System.Diagnostics;
 using System.Runtime.InteropServices;
+using LibUsbDotNet;
 using LibUsbDotNet.Main;
 using MonoLibUsb.Profile;
 
@@ -41,7 +42,7 @@ namespace MonoLibUsb
     public class MonoUsbDeviceHandle : SafeContextHandle
     {
         private static Object handleLOCK = new object();
-        private static MonoUsbError mLastReturnCode;
+        private static Error mLastReturnCode;
         private static String mLastReturnString = String.Empty;
 
         /// <summary>
@@ -60,7 +61,7 @@ namespace MonoLibUsb
         /// <summary>
         /// If the device handle is <see cref="SafeContextHandle.IsInvalid"/>, gets the <see cref="MonoUsbError"/> status code indicating the reason.
         /// </summary>
-        public static MonoUsbError LastErrorCode
+        public static Error LastErrorCode
         {
             get
             {
@@ -87,7 +88,7 @@ namespace MonoLibUsb
             {
                 lock (handleLOCK)
                 {
-                    mLastReturnCode = (MonoUsbError) ret;
+                    mLastReturnCode = (Error) ret;
                     mLastReturnString = MonoUsbApi.StrError(mLastReturnCode);
                 }
                 SetHandleAsInvalid();

@@ -6,7 +6,7 @@ build_script:
   - dotnet pack src\LibUsbDotNet\LibUsbDotNet.csproj -c Release
 
   - set PATH=%PATH%;C:\tools\vcpkg\installed\x64-windows\bin
-  - dotnet test src\LibUsbDotNet.LibUsb.Tests\LibUsbDotNet.LibUsb.Tests.csproj -p:RuntimeIdentifier=win7-x64
+  - dotnet test src\LibUsbDotNet.Tests\LibUsbDotNet.Tests.csproj -p:RuntimeIdentifier=win7-x64
 
 artifacts:
   - path: src\LibUsbDotNet\bin\Release\LibUsbDotNet.*.nupkg

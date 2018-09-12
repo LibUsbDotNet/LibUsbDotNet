@@ -21,7 +21,7 @@
 // 
 using System;
 using System.Runtime.InteropServices;
-
+using LibUsbDotNet;
 using LibUsbDotNet.Main;
 using MonoLibUsb.Transfer.Internal;
 
@@ -132,9 +132,9 @@ namespace MonoLibUsb.Transfer
         /// <summary>
         /// The status of the transfer.
         /// </summary>
-        public MonoUsbTansferStatus Status
+        public TransferStatus Status
         {
-            get { return (MonoUsbTansferStatus)Marshal.ReadInt32(handle, OfsStatus); }
+            get { return (TransferStatus)Marshal.ReadInt32(handle, OfsStatus); }
             set { Marshal.WriteInt32(handle, OfsStatus, (int)value); }
         }
 
@@ -168,9 +168,9 @@ namespace MonoLibUsb.Transfer
         /// <summary>
         /// A bitwise OR combination of <see cref="MonoUsbTransferFlags"/>.
         /// </summary>
-        public MonoUsbTransferFlags Flags
+        public TransferFlags Flags
         {
-            get { return (MonoUsbTransferFlags)Marshal.ReadByte(handle, OfsFlags); }
+            get { return (TransferFlags)Marshal.ReadByte(handle, OfsFlags); }
             set { Marshal.WriteByte(handle, OfsFlags, (byte)value); }
         }
 
@@ -257,11 +257,11 @@ namespace MonoLibUsb.Transfer
         /// </note>
         /// </remarks>
         /// <returns><see cref="MonoUsbError.Success"/> if the cancel succeeds, otherwise one of the other <see cref="MonoUsbError"/> codes.</returns>
-        public MonoUsbError Cancel()
+        public Error Cancel()
         {
-            if (IsInvalid) return MonoUsbError.ErrorNoMem;
+            if (IsInvalid) return Error.NoMem;
 
-            return (MonoUsbError) MonoUsbApi.CancelTransfer(handle);
+            return (Error) MonoUsbApi.CancelTransfer(handle);
         }
         /// <summary>
         /// Helper function to populate the required <see cref="MonoUsbTransfer"/> properties for a bulk transfer.
@@ -295,7 +295,7 @@ namespace MonoLibUsb.Transfer
             PtrUserData = userData;
             Timeout = timeout;
             Type = EndpointType.Bulk;
-            Flags = MonoUsbTransferFlags.None;
+            Flags = TransferFlags.None;
             NumIsoPackets = 0;
             ActualLength = 0;
 
@@ -334,7 +334,7 @@ namespace MonoLibUsb.Transfer
             PtrUserData = userData;
             Timeout = timeout;
             Type = EndpointType.Interrupt;
-            Flags = MonoUsbTransferFlags.None;
+            Flags = TransferFlags.None;
         }
 
         /// <summary>
@@ -373,7 +373,7 @@ namespace MonoLibUsb.Transfer
             PtrUserData = userData;
             Timeout = timeout;
             Type = EndpointType.Isochronous;
-            Flags = MonoUsbTransferFlags.None;
+            Flags = TransferFlags.None;
             NumIsoPackets = numIsoPackets;
         }
         
@@ -454,10 +454,10 @@ namespace MonoLibUsb.Transfer
         /// <see cref="MonoUsbError.Success"/> if the submit succeeds, 
         /// otherwise one of the other <see cref="MonoUsbError"/> codes.
         /// </returns>
-        public MonoUsbError Submit()
+        public Error Submit()
         {
-            if (IsInvalid) return MonoUsbError.ErrorNoMem;
-            return (MonoUsbError)MonoUsbApi.SubmitTransfer(handle);
+            if (IsInvalid) return Error.NoMem;
+            return (Error)MonoUsbApi.SubmitTransfer(handle);
         }
 
         /// <summary>
@@ -508,7 +508,7 @@ namespace MonoLibUsb.Transfer
             PtrUserData = userData;
             Timeout = timeout;
             Type = EndpointType.Control;
-            Flags = MonoUsbTransferFlags.None;
+            Flags = TransferFlags.None;
 
             IntPtr pSetupPacket = controlSetupHandle.DangerousGetHandle();
             PtrBuffer = pSetupPacket;

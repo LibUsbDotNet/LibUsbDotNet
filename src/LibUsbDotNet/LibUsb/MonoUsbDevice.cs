@@ -197,7 +197,7 @@ namespace LibUsbDotNet.LudnMonoLibUsb
                                                       (short) bufferLength,
                                                       UsbConstants.DEFAULT_TIMEOUT);
 
-            Debug.WriteLine(GetType().Name + ".ControlTransfer() Error:" + ((MonoUsbError) ret).ToString(), "Libusb-1.0");
+            Debug.WriteLine(GetType().Name + ".ControlTransfer() Error:" + ((Error) ret).ToString(), "Libusb-1.0");
             if (ret < 0)
             {
                 MonoUsbErrorMessage.Error(ErrorCode.MonoApiError, ret, "ControlTransfer Failed", this);
