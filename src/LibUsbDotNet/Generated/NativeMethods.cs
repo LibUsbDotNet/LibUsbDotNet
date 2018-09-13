@@ -299,10 +299,10 @@ namespace LibUsbDotNet
         public static extern void FreePollfds(ref IntPtr pollfds);
 
         [DllImport(LibUsbNativeLibrary, CallingConvention = LibUsbCallingConvention, EntryPoint = "libusb_set_pollfd_notifiers")]
-        public static extern void SetPollfdNotifiers(NativeContext ctx, IntPtr addedCb, IntPtr removedCb, IntPtr userData);
+        public static extern void SetPollfdNotifiers(NativeContext ctx, IntPtr addedDelegate, IntPtr removedDelegate, IntPtr userData);
 
         [DllImport(LibUsbNativeLibrary, CallingConvention = LibUsbCallingConvention, EntryPoint = "libusb_hotplug_register_callback")]
-        public static extern int HotplugRegisterCallback(NativeContext ctx, HotplugEvent events, HotplugFlag flags, int vendorId, int productId, int devClass, IntPtr cbFn, IntPtr userData, ref int callbackHandle);
+        public static extern int HotplugRegisterCallback(NativeContext ctx, HotplugEvent events, HotplugFlag flags, int vendorId, int productId, int devClass, IntPtr Delegate, IntPtr userData, ref int callbackHandle);
 
         [DllImport(LibUsbNativeLibrary, CallingConvention = LibUsbCallingConvention, EntryPoint = "libusb_hotplug_deregister_callback")]
         public static extern void HotplugDeregisterCallback(NativeContext ctx, int callbackHandle);
