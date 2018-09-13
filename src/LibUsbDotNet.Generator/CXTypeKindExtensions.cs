@@ -30,7 +30,7 @@ namespace LibUsbDotNet.Generator
 
                 case TypeKind.UChar:
                 case TypeKind.Char_U:
-                    return "char";
+                    return "byte";
 
                 case TypeKind.SChar:
                 case TypeKind.Char_S:
