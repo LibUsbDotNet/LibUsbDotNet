@@ -124,11 +124,11 @@ namespace MonoLibUsb
         /// <param name="vendorID">The idVendor value to search for.</param>
         /// <param name="productID">The idProduct value to search for.</param>
         /// <returns>Null if the device was not opened or not found, otherwise an opened device handle.</returns>
-        public static MonoUsbDeviceHandle OpenDeviceWithVidPid([In]MonoUsbSessionHandle sessionHandle, short vendorID, short productID)
+        public static MonoUsbDeviceHandle OpenDeviceWithVidPid([In]NativeContext sessionHandle, ushort vendorID, ushort productID)
         {
-            IntPtr pHandle = OpenDeviceWithVidPidInternal(sessionHandle, vendorID, productID);
-            if (pHandle == IntPtr.Zero) return null;
-            return new MonoUsbDeviceHandle(pHandle);
+            var pHandle = NativeMethods.OpenDeviceWithVidPid(sessionHandle, vendorID, productID);
+            if (pHandle == NativeDeviceHandle.Zero) return null;
+            return new MonoUsbDeviceHandle(pHandle.DangerousGetHandle());
         }
 
         /// <summary>
@@ -295,7 +295,7 @@ namespace MonoLibUsb
                 return r;
             }
             IntPtr pSessionHandle;
-            MonoUsbSessionHandle sessionHandle = MonoUsbEventHandler.SessionHandle;
+            NativeContext sessionHandle = MonoUsbEventHandler.SessionHandle;
             if (sessionHandle == null)
                 pSessionHandle = IntPtr.Zero;
             else
@@ -396,10 +396,10 @@ namespace MonoLibUsb
         /// </remarks>
         /// <param name="sessionHandle">A valid <see cref="MonoUsbSessionHandle"/>.</param>
         /// <returns>A list of PollfdItem structures, or null on error.</returns>
-        public static List<PollfdItem> GetPollfds(MonoUsbSessionHandle sessionHandle)
+        public static List<PollfdItem> GetPollfds(NativeContext sessionHandle)
         {
             List<PollfdItem> rtnList = new List<PollfdItem>();
-            IntPtr pList = GetPollfdsInternal(sessionHandle);
+            IntPtr pList = NativeMethods.GetPollfds(sessionHandle);
             if (pList == IntPtr.Zero) return null;
 
             IntPtr pNext = pList;
