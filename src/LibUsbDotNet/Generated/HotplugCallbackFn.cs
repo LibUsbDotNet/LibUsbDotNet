@@ -30,30 +30,10 @@
 //
 
 using System;
+using System.Runtime.InteropServices;
 
 namespace LibUsbDotNet
 {
-    /// <summary>
-    ///  libusb_transfer.flags values 
-    /// </summary>
-    [Flags]
-    public enum TransferFlags : byte
-    {
-        /// <summary>
-        ///  Report short frames as errors 
-        /// </summary>
-        ShortNotOk = 0x1,
-
-        FreeBuffer = 0x2,
-
-        FreeTransfer = 0x4,
-
-        /// <summary>
-        ///  Available since libusb-1.0.9.
-        /// </summary>
-        AddZeroPacket = 0x8,
-
-        None = 0x0,
-
-    }
+    [UnmanagedFunctionPointer(NativeMethods.LibUsbCallingConvention)]
+    public delegate int HotplugCallbackFn(NativeContext ctx, NativeDevice device, HotplugEvent @event, IntPtr userData);
 }
