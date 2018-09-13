@@ -75,7 +75,7 @@ namespace LibUsbDotNet
         public static extern IntPtr StrError(Error errcode);
 
         [DllImport(LibUsbNativeLibrary, CallingConvention = LibUsbCallingConvention, EntryPoint = "libusb_get_device_list")]
-        public static extern long GetDeviceList(NativeContext ctx, ref IntPtr list);
+        public static extern IntPtr GetDeviceList(NativeContext ctx, ref IntPtr list);
 
         [DllImport(LibUsbNativeLibrary, CallingConvention = LibUsbCallingConvention, EntryPoint = "libusb_free_device_list")]
         public static extern void FreeDeviceList(ref IntPtr list, int unrefDevices);
@@ -198,10 +198,10 @@ namespace LibUsbDotNet
         public static extern int FreeStreams(NativeDeviceHandle devHandle, IntPtr endpoints, int numEndpoints);
 
         [DllImport(LibUsbNativeLibrary, CallingConvention = LibUsbCallingConvention, EntryPoint = "libusb_dev_mem_alloc")]
-        public static extern IntPtr DevMemAlloc(NativeDeviceHandle devHandle, ulong length);
+        public static extern IntPtr DevMemAlloc(NativeDeviceHandle devHandle, UIntPtr length);
 
         [DllImport(LibUsbNativeLibrary, CallingConvention = LibUsbCallingConvention, EntryPoint = "libusb_dev_mem_free")]
-        public static extern int DevMemFree(NativeDeviceHandle devHandle, IntPtr buffer, ulong length);
+        public static extern int DevMemFree(NativeDeviceHandle devHandle, IntPtr buffer, UIntPtr length);
 
         [DllImport(LibUsbNativeLibrary, CallingConvention = LibUsbCallingConvention, EntryPoint = "libusb_kernel_driver_active")]
         public static extern int KernelDriverActive(NativeDeviceHandle devHandle, int interfaceNumber);

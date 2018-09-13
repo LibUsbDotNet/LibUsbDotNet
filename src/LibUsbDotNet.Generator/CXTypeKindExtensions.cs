@@ -11,6 +11,16 @@ namespace LibUsbDotNet.Generator
     {
         public static string ToClrType(this TypeInfo type)
         {
+            if (type.Kind == TypeKind.Typedef && type.GetTypedefName() == "size_t")
+            {
+                return "UIntPtr";
+            }
+
+            if (type.Kind == TypeKind.Typedef && type.GetTypedefName() == "ssize_t")
+            {
+                return "IntPtr";
+            }
+
             var canonical = type.GetCanonicalType();
 
             switch (canonical.Kind)
