@@ -32,7 +32,6 @@ namespace LibUsbDotNet.Generator
             if (curKind == CursorKind.EnumDecl)
             {
                 var nativeName = cursor.GetSpelling();
-                var type = cursor.GetEnumDeclIntegerType().ToClrType();
                 var enumComment = this.GetComment(cursor, forType: true);
 
                 // enumName can be empty because of typedef enum { .. } enumName;
@@ -116,7 +115,7 @@ namespace LibUsbDotNet.Generator
                 {
                     enumDeclaration.Values.Add(new EnumValue()
                     {
-                        Description = "None",
+                        Name = "None",
                         Value = "0x0"
                     });
                 }

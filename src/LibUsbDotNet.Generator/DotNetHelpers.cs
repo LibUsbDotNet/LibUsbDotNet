@@ -2,9 +2,11 @@
 // Copyright (c) Quamotion. All rights reserved.
 // </copyright>
 
+using LibUsbDotNet.Generator.Primitives;
 using Nustache.Core;
 using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.IO;
 
 namespace LibUsbDotNet.Generator
@@ -14,6 +16,7 @@ namespace LibUsbDotNet.Generator
         public static void Register()
         {
             Helpers.Register(nameof(ToXmlDoc), ToXmlDoc);
+            Helpers.Register(nameof(ArgumentSeparator), ArgumentSeparator);
         }
 
         static void ToXmlDoc(RenderContext context, IList<object> arguments, IDictionary<string, object> options, RenderBlock fn, RenderBlock inverse)
@@ -49,6 +52,26 @@ namespace LibUsbDotNet.Generator
                         context.Write(line);
                     }
                 }
+            }
+        }
+
+        static void ArgumentSeparator(RenderContext context, IList<object> arguments, IDictionary<string, object> options, RenderBlock fn, RenderBlock inverse)
+        {
+            if (arguments != null && arguments.Count > 1 && arguments[0] is Collection<Argument> && arguments[1] is Argument)
+            {
+                context.Write(ArgumentSeparator(arguments[0] as Collection<Argument>, arguments[1] as Argument));
+            }
+        }
+
+        static string ArgumentSeparator(Collection<Argument> arguments, Argument argument)
+        {
+            if (arguments.IndexOf(argument) < arguments.Count - 1)
+            {
+                return ", ";
+            }
+            else
+            {
+                return string.Empty;
             }
         }
     }

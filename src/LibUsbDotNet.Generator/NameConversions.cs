@@ -51,7 +51,17 @@ namespace LibUsbDotNet.Generator
                 i++;
             }
 
-            return nameBuilder.ToString();
+            var name = nameBuilder.ToString();
+
+            // Handle reserved keywords
+            if (name == "event")
+            {
+                return "@event";
+            }
+            else
+            {
+                return name;
+            }
         }
     }
 }

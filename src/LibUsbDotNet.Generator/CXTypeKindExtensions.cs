@@ -4,66 +4,103 @@
 
 using Core.Clang;
 using System;
+using System.Collections.Generic;
 
 namespace LibUsbDotNet.Generator
 {
     internal static class TypeKindExtensions
     {
-
-        public static Type ToClrType(this TypeInfo type)
+        public static string ToClrType(this TypeInfo type)
         {
             var canonical = type.GetCanonicalType();
 
             switch (canonical.Kind)
             {
                 case TypeKind.Bool:
-                    return typeof(bool);
+                    return "bool";
 
                 case TypeKind.UChar:
                 case TypeKind.Char_U:
-                    return typeof(char);
+                    return "char";
 
                 case TypeKind.SChar:
                 case TypeKind.Char_S:
-                    return typeof(sbyte);
+                    return "sbyte";
 
                 case TypeKind.UShort:
-                    return typeof(ushort);
+                    return "ushort";
 
                 case TypeKind.Short:
-                    return typeof(short);
+                    return "short";
 
                 case TypeKind.Float:
-                    return typeof(float);
+                    return "float";
 
                 case TypeKind.Double:
-                    return typeof(double);
+                    return "double";
 
                 case TypeKind.Int:
+                    return "int";
+
                 case TypeKind.Enum:
-                    return typeof(int);
+                    var enumName = type.GetTypeDeclaration().GetDisplayName();
+                    return NameConversions.ToClrName(enumName, NameConversion.Type);
 
                 case TypeKind.UInt:
-                    return typeof(uint);
+                    return "uint";
 
-                case TypeKind.Pointer:
                 case TypeKind.IncompleteArray:
-                    return typeof(IntPtr);
+                    return "IntPtr";
 
                 case TypeKind.Long:
-                    return typeof(int);
+                    return "int";
 
                 case TypeKind.ULong:
-                    return typeof(int);
+                    return "uint";
 
                 case TypeKind.LongLong:
-                    return typeof(long);
+                    return "long";
 
                 case TypeKind.ULongLong:
-                    return typeof(ulong);
+                    return "ulong";
 
                 case TypeKind.Void:
-                    return typeof(void);
+                    return "void";
+
+                case TypeKind.Pointer:
+                    // int LIBUSB_CALL libusb_init(libusb_context **ctx);
+                    // would map to Init(ref IntPtr),
+                    // whereas 
+                    // void LIBUSB_CALL libusb_exit(libusb_context * ctx);
+                    // would map to Exit(IntPtr);
+                    var pointee = type.GetPointeeType();
+                    switch (pointee.Kind)
+                    {
+                        case TypeKind.Pointer:
+                            return "ref IntPtr";
+
+                        case TypeKind.Int:
+                            return "ref int";
+
+                        case TypeKind.Typedef:
+                            var typeDefName = pointee.GetTypedefName();
+
+                            if (pointee.GetCanonicalType().Kind == TypeKind.Int)
+                            {
+                                return "ref int";
+                            }
+                            else if (typeDefName == "uint8_t")
+                            {
+                                return "ref byte";
+                            }
+                            else
+                            {
+                                return $"Native{NameConversions.ToClrName(pointee.GetTypedefName(), NameConversion.Type)}";
+                            }
+
+                        default:
+                            return "IntPtr";
+                    }
 
                 default:
                     throw new NotSupportedException();
