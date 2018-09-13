@@ -6,6 +6,7 @@
 //     the code is regenerated.
 // </auto-generated>
 //------------------------------------------------------------------------------
+
 // Copyright © 2006-2010 Travis Robinson. All rights reserved.
 // Copyright © 2011-2018 LibUsbDotNet contributors. All rights reserved.
 // 
@@ -27,6 +28,7 @@
 // visit www.gnu.org.
 // 
 //
+
 using System;
 
 namespace LibUsbDotNet
@@ -41,21 +43,26 @@ namespace LibUsbDotNet
         ///  The OS doesn't report or know the device speed. 
         /// </summary>
         Unknown = 0,
+
         /// <summary>
         ///  The device is operating at low speed (1.5MBit/s). 
         /// </summary>
         Low = 0x1,
+
         /// <summary>
         ///  The device is operating at full speed (12MBit/s). 
         /// </summary>
         Full = 0x2,
+
         /// <summary>
         ///  The device is operating at high speed (480MBit/s). 
         /// </summary>
         High = 0x3,
+
         /// <summary>
         ///  The device is operating at super speed (5000MBit/s). 
         /// </summary>
         Super = 0x4,
+
     }
 }

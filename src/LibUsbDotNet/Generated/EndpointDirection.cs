@@ -6,6 +6,7 @@
 //     the code is regenerated.
 // </auto-generated>
 //------------------------------------------------------------------------------
+
 // Copyright © 2006-2010 Travis Robinson. All rights reserved.
 // Copyright © 2011-2018 LibUsbDotNet contributors. All rights reserved.
 // 
@@ -27,6 +28,7 @@
 // visit www.gnu.org.
 // 
 //
+
 using System;
 
 namespace LibUsbDotNet
@@ -38,9 +40,11 @@ namespace LibUsbDotNet
         ///  In: device-to-host 
         /// </summary>
         In = 0x80,
+
         /// <summary>
         ///  Out: host-to-device 
         /// </summary>
         Out = 0,
+
     }
 }

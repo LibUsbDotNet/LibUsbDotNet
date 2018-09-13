@@ -6,6 +6,7 @@
 //     the code is regenerated.
 // </auto-generated>
 //------------------------------------------------------------------------------
+
 // Copyright © 2006-2010 Travis Robinson. All rights reserved.
 // Copyright © 2011-2018 LibUsbDotNet contributors. All rights reserved.
 // 
@@ -27,6 +28,7 @@
 // visit www.gnu.org.
 // 
 //
+
 using System;
 
 namespace LibUsbDotNet
@@ -42,9 +44,11 @@ namespace LibUsbDotNet
         ///  Default value when not using any flags. 
         /// </summary>
         NoFlags = 0,
+
         /// <summary>
         ///  Arm the callback and fire it for all matching currently attached devices. 
         /// </summary>
         Enumerate = 0x1,
+
     }
 }

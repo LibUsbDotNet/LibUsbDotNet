@@ -6,6 +6,7 @@
 //     the code is regenerated.
 // </auto-generated>
 //------------------------------------------------------------------------------
+
 // Copyright © 2006-2010 Travis Robinson. All rights reserved.
 // Copyright © 2011-2018 LibUsbDotNet contributors. All rights reserved.
 // 
@@ -27,6 +28,7 @@
 // visit www.gnu.org.
 // 
 //
+
 using System;
 
 namespace LibUsbDotNet
@@ -35,9 +37,14 @@ namespace LibUsbDotNet
     public enum LogLevel : byte
     {
         None = 0,
+
         Error = 0x1,
+
         Warning = 0x2,
+
         Info = 0x3,
+
         Debug = 0x4,
+
     }
 }

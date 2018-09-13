@@ -6,6 +6,7 @@
 //     the code is regenerated.
 // </auto-generated>
 //------------------------------------------------------------------------------
+
 // Copyright © 2006-2010 Travis Robinson. All rights reserved.
 // Copyright © 2011-2018 LibUsbDotNet contributors. All rights reserved.
 // 
@@ -27,6 +28,7 @@
 // visit www.gnu.org.
 // 
 //
+
 using System;
 
 namespace LibUsbDotNet
@@ -41,13 +43,16 @@ namespace LibUsbDotNet
         ///  Data endpoint 
         /// </summary>
         Data = 0,
+
         /// <summary>
         ///  Feedback endpoint 
         /// </summary>
         Feedback = 0x1,
+
         /// <summary>
         ///  Implicit feedback Data endpoint 
         /// </summary>
         Implicit = 0x2,
+
     }
 }

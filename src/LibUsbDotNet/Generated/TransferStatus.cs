@@ -6,6 +6,7 @@
 //     the code is regenerated.
 // </auto-generated>
 //------------------------------------------------------------------------------
+
 // Copyright © 2006-2010 Travis Robinson. All rights reserved.
 // Copyright © 2011-2018 LibUsbDotNet contributors. All rights reserved.
 // 
@@ -27,6 +28,7 @@
 // visit www.gnu.org.
 // 
 //
+
 using System;
 
 namespace LibUsbDotNet
@@ -38,26 +40,33 @@ namespace LibUsbDotNet
     public enum TransferStatus : byte
     {
         Completed = 0,
+
         /// <summary>
         ///  Transfer failed 
         /// </summary>
         Error = 0x1,
+
         /// <summary>
         ///  Transfer timed out 
         /// </summary>
         TimedOut = 0x2,
+
         /// <summary>
         ///  Transfer was cancelled 
         /// </summary>
         Cancelled = 0x3,
+
         Stall = 0x4,
+
         /// <summary>
         ///  Device was disconnected 
         /// </summary>
         NoDevice = 0x5,
+
         /// <summary>
         ///  Device sent more data than requested 
         /// </summary>
         Overflow = 0x6,
+
     }
 }

@@ -6,6 +6,7 @@
 //     the code is regenerated.
 // </auto-generated>
 //------------------------------------------------------------------------------
+
 // Copyright © 2006-2010 Travis Robinson. All rights reserved.
 // Copyright © 2011-2018 LibUsbDotNet contributors. All rights reserved.
 // 
@@ -27,6 +28,7 @@
 // visit www.gnu.org.
 // 
 //
+
 using System;
 
 namespace LibUsbDotNet
@@ -41,17 +43,21 @@ namespace LibUsbDotNet
         ///  Wireless USB device capability 
         /// </summary>
         WirelessUsbDeviceCapability = 0x1,
+
         /// <summary>
         ///  USB 2.0 extensions 
         /// </summary>
         Usb20Extension = 0x2,
+
         /// <summary>
         ///  SuperSpeed USB device capability 
         /// </summary>
         SsUsbDeviceCapability = 0x3,
+
         /// <summary>
         ///  Container ID type 
         /// </summary>
         ContainerId = 0x4,
+
     }
 }

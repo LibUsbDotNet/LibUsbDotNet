@@ -6,6 +6,7 @@
 //     the code is regenerated.
 // </auto-generated>
 //------------------------------------------------------------------------------
+
 // Copyright © 2006-2010 Travis Robinson. All rights reserved.
 // Copyright © 2011-2018 LibUsbDotNet contributors. All rights reserved.
 // 
@@ -27,6 +28,7 @@
 // visit www.gnu.org.
 // 
 //
+
 using System;
 
 namespace LibUsbDotNet
@@ -42,6 +44,8 @@ namespace LibUsbDotNet
         ///  A device has been plugged in and is ready to use 
         /// </summary>
         DeviceArrived = 0x1,
+
         DeviceLeft = 0x2,
+
     }
 }

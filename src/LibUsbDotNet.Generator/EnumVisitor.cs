@@ -143,7 +143,6 @@ namespace LibUsbDotNet.Generator
             }
 
             StringBuilder text = new StringBuilder();
-            text.AppendLine("/// <summary>");
             bool hasComment = false;
 
             for (int i = 0; i < fullCommentChildren; i++)
@@ -166,7 +165,7 @@ namespace LibUsbDotNet.Generator
 
                     if (!string.IsNullOrWhiteSpace(commentText))
                     {
-                        text.AppendLine($"/// {commentText}");
+                        text.AppendLine(commentText);
                         hasComment = true;
                     }
                 }
@@ -176,8 +175,6 @@ namespace LibUsbDotNet.Generator
             {
                 return null;
             }
-
-            text.AppendLine("/// </summary>");
 
             return text.ToString();
         }
