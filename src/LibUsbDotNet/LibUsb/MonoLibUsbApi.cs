@@ -33,17 +33,6 @@ namespace MonoLibUsb
     /// </summary>
     public static partial class MonoUsbApi
     {
-        internal const CallingConvention CC = 0;
-#if WIN || NET45 || WIN7_X64 // win7-x64 during testing only.
-        internal const string LIBUSB_DLL = "libusb-1.0.dll";
-#endif
-#if LINUX || UBUNTU || UBUNTU_16_04_X64 || UBUNTU_16_04_ARM64 // ubuntu during testing only.
-        internal const string LIBUSB_DLL = "libusb-1.0.so";
-#endif
-#if OSX || OSX_10_12_X64 // osx during testing only
-        internal const string LIBUSB_DLL = "libusb-1.0.dylib";
-#endif
-
         #region API LIBRARY FUNCTIONS - Initialization & Deinitialization
 
         /// <summary>
@@ -52,14 +41,14 @@ namespace MonoLibUsb
         /// </summary>
         /// <param name="pContext">Optional output location for context pointer. Only valid on return code 0.</param>
         /// <returns>0 on success, or a LIBUSB_ERROR code on failure</returns>
-        [DllImport(LIBUSB_DLL, CallingConvention = CC, SetLastError = false, EntryPoint = "libusb_init")]
+        [DllImport(NativeMethods.LibUsbNativeLibrary, CallingConvention = NativeMethods.LibUsbCallingConvention, SetLastError = false, EntryPoint = "libusb_init")]
         internal static extern int Init(ref IntPtr pContext);
 
         /// <summary>
         /// Deinitialize libusb. Should be called after closing all open devices and before your application terminates.
         /// </summary>
         /// <param name="pContext">the context to deinitialize, or NULL for the default context</param>
-        [DllImport(LIBUSB_DLL, CallingConvention = CC, SetLastError = false, EntryPoint = "libusb_exit")]
+        [DllImport(NativeMethods.LibUsbNativeLibrary, CallingConvention = NativeMethods.LibUsbCallingConvention, SetLastError = false, EntryPoint = "libusb_exit")]
         internal static extern void Exit(IntPtr pContext);
 
         /// <summary>Set message verbosity.</summary>
@@ -79,14 +68,14 @@ namespace MonoLibUsb
         /// <para>If libusb was compiled with verbose debug message logging, this function does nothing: you'll always get messages from all levels.</para>
         /// <note type="tip" title="Libusb-1.0 API:"><seelibusb10 group="lib"/></note>
         /// </remarks>
-        [DllImport(LIBUSB_DLL, CallingConvention = CC, SetLastError = false, EntryPoint = "libusb_set_debug")]
+        [DllImport(NativeMethods.LibUsbNativeLibrary, CallingConvention = NativeMethods.LibUsbCallingConvention, SetLastError = false, EntryPoint = "libusb_set_debug")]
         public static extern void SetDebug([In]MonoUsbSessionHandle sessionHandle, int level);
 
         /// <summary>
         /// Returns a struct  with the version (major, minor, micro, nano and rc) of the running library.
         /// </summary>
         /// <returns></returns>
-        [DllImport(LIBUSB_DLL, CallingConvention = CC, SetLastError = false, EntryPoint = "libusb_get_version")]
+        [DllImport(NativeMethods.LibUsbNativeLibrary, CallingConvention = NativeMethods.LibUsbCallingConvention, SetLastError = false, EntryPoint = "libusb_get_version")]
         internal static extern IntPtr GetVersion();
 
         /// <summary>
@@ -94,20 +83,20 @@ namespace MonoLibUsb
         /// </summary>
         /// <param name="capability"></param>
         /// <returns></returns>
-        [DllImport(LIBUSB_DLL, CallingConvention = CC, SetLastError = false, EntryPoint = "libusb_has_capability")]
+        [DllImport(NativeMethods.LibUsbNativeLibrary, CallingConvention = NativeMethods.LibUsbCallingConvention, SetLastError = false, EntryPoint = "libusb_has_capability")]
         internal static extern int HasCapability(Capability capability);
 
 #endregion
 
 #region API LIBRARY FUNCTIONS - Error Handling
 
-        [DllImport(LIBUSB_DLL, CallingConvention = CC, SetLastError = false, EntryPoint = "libusb_error_name")]
+        [DllImport(NativeMethods.LibUsbNativeLibrary, CallingConvention = NativeMethods.LibUsbCallingConvention, SetLastError = false, EntryPoint = "libusb_error_name")]
         internal static extern string ErrorName(int errcode);
 
-        [DllImport(LIBUSB_DLL, CallingConvention = CC, SetLastError = false, EntryPoint = "libusb_setlocale")]
+        [DllImport(NativeMethods.LibUsbNativeLibrary, CallingConvention = NativeMethods.LibUsbCallingConvention, SetLastError = false, EntryPoint = "libusb_setlocale")]
         internal static extern int SetLocale(string locale);
 
-        [DllImport(LIBUSB_DLL, CallingConvention = CC, SetLastError = false, EntryPoint = "libusb_strerror")]
+        [DllImport(NativeMethods.LibUsbNativeLibrary, CallingConvention = NativeMethods.LibUsbCallingConvention, SetLastError = false, EntryPoint = "libusb_strerror")]
         private static extern IntPtr StrError(int errcode);
 
 #endregion
@@ -124,16 +113,16 @@ namespace MonoLibUsb
         /// <param name="sessionHandle">A valid <see cref="MonoUsbSessionHandle"/>.</param>
         /// <param name="monoUSBProfileListHandle">	output location for a list of devices.</param>
         /// <returns>The number of devices in the outputted list, or <see cref="MonoUsbError.ErrorNoMem"/> on memory allocation failure.</returns>
-        [DllImport(LIBUSB_DLL, CallingConvention = CC, SetLastError = false, EntryPoint = "libusb_get_device_list")]
+        [DllImport(NativeMethods.LibUsbNativeLibrary, CallingConvention = NativeMethods.LibUsbCallingConvention, SetLastError = false, EntryPoint = "libusb_get_device_list")]
         public static extern int GetDeviceList([In]MonoUsbSessionHandle sessionHandle, [Out] out MonoUsbProfileListHandle monoUSBProfileListHandle);
 
-        [DllImport(LIBUSB_DLL, CallingConvention = CC, SetLastError = false, EntryPoint = "libusb_free_device_list")]
+        [DllImport(NativeMethods.LibUsbNativeLibrary, CallingConvention = NativeMethods.LibUsbCallingConvention, SetLastError = false, EntryPoint = "libusb_free_device_list")]
         internal static extern void FreeDeviceList(IntPtr pHandleList, int unrefDevices);
 
-        [DllImport(LIBUSB_DLL, CallingConvention = CC, SetLastError = false, EntryPoint = "libusb_ref_device")]
+        [DllImport(NativeMethods.LibUsbNativeLibrary, CallingConvention = NativeMethods.LibUsbCallingConvention, SetLastError = false, EntryPoint = "libusb_ref_device")]
         internal static extern IntPtr RefDevice(IntPtr pDeviceProfileHandle);
 
-        [DllImport(LIBUSB_DLL, CallingConvention = CC, SetLastError = false, EntryPoint = "libusb_unref_device")]
+        [DllImport(NativeMethods.LibUsbNativeLibrary, CallingConvention = NativeMethods.LibUsbCallingConvention, SetLastError = false, EntryPoint = "libusb_unref_device")]
         internal static extern IntPtr UnrefDevice(IntPtr pDeviceProfileHandle);
 
         /// <summary>
@@ -154,7 +143,7 @@ namespace MonoLibUsb
         /// <item>another <see cref="MonoUsbError"/> code on other failure</item>
         /// </list>
         /// </returns>
-        [DllImport(LIBUSB_DLL, CallingConvention = CC, SetLastError = false, EntryPoint = "libusb_get_configuration")]
+        [DllImport(NativeMethods.LibUsbNativeLibrary, CallingConvention = NativeMethods.LibUsbCallingConvention, SetLastError = false, EntryPoint = "libusb_get_configuration")]
         public static extern int GetConfiguration([In] MonoUsbDeviceHandle deviceHandle, ref int configuration);
 
 #endregion
@@ -171,7 +160,7 @@ namespace MonoLibUsb
         /// <param name="deviceProfileHandle">A device profile handle.</param>
         /// <param name="deviceDescriptor">The <see cref="MonoUsbDeviceDescriptor"/> clas that will hold the data.</param>
         /// <returns>0 on success or a <see cref="MonoUsbError"/> code on failure.</returns>
-        [DllImport(LIBUSB_DLL, CallingConvention = CC, SetLastError = false, EntryPoint = "libusb_get_device_descriptor")]
+        [DllImport(NativeMethods.LibUsbNativeLibrary, CallingConvention = NativeMethods.LibUsbCallingConvention, SetLastError = false, EntryPoint = "libusb_get_device_descriptor")]
         public static extern int GetDeviceDescriptor([In] MonoUsbProfileHandle deviceProfileHandle, [Out] MonoUsbDeviceDescriptor deviceDescriptor);
 
         /// <summary>
@@ -190,7 +179,7 @@ namespace MonoLibUsb
         /// <item>another <see cref="MonoUsbError"/> code on error</item>
         /// </list>
         /// </returns>
-        [DllImport(LIBUSB_DLL, CallingConvention = CC, SetLastError = false, EntryPoint = "libusb_get_active_config_descriptor")]
+        [DllImport(NativeMethods.LibUsbNativeLibrary, CallingConvention = NativeMethods.LibUsbCallingConvention, SetLastError = false, EntryPoint = "libusb_get_active_config_descriptor")]
         public static extern int GetActiveConfigDescriptor([In] MonoUsbProfileHandle deviceProfileHandle, [Out] out MonoUsbConfigHandle configHandle);
 
         /// <summary>
@@ -210,7 +199,7 @@ namespace MonoLibUsb
         /// <item>another <see cref="MonoUsbError"/> code on error</item>
         /// </list>
         /// </returns>
-        [DllImport(LIBUSB_DLL, CallingConvention = CC, SetLastError = false, EntryPoint = "libusb_get_config_descriptor")]
+        [DllImport(NativeMethods.LibUsbNativeLibrary, CallingConvention = NativeMethods.LibUsbCallingConvention, SetLastError = false, EntryPoint = "libusb_get_config_descriptor")]
         public static extern int GetConfigDescriptor([In] MonoUsbProfileHandle deviceProfileHandle, byte configIndex, [Out] out MonoUsbConfigHandle configHandle);
 
         /// <summary>
@@ -230,10 +219,10 @@ namespace MonoLibUsb
         /// <item>another <see cref="MonoUsbError"/> code on error</item>
         /// </list>
         /// </returns>
-        [DllImport(LIBUSB_DLL, CallingConvention = CC, SetLastError = false, EntryPoint = "libusb_get_config_descriptor_by_value")]
+        [DllImport(NativeMethods.LibUsbNativeLibrary, CallingConvention = NativeMethods.LibUsbCallingConvention, SetLastError = false, EntryPoint = "libusb_get_config_descriptor_by_value")]
         public static extern int GetConfigDescriptorByValue([In] MonoUsbProfileHandle deviceProfileHandle, byte bConfigurationValue, [Out] out MonoUsbConfigHandle configHandle);
 
-        [DllImport(LIBUSB_DLL, CallingConvention = CC, SetLastError = false, EntryPoint = "libusb_free_config_descriptor")]
+        [DllImport(NativeMethods.LibUsbNativeLibrary, CallingConvention = NativeMethods.LibUsbCallingConvention, SetLastError = false, EntryPoint = "libusb_free_config_descriptor")]
         internal static extern void FreeConfigDescriptor(IntPtr pConfigDescriptor);
 
 #endregion
@@ -248,7 +237,7 @@ namespace MonoLibUsb
         /// </remarks>
         /// <returns>The bus number.</returns>
         /// <param name="deviceProfileHandle">A device profile handle.</param>
-        [DllImport(LIBUSB_DLL, CallingConvention = CC, SetLastError = false, EntryPoint = "libusb_get_bus_number")]
+        [DllImport(NativeMethods.LibUsbNativeLibrary, CallingConvention = NativeMethods.LibUsbCallingConvention, SetLastError = false, EntryPoint = "libusb_get_bus_number")]
         public static extern byte GetBusNumber([In] MonoUsbProfileHandle deviceProfileHandle);
 
         /// <summary>
@@ -259,7 +248,7 @@ namespace MonoLibUsb
         /// </remarks>
         /// <returns>The device address.</returns>
         /// <param name="deviceProfileHandle">A device profile handle.</param>
-        [DllImport(LIBUSB_DLL, CallingConvention = CC, SetLastError = false, EntryPoint = "libusb_get_device_address")]
+        [DllImport(NativeMethods.LibUsbNativeLibrary, CallingConvention = NativeMethods.LibUsbCallingConvention, SetLastError = false, EntryPoint = "libusb_get_device_address")]
         public static extern byte GetDeviceAddress([In] MonoUsbProfileHandle deviceProfileHandle);
 
         /// <summary>
@@ -272,7 +261,7 @@ namespace MonoLibUsb
         /// <para>This function was originally intended to be of assistance when setting up isochronous transfers, but a design mistake resulted in this function instead. It simply returns the <see cref="MonoUsbEndpointDescriptor.wMaxPacketSize"/> value without considering its contents. If you're dealing with isochronous transfers, you probably want <see cref="GetMaxIsoPacketSize"/> instead.</para>
         /// </remarks>
         /// <returns>The <see cref="MonoUsbEndpointDescriptor.wMaxPacketSize"/></returns>
-        [DllImport(LIBUSB_DLL, CallingConvention = CC, SetLastError = false, EntryPoint = "libusb_get_max_packet_size")]
+        [DllImport(NativeMethods.LibUsbNativeLibrary, CallingConvention = NativeMethods.LibUsbCallingConvention, SetLastError = false, EntryPoint = "libusb_get_max_packet_size")]
         public static extern int GetMaxPacketSize([In] MonoUsbProfileHandle deviceProfileHandle, byte endpoint);
 
         /// <summary>
@@ -287,16 +276,16 @@ namespace MonoLibUsb
         /// <param name="deviceProfileHandle">A device profile handle.</param>
         /// <param name="endpoint">Endpoint address to retrieve the max packet size for.</param>
         /// <returns>The maximum packet size which can be sent/received on this endpoint.</returns>
-        [DllImport(LIBUSB_DLL, CallingConvention = CC, SetLastError = false, EntryPoint = "libusb_get_max_iso_packet_size")]
+        [DllImport(NativeMethods.LibUsbNativeLibrary, CallingConvention = NativeMethods.LibUsbCallingConvention, SetLastError = false, EntryPoint = "libusb_get_max_iso_packet_size")]
         public static extern int GetMaxIsoPacketSize([In] MonoUsbProfileHandle deviceProfileHandle, byte endpoint);
 
-        [DllImport(LIBUSB_DLL, CallingConvention = CC, SetLastError = false, EntryPoint = "libusb_open")]
+        [DllImport(NativeMethods.LibUsbNativeLibrary, CallingConvention = NativeMethods.LibUsbCallingConvention, SetLastError = false, EntryPoint = "libusb_open")]
         internal static extern int Open([In] MonoUsbProfileHandle deviceProfileHandle, ref IntPtr deviceHandle);
 
-        [DllImport(LIBUSB_DLL, CallingConvention = CC, SetLastError = false, EntryPoint = "libusb_close")]
+        [DllImport(NativeMethods.LibUsbNativeLibrary, CallingConvention = NativeMethods.LibUsbCallingConvention, SetLastError = false, EntryPoint = "libusb_close")]
         internal static extern void Close(IntPtr deviceHandle);
 
-        [DllImport(LIBUSB_DLL, CallingConvention = CC, SetLastError = false, EntryPoint = "libusb_get_device")]
+        [DllImport(NativeMethods.LibUsbNativeLibrary, CallingConvention = NativeMethods.LibUsbCallingConvention, SetLastError = false, EntryPoint = "libusb_get_device")]
         private static extern IntPtr GetDeviceInternal([In] MonoUsbDeviceHandle devicehandle);
 
         /// <summary>
@@ -322,7 +311,7 @@ namespace MonoLibUsb
         /// <item>another <see cref="MonoUsbError"/> code on other failure</item>
         /// </list>
         /// </returns>
-        [DllImport(LIBUSB_DLL, CallingConvention = CC, SetLastError = false, EntryPoint = "libusb_set_configuration")]
+        [DllImport(NativeMethods.LibUsbNativeLibrary, CallingConvention = NativeMethods.LibUsbCallingConvention, SetLastError = false, EntryPoint = "libusb_set_configuration")]
         public static extern int SetConfiguration([In] MonoUsbDeviceHandle deviceHandle, int configuration);
 
         /// <summary>
@@ -346,7 +335,7 @@ namespace MonoLibUsb
         /// <item>another <see cref="MonoUsbError"/> code on other failure</item>
         /// </list>
         /// </returns>
-        [DllImport(LIBUSB_DLL, CallingConvention = CC, SetLastError = false, EntryPoint = "libusb_claim_interface")]
+        [DllImport(NativeMethods.LibUsbNativeLibrary, CallingConvention = NativeMethods.LibUsbCallingConvention, SetLastError = false, EntryPoint = "libusb_claim_interface")]
         public static extern int ClaimInterface([In] MonoUsbDeviceHandle deviceHandle, int interfaceNumber);
 
         /// <summary>
@@ -368,10 +357,10 @@ namespace MonoLibUsb
         /// <item>another <see cref="MonoUsbError"/> code on other failure</item>
         /// </list>
         /// </returns>
-        [DllImport(LIBUSB_DLL, CallingConvention = CC, SetLastError = false, EntryPoint = "libusb_release_interface")]
+        [DllImport(NativeMethods.LibUsbNativeLibrary, CallingConvention = NativeMethods.LibUsbCallingConvention, SetLastError = false, EntryPoint = "libusb_release_interface")]
         public static extern int ReleaseInterface([In] MonoUsbDeviceHandle deviceHandle, int interfaceNumber);
 
-        [DllImport(LIBUSB_DLL, CallingConvention = CC, SetLastError = false, EntryPoint = "libusb_open_device_with_vid_pid")]
+        [DllImport(NativeMethods.LibUsbNativeLibrary, CallingConvention = NativeMethods.LibUsbCallingConvention, SetLastError = false, EntryPoint = "libusb_open_device_with_vid_pid")]
         private static extern IntPtr OpenDeviceWithVidPidInternal([In]MonoUsbSessionHandle sessionHandle, short vendorID, short productID);
 
         /// <summary>
@@ -394,7 +383,7 @@ namespace MonoLibUsb
         /// <item>another <see cref="MonoUsbError"/> code on other failure</item>
         /// </list>
         /// </returns>
-        [DllImport(LIBUSB_DLL, CallingConvention = CC, SetLastError = false, EntryPoint = "libusb_set_interface_alt_setting")]
+        [DllImport(NativeMethods.LibUsbNativeLibrary, CallingConvention = NativeMethods.LibUsbCallingConvention, SetLastError = false, EntryPoint = "libusb_set_interface_alt_setting")]
         public static extern int SetInterfaceAltSetting([In] MonoUsbDeviceHandle deviceHandle, int interfaceNumber, int alternateSetting);
 
         /// <summary>
@@ -416,7 +405,7 @@ namespace MonoLibUsb
         /// <item>another <see cref="MonoUsbError"/> code on other failure</item>
         /// </list>
         /// </returns>
-        [DllImport(LIBUSB_DLL, CallingConvention = CC, SetLastError = false, EntryPoint = "libusb_clear_halt")]
+        [DllImport(NativeMethods.LibUsbNativeLibrary, CallingConvention = NativeMethods.LibUsbCallingConvention, SetLastError = false, EntryPoint = "libusb_clear_halt")]
         public static extern int ClearHalt([In] MonoUsbDeviceHandle deviceHandle, byte endpoint);
 
         /// <summary>
@@ -436,7 +425,7 @@ namespace MonoLibUsb
         /// <item>another <see cref="MonoUsbError"/> code on other failure</item>
         /// </list>
         /// </returns>
-        [DllImport(LIBUSB_DLL, CallingConvention = CC, SetLastError = false, EntryPoint = "libusb_reset_device")]
+        [DllImport(NativeMethods.LibUsbNativeLibrary, CallingConvention = NativeMethods.LibUsbCallingConvention, SetLastError = false, EntryPoint = "libusb_reset_device")]
         public static extern int ResetDevice([In] MonoUsbDeviceHandle deviceHandle);
 
         /// <summary>
@@ -455,7 +444,7 @@ namespace MonoLibUsb
         /// <item>Another <see cref="MonoUsbError"/> code on other failure.</item>
         /// </list>
         /// </returns>
-        [DllImport(LIBUSB_DLL, CallingConvention = CC, SetLastError = false, EntryPoint = "libusb_kernel_driver_active")]
+        [DllImport(NativeMethods.LibUsbNativeLibrary, CallingConvention = NativeMethods.LibUsbCallingConvention, SetLastError = false, EntryPoint = "libusb_kernel_driver_active")]
         public static extern int KernelDriverActive([In] MonoUsbDeviceHandle deviceHandle, int interfaceNumber);
 
         /// <summary>
@@ -476,7 +465,7 @@ namespace MonoLibUsb
         /// <item>Another <see cref="MonoUsbError"/> code on other failure.</item>
         /// </list>
         /// </returns>
-        [DllImport(LIBUSB_DLL, CallingConvention = CC, SetLastError = false, EntryPoint = "libusb_detach_kernel_driver")]
+        [DllImport(NativeMethods.LibUsbNativeLibrary, CallingConvention = NativeMethods.LibUsbCallingConvention, SetLastError = false, EntryPoint = "libusb_detach_kernel_driver")]
         public static extern int DetachKernelDriver([In] MonoUsbDeviceHandle deviceHandle, int interfaceNumber);
 
         /// <summary>
@@ -497,7 +486,7 @@ namespace MonoLibUsb
         /// <item>Another <see cref="MonoUsbError"/> code on other failure.</item>
         /// </list>
         /// </returns>
-        [DllImport(LIBUSB_DLL, CallingConvention = CC, SetLastError = false, EntryPoint = "libusb_attach_kernel_driver")]
+        [DllImport(NativeMethods.LibUsbNativeLibrary, CallingConvention = NativeMethods.LibUsbCallingConvention, SetLastError = false, EntryPoint = "libusb_attach_kernel_driver")]
         public static extern int AttachKernelDriver([In] MonoUsbDeviceHandle deviceHandle, int interfaceNumber);
 
         /// <summary>
@@ -521,22 +510,22 @@ namespace MonoLibUsb
         /// <item><see cref="MonoUsbError.ErrorNotSupported"/> on platforms where the functionality is not available.</item>
         /// </list>
         /// </returns>
-        [DllImport(LIBUSB_DLL, CallingConvention = CC, SetLastError = false, EntryPoint = "libusb_set_auto_detach_kernel_driver")]
+        [DllImport(NativeMethods.LibUsbNativeLibrary, CallingConvention = NativeMethods.LibUsbCallingConvention, SetLastError = false, EntryPoint = "libusb_set_auto_detach_kernel_driver")]
         public static extern int SetAutoDetachKernelDriver([In]MonoUsbDeviceHandle deviceHandle, int enable);
 #endregion
 
 #region API LIBRARY FUNCTIONS - Asynchronous device I/O
 
-        [DllImport(LIBUSB_DLL, CallingConvention = CC, SetLastError = false, EntryPoint = "libusb_alloc_transfer")]
+        [DllImport(NativeMethods.LibUsbNativeLibrary, CallingConvention = NativeMethods.LibUsbCallingConvention, SetLastError = false, EntryPoint = "libusb_alloc_transfer")]
         internal static extern IntPtr AllocTransfer(int isoPackets);
 
-        [DllImport(LIBUSB_DLL, CallingConvention = CC, SetLastError = false, EntryPoint = "libusb_submit_transfer")]
+        [DllImport(NativeMethods.LibUsbNativeLibrary, CallingConvention = NativeMethods.LibUsbCallingConvention, SetLastError = false, EntryPoint = "libusb_submit_transfer")]
         internal static extern int SubmitTransfer(IntPtr pTransfer);
 
-        [DllImport(LIBUSB_DLL, CallingConvention = CC, SetLastError = false, EntryPoint = "libusb_cancel_transfer")]
+        [DllImport(NativeMethods.LibUsbNativeLibrary, CallingConvention = NativeMethods.LibUsbCallingConvention, SetLastError = false, EntryPoint = "libusb_cancel_transfer")]
         internal static extern int CancelTransfer(IntPtr pTransfer);
 
-        [DllImport(LIBUSB_DLL, CallingConvention = CC, SetLastError = false, EntryPoint = "libusb_free_transfer")]
+        [DllImport(NativeMethods.LibUsbNativeLibrary, CallingConvention = NativeMethods.LibUsbCallingConvention, SetLastError = false, EntryPoint = "libusb_free_transfer")]
         internal static extern void FreeTransfer(IntPtr pTransfer);
 
 #endregion
@@ -568,7 +557,7 @@ namespace MonoLibUsb
         /// <item>another <see cref="MonoUsbError"/> code on other failures</item>
         /// </list>
         /// </returns>
-        [DllImport(LIBUSB_DLL, CallingConvention = CC, SetLastError = false, EntryPoint = "libusb_control_transfer")]
+        [DllImport(NativeMethods.LibUsbNativeLibrary, CallingConvention = NativeMethods.LibUsbCallingConvention, SetLastError = false, EntryPoint = "libusb_control_transfer")]
         public static extern int ControlTransfer([In] MonoUsbDeviceHandle deviceHandle, byte requestType, byte request, short value, short index, IntPtr pData, short dataLength, int timeout);
 
         /// <summary>
@@ -608,7 +597,7 @@ namespace MonoLibUsb
         /// <item>another <see cref="MonoUsbError"/> code on other failures</item>
         /// </list>
         /// </returns>
-        [DllImport(LIBUSB_DLL, CallingConvention = CC, SetLastError = false, EntryPoint = "libusb_bulk_transfer")]
+        [DllImport(NativeMethods.LibUsbNativeLibrary, CallingConvention = NativeMethods.LibUsbCallingConvention, SetLastError = false, EntryPoint = "libusb_bulk_transfer")]
         public static extern int BulkTransfer([In] MonoUsbDeviceHandle deviceHandle, byte endpoint, IntPtr pData, int length, out int actualLength, int timeout);
 
         /// <summary>
@@ -647,7 +636,7 @@ namespace MonoLibUsb
         /// <item>another <see cref="MonoUsbError"/> code on other failures</item>
         /// </list>
         /// </returns>
-        [DllImport(LIBUSB_DLL, CallingConvention = CC, SetLastError = false, EntryPoint = "libusb_interrupt_transfer")]
+        [DllImport(NativeMethods.LibUsbNativeLibrary, CallingConvention = NativeMethods.LibUsbCallingConvention, SetLastError = false, EntryPoint = "libusb_interrupt_transfer")]
         public static extern int InterruptTransfer([In] MonoUsbDeviceHandle deviceHandle, byte endpoint, IntPtr pData, int length, out int actualLength, int timeout);
 
 #endregion
@@ -670,7 +659,7 @@ namespace MonoLibUsb
         /// <item>1 if the lock was not obtained. (i.e. another thread holds the lock)</item>
         /// </list>
         /// </returns>
-        [DllImport(LIBUSB_DLL, CallingConvention = CC, SetLastError = false, EntryPoint = "libusb_try_lock_events")]
+        [DllImport(NativeMethods.LibUsbNativeLibrary, CallingConvention = NativeMethods.LibUsbCallingConvention, SetLastError = false, EntryPoint = "libusb_try_lock_events")]
         public static extern int TryLockEvents([In]MonoUsbSessionHandle sessionHandle);
 
         /// <summary>
@@ -683,7 +672,7 @@ namespace MonoLibUsb
         /// <note type="tip" title="Libusb-1.0 API:"><seelibusb10 group="poll"/></note>
         /// </remarks>
         /// <param name="sessionHandle">A valid <see cref="MonoUsbSessionHandle"/>.</param>
-        [DllImport(LIBUSB_DLL, CallingConvention = CC, SetLastError = false, EntryPoint = "libusb_lock_events")]
+        [DllImport(NativeMethods.LibUsbNativeLibrary, CallingConvention = NativeMethods.LibUsbCallingConvention, SetLastError = false, EntryPoint = "libusb_lock_events")]
         public static extern void LockEvents([In]MonoUsbSessionHandle sessionHandle);
 
         /// <summary>
@@ -694,7 +683,7 @@ namespace MonoLibUsb
         /// <note type="tip" title="Libusb-1.0 API:"><seelibusb10 group="poll"/></note>
         /// </remarks>
         /// <param name="sessionHandle">A valid <see cref="MonoUsbSessionHandle"/>.</param>
-        [DllImport(LIBUSB_DLL, CallingConvention = CC, SetLastError = false, EntryPoint = "libusb_unlock_events")]
+        [DllImport(NativeMethods.LibUsbNativeLibrary, CallingConvention = NativeMethods.LibUsbCallingConvention, SetLastError = false, EntryPoint = "libusb_unlock_events")]
         public static extern void UnlockEvents([In]MonoUsbSessionHandle sessionHandle);
 
         /// <summary>
@@ -713,7 +702,7 @@ namespace MonoLibUsb
         /// <item>0 if this thread must give up the events lock.</item>
         /// </list>
         /// </returns>
-        [DllImport(LIBUSB_DLL, CallingConvention = CC, SetLastError = false, EntryPoint = "libusb_event_handling_ok")]
+        [DllImport(NativeMethods.LibUsbNativeLibrary, CallingConvention = NativeMethods.LibUsbCallingConvention, SetLastError = false, EntryPoint = "libusb_event_handling_ok")]
         public static extern int EventHandlingOk([In]MonoUsbSessionHandle sessionHandle);
 
         /// <summary>
@@ -729,7 +718,7 @@ namespace MonoLibUsb
         /// <item>0 if there are no threads currently handling events.</item>
         /// </list>
         /// </returns>
-        [DllImport(LIBUSB_DLL, CallingConvention = CC, SetLastError = false, EntryPoint = "libusb_event_handler_active")]
+        [DllImport(NativeMethods.LibUsbNativeLibrary, CallingConvention = NativeMethods.LibUsbCallingConvention, SetLastError = false, EntryPoint = "libusb_event_handler_active")]
         public static extern int EventHandlerActive([In]MonoUsbSessionHandle sessionHandle);
 
         /// <summary>
@@ -742,7 +731,7 @@ namespace MonoLibUsb
         /// <note type="tip" title="Libusb-1.0 API:"><seelibusb10 group="poll"/></note>
         /// </remarks>
         /// <param name="sessionHandle">A valid <see cref="MonoUsbSessionHandle"/>.</param>
-        [DllImport(LIBUSB_DLL, CallingConvention = CC, SetLastError = false, EntryPoint = "libusb_lock_event_waiters")]
+        [DllImport(NativeMethods.LibUsbNativeLibrary, CallingConvention = NativeMethods.LibUsbCallingConvention, SetLastError = false, EntryPoint = "libusb_lock_event_waiters")]
         public static extern void LockEventWaiters([In]MonoUsbSessionHandle sessionHandle);
 
         /// <summary>
@@ -752,7 +741,7 @@ namespace MonoLibUsb
         /// <note type="tip" title="Libusb-1.0 API:"><seelibusb10 group="poll"/></note>
         /// </remarks>
         /// <param name="sessionHandle">A valid <see cref="MonoUsbSessionHandle"/>.</param>
-        [DllImport(LIBUSB_DLL, CallingConvention = CC, SetLastError = false, EntryPoint = "libusb_unlock_event_waiters")]
+        [DllImport(NativeMethods.LibUsbNativeLibrary, CallingConvention = NativeMethods.LibUsbCallingConvention, SetLastError = false, EntryPoint = "libusb_unlock_event_waiters")]
         public static extern void UnlockEventWaiters([In]MonoUsbSessionHandle sessionHandle);
 
         /// <summary>
@@ -779,7 +768,7 @@ namespace MonoLibUsb
         /// <item>1 if the timeout expired.</item>
         /// </list>
         /// </returns>
-        [DllImport(LIBUSB_DLL, CallingConvention = CC, SetLastError = false, EntryPoint = "libusb_wait_for_event")]
+        [DllImport(NativeMethods.LibUsbNativeLibrary, CallingConvention = NativeMethods.LibUsbCallingConvention, SetLastError = false, EntryPoint = "libusb_wait_for_event")]
         public static extern int WaitForEvent([In]MonoUsbSessionHandle sessionHandle, ref UnixNativeTimeval timeval);
 
         /// <summary>
@@ -793,7 +782,7 @@ namespace MonoLibUsb
         /// <param name="sessionHandle">A valid <see cref="MonoUsbSessionHandle"/>.</param>
         /// <param name="tv">The maximum time to block waiting for events, or zero for non-blocking mode</param>
         /// <returns>0 on success, or a <see cref="MonoUsbError"/> code on other failure.</returns>
-        [DllImport(LIBUSB_DLL, CallingConvention = CC, SetLastError = false, EntryPoint = "libusb_handle_events_timeout")]
+        [DllImport(NativeMethods.LibUsbNativeLibrary, CallingConvention = NativeMethods.LibUsbCallingConvention, SetLastError = false, EntryPoint = "libusb_handle_events_timeout")]
         public static extern int HandleEventsTimeout([In]MonoUsbSessionHandle sessionHandle, ref UnixNativeTimeval tv);
 
         /// <summary>
@@ -805,10 +794,10 @@ namespace MonoLibUsb
         /// </remarks>
         /// <param name="sessionHandle">A valid <see cref="MonoUsbSessionHandle"/>.</param>
         /// <returns>0 on success, or a <see cref="MonoUsbError"/> code on other failure.</returns>
-        [DllImport(LIBUSB_DLL, CallingConvention = CC, SetLastError = false, EntryPoint = "libusb_handle_events")]
+        [DllImport(NativeMethods.LibUsbNativeLibrary, CallingConvention = NativeMethods.LibUsbCallingConvention, SetLastError = false, EntryPoint = "libusb_handle_events")]
         public static extern int HandleEvents([In]MonoUsbSessionHandle sessionHandle);
 
-        [DllImport(LIBUSB_DLL, CallingConvention = CC, SetLastError = false, EntryPoint = "libusb_handle_events")]
+        [DllImport(NativeMethods.LibUsbNativeLibrary, CallingConvention = NativeMethods.LibUsbCallingConvention, SetLastError = false, EntryPoint = "libusb_handle_events")]
         private static extern int HandleEvents(IntPtr pSessionHandle);
 
         /// <summary>
@@ -822,7 +811,7 @@ namespace MonoLibUsb
         /// <param name="sessionHandle">A valid <see cref="MonoUsbSessionHandle"/>.</param>
         /// <param name="tv">The maximum time to block waiting for events, or zero for non-blocking mode</param>
         /// <returns>0 on success, or a <see cref="MonoUsbError"/> code on other failure.</returns>
-        [DllImport(LIBUSB_DLL, CallingConvention = CC, SetLastError = false, EntryPoint = "libusb_handle_events_locked")]
+        [DllImport(NativeMethods.LibUsbNativeLibrary, CallingConvention = NativeMethods.LibUsbCallingConvention, SetLastError = false, EntryPoint = "libusb_handle_events_locked")]
         public static extern int HandleEventsLocked([In]MonoUsbSessionHandle sessionHandle, ref UnixNativeTimeval tv);
 
         /// <summary>
@@ -837,7 +826,7 @@ namespace MonoLibUsb
         /// </remarks>
         /// <param name="sessionHandle">A valid <see cref="MonoUsbSessionHandle"/>.</param>
         /// <returns>0 if you must call into libusb at times determined by <see  cref="GetNextTimeout">libusb_get_next_timeout</see>, or 1 if all timeout events are handled internally or through regular activity on the file descriptors.</returns>
-        [DllImport(LIBUSB_DLL, CallingConvention = CC, SetLastError = false, EntryPoint = "libusb_pollfds_handle_timeouts")]
+        [DllImport(NativeMethods.LibUsbNativeLibrary, CallingConvention = NativeMethods.LibUsbCallingConvention, SetLastError = false, EntryPoint = "libusb_pollfds_handle_timeouts")]
         public static extern int PollfdsHandleTimeouts([In]MonoUsbSessionHandle sessionHandle);
 
         /// <summary>
@@ -854,10 +843,10 @@ namespace MonoLibUsb
         /// <param name="sessionHandle">A valid <see cref="MonoUsbSessionHandle"/>.</param>
         /// <param name="tv">The maximum time to block waiting for events, or zero for non-blocking mode</param>
         /// <returns>0 if there are no pending timeouts, 1 if a timeout was returned, or <see cref="MonoUsbError.ErrorOther"/> on failure.</returns>
-        [DllImport(LIBUSB_DLL, CallingConvention = CC, SetLastError = false, EntryPoint = "libusb_get_next_timeout")]
+        [DllImport(NativeMethods.LibUsbNativeLibrary, CallingConvention = NativeMethods.LibUsbCallingConvention, SetLastError = false, EntryPoint = "libusb_get_next_timeout")]
         public static extern int GetNextTimeout([In]MonoUsbSessionHandle sessionHandle, ref UnixNativeTimeval tv);
 
-        [DllImport(LIBUSB_DLL, CallingConvention = CC, SetLastError = false, EntryPoint = "libusb_get_pollfds")]
+        [DllImport(NativeMethods.LibUsbNativeLibrary, CallingConvention = NativeMethods.LibUsbCallingConvention, SetLastError = false, EntryPoint = "libusb_get_pollfds")]
         private static extern IntPtr GetPollfdsInternal([In]MonoUsbSessionHandle sessionHandle);
 
         /// <summary>
@@ -873,7 +862,7 @@ namespace MonoLibUsb
         /// <param name="addedDelegate">Function delegate for addition notifications.</param>
         /// <param name="removedDelegate">Function delegate for removal notifications.</param>
         /// <param name="pUserData">User data to be passed back to callbacks (useful for passing sessionHandle information).</param>
-        [DllImport(LIBUSB_DLL, CallingConvention = CC, SetLastError = false, EntryPoint = "libusb_set_pollfd_notifiers")]
+        [DllImport(NativeMethods.LibUsbNativeLibrary, CallingConvention = NativeMethods.LibUsbCallingConvention, SetLastError = false, EntryPoint = "libusb_set_pollfd_notifiers")]
         public static extern void SetPollfdNotifiers([In]MonoUsbSessionHandle sessionHandle, PollfdAddedDelegate addedDelegate, PollfdRemovedDelegate removedDelegate, IntPtr pUserData);
 
 #endregion
