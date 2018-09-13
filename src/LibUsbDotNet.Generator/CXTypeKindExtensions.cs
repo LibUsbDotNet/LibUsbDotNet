@@ -4,7 +4,6 @@
 
 using Core.Clang;
 using System;
-using System.Collections.Generic;
 
 namespace LibUsbDotNet.Generator
 {
@@ -96,6 +95,21 @@ namespace LibUsbDotNet.Generator
                             else
                             {
                                 return $"Native{NameConversions.ToClrName(pointee.GetTypedefName(), NameConversion.Type)}";
+                            }
+
+                        case TypeKind.Void:
+                            return "IntPtr";
+
+                        case TypeKind.Elaborated:
+                            var spelling = pointee.GetNamedType().GetSpelling();
+
+                            if (spelling == "timeval")
+                            {
+                                return "ref UnixNativeTimeval";
+                            }
+                            else
+                            {
+                                return "IntPtr";
                             }
 
                         default:

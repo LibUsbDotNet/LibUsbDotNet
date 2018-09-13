@@ -29,6 +29,7 @@
 // 
 //
 
+using MonoLibUsb;
 using System;
 using System.Runtime.InteropServices;
 

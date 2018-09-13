@@ -29,6 +29,7 @@
 // 
 //
 
+using MonoLibUsb;
 using System;
 using System.Runtime.InteropServices;
 
@@ -269,13 +270,13 @@ namespace LibUsbDotNet
         public static extern void UnlockEventWaiters(NativeContext ctx);
 
         [DllImport(LibUsbNativeLibrary, CallingConvention = LibUsbCallingConvention, EntryPoint = "libusb_wait_for_event")]
-        public static extern int WaitForEvent(NativeContext ctx, IntPtr tv);
+        public static extern int WaitForEvent(NativeContext ctx, ref UnixNativeTimeval tv);
 
         [DllImport(LibUsbNativeLibrary, CallingConvention = LibUsbCallingConvention, EntryPoint = "libusb_handle_events_timeout")]
-        public static extern int HandleEventsTimeout(NativeContext ctx, IntPtr tv);
+        public static extern int HandleEventsTimeout(NativeContext ctx, ref UnixNativeTimeval tv);
 
         [DllImport(LibUsbNativeLibrary, CallingConvention = LibUsbCallingConvention, EntryPoint = "libusb_handle_events_timeout_completed")]
-        public static extern int HandleEventsTimeoutCompleted(NativeContext ctx, IntPtr tv, ref int completed);
+        public static extern int HandleEventsTimeoutCompleted(NativeContext ctx, ref UnixNativeTimeval tv, ref int completed);
 
         [DllImport(LibUsbNativeLibrary, CallingConvention = LibUsbCallingConvention, EntryPoint = "libusb_handle_events")]
         public static extern int HandleEvents(NativeContext ctx);
@@ -284,13 +285,13 @@ namespace LibUsbDotNet
         public static extern int HandleEventsCompleted(NativeContext ctx, ref int completed);
 
         [DllImport(LibUsbNativeLibrary, CallingConvention = LibUsbCallingConvention, EntryPoint = "libusb_handle_events_locked")]
-        public static extern int HandleEventsLocked(NativeContext ctx, IntPtr tv);
+        public static extern int HandleEventsLocked(NativeContext ctx, ref UnixNativeTimeval tv);
 
         [DllImport(LibUsbNativeLibrary, CallingConvention = LibUsbCallingConvention, EntryPoint = "libusb_pollfds_handle_timeouts")]
         public static extern int PollfdsHandleTimeouts(NativeContext ctx);
 
         [DllImport(LibUsbNativeLibrary, CallingConvention = LibUsbCallingConvention, EntryPoint = "libusb_get_next_timeout")]
-        public static extern int GetNextTimeout(NativeContext ctx, IntPtr tv);
+        public static extern int GetNextTimeout(NativeContext ctx, ref UnixNativeTimeval tv);
 
         [DllImport(LibUsbNativeLibrary, CallingConvention = LibUsbCallingConvention, EntryPoint = "libusb_get_pollfds")]
         public static extern ref IntPtr GetPollfds(NativeContext ctx);

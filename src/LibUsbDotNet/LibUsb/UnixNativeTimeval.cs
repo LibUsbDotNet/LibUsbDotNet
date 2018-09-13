@@ -1,6 +1,5 @@
 using System;
 using System.Runtime.InteropServices;
-using LibUsbDotNet.Main;
 
 namespace MonoLibUsb
 {
@@ -14,27 +13,11 @@ namespace MonoLibUsb
         private IntPtr mTvUSecInternal;
 
         /// <summary>
-        /// Default <see cref="UnixNativeTimeval"/> used by the <see cref="MonoUsbEventHandler"/> on windows platforms.
-        /// </summary>
-        public static UnixNativeTimeval WindowsDefault
-        {
-            get { return new UnixNativeTimeval(2, 0); }
-        }
-
-        /// <summary>
-        /// Default <see cref="UnixNativeTimeval"/> used by the <see cref="MonoUsbEventHandler"/> on unix-like platforms.
-        /// </summary>
-        public static UnixNativeTimeval LinuxDefault
-        {
-            get { return new UnixNativeTimeval(2, 0); }
-        }
-
-        /// <summary>
         /// Default <see cref="UnixNativeTimeval"/>.
         /// </summary>
         public static UnixNativeTimeval Default
         {
-            get { return Helper.IsLinux ? LinuxDefault : WindowsDefault; }
+            get { return new UnixNativeTimeval(2, 0); }
         }
 
         /// <summary>
