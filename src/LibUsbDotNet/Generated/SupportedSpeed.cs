@@ -6,6 +6,7 @@
 //     the code is regenerated.
 // </auto-generated>
 //------------------------------------------------------------------------------
+
 // Copyright © 2006-2010 Travis Robinson. All rights reserved.
 // Copyright © 2011-2018 LibUsbDotNet contributors. All rights reserved.
 // 
@@ -27,6 +28,7 @@
 // visit www.gnu.org.
 // 
 //
+
 using System;
 
 namespace LibUsbDotNet
@@ -38,17 +40,21 @@ namespace LibUsbDotNet
         ///  Low speed operation supported (1.5MBit/s). 
         /// </summary>
         LowSpeedOperation = 0x1,
+
         /// <summary>
         ///  Full speed operation supported (12MBit/s). 
         /// </summary>
         FullSpeedOperation = 0x2,
+
         /// <summary>
         ///  High speed operation supported (480MBit/s). 
         /// </summary>
         HighSpeedOperation = 0x4,
+
         /// <summary>
         ///  Superspeed operation supported (5000MBit/s). 
         /// </summary>
         SuperSpeedOperation = 0x8,
+
     }
 }

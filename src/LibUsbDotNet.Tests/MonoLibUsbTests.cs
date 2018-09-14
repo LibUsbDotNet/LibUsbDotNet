@@ -1,54 +1,47 @@
 ﻿using LibUsbDotNet;
+using MonoLibUsb.Descriptors;
 using System;
+using System.Runtime.InteropServices;
 using Xunit;
 
 namespace MonoLibUsb.Tests
 {
-    public class MonoLibUsbTests : IDisposable
+    public class MonoLibUsbTests
     {
-        MonoUsbSessionHandle usbSession = null;
-
-        public MonoLibUsbTests()
-        {
-            usbSession = new MonoUsbSessionHandle();
-        }
-
-        public void Dispose()
-        {
-            usbSession.Close();
-        }
-
         [Fact]
         public void InitAndExit()
         {
-            System.IntPtr usbSessionPointer = System.IntPtr.Zero;
-            var lastReturnCode = (Error)MonoLibUsb.MonoUsbApi.Init(ref usbSessionPointer);
-
-            Assert.Equal(Error.Success, lastReturnCode);
-
-            MonoLibUsb.MonoUsbApi.Exit(usbSessionPointer);
+            IntPtr usbSessionPointer = IntPtr.Zero;
+            var lastReturnCode = (Error)NativeMethods.Init(ref usbSessionPointer);
+            using (var usbSession = NativeContext.DangerousCreate(usbSessionPointer))
+            {
+                Assert.Equal(Error.Success, lastReturnCode);
+            }
         }
 
         [Fact]
         public void SetDebug()
         {
-            MonoLibUsb.MonoUsbApi.SetDebug(usbSession, 3);
+            IntPtr usbSessionPointer = IntPtr.Zero;
+            var lastReturnCode = (Error)NativeMethods.Init(ref usbSessionPointer);
+            using (var usbSession = NativeContext.DangerousCreate(usbSessionPointer))
+            {
+                NativeMethods.SetDebug(usbSession, 3);
+            }
         }
 
         [Fact]
         public void GetVersion()
         {
-            MonoLibUsb.Descriptors.MonoUsbVersion version = new Descriptors.MonoUsbVersion();
-            var versionPtr = MonoLibUsb.MonoUsbApi.GetVersion();
-            System.Runtime.InteropServices.Marshal.PtrToStructure(versionPtr, version);
-
+            var versionPtr = NativeMethods.GetVersion();
+            var version = Marshal.PtrToStructure<MonoUsbVersion>(versionPtr);
             Assert.Equal(1, version.Major);
         }
 
         [Fact]
         public void HasCapability()
         {
-            int result = MonoLibUsb.MonoUsbApi.HasCapability(Capability.HasCapability);
+            int result = NativeMethods.HasCapability((uint)Capability.HasCapability);
 
             Assert.Equal(1, result);
         }

@@ -6,6 +6,7 @@
 //     the code is regenerated.
 // </auto-generated>
 //------------------------------------------------------------------------------
+
 // Copyright © 2006-2010 Travis Robinson. All rights reserved.
 // Copyright © 2011-2018 LibUsbDotNet contributors. All rights reserved.
 // 
@@ -27,6 +28,7 @@
 // visit www.gnu.org.
 // 
 //
+
 using System;
 
 namespace LibUsbDotNet
@@ -41,50 +43,63 @@ namespace LibUsbDotNet
         ///  Request status of the specific recipient 
         /// </summary>
         GetStatus = 0,
+
         /// <summary>
         ///  Clear or disable a specific feature 
         /// </summary>
         ClearFeature = 0x1,
+
         /// <summary>
         ///  Set or enable a specific feature 
         /// </summary>
         SetFeature = 0x3,
+
         /// <summary>
         ///  Set device address for all future accesses 
         /// </summary>
         SetAddress = 0x5,
+
         /// <summary>
         ///  Get the specified descriptor 
         /// </summary>
         GetDescriptor = 0x6,
+
         /// <summary>
         ///  Used to update existing descriptors or add new descriptors 
         /// </summary>
         SetDescriptor = 0x7,
+
         /// <summary>
         ///  Get the current device configuration value 
         /// </summary>
         GetConfiguration = 0x8,
+
         /// <summary>
         ///  Set device configuration 
         /// </summary>
         SetConfiguration = 0x9,
+
         /// <summary>
         ///  Return the selected alternate setting for the specified interface 
         /// </summary>
         GetInterface = 0xA,
+
         /// <summary>
         ///  Select an alternate interface for the specified interface 
         /// </summary>
         SetInterface = 0xB,
+
         /// <summary>
         ///  Set then report an endpoint's synchronization frame 
         /// </summary>
         SynchFrame = 0xC,
+
         /// <summary>
         ///  Sets both the U1 and U2 Exit Latency 
         /// </summary>
         SetSel = 0x30,
+
         SetIsochDelay = 0x31,
+
     }
 }

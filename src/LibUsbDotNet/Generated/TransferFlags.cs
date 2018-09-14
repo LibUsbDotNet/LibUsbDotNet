@@ -6,6 +6,7 @@
 //     the code is regenerated.
 // </auto-generated>
 //------------------------------------------------------------------------------
+
 // Copyright © 2006-2010 Travis Robinson. All rights reserved.
 // Copyright © 2011-2018 LibUsbDotNet contributors. All rights reserved.
 // 
@@ -27,6 +28,7 @@
 // visit www.gnu.org.
 // 
 //
+
 using System;
 
 namespace LibUsbDotNet
@@ -41,12 +43,17 @@ namespace LibUsbDotNet
         ///  Report short frames as errors 
         /// </summary>
         ShortNotOk = 0x1,
+
         FreeBuffer = 0x2,
+
         FreeTransfer = 0x4,
+
         /// <summary>
         ///  Available since libusb-1.0.9.
         /// </summary>
         AddZeroPacket = 0x8,
+
         None = 0x0,
+
     }
 }

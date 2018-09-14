@@ -6,6 +6,7 @@
 //     the code is regenerated.
 // </auto-generated>
 //------------------------------------------------------------------------------
+
 // Copyright © 2006-2010 Travis Robinson. All rights reserved.
 // Copyright © 2011-2018 LibUsbDotNet contributors. All rights reserved.
 // 
@@ -27,6 +28,7 @@
 // visit www.gnu.org.
 // 
 //
+
 using System;
 
 namespace LibUsbDotNet
@@ -38,11 +40,15 @@ namespace LibUsbDotNet
         ///  The libusb_has_capability() API is available. 
         /// </summary>
         HasCapability = 0,
+
         /// <summary>
         ///  Hotplug support is available on this platform. 
         /// </summary>
         HasHotplug = 0x1,
+
         HasHidAccess = 0x100,
+
         SupportsDetachKernelDriver = 0x101,
+
     }
 }

@@ -23,6 +23,7 @@
 using LibUsbDotNet;
 using LibUsbDotNet.Main;
 using MonoLibUsb.Descriptors;
+using System;
 
 namespace MonoLibUsb.Profile
 {
@@ -167,7 +168,13 @@ namespace MonoLibUsb.Profile
         /// <returns>
         /// A new <see cref="MonoUsbDeviceHandle"/> instance. Created with <see cref="MonoUsbDeviceHandle(MonoUsbProfileHandle)"/> constructor.
         /// </returns>
-        public MonoUsbDeviceHandle OpenDeviceHandle() { return new MonoUsbDeviceHandle(ProfileHandle); }
+        public NativeDeviceHandle OpenDeviceHandle()
+        {
+            NativeDevice device = NativeDevice.DangerousCreate(ProfileHandle.DangerousGetHandle());
+            IntPtr devHandle = IntPtr.Zero;
+            NativeMethods.Open(device, ref devHandle);
+            return NativeDeviceHandle.DangerousCreate(devHandle);
+        }
 
         /// <summary>
         /// Compares a <see cref="MonoUsbProfile"/> with this one.

@@ -6,6 +6,7 @@
 //     the code is regenerated.
 // </auto-generated>
 //------------------------------------------------------------------------------
+
 // Copyright © 2006-2010 Travis Robinson. All rights reserved.
 // Copyright © 2011-2018 LibUsbDotNet contributors. All rights reserved.
 // 
@@ -27,6 +28,7 @@
 // visit www.gnu.org.
 // 
 //
+
 using System;
 
 namespace LibUsbDotNet
@@ -41,17 +43,21 @@ namespace LibUsbDotNet
         ///  Standard 
         /// </summary>
         Standard = 0,
+
         /// <summary>
         ///  Class 
         /// </summary>
         Class = 0x20,
+
         /// <summary>
         ///  Vendor 
         /// </summary>
         Vendor = 0x40,
+
         /// <summary>
         ///  Reserved 
         /// </summary>
         Reserved = 0x60,
+
     }
 }

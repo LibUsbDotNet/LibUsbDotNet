@@ -6,6 +6,7 @@
 //     the code is regenerated.
 // </auto-generated>
 //------------------------------------------------------------------------------
+
 // Copyright © 2006-2010 Travis Robinson. All rights reserved.
 // Copyright © 2011-2018 LibUsbDotNet contributors. All rights reserved.
 // 
@@ -27,6 +28,7 @@
 // visit www.gnu.org.
 // 
 //
+
 using System;
 
 namespace LibUsbDotNet
@@ -41,77 +43,96 @@ namespace LibUsbDotNet
         ///  In the context of a 
         /// </summary>
         PerInterface = 0,
+
         /// <summary>
         ///  Audio class 
         /// </summary>
         Audio = 0x1,
+
         /// <summary>
         ///  Communications class 
         /// </summary>
         Comm = 0x2,
+
         /// <summary>
         ///  Human Interface Device class 
         /// </summary>
         Hid = 0x3,
+
         /// <summary>
         ///  Physical 
         /// </summary>
         Physical = 0x5,
+
         /// <summary>
         ///  Printer class 
         /// </summary>
         Printer = 0x7,
+
         /// <summary>
         ///  Image class 
         /// </summary>
         Ptp = 0x6,
+
         /// <summary>
         ///  Image class 
         /// </summary>
         Image = 0x6,
+
         /// <summary>
         ///  Mass storage class 
         /// </summary>
         MassStorage = 0x8,
+
         /// <summary>
         ///  Hub class 
         /// </summary>
         Hub = 0x9,
+
         /// <summary>
         ///  Data class 
         /// </summary>
         Data = 0xA,
+
         /// <summary>
         ///  Smart Card 
         /// </summary>
         SmartCard = 0xB,
+
         /// <summary>
         ///  Content Security 
         /// </summary>
         ContentSecurity = 0xD,
+
         /// <summary>
         ///  Video 
         /// </summary>
         Video = 0xE,
+
         /// <summary>
         ///  Personal Healthcare 
         /// </summary>
         PersonalHealthcare = 0xF,
+
         /// <summary>
         ///  Diagnostic Device 
         /// </summary>
         DiagnosticDevice = 0xDC,
+
         /// <summary>
         ///  Wireless class 
         /// </summary>
         Wireless = 0xE0,
+
         /// <summary>
         ///  Application class 
         /// </summary>
         Application = 0xFE,
+
         /// <summary>
         ///  Class is vendor-specific 
         /// </summary>
         VendorSpec = 0xFF,
+
     }
 }

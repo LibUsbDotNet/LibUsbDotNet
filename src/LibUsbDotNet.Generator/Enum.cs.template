@@ -34,14 +34,18 @@ using System;
 namespace LibUsbDotNet
 {
     {{#Description}}
-    {{{Description}}}
+    /// <summary>
+    {{{ToXmlDoc Description "4" }}}
+    /// </summary>
     {{/Description}}
     [Flags]
     public enum {{Name}} : {{BaseType}}
     {
         {{#Values}}
         {{#Description}}
-        {{{Description}}}
+        /// <summary>
+        {{{ToXmlDoc Description "8" }}}
+        /// </summary>
         {{/Description}}
         {{Name}} = {{Value}},
 

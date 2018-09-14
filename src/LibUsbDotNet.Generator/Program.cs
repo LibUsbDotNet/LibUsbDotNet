@@ -33,6 +33,8 @@ namespace LibUsbDotNet.Generator
 
             var libusbHeader = Path.Combine(vcpkgPath, "libusb-1.0/libusb.h");
 
+            DotNetHelpers.Register();
+
             Generator generator = new Generator();
             generator.InputFile = libusbHeader;
             generator.TargetDirectory = targetDirectory;

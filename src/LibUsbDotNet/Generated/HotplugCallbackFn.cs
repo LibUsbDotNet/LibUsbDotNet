@@ -30,29 +30,10 @@
 //
 
 using System;
+using System.Runtime.InteropServices;
 
 namespace LibUsbDotNet
 {
-    /// <summary>
-    ///  libusb_endpoint_descriptor.
-    /// </summary>
-    [Flags]
-    public enum IsoUsageType : byte
-    {
-        /// <summary>
-        ///  Data endpoint 
-        /// </summary>
-        Data = 0,
-
-        /// <summary>
-        ///  Feedback endpoint 
-        /// </summary>
-        Feedback = 0x1,
-
-        /// <summary>
-        ///  Implicit feedback Data endpoint 
-        /// </summary>
-        Implicit = 0x2,
-
-    }
+    [UnmanagedFunctionPointer(NativeMethods.LibUsbCallingConvention)]
+    public delegate int HotplugCallbackFn(NativeContext ctx, NativeDevice device, HotplugEvent @event, IntPtr userData);
 }

@@ -6,6 +6,7 @@
 //     the code is regenerated.
 // </auto-generated>
 //------------------------------------------------------------------------------
+
 // Copyright © 2006-2010 Travis Robinson. All rights reserved.
 // Copyright © 2011-2018 LibUsbDotNet contributors. All rights reserved.
 // 
@@ -27,6 +28,7 @@
 // visit www.gnu.org.
 // 
 //
+
 using System;
 
 namespace LibUsbDotNet
@@ -41,17 +43,21 @@ namespace LibUsbDotNet
         ///  No synchronization 
         /// </summary>
         None = 0,
+
         /// <summary>
         ///  Asynchronous 
         /// </summary>
         Async = 0x1,
+
         /// <summary>
         ///  Adaptive 
         /// </summary>
         Adaptive = 0x2,
+
         /// <summary>
         ///  Synchronous 
         /// </summary>
         Sync = 0x3,
+
     }
 }

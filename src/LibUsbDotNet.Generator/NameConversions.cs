@@ -32,14 +32,26 @@ namespace LibUsbDotNet.Generator
 
             while (i < parts.Count)
             {
-                // Remove the libusb prefix
                 if (i == 0 && string.Equals(parts[i], "libusb", StringComparison.OrdinalIgnoreCase))
                 {
-                    i++;
-                    continue;
+                    // Skip the libusb prefix
                 }
+                else if (i == parts.Count - 2
+                    && string.Equals(parts[i], "cb", StringComparison.OrdinalIgnoreCase)
+                    && string.Equals(parts[i + 1], "fn", StringComparison.OrdinalIgnoreCase))
+                {
+                    // Convert 'cb_fn' suffix to 'Delegate'
+                    nameBuilder.Append("Delegate");
 
-                if (conversion == NameConversion.Parameter && i == 0)
+                    // We handle 2 parts at a time
+                    i++;
+                }
+                else if (i == parts.Count - 1 && string.Equals(parts[i], "cb", StringComparison.OrdinalIgnoreCase))
+                {
+                    // Convert 'Cb' suffix to 'Delegate'
+                    nameBuilder.Append("Delegate");
+                }
+                else if (conversion == NameConversion.Parameter && i == 0)
                 {
                     nameBuilder.Append(char.ToLowerInvariant(parts[i][0]) + parts[i].Substring(1).ToLowerInvariant());
                 }
@@ -51,7 +63,17 @@ namespace LibUsbDotNet.Generator
                 i++;
             }
 
-            return nameBuilder.ToString();
+            var name = nameBuilder.ToString();
+
+            // Handle reserved keywords
+            if (name == "event")
+            {
+                return "@event";
+            }
+            else
+            {
+                return name;
+            }
         }
     }
 }

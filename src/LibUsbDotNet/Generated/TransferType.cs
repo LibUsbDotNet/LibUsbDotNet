@@ -6,6 +6,7 @@
 //     the code is regenerated.
 // </auto-generated>
 //------------------------------------------------------------------------------
+
 // Copyright © 2006-2010 Travis Robinson. All rights reserved.
 // Copyright © 2011-2018 LibUsbDotNet contributors. All rights reserved.
 // 
@@ -27,6 +28,7 @@
 // visit www.gnu.org.
 // 
 //
+
 using System;
 
 namespace LibUsbDotNet
@@ -38,21 +40,26 @@ namespace LibUsbDotNet
         ///  Control endpoint 
         /// </summary>
         Control = 0,
+
         /// <summary>
         ///  Isochronous endpoint 
         /// </summary>
         Isochronous = 0x1,
+
         /// <summary>
         ///  Bulk endpoint 
         /// </summary>
         Bulk = 0x2,
+
         /// <summary>
         ///  Interrupt endpoint 
         /// </summary>
         Interrupt = 0x3,
+
         /// <summary>
         ///  Stream endpoint 
         /// </summary>
         BulkStream = 0x4,
+
     }
 }

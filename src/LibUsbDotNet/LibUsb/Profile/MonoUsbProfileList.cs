@@ -115,14 +115,16 @@ namespace MonoLibUsb.Profile
         /// <example>
         /// <code source="..\MonoLibUsb\MonoUsb.ShowInfo\ShowInfo.cs" lang="cs"/>
         /// </example>
-        public int Refresh(MonoUsbSessionHandle sessionHandle)
+        public int Refresh(NativeContext sessionHandle)
         {
             lock (LockProfileList)
             {
                 MonoUsbProfileList newList = new MonoUsbProfileList();
-                MonoUsbProfileListHandle monoUSBProfileListHandle;
+                IntPtr rawUsbProfileListHandle = IntPtr.Zero;
 
-                int ret = MonoUsbApi.GetDeviceList(sessionHandle, out monoUSBProfileListHandle);
+                int ret = (int)NativeMethods.GetDeviceList(sessionHandle, ref rawUsbProfileListHandle);
+                MonoUsbProfileListHandle monoUSBProfileListHandle = new MonoUsbProfileListHandle(rawUsbProfileListHandle);
+
                 if (ret < 0 || monoUSBProfileListHandle.IsInvalid)
                 {
                     MonoUsbErrorMessage.Error(ErrorCode.MonoApiError, ret, "Refresh:GetDeviceList Failed", this);
