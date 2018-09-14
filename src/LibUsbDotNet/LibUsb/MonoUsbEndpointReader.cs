@@ -24,6 +24,7 @@ using LibUsbDotNet.Internal;
 using LibUsbDotNet.Main;
 using LibUsbDotNet.LudnMonoLibUsb.Internal;
 using MonoLibUsb;
+using LibUsbDotNet.LibUsb;
 
 namespace LibUsbDotNet.LudnMonoLibUsb
 {
@@ -66,10 +67,10 @@ namespace LibUsbDotNet.LudnMonoLibUsb
         {
             if (IsDisposed) throw new ObjectDisposedException(GetType().Name);
             Abort();
-            int ret = NativeMethods.ClearHalt((NativeDeviceHandle) Device.Handle, EpNum);
-            if (ret < 0)
+            var ret = NativeMethods.ClearHalt((NativeDeviceHandle)Device.Handle, EpNum);
+            if (ret != Error.Success)
             {
-                MonoUsbErrorMessage.Error(ErrorCode.MonoApiError, ret, "Endpoint Reset Failed", this);
+                MonoUsbErrorMessage.Error(ErrorCode.MonoApiError, (int)ret, "Endpoint Reset Failed", this);
                 return false;
             }
             return true;

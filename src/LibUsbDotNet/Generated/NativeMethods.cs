@@ -51,7 +51,7 @@ namespace LibUsbDotNet
 #endif
 
         [DllImport(LibUsbNativeLibrary, CallingConvention = LibUsbCallingConvention, EntryPoint = "libusb_init")]
-        public static extern int Init(ref IntPtr ctx);
+        public static extern Error Init(ref IntPtr ctx);
 
         [DllImport(LibUsbNativeLibrary, CallingConvention = LibUsbCallingConvention, EntryPoint = "libusb_exit")]
         public static extern void Exit(IntPtr ctx);
@@ -69,7 +69,7 @@ namespace LibUsbDotNet
         public static extern IntPtr ErrorName(int errcode);
 
         [DllImport(LibUsbNativeLibrary, CallingConvention = LibUsbCallingConvention, EntryPoint = "libusb_setlocale")]
-        public static extern int SetLocale(IntPtr locale);
+        public static extern Error SetLocale(IntPtr locale);
 
         [DllImport(LibUsbNativeLibrary, CallingConvention = LibUsbCallingConvention, EntryPoint = "libusb_strerror")]
         public static extern IntPtr StrError(Error errcode);
@@ -87,49 +87,49 @@ namespace LibUsbDotNet
         public static extern void UnrefDevice(IntPtr dev);
 
         [DllImport(LibUsbNativeLibrary, CallingConvention = LibUsbCallingConvention, EntryPoint = "libusb_get_configuration")]
-        public static extern int GetConfiguration(NativeDeviceHandle dev, ref int config);
+        public static extern Error GetConfiguration(NativeDeviceHandle dev, ref int config);
 
         [DllImport(LibUsbNativeLibrary, CallingConvention = LibUsbCallingConvention, EntryPoint = "libusb_get_device_descriptor")]
-        public static extern int GetDeviceDescriptor(NativeDevice dev, IntPtr desc);
+        public static extern Error GetDeviceDescriptor(NativeDevice dev, IntPtr desc);
 
         [DllImport(LibUsbNativeLibrary, CallingConvention = LibUsbCallingConvention, EntryPoint = "libusb_get_active_config_descriptor")]
-        public static extern int GetActiveConfigDescriptor(NativeDevice dev, ref IntPtr config);
+        public static extern Error GetActiveConfigDescriptor(NativeDevice dev, ref IntPtr config);
 
         [DllImport(LibUsbNativeLibrary, CallingConvention = LibUsbCallingConvention, EntryPoint = "libusb_get_config_descriptor")]
-        public static extern int GetConfigDescriptor(NativeDevice dev, byte configIndex, ref IntPtr config);
+        public static extern Error GetConfigDescriptor(NativeDevice dev, byte configIndex, ref IntPtr config);
 
         [DllImport(LibUsbNativeLibrary, CallingConvention = LibUsbCallingConvention, EntryPoint = "libusb_get_config_descriptor_by_value")]
-        public static extern int GetConfigDescriptorByValue(NativeDevice dev, byte bconfigurationvalue, ref IntPtr config);
+        public static extern Error GetConfigDescriptorByValue(NativeDevice dev, byte bconfigurationvalue, ref IntPtr config);
 
         [DllImport(LibUsbNativeLibrary, CallingConvention = LibUsbCallingConvention, EntryPoint = "libusb_free_config_descriptor")]
         public static extern void FreeConfigDescriptor(IntPtr config);
 
         [DllImport(LibUsbNativeLibrary, CallingConvention = LibUsbCallingConvention, EntryPoint = "libusb_get_ss_endpoint_companion_descriptor")]
-        public static extern int GetSsEndpointCompanionDescriptor(IntPtr ctx, IntPtr endpoint, ref IntPtr epComp);
+        public static extern Error GetSsEndpointCompanionDescriptor(IntPtr ctx, IntPtr endpoint, ref IntPtr epComp);
 
         [DllImport(LibUsbNativeLibrary, CallingConvention = LibUsbCallingConvention, EntryPoint = "libusb_free_ss_endpoint_companion_descriptor")]
         public static extern void FreeSsEndpointCompanionDescriptor(IntPtr epComp);
 
         [DllImport(LibUsbNativeLibrary, CallingConvention = LibUsbCallingConvention, EntryPoint = "libusb_get_bos_descriptor")]
-        public static extern int GetBosDescriptor(NativeDeviceHandle devHandle, ref IntPtr bos);
+        public static extern Error GetBosDescriptor(NativeDeviceHandle devHandle, ref IntPtr bos);
 
         [DllImport(LibUsbNativeLibrary, CallingConvention = LibUsbCallingConvention, EntryPoint = "libusb_free_bos_descriptor")]
         public static extern void FreeBosDescriptor(IntPtr bos);
 
         [DllImport(LibUsbNativeLibrary, CallingConvention = LibUsbCallingConvention, EntryPoint = "libusb_get_usb_2_0_extension_descriptor")]
-        public static extern int GetUsb20ExtensionDescriptor(IntPtr ctx, IntPtr devCap, ref IntPtr usb20Extension);
+        public static extern Error GetUsb20ExtensionDescriptor(IntPtr ctx, IntPtr devCap, ref IntPtr usb20Extension);
 
         [DllImport(LibUsbNativeLibrary, CallingConvention = LibUsbCallingConvention, EntryPoint = "libusb_free_usb_2_0_extension_descriptor")]
         public static extern void FreeUsb20ExtensionDescriptor(IntPtr usb20Extension);
 
         [DllImport(LibUsbNativeLibrary, CallingConvention = LibUsbCallingConvention, EntryPoint = "libusb_get_ss_usb_device_capability_descriptor")]
-        public static extern int GetSsUsbDeviceCapabilityDescriptor(IntPtr ctx, IntPtr devCap, ref IntPtr ssUsbDeviceCap);
+        public static extern Error GetSsUsbDeviceCapabilityDescriptor(IntPtr ctx, IntPtr devCap, ref IntPtr ssUsbDeviceCap);
 
         [DllImport(LibUsbNativeLibrary, CallingConvention = LibUsbCallingConvention, EntryPoint = "libusb_free_ss_usb_device_capability_descriptor")]
         public static extern void FreeSsUsbDeviceCapabilityDescriptor(IntPtr ssUsbDeviceCap);
 
         [DllImport(LibUsbNativeLibrary, CallingConvention = LibUsbCallingConvention, EntryPoint = "libusb_get_container_id_descriptor")]
-        public static extern int GetContainerIdDescriptor(IntPtr ctx, IntPtr devCap, ref IntPtr containerId);
+        public static extern Error GetContainerIdDescriptor(IntPtr ctx, IntPtr devCap, ref IntPtr containerId);
 
         [DllImport(LibUsbNativeLibrary, CallingConvention = LibUsbCallingConvention, EntryPoint = "libusb_free_container_id_descriptor")]
         public static extern void FreeContainerIdDescriptor(IntPtr containerId);
@@ -141,10 +141,10 @@ namespace LibUsbDotNet
         public static extern byte GetPortNumber(NativeDevice dev);
 
         [DllImport(LibUsbNativeLibrary, CallingConvention = LibUsbCallingConvention, EntryPoint = "libusb_get_port_numbers")]
-        public static extern int GetPortNumbers(NativeDevice dev, ref byte portNumbers, int portNumbersLen);
+        public static extern Error GetPortNumbers(NativeDevice dev, ref byte portNumbers, int portNumbersLen);
 
         [DllImport(LibUsbNativeLibrary, CallingConvention = LibUsbCallingConvention, EntryPoint = "libusb_get_port_path")]
-        public static extern int GetPortPath(NativeContext ctx, NativeDevice dev, ref byte path, byte pathLength);
+        public static extern Error GetPortPath(NativeContext ctx, NativeDevice dev, ref byte path, byte pathLength);
 
         [DllImport(LibUsbNativeLibrary, CallingConvention = LibUsbCallingConvention, EntryPoint = "libusb_get_parent")]
         public static extern NativeDevice GetParent(NativeDevice dev);
@@ -162,7 +162,7 @@ namespace LibUsbDotNet
         public static extern int GetMaxIsoPacketSize(NativeDevice dev, byte endpoint);
 
         [DllImport(LibUsbNativeLibrary, CallingConvention = LibUsbCallingConvention, EntryPoint = "libusb_open")]
-        public static extern int Open(NativeDevice dev, ref IntPtr devHandle);
+        public static extern Error Open(NativeDevice dev, ref IntPtr devHandle);
 
         [DllImport(LibUsbNativeLibrary, CallingConvention = LibUsbCallingConvention, EntryPoint = "libusb_close")]
         public static extern void Close(IntPtr devHandle);
@@ -171,58 +171,58 @@ namespace LibUsbDotNet
         public static extern NativeDevice GetDevice(NativeDeviceHandle devHandle);
 
         [DllImport(LibUsbNativeLibrary, CallingConvention = LibUsbCallingConvention, EntryPoint = "libusb_set_configuration")]
-        public static extern int SetConfiguration(NativeDeviceHandle devHandle, int configuration);
+        public static extern Error SetConfiguration(NativeDeviceHandle devHandle, int configuration);
 
         [DllImport(LibUsbNativeLibrary, CallingConvention = LibUsbCallingConvention, EntryPoint = "libusb_claim_interface")]
-        public static extern int ClaimInterface(NativeDeviceHandle devHandle, int interfaceNumber);
+        public static extern Error ClaimInterface(NativeDeviceHandle devHandle, int interfaceNumber);
 
         [DllImport(LibUsbNativeLibrary, CallingConvention = LibUsbCallingConvention, EntryPoint = "libusb_release_interface")]
-        public static extern int ReleaseInterface(NativeDeviceHandle devHandle, int interfaceNumber);
+        public static extern Error ReleaseInterface(NativeDeviceHandle devHandle, int interfaceNumber);
 
         [DllImport(LibUsbNativeLibrary, CallingConvention = LibUsbCallingConvention, EntryPoint = "libusb_open_device_with_vid_pid")]
         public static extern NativeDeviceHandle OpenDeviceWithVidPid(NativeContext ctx, ushort vendorId, ushort productId);
 
         [DllImport(LibUsbNativeLibrary, CallingConvention = LibUsbCallingConvention, EntryPoint = "libusb_set_interface_alt_setting")]
-        public static extern int SetInterfaceAltSetting(NativeDeviceHandle devHandle, int interfaceNumber, int alternateSetting);
+        public static extern Error SetInterfaceAltSetting(NativeDeviceHandle devHandle, int interfaceNumber, int alternateSetting);
 
         [DllImport(LibUsbNativeLibrary, CallingConvention = LibUsbCallingConvention, EntryPoint = "libusb_clear_halt")]
-        public static extern int ClearHalt(NativeDeviceHandle devHandle, byte endpoint);
+        public static extern Error ClearHalt(NativeDeviceHandle devHandle, byte endpoint);
 
         [DllImport(LibUsbNativeLibrary, CallingConvention = LibUsbCallingConvention, EntryPoint = "libusb_reset_device")]
-        public static extern int ResetDevice(NativeDeviceHandle devHandle);
+        public static extern Error ResetDevice(NativeDeviceHandle devHandle);
 
         [DllImport(LibUsbNativeLibrary, CallingConvention = LibUsbCallingConvention, EntryPoint = "libusb_alloc_streams")]
-        public static extern int AllocStreams(NativeDeviceHandle devHandle, uint numStreams, IntPtr endpoints, int numEndpoints);
+        public static extern Error AllocStreams(NativeDeviceHandle devHandle, uint numStreams, IntPtr endpoints, int numEndpoints);
 
         [DllImport(LibUsbNativeLibrary, CallingConvention = LibUsbCallingConvention, EntryPoint = "libusb_free_streams")]
-        public static extern int FreeStreams(NativeDeviceHandle devHandle, IntPtr endpoints, int numEndpoints);
+        public static extern Error FreeStreams(NativeDeviceHandle devHandle, IntPtr endpoints, int numEndpoints);
 
         [DllImport(LibUsbNativeLibrary, CallingConvention = LibUsbCallingConvention, EntryPoint = "libusb_dev_mem_alloc")]
         public static extern IntPtr DevMemAlloc(NativeDeviceHandle devHandle, UIntPtr length);
 
         [DllImport(LibUsbNativeLibrary, CallingConvention = LibUsbCallingConvention, EntryPoint = "libusb_dev_mem_free")]
-        public static extern int DevMemFree(NativeDeviceHandle devHandle, IntPtr buffer, UIntPtr length);
+        public static extern Error DevMemFree(NativeDeviceHandle devHandle, IntPtr buffer, UIntPtr length);
 
         [DllImport(LibUsbNativeLibrary, CallingConvention = LibUsbCallingConvention, EntryPoint = "libusb_kernel_driver_active")]
         public static extern int KernelDriverActive(NativeDeviceHandle devHandle, int interfaceNumber);
 
         [DllImport(LibUsbNativeLibrary, CallingConvention = LibUsbCallingConvention, EntryPoint = "libusb_detach_kernel_driver")]
-        public static extern int DetachKernelDriver(NativeDeviceHandle devHandle, int interfaceNumber);
+        public static extern Error DetachKernelDriver(NativeDeviceHandle devHandle, int interfaceNumber);
 
         [DllImport(LibUsbNativeLibrary, CallingConvention = LibUsbCallingConvention, EntryPoint = "libusb_attach_kernel_driver")]
-        public static extern int AttachKernelDriver(NativeDeviceHandle devHandle, int interfaceNumber);
+        public static extern Error AttachKernelDriver(NativeDeviceHandle devHandle, int interfaceNumber);
 
         [DllImport(LibUsbNativeLibrary, CallingConvention = LibUsbCallingConvention, EntryPoint = "libusb_set_auto_detach_kernel_driver")]
-        public static extern int SetAutoDetachKernelDriver(NativeDeviceHandle devHandle, int enable);
+        public static extern Error SetAutoDetachKernelDriver(NativeDeviceHandle devHandle, int enable);
 
         [DllImport(LibUsbNativeLibrary, CallingConvention = LibUsbCallingConvention, EntryPoint = "libusb_alloc_transfer")]
         public static extern IntPtr AllocTransfer(int isoPackets);
 
         [DllImport(LibUsbNativeLibrary, CallingConvention = LibUsbCallingConvention, EntryPoint = "libusb_submit_transfer")]
-        public static extern int SubmitTransfer(IntPtr transfer);
+        public static extern Error SubmitTransfer(IntPtr transfer);
 
         [DllImport(LibUsbNativeLibrary, CallingConvention = LibUsbCallingConvention, EntryPoint = "libusb_cancel_transfer")]
-        public static extern int CancelTransfer(IntPtr transfer);
+        public static extern Error CancelTransfer(IntPtr transfer);
 
         [DllImport(LibUsbNativeLibrary, CallingConvention = LibUsbCallingConvention, EntryPoint = "libusb_free_transfer")]
         public static extern void FreeTransfer(IntPtr transfer);
@@ -237,13 +237,13 @@ namespace LibUsbDotNet
         public static extern int ControlTransfer(NativeDeviceHandle devHandle, byte requestType, byte brequest, ushort wvalue, ushort windex, IntPtr data, ushort wlength, uint timeout);
 
         [DllImport(LibUsbNativeLibrary, CallingConvention = LibUsbCallingConvention, EntryPoint = "libusb_bulk_transfer")]
-        public static extern int BulkTransfer(NativeDeviceHandle devHandle, byte endpoint, IntPtr data, int length, ref int actualLength, uint timeout);
+        public static extern Error BulkTransfer(NativeDeviceHandle devHandle, byte endpoint, IntPtr data, int length, ref int actualLength, uint timeout);
 
         [DllImport(LibUsbNativeLibrary, CallingConvention = LibUsbCallingConvention, EntryPoint = "libusb_interrupt_transfer")]
-        public static extern int InterruptTransfer(NativeDeviceHandle devHandle, byte endpoint, IntPtr data, int length, ref int actualLength, uint timeout);
+        public static extern Error InterruptTransfer(NativeDeviceHandle devHandle, byte endpoint, IntPtr data, int length, ref int actualLength, uint timeout);
 
         [DllImport(LibUsbNativeLibrary, CallingConvention = LibUsbCallingConvention, EntryPoint = "libusb_get_string_descriptor_ascii")]
-        public static extern int GetStringDescriptorAscii(NativeDeviceHandle devHandle, byte descIndex, IntPtr data, int length);
+        public static extern Error GetStringDescriptorAscii(NativeDeviceHandle devHandle, byte descIndex, IntPtr data, int length);
 
         [DllImport(LibUsbNativeLibrary, CallingConvention = LibUsbCallingConvention, EntryPoint = "libusb_try_lock_events")]
         public static extern int TryLockEvents(NativeContext ctx);
@@ -273,25 +273,25 @@ namespace LibUsbDotNet
         public static extern int WaitForEvent(NativeContext ctx, ref UnixNativeTimeval tv);
 
         [DllImport(LibUsbNativeLibrary, CallingConvention = LibUsbCallingConvention, EntryPoint = "libusb_handle_events_timeout")]
-        public static extern int HandleEventsTimeout(NativeContext ctx, ref UnixNativeTimeval tv);
+        public static extern Error HandleEventsTimeout(NativeContext ctx, ref UnixNativeTimeval tv);
 
         [DllImport(LibUsbNativeLibrary, CallingConvention = LibUsbCallingConvention, EntryPoint = "libusb_handle_events_timeout_completed")]
-        public static extern int HandleEventsTimeoutCompleted(NativeContext ctx, ref UnixNativeTimeval tv, ref int completed);
+        public static extern Error HandleEventsTimeoutCompleted(NativeContext ctx, ref UnixNativeTimeval tv, ref int completed);
 
         [DllImport(LibUsbNativeLibrary, CallingConvention = LibUsbCallingConvention, EntryPoint = "libusb_handle_events")]
-        public static extern int HandleEvents(NativeContext ctx);
+        public static extern Error HandleEvents(NativeContext ctx);
 
         [DllImport(LibUsbNativeLibrary, CallingConvention = LibUsbCallingConvention, EntryPoint = "libusb_handle_events_completed")]
-        public static extern int HandleEventsCompleted(NativeContext ctx, ref int completed);
+        public static extern Error HandleEventsCompleted(NativeContext ctx, ref int completed);
 
         [DllImport(LibUsbNativeLibrary, CallingConvention = LibUsbCallingConvention, EntryPoint = "libusb_handle_events_locked")]
-        public static extern int HandleEventsLocked(NativeContext ctx, ref UnixNativeTimeval tv);
+        public static extern Error HandleEventsLocked(NativeContext ctx, ref UnixNativeTimeval tv);
 
         [DllImport(LibUsbNativeLibrary, CallingConvention = LibUsbCallingConvention, EntryPoint = "libusb_pollfds_handle_timeouts")]
-        public static extern int PollfdsHandleTimeouts(NativeContext ctx);
+        public static extern Error PollfdsHandleTimeouts(NativeContext ctx);
 
         [DllImport(LibUsbNativeLibrary, CallingConvention = LibUsbCallingConvention, EntryPoint = "libusb_get_next_timeout")]
-        public static extern int GetNextTimeout(NativeContext ctx, ref UnixNativeTimeval tv);
+        public static extern Error GetNextTimeout(NativeContext ctx, ref UnixNativeTimeval tv);
 
         [DllImport(LibUsbNativeLibrary, CallingConvention = LibUsbCallingConvention, EntryPoint = "libusb_get_pollfds")]
         public static extern ref IntPtr GetPollfds(NativeContext ctx);
@@ -303,7 +303,7 @@ namespace LibUsbDotNet
         public static extern void SetPollfdNotifiers(NativeContext ctx, IntPtr addedDelegate, IntPtr removedDelegate, IntPtr userData);
 
         [DllImport(LibUsbNativeLibrary, CallingConvention = LibUsbCallingConvention, EntryPoint = "libusb_hotplug_register_callback")]
-        public static extern int HotplugRegisterCallback(NativeContext ctx, HotplugEvent events, HotplugFlag flags, int vendorId, int productId, int devClass, IntPtr Delegate, IntPtr userData, ref int callbackHandle);
+        public static extern Error HotplugRegisterCallback(NativeContext ctx, HotplugEvent events, HotplugFlag flags, int vendorId, int productId, int devClass, IntPtr Delegate, IntPtr userData, ref int callbackHandle);
 
         [DllImport(LibUsbNativeLibrary, CallingConvention = LibUsbCallingConvention, EntryPoint = "libusb_hotplug_deregister_callback")]
         public static extern void HotplugDeregisterCallback(NativeContext ctx, int callbackHandle);

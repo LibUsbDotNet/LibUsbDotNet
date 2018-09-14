@@ -60,6 +60,33 @@ namespace LibUsbDotNet.Generator
 
             Method method = new Method();
             method.ReturnType = resultType.ToClrType();
+
+            // Most methods return ints to indicate whether an operation completed successfully.
+            // The int is value which is defined in the libusb_error enum. Thus, cast the result
+            // to Error.
+            // There are a couple of exceptions, for which we default to returning an int and
+            // let the caller decide what to do.
+
+            Collection<string> methodsThatReturnInt = new Collection<string>()
+            {
+                "libusb_has_capability", // => true/false
+                "libusb_kernel_driver_active", // => true/false
+                "libusb_control_transfer", // => > 0: # of bytes, < 0: error
+                "libusb_try_lock_events", // => true/false
+                "libusb_event_handling_ok", // => true/false
+                "libusb_event_handler_active", // => true/false
+                "libusb_wait_for_event", // => true/false
+                "libusb_get_device_speed", // => libusb_speed
+                "libusb_get_max_packet_size",
+                "libusb_get_max_iso_packet_size"
+            };
+
+            // Methods that return ints should return Error. Exceptions:
+            if (method.ReturnType == "int" && !methodsThatReturnInt.Contains(nativeName))
+            {
+                method.ReturnType = "Error";
+            }
+
             method.NativeName = nativeName;
 
             Dictionary<string, string> nameMappings = new Dictionary<string, string>();
