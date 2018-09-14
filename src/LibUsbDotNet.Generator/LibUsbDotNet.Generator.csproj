@@ -16,6 +16,9 @@
     <None Update="Delegate.cs.template">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
+    <None Update="Struct.cs.template">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
     <None Update="SafeHandle.cs.template">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>

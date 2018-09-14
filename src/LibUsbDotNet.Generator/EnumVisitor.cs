@@ -99,7 +99,7 @@ namespace LibUsbDotNet.Generator
                         var field =
                             new EnumValue()
                             {
-                                Name = NameConversions.ToClrName(c.GetSpelling(), prefix, NameConversion.Field),
+                                Name = NameConversions.ToClrName(c.GetSpelling(), prefix, NameConversion.Enum),
                                 Value = value > 0 ? $"0x{(int)c.GetEnumConstantDeclValue():X}" : $"{value}"
                             };
 
