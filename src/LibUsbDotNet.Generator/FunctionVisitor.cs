@@ -75,11 +75,25 @@ namespace LibUsbDotNet.Generator
                 method.Name = NameConversions.ToClrName(nativeName, NameConversion.Function);
             }
 
+            var pinvokeMethods = new Collection<string>()
+            {
+                "libusb_exit",
+                "libusb_unref_device",
+                "libusb_close"
+            };
+
+            var functionKind = FunctionKind.Default;
+
+            if (pinvokeMethods.Contains(nativeName))
+            {
+                functionKind = FunctionKind.Close;
+            }
+
             int numArgTypes = functionType.GetNumArgTypes();
 
             for (uint i = 0; i < numArgTypes; ++i)
             {
-                var argument = ArgumentGenerator.GenerateArgument(this.generator, cursor, i);
+                var argument = ArgumentGenerator.GenerateArgument(this.generator, functionKind, cursor, i);
                 method.Arguments.Add(argument);
             }
 

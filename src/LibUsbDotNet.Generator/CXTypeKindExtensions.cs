@@ -9,7 +9,7 @@ namespace LibUsbDotNet.Generator
 {
     internal static class TypeKindExtensions
     {
-        public static string ToClrType(this TypeInfo type)
+        public static string ToClrType(this TypeInfo type, FunctionKind functionKind = FunctionKind.Default)
         {
             if (type.Kind == TypeKind.Typedef && type.GetTypedefName() == "size_t")
             {
@@ -102,9 +102,13 @@ namespace LibUsbDotNet.Generator
                             {
                                 return "ref byte";
                             }
-                            else
+                            else if(functionKind == FunctionKind.Default)
                             {
                                 return $"Native{NameConversions.ToClrName(pointee.GetTypedefName(), NameConversion.Type)}";
+                            }
+                            else
+                            {
+                                return "IntPtr";
                             }
 
                         case TypeKind.Void:

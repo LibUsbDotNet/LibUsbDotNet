@@ -54,7 +54,7 @@ namespace LibUsbDotNet
         public static extern int Init(ref IntPtr ctx);
 
         [DllImport(LibUsbNativeLibrary, CallingConvention = LibUsbCallingConvention, EntryPoint = "libusb_exit")]
-        public static extern void Exit(NativeContext ctx);
+        public static extern void Exit(IntPtr ctx);
 
         [DllImport(LibUsbNativeLibrary, CallingConvention = LibUsbCallingConvention, EntryPoint = "libusb_set_debug")]
         public static extern void SetDebug(NativeContext ctx, int level);
@@ -84,7 +84,7 @@ namespace LibUsbDotNet
         public static extern NativeDevice RefDevice(NativeDevice dev);
 
         [DllImport(LibUsbNativeLibrary, CallingConvention = LibUsbCallingConvention, EntryPoint = "libusb_unref_device")]
-        public static extern void UnrefDevice(NativeDevice dev);
+        public static extern void UnrefDevice(IntPtr dev);
 
         [DllImport(LibUsbNativeLibrary, CallingConvention = LibUsbCallingConvention, EntryPoint = "libusb_get_configuration")]
         public static extern int GetConfiguration(NativeDeviceHandle dev, ref int config);
@@ -165,7 +165,7 @@ namespace LibUsbDotNet
         public static extern int Open(NativeDevice dev, ref IntPtr devHandle);
 
         [DllImport(LibUsbNativeLibrary, CallingConvention = LibUsbCallingConvention, EntryPoint = "libusb_close")]
-        public static extern void Close(NativeDeviceHandle devHandle);
+        public static extern void Close(IntPtr devHandle);
 
         [DllImport(LibUsbNativeLibrary, CallingConvention = LibUsbCallingConvention, EntryPoint = "libusb_get_device")]
         public static extern NativeDevice GetDevice(NativeDeviceHandle devHandle);

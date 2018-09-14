@@ -27,7 +27,7 @@ namespace LibUsbDotNet
         /// <inheritdoc/>
         protected override bool ReleaseHandle()
         {
-            NativeMethods.UnrefDevice(this);
+            NativeMethods.UnrefDevice(this.handle);
             return true;
         }
     }
