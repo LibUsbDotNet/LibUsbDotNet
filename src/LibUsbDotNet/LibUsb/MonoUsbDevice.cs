@@ -133,13 +133,13 @@ namespace LibUsbDotNet.LudnMonoLibUsb
         /// <returns>True on success.</returns>
         public bool ResetDevice()
         {
-            int ret;
+            Error ret;
             if (!IsOpen) throw new UsbException(this, "Device is not opened.");
             ActiveEndpoints.Clear();
 
-            if ((ret = NativeMethods.ResetDevice((NativeDeviceHandle) mUsbHandle)) != 0)
+            if ((ret = NativeMethods.ResetDevice((NativeDeviceHandle) mUsbHandle)) != Error.Success)
             {
-                MonoUsbErrorMessage.Error(ErrorCode.MonoApiError, ret, "ResetDevice Failed", this);
+                MonoUsbErrorMessage.Error(ErrorCode.MonoApiError, (int)ret, "ResetDevice Failed", this);
             }
             else
             {
@@ -255,11 +255,11 @@ namespace LibUsbDotNet.LudnMonoLibUsb
             if (IsOpen) return true;
             var nativeDevice = NativeDevice.DangerousCreate(mMonoUSBProfile.ProfileHandle.DangerousGetHandle(), false);
             IntPtr ptr = IntPtr.Zero;
-            int ret = NativeMethods.Open(nativeDevice, ref ptr);
+            var ret = NativeMethods.Open(nativeDevice, ref ptr);
             NativeDeviceHandle handle = NativeDeviceHandle.DangerousCreate(ptr);
             if (handle.IsInvalid)
             {
-                MonoUsbErrorMessage.Error(ErrorCode.MonoApiError, ret, "MonoUsbDevice.Open Failed", this);
+                MonoUsbErrorMessage.Error(ErrorCode.MonoApiError, (int)ret, "MonoUsbDevice.Open Failed", this);
                 mUsbHandle = null;
                 return false;
             }
@@ -327,10 +327,10 @@ namespace LibUsbDotNet.LudnMonoLibUsb
         /// </remarks>
         public bool SetConfiguration(byte config)
         {
-            int ret = NativeMethods.SetConfiguration((NativeDeviceHandle) mUsbHandle, config);
-            if (ret != 0)
+            var ret = NativeMethods.SetConfiguration((NativeDeviceHandle) mUsbHandle, config);
+            if (ret != Error.Success)
             {
-                MonoUsbErrorMessage.Error(ErrorCode.MonoApiError, ret, "SetConfiguration Failed", this);
+                MonoUsbErrorMessage.Error(ErrorCode.MonoApiError, (int)ret, "SetConfiguration Failed", this);
                 return false;
             }
             mCurrentConfigValue = config;
@@ -346,10 +346,10 @@ namespace LibUsbDotNet.LudnMonoLibUsb
         {
             config = 0;
             int iconfig = 0;
-            int ret = NativeMethods.GetConfiguration((NativeDeviceHandle) mUsbHandle, ref iconfig);
-            if (ret != 0)
+            var ret = NativeMethods.GetConfiguration((NativeDeviceHandle) mUsbHandle, ref iconfig);
+            if (ret != Error.Success)
             {
-                MonoUsbErrorMessage.Error(ErrorCode.MonoApiError, ret, "GetConfiguration Failed", this);
+                MonoUsbErrorMessage.Error(ErrorCode.MonoApiError, (int)ret, "GetConfiguration Failed", this);
                 return false;
             }
             config = (byte) iconfig;
@@ -414,10 +414,10 @@ namespace LibUsbDotNet.LudnMonoLibUsb
         {
             if (mClaimedInterfaces.Contains(interfaceID)) return true;
 
-            int ret = NativeMethods.ClaimInterface((NativeDeviceHandle)mUsbHandle, interfaceID);
-            if (ret != 0)
+            var ret = NativeMethods.ClaimInterface((NativeDeviceHandle)mUsbHandle, interfaceID);
+            if (ret != Error.Success)
             {
-                MonoUsbErrorMessage.Error(ErrorCode.MonoApiError, ret, "ClaimInterface Failed", this);
+                MonoUsbErrorMessage.Error(ErrorCode.MonoApiError, (int)ret, "ClaimInterface Failed", this);
                 return false;
             }
             mClaimedInterfaces.Add(interfaceID);
@@ -448,12 +448,12 @@ namespace LibUsbDotNet.LudnMonoLibUsb
         /// <returns>True on success.</returns>
         public bool ReleaseInterface(int interfaceID)
         {
-            int ret = NativeMethods.ReleaseInterface((NativeDeviceHandle) mUsbHandle, interfaceID);
+            var ret = NativeMethods.ReleaseInterface((NativeDeviceHandle) mUsbHandle, interfaceID);
             if (!mClaimedInterfaces.Remove(interfaceID)) return true;
 
-            if (ret != 0)
+            if (ret != Error.Success)
             {
-                MonoUsbErrorMessage.Error(ErrorCode.MonoApiError, ret, "ReleaseInterface Failed", this);
+                MonoUsbErrorMessage.Error(ErrorCode.MonoApiError, (int)ret, "ReleaseInterface Failed", this);
                 return false;
             }
             return true;
@@ -466,10 +466,10 @@ namespace LibUsbDotNet.LudnMonoLibUsb
         /// <returns>True on success.</returns>
         public bool SetAltInterface(int interfaceID, int alternateID)
         {
-            int ret = NativeMethods.SetInterfaceAltSetting((NativeDeviceHandle) mUsbHandle, interfaceID, alternateID);
-            if (ret != 0)
+            var ret = NativeMethods.SetInterfaceAltSetting((NativeDeviceHandle) mUsbHandle, interfaceID, alternateID);
+            if (ret != Error.Success)
             {
-                MonoUsbErrorMessage.Error(ErrorCode.MonoApiError, ret, "SetAltInterface Failed", this);
+                MonoUsbErrorMessage.Error(ErrorCode.MonoApiError, (int)ret, "SetAltInterface Failed", this);
                 return false;
             }
             UsbAltInterfaceSettings[interfaceID & (UsbConstants.MAX_DEVICES-1)] = (byte)alternateID;

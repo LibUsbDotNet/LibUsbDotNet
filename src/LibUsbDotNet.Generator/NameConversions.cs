@@ -4,12 +4,23 @@
 
 using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
+using System.Linq;
 using System.Text;
 
 namespace LibUsbDotNet.Generator
 {
     internal static class NameConversions
     {
+        private static readonly Collection<string> fieldPrefixes = new Collection<string>()
+        {
+            "bcd",
+            "bm",
+            "b",
+            "i",
+            "w"
+        };
+
         public static string ToClrName(string nativeName, NameConversion conversion)
         {
             return ToClrName(nativeName, string.Empty, conversion);
@@ -22,6 +33,14 @@ namespace LibUsbDotNet.Generator
             if (!string.IsNullOrEmpty(parentName) && patchedName.StartsWith(parentName, StringComparison.OrdinalIgnoreCase))
             {
                 patchedName = patchedName.Substring(parentName.Length);
+            }
+
+            if (conversion == NameConversion.Field && fieldPrefixes.Any(
+                prefix => patchedName.StartsWith(prefix)
+                && char.IsUpper(patchedName[prefix.Length])))
+            {
+                var prefix = fieldPrefixes.First(p => patchedName.StartsWith(p) && char.IsUpper(patchedName[p.Length]));
+                patchedName = patchedName.Substring(prefix.Length);
             }
 
             List<string> parts = new List<string>(patchedName.Split('_', StringSplitOptions.RemoveEmptyEntries));
@@ -55,9 +74,13 @@ namespace LibUsbDotNet.Generator
                 {
                     nameBuilder.Append(char.ToLowerInvariant(parts[i][0]) + parts[i].Substring(1).ToLowerInvariant());
                 }
-                else
+                else if (conversion != NameConversion.Field)
                 {
                     nameBuilder.Append(char.ToUpperInvariant(parts[i][0]) + parts[i].Substring(1).ToLowerInvariant());
+                }
+                else
+                {
+                    nameBuilder.Append(char.ToUpperInvariant(parts[i][0]) + parts[i].Substring(1));
                 }
 
                 i++;

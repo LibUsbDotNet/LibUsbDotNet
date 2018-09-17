@@ -129,6 +129,11 @@ namespace LibUsbDotNet.Generator
                 var functionVisitor = new FunctionVisitor(this);
                 var realFunctionVisitor = new DelegatingCursorVisitor(functionVisitor.Visit);
                 realFunctionVisitor.VisitChildren(translationUnit.GetCursor());
+
+                // Creates C# strucs for C structs
+                var structVisitor = new StructVisitor(this);
+                var realStructVisitor = new DelegatingCursorVisitor(structVisitor.Visit);
+                realStructVisitor.VisitChildren(translationUnit.GetCursor());
             }
         }
 
@@ -150,6 +155,11 @@ namespace LibUsbDotNet.Generator
                 if (type.Value is Delegate)
                 {
                     Write("Delegate.cs.template", type.Value, $"{type.Value.Name}.cs");
+                }
+
+                if (type.Value is Struct)
+                {
+                    Write("Struct.cs.template", type.Value, $"{type.Value.Name}.cs");
                 }
             }
 

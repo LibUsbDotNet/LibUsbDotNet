@@ -9,6 +9,7 @@ namespace LibUsbDotNet.Generator
         Type,
         Function,
         Field,
-        Parameter
+        Parameter,
+        Enum
     }
 }
