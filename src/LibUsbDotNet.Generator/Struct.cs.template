@@ -39,7 +39,7 @@ namespace LibUsbDotNet
     {{{ToXmlDoc Description "4" }}}
     /// </summary>
     {{/Description}}
-    [StructLayoutAttribute(LayoutKind.Sequential, Pack = 1)]
+    [StructLayoutAttribute(LayoutKind.Sequential, Pack = NativeMethods.Pack)]
     public {{ExtraKeywords}}struct {{Name}}
     {
         {{#Fields}}

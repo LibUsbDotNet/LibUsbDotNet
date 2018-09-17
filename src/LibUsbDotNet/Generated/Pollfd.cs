@@ -37,7 +37,7 @@ namespace LibUsbDotNet
     /// <summary>
     ///  File descriptor for polling
     /// </summary>
-    [StructLayoutAttribute(LayoutKind.Sequential, Pack = 1)]
+    [StructLayoutAttribute(LayoutKind.Sequential, Pack = NativeMethods.Pack)]
     public struct Pollfd
     {
         /// <summary>

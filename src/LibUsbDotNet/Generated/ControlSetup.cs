@@ -37,7 +37,7 @@ namespace LibUsbDotNet
     /// <summary>
     ///  Setup packet for control transfers.
     /// </summary>
-    [StructLayoutAttribute(LayoutKind.Sequential, Pack = 1)]
+    [StructLayoutAttribute(LayoutKind.Sequential, Pack = NativeMethods.Pack)]
     public struct ControlSetup
     {
         /// <summary>

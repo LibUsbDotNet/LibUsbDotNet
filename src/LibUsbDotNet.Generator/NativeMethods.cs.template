@@ -37,6 +37,11 @@ namespace LibUsbDotNet
 {
     internal static unsafe partial class NativeMethods
     {
+        /// <summary>
+        /// Use the default struct alignment for this platform.
+        /// </summary>
+        internal const int Pack = 0;
+
 #if WIN || NET45 || WIN7_X64 // win7-x64 during testing only.
         internal const string LibUsbNativeLibrary = "libusb-1.0.dll";
         internal const CallingConvention LibUsbCallingConvention = CallingConvention.StdCall;

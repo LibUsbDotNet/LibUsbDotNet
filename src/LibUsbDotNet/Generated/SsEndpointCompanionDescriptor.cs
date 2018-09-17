@@ -40,7 +40,7 @@ namespace LibUsbDotNet
     ///  the USB 3.0 specification. All multiple-byte fields are represented in
     ///  host-endian format.
     /// </summary>
-    [StructLayoutAttribute(LayoutKind.Sequential, Pack = 1)]
+    [StructLayoutAttribute(LayoutKind.Sequential, Pack = NativeMethods.Pack)]
     public struct SsEndpointCompanionDescriptor
     {
         /// <summary>

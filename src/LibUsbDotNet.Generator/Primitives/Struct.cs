@@ -3,6 +3,7 @@
 // </copyright>
 
 using System.Collections.ObjectModel;
+using System.Linq;
 
 namespace LibUsbDotNet.Generator.Primitives
 {
@@ -11,5 +12,19 @@ namespace LibUsbDotNet.Generator.Primitives
         public string Name { get; set; }
         public string Description { get; set; }
         public Collection<Field> Fields { get; } = new Collection<Field>();
+        public string ExtraKeywords
+        {
+            get
+            {
+                if (Fields.Any(f => f.FixedLengthString != null))
+                {
+                    return "unsafe ";
+                }
+                else
+                {
+                    return string.Empty;
+                }
+            }
+        }
     }
 }

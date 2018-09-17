@@ -39,7 +39,7 @@ namespace LibUsbDotNet
     ///  advised to check bDevCapabilityType and call the matching
     ///  libusb_get_*_descriptor function to get a structure fully matching the type.
     /// </summary>
-    [StructLayoutAttribute(LayoutKind.Sequential, Pack = 1)]
+    [StructLayoutAttribute(LayoutKind.Sequential, Pack = NativeMethods.Pack)]
     public struct BosDevCapabilityDescriptor
     {
         /// <summary>

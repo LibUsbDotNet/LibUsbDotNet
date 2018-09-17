@@ -40,7 +40,7 @@ namespace LibUsbDotNet
     ///  completed, the library populates the transfer with the results and passes
     ///  it back to the user.
     /// </summary>
-    [StructLayoutAttribute(LayoutKind.Sequential, Pack = 1)]
+    [StructLayoutAttribute(LayoutKind.Sequential, Pack = NativeMethods.Pack)]
     public struct Transfer
     {
     }
