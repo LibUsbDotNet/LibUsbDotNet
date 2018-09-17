@@ -34,11 +34,27 @@ using System.Runtime.InteropServices;
 
 namespace LibUsbDotNet
 {
-    [StructLayoutAttribute(LayoutKind.Sequential, Pack = 1)]
-    public struct {{Name}}
+    {{#Description}}
+    /// <summary>
+    {{{ToXmlDoc Description "4" }}}
+    /// </summary>
+    {{/Description}}
+    [StructLayoutAttribute(LayoutKind.Sequential, Pack = NativeMethods.Pack)]
+    public {{ExtraKeywords}}struct {{Name}}
     {
         {{#Fields}}
+        {{#Description}}
+        /// <summary>
+        {{{ToXmlDoc Description "8" }}}
+        /// </summary>
+        {{/Description}}
+        {{#FixedLengthString}}
+        public fixed char {{Name}}[{{FixedLengthString}}];
+        {{/FixedLengthString}}
+        {{^FixedLengthString}}
         public {{Type}} {{Name}};
+        {{/FixedLengthString}}
+
         {{/Fields}}
     }
 }

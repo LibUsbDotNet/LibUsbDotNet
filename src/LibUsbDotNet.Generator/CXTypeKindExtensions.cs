@@ -86,7 +86,18 @@ namespace LibUsbDotNet.Generator
                     switch (pointee.Kind)
                     {
                         case TypeKind.Pointer:
-                            return "ref IntPtr";
+                            // Double pointers are usually linked lists
+                            var listType = pointee.GetPointeeType();
+
+                            if (listType.Kind == TypeKind.Elaborated)
+                            {
+                                var pointee2Spelling = listType.GetNamedType().GetSpelling();
+                                return $"{NameConversions.ToClrName(pointee2Spelling, NameConversion.Type)}**";
+                            }
+                            else
+                            {
+                                return "ref IntPtr";
+                            }
 
                         case TypeKind.Int:
                             return "ref int";
@@ -100,7 +111,7 @@ namespace LibUsbDotNet.Generator
                             }
                             else if (typeDefName == "uint8_t")
                             {
-                                return "ref byte";
+                                return "byte*";
                             }
                             else if(functionKind == FunctionKind.Default)
                             {
@@ -121,9 +132,13 @@ namespace LibUsbDotNet.Generator
                             {
                                 return "ref UnixNativeTimeval";
                             }
+                            else if (spelling == "libusb_context")
+                            {
+                                return "ref Context";
+                            }
                             else
                             {
-                                return $"ref {NameConversions.ToClrName(spelling, NameConversion.Type)}";
+                                return $"{NameConversions.ToClrName(spelling, NameConversion.Type)}*";
                             }
 
                         default:

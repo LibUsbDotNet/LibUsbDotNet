@@ -31,10 +31,10 @@ namespace MonoLibUsb.Tests
         }
 
         [Fact]
-        public void GetVersion()
+        public unsafe void GetVersion()
         {
             var version = NativeMethods.GetVersion();
-            Assert.Equal(1, version.Major);
+            Assert.Equal(1, version->Major);
         }
 
         [Fact]

@@ -34,12 +34,38 @@ using System.Runtime.InteropServices;
 
 namespace LibUsbDotNet
 {
-    [StructLayoutAttribute(LayoutKind.Sequential, Pack = 1)]
+    /// <summary>
+    ///  A structure representing the USB 2.0 Extension descriptor
+    ///  This descriptor is documented in section 9.6.2.1 of the USB 3.0 specification.
+    ///  All multiple-byte fields are represented in host-endian format.
+    /// </summary>
+    [StructLayoutAttribute(LayoutKind.Sequential, Pack = NativeMethods.Pack)]
     public struct Usb20ExtensionDescriptor
     {
+        /// <summary>
+        ///  Size of this descriptor (in bytes)
+        /// </summary>
         public byte Length;
+
+        /// <summary>
+        ///  Descriptor type. Will have value
+        ///  LIBUSB_DT_DEVICE_CAPABILITY in this context.
+        /// </summary>
         public byte DescriptorType;
+
+        /// <summary>
+        ///  Capability type. Will have value
+        ///  LIBUSB_BT_USB_2_0_EXTENSION in this context.
+        /// </summary>
         public byte DevCapabilityType;
+
+        /// <summary>
+        ///  Bitmap encoding of supported device level features.
+        ///  A value of one in a bit location indicates a feature is
+        ///  supported; a value of zero indicates it is not supported.
+        ///  See
+        /// </summary>
         public uint Attributes;
+
     }
 }

@@ -34,12 +34,40 @@ using System.Runtime.InteropServices;
 
 namespace LibUsbDotNet
 {
-    [StructLayoutAttribute(LayoutKind.Sequential, Pack = 1)]
+    /// <summary>
+    ///  A structure representing the Binary Device Object Store (BOS) descriptor.
+    ///  This descriptor is documented in section 9.6.2 of the USB 3.0 specification.
+    ///  All multiple-byte fields are represented in host-endian format.
+    /// </summary>
+    [StructLayoutAttribute(LayoutKind.Sequential, Pack = NativeMethods.Pack)]
     public struct BosDescriptor
     {
+        /// <summary>
+        ///  Size of this descriptor (in bytes)
+        /// </summary>
         public byte Length;
+
+        /// <summary>
+        ///  Descriptor type. Will have value
+        ///  in this context.
+        /// </summary>
         public byte DescriptorType;
+
+        /// <summary>
+        ///  Length of this descriptor and all of its sub descriptors
+        /// </summary>
         public ushort TotalLength;
+
+        /// <summary>
+        ///  The number of separate device capability descriptors in
+        ///  the BOS
+        /// </summary>
         public byte NumDeviceCaps;
+
+        /// <summary>
+        ///  bNumDeviceCap Device Capability Descriptors
+        /// </summary>
+        public IntPtr DevCapability;
+
     }
 }
