@@ -40,7 +40,7 @@ namespace LibUsbDotNet
     ///  All multiple-byte fields, except UUIDs, are represented in host-endian format.
     /// </summary>
     [StructLayoutAttribute(LayoutKind.Sequential, Pack = 1)]
-    public struct ContainerIdDescriptor
+    public unsafe struct ContainerIdDescriptor
     {
         /// <summary>
         ///  Size of this descriptor (in bytes)
@@ -67,7 +67,7 @@ namespace LibUsbDotNet
         /// <summary>
         ///  128 bit UUID
         /// </summary>
-        public string ContainerID;
+        public fixed char ContainerID[16];
 
     }
 }

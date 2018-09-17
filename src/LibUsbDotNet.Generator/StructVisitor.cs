@@ -6,6 +6,7 @@ using Core.Clang;
 using LibUsbDotNet.Generator.Primitives;
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Text;
 
 namespace LibUsbDotNet.Generator
@@ -103,7 +104,21 @@ namespace LibUsbDotNet.Generator
                 case TypeKind.ConstantArray:
                     var size = canonical.GetArraySize();
 
-                    if (canonical.GetArrayElementType().GetCanonicalType().Kind == TypeKind.UChar)
+                    if (size == 0)
+                    {
+                        // This happens in e.g., libusb_bos_dev_capability_descriptor
+                        // #if defined(__STDC_VERSION__) && (__STDC_VERSION__ >= 199901L)
+                        // [] /* valid C99 code */
+                        // #else
+                        // [0] /* non-standard, but usually working code */
+                        // #endif
+                        Field emptyArrayField = new Field();
+                        emptyArrayField.Name = cursorSpelling;
+                        emptyArrayField.Type = "IntPtr";
+                        emptyArrayField.Description = comment;
+                        yield return emptyArrayField;
+                    }
+                    else if (canonical.GetArrayElementType().GetCanonicalType().Kind == TypeKind.UChar)
                     {
                         Field fixedLengthField = new Field();
                         fixedLengthField.Name = cursorSpelling;

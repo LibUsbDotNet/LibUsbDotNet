@@ -64,5 +64,10 @@ namespace LibUsbDotNet
         /// </summary>
         public byte NumDeviceCaps;
 
+        /// <summary>
+        ///  bNumDeviceCap Device Capability Descriptors
+        /// </summary>
+        public IntPtr DevCapability;
+
     }
 }

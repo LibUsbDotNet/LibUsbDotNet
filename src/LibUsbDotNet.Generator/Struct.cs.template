@@ -40,7 +40,7 @@ namespace LibUsbDotNet
     /// </summary>
     {{/Description}}
     [StructLayoutAttribute(LayoutKind.Sequential, Pack = 1)]
-    public struct {{Name}}
+    public {{ExtraKeywords}}struct {{Name}}
     {
         {{#Fields}}
         {{#Description}}
@@ -48,7 +48,12 @@ namespace LibUsbDotNet
         {{{ToXmlDoc Description "8" }}}
         /// </summary>
         {{/Description}}
+        {{#FixedLengthString}}
+        public fixed char {{Name}}[{{FixedLengthString}}];
+        {{/FixedLengthString}}
+        {{^FixedLengthString}}
         public {{Type}} {{Name}};
+        {{/FixedLengthString}}
 
         {{/Fields}}
     }

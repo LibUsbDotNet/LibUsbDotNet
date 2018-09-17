@@ -86,7 +86,18 @@ namespace LibUsbDotNet.Generator
                     switch (pointee.Kind)
                     {
                         case TypeKind.Pointer:
-                            return "ref IntPtr";
+                            // Double pointers are usually linked lists
+                            var listType = pointee.GetPointeeType();
+
+                            if (listType.Kind == TypeKind.Elaborated)
+                            {
+                                var pointee2Spelling = listType.GetNamedType().GetSpelling();
+                                return $"{NameConversions.ToClrName(pointee2Spelling, NameConversion.Type)}**";
+                            }
+                            else
+                            {
+                                return "ref IntPtr";
+                            }
 
                         case TypeKind.Int:
                             return "ref int";

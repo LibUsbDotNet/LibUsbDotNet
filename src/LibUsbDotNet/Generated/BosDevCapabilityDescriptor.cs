@@ -61,7 +61,7 @@ namespace LibUsbDotNet
         /// <summary>
         ///  Device Capability data (bLength - 3 bytes)
         /// </summary>
-        public string DevCapabilityData;
+        public IntPtr DevCapabilityData;
 
     }
 }
