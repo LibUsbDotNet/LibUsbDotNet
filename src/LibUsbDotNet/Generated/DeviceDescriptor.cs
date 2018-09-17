@@ -35,7 +35,7 @@ using System.Runtime.InteropServices;
 namespace LibUsbDotNet
 {
     [StructLayoutAttribute(LayoutKind.Sequential, Pack = 1)]
-    internal struct DeviceDescriptor
+    public struct DeviceDescriptor
     {
         public byte Length;
         public byte DescriptorType;

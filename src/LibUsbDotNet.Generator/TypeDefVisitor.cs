@@ -45,7 +45,7 @@ namespace LibUsbDotNet.Generator
                             new Primitives.SafeHandle()
                             {
                                 NativeName = nativeName,
-                                Name = $"Native{NameConversions.ToClrName(nativeName, NameConversion.Type)}"
+                                Name = NameConversions.ToClrName(nativeName, NameConversion.Type)
                             });
                         return ChildVisitResult.Continue;
 

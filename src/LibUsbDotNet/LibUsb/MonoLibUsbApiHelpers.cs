@@ -79,7 +79,7 @@ namespace MonoLibUsb
         /// <param name="pData">Output buffer for descriptor.</param>
         /// <param name="length">Size of data buffer.</param>
         /// <returns>Number of bytes returned in data, or a <see cref="Error"/> code on failure.</returns>
-        public static int GetDescriptor(NativeDeviceHandle deviceHandle, byte descType, byte descIndex, IntPtr pData, int length)
+        public static int GetDescriptor(DeviceHandle deviceHandle, byte descType, byte descIndex, IntPtr pData, int length)
         {
             return ControlTransfer(deviceHandle,
                                            (byte)EndpointDirection.In,
@@ -104,7 +104,7 @@ namespace MonoLibUsb
         /// <param name="data">Output buffer for descriptor. This object is pinned using <see cref="PinnedHandle"/>.</param>
         /// <param name="length">Size of data buffer.</param>
         /// <returns>Number of bytes returned in data, or <see cref="Error"/> code on failure.</returns>
-        public static int GetDescriptor(NativeDeviceHandle deviceHandle, byte descType, byte descIndex, object data, int length)
+        public static int GetDescriptor(DeviceHandle deviceHandle, byte descType, byte descIndex, object data, int length)
         {
             PinnedHandle p = new PinnedHandle(data);
             return GetDescriptor(deviceHandle, descType, descIndex, p.Handle, length);
@@ -124,11 +124,11 @@ namespace MonoLibUsb
         /// <param name="vendorID">The idVendor value to search for.</param>
         /// <param name="productID">The idProduct value to search for.</param>
         /// <returns>Null if the device was not opened or not found, otherwise an opened device handle.</returns>
-        public static NativeDeviceHandle OpenDeviceWithVidPid([In]NativeContext sessionHandle, ushort vendorID, ushort productID)
+        public static DeviceHandle OpenDeviceWithVidPid([In]Context sessionHandle, ushort vendorID, ushort productID)
         {
             var pHandle = NativeMethods.OpenDeviceWithVidPid(sessionHandle, vendorID, productID);
-            if (pHandle == NativeDeviceHandle.Zero) return null;
-            return NativeDeviceHandle.DangerousCreate(pHandle.DangerousGetHandle());
+            if (pHandle == DeviceHandle.Zero) return null;
+            return DeviceHandle.DangerousCreate(pHandle.DangerousGetHandle());
         }
 
         /// <summary>
@@ -143,7 +143,7 @@ namespace MonoLibUsb
         /// </remarks>
         /// <param name="devicehandle">A device handle.</param>
         /// <returns>The underlying profile handle.</returns>
-        public static MonoUsbProfileHandle GetDevice(NativeDeviceHandle devicehandle)
+        public static MonoUsbProfileHandle GetDevice(DeviceHandle devicehandle)
         {
             var device = NativeMethods.GetDevice(devicehandle);
             return new MonoUsbProfileHandle(device.DangerousGetHandle());
@@ -197,7 +197,7 @@ namespace MonoLibUsb
         /// <item>another <see cref="Error"/> code on other failures</item>
         /// </list>
         /// </returns>
-        public static int BulkTransfer(NativeDeviceHandle deviceHandle, byte endpoint, object data, int length, out int actualLength, int timeout)
+        public static int BulkTransfer(DeviceHandle deviceHandle, byte endpoint, object data, int length, out int actualLength, int timeout)
         {
             PinnedHandle p = new PinnedHandle(data);
             int ret = BulkTransfer(deviceHandle, endpoint, p.Handle, length, out actualLength, timeout);
@@ -249,7 +249,7 @@ namespace MonoLibUsb
         /// <item>another <see cref="Error"/> code on other failures</item>
         /// </list>
         /// </returns>
-        public static int InterruptTransfer(NativeDeviceHandle deviceHandle, byte endpoint, object data, int length, out int actualLength, int timeout)
+        public static int InterruptTransfer(DeviceHandle deviceHandle, byte endpoint, object data, int length, out int actualLength, int timeout)
         {
             PinnedHandle p = new PinnedHandle(data);
             int ret = InterruptTransfer(deviceHandle, endpoint, p.Handle, length, out actualLength, timeout);
@@ -282,7 +282,7 @@ namespace MonoLibUsb
         /// <item>another <see cref="Error"/> code on other failures</item>
         /// </list>
         /// </returns>
-        public static int ControlTransferAsync(NativeDeviceHandle deviceHandle, byte requestType, byte request, short value, short index, IntPtr pData, short dataLength, int timeout)
+        public static int ControlTransferAsync(DeviceHandle deviceHandle, byte requestType, byte request, short value, short index, IntPtr pData, short dataLength, int timeout)
         {
             MonoUsbControlSetupHandle setupHandle = new MonoUsbControlSetupHandle(requestType, request, value, index, pData, dataLength);
             MonoUsbTransfer transfer = new MonoUsbTransfer(0);
@@ -299,7 +299,7 @@ namespace MonoLibUsb
                 return r;
             }
             IntPtr pSessionHandle;
-            NativeContext sessionHandle = MonoUsbEventHandler.SessionHandle;
+            Context sessionHandle = MonoUsbEventHandler.SessionHandle;
             if (sessionHandle == null)
                 pSessionHandle = IntPtr.Zero;
             else
@@ -380,7 +380,7 @@ namespace MonoLibUsb
         /// <item>another <see cref="Error"/> code on other failures</item>
         /// </list>
         /// </returns>
-        public static int ControlTransfer(NativeDeviceHandle deviceHandle, byte requestType, byte request, short value, short index, object data, short dataLength, int timeout)
+        public static int ControlTransfer(DeviceHandle deviceHandle, byte requestType, byte request, short value, short index, object data, short dataLength, int timeout)
         {
             PinnedHandle p = new PinnedHandle(data);
             int ret = ControlTransfer(deviceHandle, requestType, request, value, index, p.Handle, dataLength, timeout);
@@ -400,7 +400,7 @@ namespace MonoLibUsb
         /// </remarks>
         /// <param name="sessionHandle">A valid <see cref="MonoUsbSessionHandle"/>.</param>
         /// <returns>A list of PollfdItem structures, or null on error.</returns>
-        public static List<PollfdItem> GetPollfds(NativeContext sessionHandle)
+        public static List<PollfdItem> GetPollfds(Context sessionHandle)
         {
             List<PollfdItem> rtnList = new List<PollfdItem>();
             IntPtr pList = NativeMethods.GetPollfds(sessionHandle);

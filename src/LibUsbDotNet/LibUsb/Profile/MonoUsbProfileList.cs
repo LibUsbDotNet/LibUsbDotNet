@@ -115,7 +115,7 @@ namespace MonoLibUsb.Profile
         /// <example>
         /// <code source="..\MonoLibUsb\MonoUsb.ShowInfo\ShowInfo.cs" lang="cs"/>
         /// </example>
-        public int Refresh(NativeContext sessionHandle)
+        public int Refresh(Context sessionHandle)
         {
             lock (LockProfileList)
             {

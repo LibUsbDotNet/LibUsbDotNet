@@ -22,7 +22,7 @@
 
 namespace LibUsbDotNet
 {
-    public partial class NativeDeviceHandle
+    public partial class DeviceHandle
     {
         /// <inheritdoc/>
         protected override bool ReleaseHandle()

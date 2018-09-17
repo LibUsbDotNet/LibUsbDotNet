@@ -13,7 +13,7 @@ namespace MonoLibUsb.Tests
         {
             IntPtr usbSessionPointer = IntPtr.Zero;
             var lastReturnCode = (Error)NativeMethods.Init(ref usbSessionPointer);
-            using (var usbSession = NativeContext.DangerousCreate(usbSessionPointer))
+            using (var usbSession = Context.DangerousCreate(usbSessionPointer))
             {
                 Assert.Equal(Error.Success, lastReturnCode);
             }
@@ -24,7 +24,7 @@ namespace MonoLibUsb.Tests
         {
             IntPtr usbSessionPointer = IntPtr.Zero;
             var lastReturnCode = (Error)NativeMethods.Init(ref usbSessionPointer);
-            using (var usbSession = NativeContext.DangerousCreate(usbSessionPointer))
+            using (var usbSession = Context.DangerousCreate(usbSessionPointer))
             {
                 NativeMethods.SetDebug(usbSession, 3);
             }
@@ -33,8 +33,7 @@ namespace MonoLibUsb.Tests
         [Fact]
         public void GetVersion()
         {
-            var versionPtr = NativeMethods.GetVersion();
-            var version = Marshal.PtrToStructure<MonoUsbVersion>(versionPtr);
+            var version = NativeMethods.GetVersion();
             Assert.Equal(1, version.Major);
         }
 

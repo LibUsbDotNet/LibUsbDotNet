@@ -279,7 +279,7 @@ namespace MonoLibUsb.Transfer
         /// <param name="callback">callback function to be invoked on transfer completion</param>
         /// <param name="userData">user data to pass to callback function</param>
         /// <param name="timeout">timeout for the transfer in milliseconds</param>
-        public void FillBulk(NativeDeviceHandle devHandle,
+        public void FillBulk(DeviceHandle devHandle,
                          byte endpoint,
                          IntPtr buffer,
                          int length,
@@ -318,7 +318,7 @@ namespace MonoLibUsb.Transfer
         /// <param name="callback">callback function to be invoked on transfer completion</param>
         /// <param name="userData">user data to pass to callback function</param>
         /// <param name="timeout">timeout for the transfer in milliseconds</param>
-        public void FillInterrupt(NativeDeviceHandle devHandle,
+        public void FillInterrupt(DeviceHandle devHandle,
                  byte endpoint,
                  IntPtr buffer,
                  int length,
@@ -357,7 +357,7 @@ namespace MonoLibUsb.Transfer
         /// <param name="callback">callback function to be invoked on transfer completion</param>
         /// <param name="userData">user data to pass to callback function</param>
         /// <param name="timeout">timeout for the transfer in milliseconds</param>
-        public void FillIsochronous(NativeDeviceHandle devHandle,
+        public void FillIsochronous(DeviceHandle devHandle,
                  byte endpoint,
                  IntPtr buffer,
                  int length,int numIsoPackets,
@@ -500,7 +500,7 @@ namespace MonoLibUsb.Transfer
         /// <param name="callback">callback function to be invoked on transfer completion</param>
         /// <param name="userData">user data to pass to callback function</param>
         /// <param name="timeout">timeout for the transfer in milliseconds</param>
-        public void FillControl(NativeDeviceHandle devHandle, MonoUsbControlSetupHandle controlSetupHandle, Delegate callback, IntPtr userData, int timeout) 
+        public void FillControl(DeviceHandle devHandle, MonoUsbControlSetupHandle controlSetupHandle, Delegate callback, IntPtr userData, int timeout) 
         {
             PtrDeviceHandle = devHandle.DangerousGetHandle();
             Endpoint = 0;
