@@ -37,7 +37,7 @@ namespace MonoLibUsb
     {
         private static readonly ManualResetEvent mIsStoppedEvent = new ManualResetEvent(true);
         private static bool mRunning;
-        private static NativeContext mSessionHandle;
+        private static Context mSessionHandle;
         internal static Thread mUsbEventThread;
 #if !NETSTANDARD1_5 && !NETSTANDARD1_6
         private static ThreadPriority mPriority = ThreadPriority.Normal;
@@ -51,7 +51,7 @@ namespace MonoLibUsb
         /// <remarks>
         /// Used for MonoLibUsb members that require the <see cref="MonoUsbSessionHandle"/> parameter.
         /// </remarks>
-        public static NativeContext SessionHandle
+        public static Context SessionHandle
         {
             get { return mSessionHandle; }
         }
@@ -90,7 +90,7 @@ namespace MonoLibUsb
 
         private static void HandleEventFn(object oHandle)
         {
-            var sessionHandle = oHandle as NativeContext;
+            var sessionHandle = oHandle as Context;
 
             mIsStoppedEvent.Reset();
 
@@ -127,7 +127,7 @@ namespace MonoLibUsb
                 mWaitUnixNativeTimeval = unixNativeTimeval;
                 IntPtr ctx = IntPtr.Zero;
                 NativeMethods.Init(ref ctx);
-                mSessionHandle=NativeContext.DangerousCreate(ctx);
+                mSessionHandle=Context.DangerousCreate(ctx);
                 if (mSessionHandle.IsInvalid)
                 {
                     mSessionHandle = null;

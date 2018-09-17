@@ -168,12 +168,12 @@ namespace MonoLibUsb.Profile
         /// <returns>
         /// A new <see cref="MonoUsbDeviceHandle"/> instance. Created with <see cref="MonoUsbDeviceHandle(MonoUsbProfileHandle)"/> constructor.
         /// </returns>
-        public NativeDeviceHandle OpenDeviceHandle()
+        public DeviceHandle OpenDeviceHandle()
         {
-            NativeDevice device = NativeDevice.DangerousCreate(ProfileHandle.DangerousGetHandle());
+            Device device = Device.DangerousCreate(ProfileHandle.DangerousGetHandle());
             IntPtr devHandle = IntPtr.Zero;
             NativeMethods.Open(device, ref devHandle);
-            return NativeDeviceHandle.DangerousCreate(devHandle);
+            return DeviceHandle.DangerousCreate(devHandle);
         }
 
         /// <summary>

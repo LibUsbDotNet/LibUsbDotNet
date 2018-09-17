@@ -67,7 +67,7 @@ namespace LibUsbDotNet.LudnMonoLibUsb
         {
             if (IsDisposed) throw new ObjectDisposedException(GetType().Name);
             Abort();
-            var ret = NativeMethods.ClearHalt((NativeDeviceHandle)Device.Handle, EpNum);
+            var ret = NativeMethods.ClearHalt((DeviceHandle)Device.Handle, EpNum);
             if (ret != Error.Success)
             {
                 MonoUsbErrorMessage.Error(ErrorCode.MonoApiError, (int)ret, "Endpoint Reset Failed", this);
