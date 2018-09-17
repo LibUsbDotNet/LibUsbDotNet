@@ -34,10 +34,26 @@ using System.Runtime.InteropServices;
 
 namespace LibUsbDotNet
 {
+    /// <summary>
+    ///  File descriptor for polling
+    /// </summary>
     [StructLayoutAttribute(LayoutKind.Sequential, Pack = 1)]
     public struct Pollfd
     {
+        /// <summary>
+        ///  Numeric file descriptor
+        /// </summary>
         public int Fd;
+
+        /// <summary>
+        ///  Event flags to poll for from
+        ///  <poll
+        ///  .h>. POLLIN indicates that you
+        ///  should monitor this file descriptor for becoming ready to read from,
+        ///  and POLLOUT indicates that you should monitor this file descriptor for
+        ///  nonblocking write readiness.
+        /// </summary>
         public short Events;
+
     }
 }

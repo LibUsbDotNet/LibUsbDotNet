@@ -6,6 +6,7 @@ using Core.Clang;
 using LibUsbDotNet.Generator.Primitives;
 using System;
 using System.Collections.Generic;
+using System.Text;
 
 namespace LibUsbDotNet.Generator
 {
@@ -53,9 +54,13 @@ namespace LibUsbDotNet.Generator
 
                 var clrName = NameConversions.ToClrName(nativeName, NameConversion.Type);
 
-                this.current = new Struct();
+                this.current = new Struct()
+                {
+                    Name = clrName,
+                    Description = GetComment(cursor)
+                };
+
                 this.generator.AddType(nativeName, current);
-                this.current.Name = clrName;
 
                 var visitor = new DelegatingCursorVisitor(this.Visit);
                 visitor.VisitChildren(cursor);
@@ -91,6 +96,7 @@ namespace LibUsbDotNet.Generator
         public static IEnumerable<Field> GetFields(Cursor cursor, string cursorSpelling, Generator generator)
         {
             var canonical = cursor.GetTypeInfo().GetCanonicalType();
+            var comment = GetComment(cursor);
 
             switch (canonical.Kind)
             {
@@ -103,6 +109,7 @@ namespace LibUsbDotNet.Generator
                         fixedLengthField.Name = cursorSpelling;
                         fixedLengthField.Type = "string";
                         fixedLengthField.FixedLengthString = (int)size;
+                        fixedLengthField.Description = comment;
                         yield return fixedLengthField;
                     }
                     else if (canonical.GetArrayElementType().GetCanonicalType().Kind == TypeKind.Pointer)
@@ -112,6 +119,7 @@ namespace LibUsbDotNet.Generator
                             Field fixedLengthField = new Field();
                             fixedLengthField.Name = $"{cursorSpelling}_{i}";
                             fixedLengthField.Type = "void*";
+                            fixedLengthField.Description = comment;
                             yield return fixedLengthField;
                         }
                     }
@@ -122,6 +130,7 @@ namespace LibUsbDotNet.Generator
                             Field fixedLengthField = new Field();
                             fixedLengthField.Name = $"{cursorSpelling}_{i}";
                             fixedLengthField.Type = "void*";
+                            fixedLengthField.Description = comment;
                             yield return fixedLengthField;
                         }
                     }
@@ -137,29 +146,8 @@ namespace LibUsbDotNet.Generator
                     var intPtrMember = new Field();
                     intPtrMember.Name = cursorSpelling;
                     intPtrMember.Type = "IntPtr";
+                    intPtrMember.Description = comment;
                     yield return intPtrMember;
-
-                    /*
-                    if (pointeeType.Kind == TypeKind.Char_S)
-                    {
-                        CodeMemberProperty stringMember = new CodeMemberProperty();
-                        stringMember.Attributes = MemberAttributes.Public | MemberAttributes.Final;
-                        stringMember.Name = cursorSpelling + "String";
-                        stringMember.Type = new CodeTypeReference(typeof(string));
-
-                        stringMember.HasGet = true;
-                        stringMember.GetStatements.Add(
-                            new CodeMethodReturnStatement(
-                                new CodeMethodInvokeExpression(
-                                    new CodeMethodReferenceExpression(
-                                        new CodeTypeReferenceExpression("Utf8Marshal"),
-                                        "PtrToStringUtf8"),
-                                    new CodeFieldReferenceExpression(
-                                        new CodeThisReferenceExpression(),
-                                        intPtrMember.Name))));
-
-                        yield return stringMember;
-                    }*/
 
                     break;
 
@@ -167,6 +155,7 @@ namespace LibUsbDotNet.Generator
                     var enumField = new Field();
                     enumField.Name = cursorSpelling;
                     enumField.Type = NameConversions.ToClrName(canonical.GetSpelling(), NameConversion.Type);
+                    enumField.Description = comment;
                     yield return enumField;
                     break;
 
@@ -174,6 +163,7 @@ namespace LibUsbDotNet.Generator
                     var recordField = new Field();
                     recordField.Name = cursorSpelling;
                     recordField.Type = NameConversions.ToClrName(canonical.GetSpelling(), NameConversion.Type);
+                    recordField.Description = comment;
                     yield return recordField;
                     break;
 
@@ -181,8 +171,89 @@ namespace LibUsbDotNet.Generator
                     var field = new Field();
                     field.Name = cursorSpelling;
                     field.Type = canonical.ToClrType();
+                    field.Description = comment;
                     yield return field;
                     break;
+            }
+        }
+
+        private static string GetComment(Cursor cursor)
+        {
+            // Standard hierarchy:
+            // - Full Comment
+            // - Paragraph Comment or ParamCommand comment
+            // - Text Comment
+            var fullComment = cursor.GetParsedComment();
+            var fullCommentKind = fullComment.Kind;
+            var fullCommentChildren = fullComment.GetNumChildren();
+
+            if (fullCommentKind != CommentKind.FullComment || fullCommentChildren < 1)
+            {
+                return null;
+            }
+
+            StringBuilder comment = new StringBuilder();
+
+            for (int i = 0; i < fullCommentChildren; i++)
+            {
+                var childComment = fullComment.GetChild(i);
+                var childCommentKind = childComment.Kind;
+
+                if (childCommentKind != CommentKind.Paragraph
+                    && childCommentKind != CommentKind.ParamCommand
+                    && childCommentKind != CommentKind.BlockCommand)
+                {
+                    continue;
+                }
+
+                StringBuilder textBuilder = new StringBuilder();
+                GetCommentInnerText(childComment, textBuilder);
+                string text = textBuilder.ToString();
+
+                if (string.IsNullOrWhiteSpace(text))
+                {
+                    continue;
+                }
+
+                if (childCommentKind == CommentKind.Paragraph)
+                {
+                    comment.Append(text);
+                }
+                else if (childCommentKind == CommentKind.BlockCommand)
+                {
+                    var name = childComment.GetCommandName();
+                    throw new NotImplementedException();
+                }
+            }
+
+            return comment.ToString();
+        }
+
+        private static void GetCommentInnerText(Comment comment, StringBuilder builder)
+        {
+            var commentKind = comment.Kind;
+
+            if (commentKind == CommentKind.Text)
+            {
+                var text = comment.GetText();
+                text = text.Trim();
+
+                if (!string.IsNullOrWhiteSpace(text))
+                {
+                    builder.Append(" ");
+                    builder.AppendLine(text);
+                }
+            }
+            else
+            {
+                // Recurse
+                var childCount = comment.GetNumChildren();
+
+                for (int i = 0; i < childCount; i++)
+                {
+                    var child = comment.GetChild(i);
+                    GetCommentInnerText(child, builder);
+                }
             }
         }
     }

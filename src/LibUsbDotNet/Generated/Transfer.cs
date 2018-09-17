@@ -34,6 +34,12 @@ using System.Runtime.InteropServices;
 
 namespace LibUsbDotNet
 {
+    /// <summary>
+    ///  The generic USB transfer structure. The user populates this structure and
+    ///  then submits it in order to request a transfer. After the transfer has
+    ///  completed, the library populates the transfer with the results and passes
+    ///  it back to the user.
+    /// </summary>
     [StructLayoutAttribute(LayoutKind.Sequential, Pack = 1)]
     public struct Transfer
     {

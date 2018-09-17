@@ -9,6 +9,7 @@ namespace LibUsbDotNet.Generator.Primitives
     public class Struct : IPrimitive
     {
         public string Name { get; set; }
+        public string Description { get; set; }
         public Collection<Field> Fields { get; } = new Collection<Field>();
     }
 }
