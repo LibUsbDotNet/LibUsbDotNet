@@ -111,7 +111,7 @@ namespace LibUsbDotNet.Generator
                             }
                             else if (typeDefName == "uint8_t")
                             {
-                                return "ref byte";
+                                return "byte*";
                             }
                             else if(functionKind == FunctionKind.Default)
                             {

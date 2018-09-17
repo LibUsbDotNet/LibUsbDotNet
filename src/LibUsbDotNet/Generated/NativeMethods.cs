@@ -37,6 +37,11 @@ namespace LibUsbDotNet
 {
     internal static unsafe partial class NativeMethods
     {
+        /// <summary>
+        /// Use the default struct alignment for this platform.
+        /// </summary>
+        internal const int Pack = 0;
+
 #if WIN || NET45 || WIN7_X64 // win7-x64 during testing only.
         internal const string LibUsbNativeLibrary = "libusb-1.0.dll";
         internal const CallingConvention LibUsbCallingConvention = CallingConvention.StdCall;
@@ -141,10 +146,10 @@ namespace LibUsbDotNet
         public static extern byte GetPortNumber(Device dev);
 
         [DllImport(LibUsbNativeLibrary, CallingConvention = LibUsbCallingConvention, EntryPoint = "libusb_get_port_numbers")]
-        public static extern Error GetPortNumbers(Device dev, ref byte portNumbers, int portNumbersLen);
+        public static extern Error GetPortNumbers(Device dev, byte* portNumbers, int portNumbersLen);
 
         [DllImport(LibUsbNativeLibrary, CallingConvention = LibUsbCallingConvention, EntryPoint = "libusb_get_port_path")]
-        public static extern Error GetPortPath(Context ctx, Device dev, ref byte path, byte pathLength);
+        public static extern Error GetPortPath(Context ctx, Device dev, byte* path, byte pathLength);
 
         [DllImport(LibUsbNativeLibrary, CallingConvention = LibUsbCallingConvention, EntryPoint = "libusb_get_parent")]
         public static extern Device GetParent(Device dev);
