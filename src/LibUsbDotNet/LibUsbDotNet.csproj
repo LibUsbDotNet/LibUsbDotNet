@@ -4,6 +4,7 @@
     <Description>.NET C# USB library for WinUSB, LibUsb-Win32, and libusb-1.0. Using the common device classes, applications work with all operating systems and drivers without modification. Lots of example code. Open source software at sourceforge.net.</Description>
     <AssemblyTitle>LibUsbDotNet for .NET Core</AssemblyTitle>
     <Authors>Travis Robinson;Stevie-O;Quamotion</Authors>
+    <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
     <TargetFrameworks>netstandard2.0</TargetFrameworks>
     <TargetFrameworks Condition="'$(OS)' == 'Windows_NT'">$(TargetFrameworks);net45</TargetFrameworks>
     <RuntimeIdentifiers>win;linux;osx</RuntimeIdentifiers>
