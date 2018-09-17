@@ -400,10 +400,10 @@ namespace MonoLibUsb
         /// </remarks>
         /// <param name="sessionHandle">A valid <see cref="MonoUsbSessionHandle"/>.</param>
         /// <returns>A list of PollfdItem structures, or null on error.</returns>
-        public static List<PollfdItem> GetPollfds(Context sessionHandle)
+        public static unsafe List<PollfdItem> GetPollfds(Context sessionHandle)
         {
             List<PollfdItem> rtnList = new List<PollfdItem>();
-            IntPtr pList = NativeMethods.GetPollfds(sessionHandle);
+            IntPtr pList = new IntPtr(NativeMethods.GetPollfds(sessionHandle));
             if (pList == IntPtr.Zero) return null;
 
             IntPtr pNext = pList;
