@@ -35,5 +35,5 @@ using System.Runtime.InteropServices;
 namespace LibUsbDotNet
 {
     [UnmanagedFunctionPointer(NativeMethods.LibUsbCallingConvention)]
-    public delegate void TransferDelegate(ref Transfer transfer);
+    public unsafe delegate void TransferDelegate(Transfer* transfer);
 }

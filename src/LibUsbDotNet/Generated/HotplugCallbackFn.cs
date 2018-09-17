@@ -35,5 +35,5 @@ using System.Runtime.InteropServices;
 namespace LibUsbDotNet
 {
     [UnmanagedFunctionPointer(NativeMethods.LibUsbCallingConvention)]
-    public delegate int HotplugCallbackFn(Context ctx, Device device, HotplugEvent @event, IntPtr userData);
+    public unsafe delegate int HotplugCallbackFn(Context ctx, Device device, HotplugEvent @event, IntPtr userData);
 }

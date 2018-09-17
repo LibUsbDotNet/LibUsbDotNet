@@ -132,9 +132,13 @@ namespace LibUsbDotNet.Generator
                             {
                                 return "ref UnixNativeTimeval";
                             }
+                            else if (spelling == "libusb_context")
+                            {
+                                return "ref Context";
+                            }
                             else
                             {
-                                return $"ref {NameConversions.ToClrName(spelling, NameConversion.Type)}";
+                                return $"{NameConversions.ToClrName(spelling, NameConversion.Type)}*";
                             }
 
                         default:

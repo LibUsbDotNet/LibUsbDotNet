@@ -35,5 +35,5 @@ using System.Runtime.InteropServices;
 namespace LibUsbDotNet
 {
     [UnmanagedFunctionPointer(NativeMethods.LibUsbCallingConvention)]
-    public delegate {{ReturnType}} {{Name}}({{#Arguments}}{{Type}} {{Name}}{{ArgumentSeparator Arguments . }}{{/Arguments}});
+    public unsafe delegate {{ReturnType}} {{Name}}({{#Arguments}}{{Type}} {{Name}}{{ArgumentSeparator Arguments . }}{{/Arguments}});
 }
