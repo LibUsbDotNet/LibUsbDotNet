@@ -35,7 +35,7 @@ using System.Runtime.InteropServices;
 namespace LibUsbDotNet
 {
     [StructLayoutAttribute(LayoutKind.Sequential, Pack = 1)]
-    internal struct IsoPacketDescriptor
+    public struct IsoPacketDescriptor
     {
         public uint Length;
         public uint ActualLength;

@@ -35,7 +35,7 @@ using System.Runtime.InteropServices;
 namespace LibUsbDotNet
 {
     [StructLayoutAttribute(LayoutKind.Sequential, Pack = 1)]
-    internal struct Transfer
+    public struct Transfer
     {
     }
 }

@@ -35,7 +35,7 @@ using System.Runtime.InteropServices;
 namespace LibUsbDotNet
 {
     [StructLayoutAttribute(LayoutKind.Sequential, Pack = 1)]
-    internal struct Interface
+    public struct Interface
     {
         public IntPtr Altsetting;
         public int NumAltsetting;
