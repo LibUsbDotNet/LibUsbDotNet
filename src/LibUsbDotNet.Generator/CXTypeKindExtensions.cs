@@ -104,7 +104,7 @@ namespace LibUsbDotNet.Generator
                             }
                             else if(functionKind == FunctionKind.Default)
                             {
-                                return $"Native{NameConversions.ToClrName(pointee.GetTypedefName(), NameConversion.Type)}";
+                                return NameConversions.ToClrName(pointee.GetTypedefName(), NameConversion.Type);
                             }
                             else
                             {
@@ -123,7 +123,7 @@ namespace LibUsbDotNet.Generator
                             }
                             else
                             {
-                                return "IntPtr";
+                                return $"ref {NameConversions.ToClrName(spelling, NameConversion.Type)}";
                             }
 
                         default:

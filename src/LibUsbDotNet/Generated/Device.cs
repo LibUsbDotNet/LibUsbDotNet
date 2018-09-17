@@ -36,30 +36,30 @@ using System.Security.Permissions;
 namespace LibUsbDotNet
 {
     /// <summary>
-    /// Represents a wrapper class for <c>libusb_device_handle</c> handles.
+    /// Represents a wrapper class for <c>libusb_device</c> handles.
     /// </summary>
     [SecurityPermission(SecurityAction.InheritanceDemand, UnmanagedCode=true)]
     [SecurityPermission(SecurityAction.Demand, UnmanagedCode=true)]
-    public partial class NativeDeviceHandle : SafeHandleZeroOrMinusOneIsInvalid
+    public partial class Device : SafeHandleZeroOrMinusOneIsInvalid
     {
         private string creationStackTrace;
 
         /// <summary>
-        /// Initializes a new instance of the <see cref="NativeDeviceHandle"/> class.
+        /// Initializes a new instance of the <see cref="Device"/> class.
         /// </summary>
-        protected NativeDeviceHandle() :
+        protected Device() :
                 base(true)
         {
             this.creationStackTrace = Environment.StackTrace;
         }
 
         /// <summary>
-        /// Initializes a new instance of the <see cref="NativeDeviceHandle"/> class, specifying whether the handle is to be reliably released.
+        /// Initializes a new instance of the <see cref="Device"/> class, specifying whether the handle is to be reliably released.
         /// </summary>
         /// <param name="ownsHandle">
         /// <see langword="true"/> to reliably release the handle during the finalization phase; <see langword="false"/> to prevent reliable release (not recommended).
         /// </param>
-        protected NativeDeviceHandle(bool ownsHandle) :
+        protected Device(bool ownsHandle) :
                 base(ownsHandle)
         {
             this.creationStackTrace = Environment.StackTrace;
@@ -68,16 +68,16 @@ namespace LibUsbDotNet
         /// <summary>
         /// Gets a value which represents a pointer or handle that has been initialized to zero.
         /// </summary>
-        public static NativeDeviceHandle Zero
+        public static Device Zero
         {
             get
             {
-                return NativeDeviceHandle.DangerousCreate(IntPtr.Zero);
+                return Device.DangerousCreate(IntPtr.Zero);
             }
         }
 
         /// <summary>
-        /// Creates a new <see cref="NativeDeviceHandle"/> from a <see cref="IntPtr"/>.
+        /// Creates a new <see cref="Device"/> from a <see cref="IntPtr"/>.
         /// </summary>
         /// <param name="unsafeHandle">
         /// The underlying <see cref="IntPtr"/>
@@ -87,38 +87,38 @@ namespace LibUsbDotNet
         /// </param>
         /// <returns>
         /// </returns>
-        public static NativeDeviceHandle DangerousCreate(IntPtr unsafeHandle, bool ownsHandle)
+        public static Device DangerousCreate(IntPtr unsafeHandle, bool ownsHandle)
         {
-            NativeDeviceHandle safeHandle = new NativeDeviceHandle(ownsHandle);
+            Device safeHandle = new Device(ownsHandle);
             safeHandle.SetHandle(unsafeHandle);
             return safeHandle;
         }
 
         /// <summary>
-        /// Creates a new <see cref="NativeDeviceHandle"/> from a <see cref="IntPtr"/>.
+        /// Creates a new <see cref="Device"/> from a <see cref="IntPtr"/>.
         /// </summary>
         /// <param name="unsafeHandle">
         /// The underlying <see cref="IntPtr"/>
         /// </param>
         /// <returns>
         /// </returns>
-        public static NativeDeviceHandle DangerousCreate(IntPtr unsafeHandle)
+        public static Device DangerousCreate(IntPtr unsafeHandle)
         {
-            return NativeDeviceHandle.DangerousCreate(unsafeHandle, true);
+            return Device.DangerousCreate(unsafeHandle, true);
         }
 
         /// <inheritdoc/>
         public override string ToString()
         {
-            return string.Format("{0} ({1})", this.handle, "NativeDeviceHandle");
+            return string.Format("{0} ({1})", this.handle, "Device");
         }
 
         /// <inheritdoc/>
         public override bool Equals(object obj)
         {
-            if (obj != null && obj.GetType() == typeof(NativeDeviceHandle))
+            if (obj != null && obj.GetType() == typeof(Device))
             {
-                return ((NativeDeviceHandle)obj).handle.Equals(this.handle);
+                return ((Device)obj).handle.Equals(this.handle);
             }
             else
             {
@@ -133,7 +133,7 @@ namespace LibUsbDotNet
         }
 
         /// <summary>
-        /// Determines whether two specified instances of <see cref="NativeDeviceHandle"/> are equal.
+        /// Determines whether two specified instances of <see cref="Device"/> are equal.
         /// </summary>
         /// <param name="value1">
         /// The first pointer or handle to compare.
@@ -144,7 +144,7 @@ namespace LibUsbDotNet
         /// <returns>
         /// <see langword="true"/> if <paramref name="value1"/> equals <paramref name="value2"/>; otherwise, <see langword="false"/>.
         /// </returns>
-        public static bool operator == (NativeDeviceHandle value1, NativeDeviceHandle value2) 
+        public static bool operator == (Device value1, Device value2) 
         {
             if (object.Equals(value1, null) && object.Equals(value2, null))
             {
@@ -160,7 +160,7 @@ namespace LibUsbDotNet
         }
 
         /// <summary>
-        /// Determines whether two specified instances of <see cref="NativeDeviceHandle"/> are not equal.
+        /// Determines whether two specified instances of <see cref="Device"/> are not equal.
         /// </summary>
         /// <param name="value1">
         /// The first pointer or handle to compare.
@@ -171,7 +171,7 @@ namespace LibUsbDotNet
         /// <returns>
         /// <see langword="true"/> if <paramref name="value1"/> does not equal <paramref name="value2"/>; otherwise, <see langword="false"/>.
         /// </returns>
-        public static bool operator != (NativeDeviceHandle value1, NativeDeviceHandle value2) 
+        public static bool operator != (Device value1, Device value2) 
         {
             if (object.Equals(value1, null) && object.Equals(value2, null))
             {

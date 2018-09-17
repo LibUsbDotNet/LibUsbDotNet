@@ -40,26 +40,26 @@ namespace LibUsbDotNet
     /// </summary>
     [SecurityPermission(SecurityAction.InheritanceDemand, UnmanagedCode=true)]
     [SecurityPermission(SecurityAction.Demand, UnmanagedCode=true)]
-    public partial class NativeContext : SafeHandleZeroOrMinusOneIsInvalid
+    public partial class Context : SafeHandleZeroOrMinusOneIsInvalid
     {
         private string creationStackTrace;
 
         /// <summary>
-        /// Initializes a new instance of the <see cref="NativeContext"/> class.
+        /// Initializes a new instance of the <see cref="Context"/> class.
         /// </summary>
-        protected NativeContext() :
+        protected Context() :
                 base(true)
         {
             this.creationStackTrace = Environment.StackTrace;
         }
 
         /// <summary>
-        /// Initializes a new instance of the <see cref="NativeContext"/> class, specifying whether the handle is to be reliably released.
+        /// Initializes a new instance of the <see cref="Context"/> class, specifying whether the handle is to be reliably released.
         /// </summary>
         /// <param name="ownsHandle">
         /// <see langword="true"/> to reliably release the handle during the finalization phase; <see langword="false"/> to prevent reliable release (not recommended).
         /// </param>
-        protected NativeContext(bool ownsHandle) :
+        protected Context(bool ownsHandle) :
                 base(ownsHandle)
         {
             this.creationStackTrace = Environment.StackTrace;
@@ -68,16 +68,16 @@ namespace LibUsbDotNet
         /// <summary>
         /// Gets a value which represents a pointer or handle that has been initialized to zero.
         /// </summary>
-        public static NativeContext Zero
+        public static Context Zero
         {
             get
             {
-                return NativeContext.DangerousCreate(IntPtr.Zero);
+                return Context.DangerousCreate(IntPtr.Zero);
             }
         }
 
         /// <summary>
-        /// Creates a new <see cref="NativeContext"/> from a <see cref="IntPtr"/>.
+        /// Creates a new <see cref="Context"/> from a <see cref="IntPtr"/>.
         /// </summary>
         /// <param name="unsafeHandle">
         /// The underlying <see cref="IntPtr"/>
@@ -87,38 +87,38 @@ namespace LibUsbDotNet
         /// </param>
         /// <returns>
         /// </returns>
-        public static NativeContext DangerousCreate(IntPtr unsafeHandle, bool ownsHandle)
+        public static Context DangerousCreate(IntPtr unsafeHandle, bool ownsHandle)
         {
-            NativeContext safeHandle = new NativeContext(ownsHandle);
+            Context safeHandle = new Context(ownsHandle);
             safeHandle.SetHandle(unsafeHandle);
             return safeHandle;
         }
 
         /// <summary>
-        /// Creates a new <see cref="NativeContext"/> from a <see cref="IntPtr"/>.
+        /// Creates a new <see cref="Context"/> from a <see cref="IntPtr"/>.
         /// </summary>
         /// <param name="unsafeHandle">
         /// The underlying <see cref="IntPtr"/>
         /// </param>
         /// <returns>
         /// </returns>
-        public static NativeContext DangerousCreate(IntPtr unsafeHandle)
+        public static Context DangerousCreate(IntPtr unsafeHandle)
         {
-            return NativeContext.DangerousCreate(unsafeHandle, true);
+            return Context.DangerousCreate(unsafeHandle, true);
         }
 
         /// <inheritdoc/>
         public override string ToString()
         {
-            return string.Format("{0} ({1})", this.handle, "NativeContext");
+            return string.Format("{0} ({1})", this.handle, "Context");
         }
 
         /// <inheritdoc/>
         public override bool Equals(object obj)
         {
-            if (obj != null && obj.GetType() == typeof(NativeContext))
+            if (obj != null && obj.GetType() == typeof(Context))
             {
-                return ((NativeContext)obj).handle.Equals(this.handle);
+                return ((Context)obj).handle.Equals(this.handle);
             }
             else
             {
@@ -133,7 +133,7 @@ namespace LibUsbDotNet
         }
 
         /// <summary>
-        /// Determines whether two specified instances of <see cref="NativeContext"/> are equal.
+        /// Determines whether two specified instances of <see cref="Context"/> are equal.
         /// </summary>
         /// <param name="value1">
         /// The first pointer or handle to compare.
@@ -144,7 +144,7 @@ namespace LibUsbDotNet
         /// <returns>
         /// <see langword="true"/> if <paramref name="value1"/> equals <paramref name="value2"/>; otherwise, <see langword="false"/>.
         /// </returns>
-        public static bool operator == (NativeContext value1, NativeContext value2) 
+        public static bool operator == (Context value1, Context value2) 
         {
             if (object.Equals(value1, null) && object.Equals(value2, null))
             {
@@ -160,7 +160,7 @@ namespace LibUsbDotNet
         }
 
         /// <summary>
-        /// Determines whether two specified instances of <see cref="NativeContext"/> are not equal.
+        /// Determines whether two specified instances of <see cref="Context"/> are not equal.
         /// </summary>
         /// <param name="value1">
         /// The first pointer or handle to compare.
@@ -171,7 +171,7 @@ namespace LibUsbDotNet
         /// <returns>
         /// <see langword="true"/> if <paramref name="value1"/> does not equal <paramref name="value2"/>; otherwise, <see langword="false"/>.
         /// </returns>
-        public static bool operator != (NativeContext value1, NativeContext value2) 
+        public static bool operator != (Context value1, Context value2) 
         {
             if (object.Equals(value1, null) && object.Equals(value2, null))
             {

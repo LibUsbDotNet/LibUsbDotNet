@@ -22,12 +22,12 @@
 
 namespace LibUsbDotNet
 {
-    public partial class NativeContext
+    public partial class Device
     {
         /// <inheritdoc/>
         protected override bool ReleaseHandle()
         {
-            NativeMethods.Exit(this.handle);
+            NativeMethods.UnrefDevice(this.handle);
             return true;
         }
     }
