@@ -51,7 +51,7 @@ namespace LibUsbDotNet
         internal const CallingConvention LibUsbCallingConvention = CallingConvention.Cdecl;
 #endif
 #if OSX || OSX_10_12_X64 // osx during testing only
-        internal const string LibUsbNativeLibrary = "libusb-1.0.dylib";
+        internal const string LibUsbNativeLibrary = "libusb-1.0.0.dylib";
         internal const CallingConvention LibUsbCallingConvention = CallingConvention.Cdecl;
 #endif
 
