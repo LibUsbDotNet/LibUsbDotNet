@@ -1,0 +1,97 @@
+variables:
+  libusbBuild: 59 # 20180921.5
+  libusbkBuild: 72 # 20180921.5
+
+jobs:
+- job: windows
+  pool:
+    vmImage: 'vs2017-win2016'
+  steps:
+  - task: DownloadBuildArtifacts@0
+    inputs:
+      buildType: 'specific'
+      project: 'libusbdotnet'
+      pipeline: '2'
+      buildVersionToDownload: 'specific'
+      buildId: $(libusbBuild)
+      downloadType: 'single'
+      artifactName: 'drop'
+      downloadPath: '$(System.ArtifactsDirectory)'
+    displayName: 'download libusb artifacts'
+
+  - task: DownloadBuildArtifacts@0
+    inputs:
+      buildType: 'specific'
+      project: 'libusbdotnet'
+      pipeline: '3'
+      buildVersionToDownload: 'specific'
+      buildId: $(libusbkBuild)
+      downloadType: 'single'
+      artifactName: 'drop'
+      downloadPath: '$(System.ArtifactsDirectory)'
+    displayName: 'download libusbK artifacts'
+
+  - script: |
+      dotnet pack src\LibUsbDotNet\LibUsbDotNet.csproj -c Release
+      copy src\LibUsbDotNet\bin\Release\LibUsbDotNet.*.nupkg %BUILD_ARTIFACTSTAGINGDIRECTORY%
+    displayName: 'Build'
+
+  - script: |
+      set PATH=%PATH%;%SYSTEM_ARTIFACTSDIRECTORY%\drop\runtimes\win-x64\native
+      dotnet test src\LibUsbDotNet.Tests\LibUsbDotNet.Tests.csproj -p:RuntimeIdentifier=win7-x64
+    displayName: 'Test (x64)'
+
+  - script: |
+      set PATH=%PATH%;%SYSTEM_ARTIFACTSDIRECTORY%\drop\runtimes\win-x86\native
+      dotnet test src\LibUsbDotNet.Tests\LibUsbDotNet.Tests.csproj -p:RuntimeIdentifier=win7-x86
+    displayName: 'Test (x86)'
+
+  - task: PublishBuildArtifacts@1
+    inputs:
+      pathtoPublish: '$(Build.ArtifactStagingDirectory)' 
+      artifactName: 'drop' 
+      publishLocation: 'Container'
+    displayName: 'Publish artifacts'
+
+- job: osx
+  pool:
+    vmImage: 'xcode9-macos10.13'
+  steps:
+  - task: DownloadBuildArtifacts@0
+    inputs:
+      buildType: 'specific'
+      project: 'libusbdotnet'
+      pipeline: '2'
+      buildVersionToDownload: 'specific'
+      buildId: $(libusbBuild)
+      downloadType: 'single'
+      artifactName: 'drop'
+      downloadPath: '$(System.ArtifactsDirectory)'
+    displayName: 'download libusb artifacts'
+
+  - script: |
+      dotnet pack src/LibUsbDotNet/LibUsbDotNet.csproj -c Release
+    displayName: 'Build'
+
+  - script: |
+      export LD_LIBRARY_PATH=$SYSTEM_ARTIFACTSDIRECTORY/drop/runtimes/osx-x64/native:$LD_LIBRARY_PATH
+      echo $LD_LIBRARY_PATH
+      ls $SYSTEM_ARTIFACTSDIRECTORY/drop/runtimes/osx-x64/native
+      dotnet test src/LibUsbDotNet.Tests/LibUsbDotNet.Tests.csproj -p:RuntimeIdentifier=osx.10.12-x64
+    displayName: 'Test (x64)'
+
+- job: linux
+  pool:
+    vmImage: 'ubuntu-16.04'
+  steps:
+  - script: |
+      sudo apt-get install -y libusb-1.0-0-dev
+    displayName: 'Build'
+
+  - script: |
+      dotnet pack src/LibUsbDotNet/LibUsbDotNet.csproj -c Release
+    displayName: 'Build'
+
+  - script: |
+      dotnet test src/LibUsbDotNet.Tests/LibUsbDotNet.Tests.csproj -p:RuntimeIdentifier=ubuntu.16.04-x64
+    displayName: 'Test (x64)'

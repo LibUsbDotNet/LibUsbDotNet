@@ -42,7 +42,7 @@ namespace LibUsbDotNet
         /// </summary>
         internal const int Pack = 0;
 
-#if WIN || NET45 || WIN7_X64 // win7-x64 during testing only.
+#if WIN || NET45 || WIN7_X64 || WIN7_X86 // win7-x64, win7-x64 during testing only.
         internal const string LibUsbNativeLibrary = "libusb-1.0.dll";
         internal const CallingConvention LibUsbCallingConvention = CallingConvention.StdCall;
 #endif
@@ -51,7 +51,7 @@ namespace LibUsbDotNet
         internal const CallingConvention LibUsbCallingConvention = CallingConvention.Cdecl;
 #endif
 #if OSX || OSX_10_12_X64 // osx during testing only
-        internal const string LibUsbNativeLibrary = "libusb-1.0.dylib";
+        internal const string LibUsbNativeLibrary = "libusb-1.0.0.dylib";
         internal const CallingConvention LibUsbCallingConvention = CallingConvention.Cdecl;
 #endif
 
