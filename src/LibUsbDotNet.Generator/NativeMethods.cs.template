@@ -42,7 +42,7 @@ namespace LibUsbDotNet
         /// </summary>
         internal const int Pack = 0;
 
-#if WIN || NET45 || WIN7_X64 // win7-x64 during testing only.
+#if WIN || NET45 || WIN7_X64 || WIN7_X86 // win7-x64, win7-x64 during testing only.
         internal const string LibUsbNativeLibrary = "libusb-1.0.dll";
         internal const CallingConvention LibUsbCallingConvention = CallingConvention.StdCall;
 #endif
