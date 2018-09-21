@@ -19,6 +19,7 @@
 // visit www.gnu.org.
 // 
 // 
+using LibUsbDotNet.LibUsb;
 using System;
 using System.Runtime.Serialization;
 
@@ -235,27 +236,35 @@ namespace LibUsbDotNet.Main
         /// <returns>True if the <see cref="UsbDevice"/> instance matches the <see cref="UsbDeviceFinder"/> properties.</returns>
         public virtual bool Check(IUsbDevice usbDevice)
         {
-            if (this.Vid != null && usbDevice.Info.VendorId != this.Vid.Value)
+            try
             {
+                if (this.Vid != null && usbDevice.Info.VendorId != this.Vid.Value)
+                {
+                    return false;
+                }
+
+                if (this.Pid != null && usbDevice.Info.ProductId != this.Pid.Value)
+                {
+                    return false;
+                }
+
+                if (this.Revision != null && usbDevice.Info.Usb != this.Revision.Value)
+                {
+                    return false;
+                }
+
+                if (this.SerialNumber != null && usbDevice.Info.SerialNumber != this.SerialNumber)
+                {
+                    return false;
+                }
+
+                return true;
+            }
+            catch (MonoUsbException ex) when (ex.ErrorCode == Error.NotFound)
+            {
+                // The device has probably disconnected while we were inspecting it. Continue.
                 return false;
             }
-
-            if (this.Pid != null && usbDevice.Info.ProductId != this.Pid.Value)
-            {
-                return false;
-            }
-
-            if (this.Revision != null && usbDevice.Info.Usb != this.Revision.Value)
-            {
-                return false;
-            }
-
-            if (this.SerialNumber != null && usbDevice.Info.SerialNumber != this.SerialNumber)
-            {
-                return false;
-            }
-
-            return true;
         }
     }
 }
