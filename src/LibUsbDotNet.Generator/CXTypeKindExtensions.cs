@@ -102,6 +102,9 @@ namespace LibUsbDotNet.Generator
                         case TypeKind.Int:
                             return "ref int";
 
+                        case TypeKind.UChar:
+                            return "byte*";
+
                         case TypeKind.Typedef:
                             var typeDefName = pointee.GetTypedefName();
 
