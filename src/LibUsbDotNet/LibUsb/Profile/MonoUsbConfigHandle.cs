@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Runtime.InteropServices;
 using LibUsbDotNet.Main;
-using MonoLibUsb.Descriptors;
 
 namespace MonoLibUsb.Profile
 {
