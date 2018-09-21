@@ -29,7 +29,7 @@ namespace MonoLibUsb.Transfer.Internal
     /// <remarks>
     /// This class is never instantiated in .NET.  Instead it is used as a template by the <see cref="MonoUsbTransfer"/> class.
     /// </remarks>
-    [StructLayout(LayoutKind.Sequential, Pack = MonoUsbApi.LIBUSB_PACK)]
+    [StructLayout(LayoutKind.Sequential, Pack = NativeMethods.Pack)]
     internal class libusb_transfer
     {
         IntPtr deviceHandle;
