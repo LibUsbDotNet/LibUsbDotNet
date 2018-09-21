@@ -290,7 +290,7 @@ namespace LibUsbDotNet.Main
             {
                 Info.UsbEndpointInfo endpointInfo = transferContext.EndpointBase.EndpointInfo;
                 if (endpointInfo!=null)
-                    isoPacketSize = endpointInfo.Descriptor.MaxPacketSize;
+                    isoPacketSize = endpointInfo.MaxPacketSize;
             }
             lock (transferContext.mTransferLOCK)
             {
@@ -452,7 +452,7 @@ namespace LibUsbDotNet.Main
             for(int i=0; i < maxOutstandingIO; i++) 
                 mBuffer[i] = new byte[bufferSize];
 
-            IsoPacketSize = isoPacketSize > 0 ? isoPacketSize : endpointBase.EndpointInfo.Descriptor.MaxPacketSize;
+            IsoPacketSize = isoPacketSize > 0 ? isoPacketSize : endpointBase.EndpointInfo.MaxPacketSize;
         }
 
         /// <summary>

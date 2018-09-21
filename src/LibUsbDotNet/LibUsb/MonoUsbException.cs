@@ -1,6 +1,7 @@
 ﻿using LibUsbDotNet.Main;
 using MonoLibUsb;
 using System;
+using System.Runtime.InteropServices;
 #if !NETSTANDARD1_6
 using System.Runtime.Serialization;
 #endif
@@ -48,9 +49,12 @@ namespace LibUsbDotNet.LibUsb
 
         private static string GetErrorMessage(Error errorCode)
         {
-            if (MonoUsbApi.ErrorCodeFromLibUsbError((int)errorCode, out string errorMessage) == Main.ErrorCode.Success)
+            IntPtr errorString = NativeMethods.StrError(errorCode);
+
+            if(errorString != IntPtr.Zero)
             {
-                return errorMessage;
+                // From the documentation: 'The caller must not free() the returned string.'
+                return Marshal.PtrToStringAnsi(errorString);
             }
             else
             {

@@ -40,5 +40,29 @@ namespace LibUsbDotNet.LibUsb
                 throw new MonoUsbException(error);
             }
         }
+
+        /// <summary>
+        /// Gets the function's return value (if ret &gt;= 0), or throws an error if the return value was negative
+        /// and indicated an error.
+        /// </summary>
+        /// <param name="error">
+        /// The return value to inspect.
+        /// </param>
+        /// <returns>
+        /// The function's return value (if ret &gt;= 0);.
+        /// </returns>
+        public static int GetValueOrThrow(this Error error)
+        {
+            int value = (int)error;
+
+            if (value < 0)
+            {
+                throw new MonoUsbException(error);
+            }
+            else
+            {
+                return value;
+            }
+        }
     }
 }

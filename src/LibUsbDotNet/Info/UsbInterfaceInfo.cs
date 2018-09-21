@@ -19,12 +19,10 @@
 // visit www.gnu.org.
 // 
 // 
-using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
-using LibUsbDotNet.Descriptors;
-using LibUsbDotNet.Main;
-using LibUsb.Common;
+using System.Diagnostics;
+using System.Runtime.InteropServices;
 
 namespace LibUsbDotNet.Info
 {
@@ -32,88 +30,71 @@ namespace LibUsbDotNet.Info
     /// </summary> 
     public class UsbInterfaceInfo : UsbBaseInfo
     {
-        internal readonly IUsbInterfaceDescriptor mUsbInterfaceDescriptor;
-        internal List<UsbEndpointInfo> mEndpointInfo = new List<UsbEndpointInfo>();
-        private String mInterfaceString;
-        internal UsbDevice mUsbDevice;
+        private List<UsbEndpointInfo> endpoints = new List<UsbEndpointInfo>();
 
-        internal UsbInterfaceInfo(UsbDevice usbDevice, byte[] descriptor)
+        public static unsafe Collection<UsbInterfaceInfo> FromUsbInterface(LibUsb.UsbDevice device, Interface @interface)
         {
-            mUsbDevice = usbDevice;
-            mUsbInterfaceDescriptor = new UsbInterfaceDescriptor();
-            Helper.BytesToObject(descriptor, 0, Math.Min(UsbInterfaceDescriptor.Size, descriptor[0]), mUsbInterfaceDescriptor);
-        }
+            var interfaces = (InterfaceDescriptor*)@interface.Altsetting;
+            Collection<UsbInterfaceInfo> value = new Collection<UsbInterfaceInfo>();
 
-        public UsbInterfaceInfo(UsbDevice usbDevice, UsbInterfaceDescriptor usbInterfaceDescriptor, IEnumerable<IUsbEndpointDescriptor> usbEndpoints)
-        {
-            mUsbDevice = usbDevice;
-            mUsbInterfaceDescriptor = usbInterfaceDescriptor;
-
-            foreach (var usbEndpoint in usbEndpoints)
+            for (int i = 0; i < @interface.NumAltsetting; i++)
             {
-                mEndpointInfo.Add(new UsbEndpointInfo(usbEndpoint));
+                value.Add(FromUsbInterfaceDescriptor(device, interfaces[i]));
             }
+
+            return value;
         }
 
-        /// <summary>
-        /// Gets the actual interface descriptor.
-        /// </summary>
-        public IUsbInterfaceDescriptor Descriptor
+        public static unsafe UsbInterfaceInfo FromUsbInterfaceDescriptor(LibUsb.UsbDevice device, InterfaceDescriptor descriptor)
         {
-            get { return mUsbInterfaceDescriptor; }
+            Debug.Assert(descriptor.DescriptorType == (int)DescriptorType.Interface, "A config descriptor was expected");
+
+            UsbInterfaceInfo value = new UsbInterfaceInfo();
+            value.AlternateSetting = descriptor.AlternateSetting;
+
+            var endpoints = (EndpointDescriptor*)descriptor.Endpoint;
+
+            for (int i = 0; i < descriptor.NumEndpoints; i++)
+            {
+                if (endpoints[i].DescriptorType != 0)
+                {
+                    value.endpoints.Add(UsbEndpointInfo.FromUsbEndpointDescriptor(endpoints[i]));
+                }
+            }
+
+            value.mRawDescriptors = new byte[descriptor.ExtraLength];
+            if (descriptor.ExtraLength > 0)
+            {
+                Marshal.Copy(descriptor.Extra, value.mRawDescriptors, 0, descriptor.ExtraLength);
+            }
+
+            value.Interface = device.GetStringDescriptor(descriptor.Interface, failSilently: true);
+            value.Class = (ClassCode)descriptor.InterfaceClass;
+            value.Number = descriptor.InterfaceNumber;
+            value.Protocol = descriptor.InterfaceProtocol;
+            value.SubClass = descriptor.InterfaceSubClass;
+
+            return value;
         }
+
+        public byte AlternateSetting { get; private set; }
+        public ClassCode Class { get; private set; }
+        public int Number { get; private set; }
+        public byte Protocol { get; private set; }
+        public string Interface { get; private set; }
+        public byte SubClass { get; private set; }
 
         /// <summary>
         /// Gets the collection of endpoint descriptors associated with this interface.
         /// </summary>
-        public ReadOnlyCollection<UsbEndpointInfo> EndpointInfoList
+        public ReadOnlyCollection<UsbEndpointInfo> Endpoints
         {
-            get { return mEndpointInfo.AsReadOnly(); }
+            get { return endpoints.AsReadOnly(); }
         }
 
-        /// <summary>
-        /// Gets the string representation of the <see cref="IUsbInterfaceDescriptor.StringIndex"/> string index.
-        /// </summary>
-        public String InterfaceString
+        public override string ToString()
         {
-            get
-            {
-                if (ReferenceEquals(mInterfaceString, null))
-                {
-                    mInterfaceString = String.Empty;
-                    if (Descriptor.StringIndex > 0)
-                    {
-                        mUsbDevice.GetString(out mInterfaceString, mUsbDevice.Info.CurrentCultureLangID, Descriptor.StringIndex);
-                    }
-                }
-                return mInterfaceString;
-            }
-        }
-
-
-        ///<summary>
-        ///Returns a <see cref="T:System.String"/> that represents the current <see cref="UsbInterfaceInfo"/>.
-        ///</summary>
-        ///
-        ///<returns>
-        ///A <see cref="System.String"/> that represents the current <see cref="UsbInterfaceInfo"/>.
-        ///</returns>
-        public override string ToString() { return ToString("", UsbDescriptor.ToStringParamValueSeperator, UsbDescriptor.ToStringFieldSeperator); }
-
-        ///<summary>
-        ///Returns a <see cref="T:System.String"/> that represents the current <see cref="UsbInterfaceInfo"/>.
-        ///</summary>
-        ///
-        ///<param name="prefixSeperator">The field prefix string.</param>
-        ///<param name="entitySperator">The field/value seperator string.</param>
-        ///<param name="suffixSeperator">The value suffix string.</param>
-        ///<returns>A formatted representation of the <see cref="UsbInterfaceInfo"/>.</returns>
-        public string ToString(string prefixSeperator, string entitySperator, string suffixSeperator)
-        {
-            Object[] values = {InterfaceString};
-            string[] names = {"InterfaceString"};
-            return Descriptor.ToString(prefixSeperator, entitySperator, suffixSeperator) +
-                   Helper.ToString(prefixSeperator, names, entitySperator, values, suffixSeperator);
+            return this.Interface;
         }
     }
 }

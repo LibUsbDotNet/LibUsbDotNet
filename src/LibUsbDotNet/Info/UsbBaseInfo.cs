@@ -19,6 +19,7 @@
 // visit www.gnu.org.
 // 
 // 
+using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 
@@ -31,14 +32,19 @@ namespace LibUsbDotNet.Info
     ///         </p></remarks>
     public abstract class UsbBaseInfo
     {
-        internal List<byte[]> mRawDescriptors = new List<byte[]>();
+        protected byte[] mRawDescriptors
+#if NET45
+            = new byte[] { };
+#else
+            = Array.Empty<byte>();
+#endif
 
         /// <summary>
         /// Gets the device-specific custom descriptor lists.
         /// </summary>
-        public ReadOnlyCollection<byte[]> CustomDescriptors
+        public ReadOnlyCollection<byte> CustomDescriptors
         {
-            get { return mRawDescriptors.AsReadOnly(); }
+            get { return new ReadOnlyCollection<byte>(new List<byte>(this.mRawDescriptors)); }
         }
     }
 }

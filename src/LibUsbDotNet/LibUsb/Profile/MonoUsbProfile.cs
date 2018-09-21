@@ -34,7 +34,7 @@ namespace MonoLibUsb.Profile
     {
         private readonly byte mBusNumber;
         private readonly byte mDeviceAddress;
-        private readonly MonoUsbDeviceDescriptor mMonoUsbDeviceDescriptor = new MonoUsbDeviceDescriptor();
+        private readonly DeviceDescriptor mMonoUsbDeviceDescriptor = new DeviceDescriptor();
         private readonly MonoUsbProfileHandle mMonoUSBProfileHandle;
         internal bool mDiscovered;
 
@@ -57,7 +57,7 @@ namespace MonoLibUsb.Profile
         /// <summary>
         /// Gets the standard usb device descriptor.
         /// </summary>
-        public MonoUsbDeviceDescriptor DeviceDescriptor
+        public DeviceDescriptor DeviceDescriptor
         {
             get { return mMonoUsbDeviceDescriptor; }
         }
@@ -138,17 +138,17 @@ namespace MonoLibUsb.Profile
         ///<returns>True if the <see cref="MonoUsbProfile"/> types are not equal.</returns>
         public static bool operator !=(MonoUsbProfile left, MonoUsbProfile right) { return !Equals(left, right); }
 
-        private Error GetDeviceDescriptor(out MonoUsbDeviceDescriptor monoUsbDeviceDescriptor)
+        private Error GetDeviceDescriptor(out DeviceDescriptor monoUsbDeviceDescriptor)
         {
             Error ec = Error.Success;
 
-            monoUsbDeviceDescriptor = new MonoUsbDeviceDescriptor();
+            monoUsbDeviceDescriptor = new DeviceDescriptor();
             //Console.WriteLine("MonoUsbProfile:GetDeviceDescriptor");
             ec = (Error) MonoUsbApi.GetDeviceDescriptor(mMonoUSBProfileHandle, monoUsbDeviceDescriptor);
             if (ec != Error.Success)
             {
                 MonoUsbErrorMessage.Error(ErrorCode.MonoApiError, (int) ec, "GetDeviceDescriptor Failed", this);
-                monoUsbDeviceDescriptor = null;
+                monoUsbDeviceDescriptor = default(DeviceDescriptor);
             }
             return ec;
         }

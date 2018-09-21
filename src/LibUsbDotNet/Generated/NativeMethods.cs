@@ -197,16 +197,16 @@ namespace LibUsbDotNet
         public static extern Error ResetDevice(DeviceHandle devHandle);
 
         [DllImport(LibUsbNativeLibrary, CallingConvention = LibUsbCallingConvention, EntryPoint = "libusb_alloc_streams")]
-        public static extern Error AllocStreams(DeviceHandle devHandle, uint numStreams, IntPtr endpoints, int numEndpoints);
+        public static extern Error AllocStreams(DeviceHandle devHandle, uint numStreams, byte* endpoints, int numEndpoints);
 
         [DllImport(LibUsbNativeLibrary, CallingConvention = LibUsbCallingConvention, EntryPoint = "libusb_free_streams")]
-        public static extern Error FreeStreams(DeviceHandle devHandle, IntPtr endpoints, int numEndpoints);
+        public static extern Error FreeStreams(DeviceHandle devHandle, byte* endpoints, int numEndpoints);
 
         [DllImport(LibUsbNativeLibrary, CallingConvention = LibUsbCallingConvention, EntryPoint = "libusb_dev_mem_alloc")]
-        public static extern IntPtr DevMemAlloc(DeviceHandle devHandle, UIntPtr length);
+        public static extern byte* DevMemAlloc(DeviceHandle devHandle, UIntPtr length);
 
         [DllImport(LibUsbNativeLibrary, CallingConvention = LibUsbCallingConvention, EntryPoint = "libusb_dev_mem_free")]
-        public static extern Error DevMemFree(DeviceHandle devHandle, IntPtr buffer, UIntPtr length);
+        public static extern Error DevMemFree(DeviceHandle devHandle, byte* buffer, UIntPtr length);
 
         [DllImport(LibUsbNativeLibrary, CallingConvention = LibUsbCallingConvention, EntryPoint = "libusb_kernel_driver_active")]
         public static extern int KernelDriverActive(DeviceHandle devHandle, int interfaceNumber);
@@ -239,16 +239,16 @@ namespace LibUsbDotNet
         public static extern uint TransferGetStreamId(Transfer* transfer);
 
         [DllImport(LibUsbNativeLibrary, CallingConvention = LibUsbCallingConvention, EntryPoint = "libusb_control_transfer")]
-        public static extern int ControlTransfer(DeviceHandle devHandle, byte requestType, byte brequest, ushort wvalue, ushort windex, IntPtr data, ushort wlength, uint timeout);
+        public static extern int ControlTransfer(DeviceHandle devHandle, byte requestType, byte brequest, ushort wvalue, ushort windex, byte* data, ushort wlength, uint timeout);
 
         [DllImport(LibUsbNativeLibrary, CallingConvention = LibUsbCallingConvention, EntryPoint = "libusb_bulk_transfer")]
-        public static extern Error BulkTransfer(DeviceHandle devHandle, byte endpoint, IntPtr data, int length, ref int actualLength, uint timeout);
+        public static extern Error BulkTransfer(DeviceHandle devHandle, byte endpoint, byte* data, int length, ref int actualLength, uint timeout);
 
         [DllImport(LibUsbNativeLibrary, CallingConvention = LibUsbCallingConvention, EntryPoint = "libusb_interrupt_transfer")]
-        public static extern Error InterruptTransfer(DeviceHandle devHandle, byte endpoint, IntPtr data, int length, ref int actualLength, uint timeout);
+        public static extern Error InterruptTransfer(DeviceHandle devHandle, byte endpoint, byte* data, int length, ref int actualLength, uint timeout);
 
         [DllImport(LibUsbNativeLibrary, CallingConvention = LibUsbCallingConvention, EntryPoint = "libusb_get_string_descriptor_ascii")]
-        public static extern Error GetStringDescriptorAscii(DeviceHandle devHandle, byte descIndex, IntPtr data, int length);
+        public static extern Error GetStringDescriptorAscii(DeviceHandle devHandle, byte descIndex, byte* data, int length);
 
         [DllImport(LibUsbNativeLibrary, CallingConvention = LibUsbCallingConvention, EntryPoint = "libusb_try_lock_events")]
         public static extern int TryLockEvents(Context ctx);

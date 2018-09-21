@@ -302,29 +302,29 @@ namespace LibUsbDotNet.Main
 
             usbInterfaceInfo = null;
             usbEndpointInfo = null;
-            foreach (UsbInterfaceInfo interfaceInfo in currentConfigInfo.InterfaceInfoList)
+            foreach (UsbInterfaceInfo interfaceInfo in currentConfigInfo.Interfaces)
             {
-                if (altInterfaceID == -1 || altInterfaceID == interfaceInfo.Descriptor.AlternateID)
+                if (altInterfaceID == -1 || altInterfaceID == interfaceInfo.AlternateSetting)
                 {
-                    foreach (UsbEndpointInfo endpointInfo in interfaceInfo.EndpointInfoList)
+                    foreach (UsbEndpointInfo endpointInfo in interfaceInfo.Endpoints)
                     {
                         if ((endpointAddress & UsbConstants.ENDPOINT_NUMBER_MASK) == 0)
                         {
                             // find first read/write endpoint
                             if ((endpointAddress & UsbConstants.ENDPOINT_DIR_MASK) == 0 &&
-                                (endpointInfo.Descriptor.EndpointID & UsbConstants.ENDPOINT_DIR_MASK) == 0)
+                                (endpointInfo.EndpointAddress & UsbConstants.ENDPOINT_DIR_MASK) == 0)
                             {
                                 // first write endpoint
                                 found = true;
                             }
                             if ((endpointAddress & UsbConstants.ENDPOINT_DIR_MASK) != 0 &&
-                                (endpointInfo.Descriptor.EndpointID & UsbConstants.ENDPOINT_DIR_MASK) != 0)
+                                (endpointInfo.EndpointAddress & UsbConstants.ENDPOINT_DIR_MASK) != 0)
                             {
                                 // first read endpoint
                                 found = true;
                             }
                         }
-                        else if (endpointInfo.Descriptor.EndpointID == endpointAddress)
+                        else if (endpointInfo.EndpointAddress == endpointAddress)
                         {
                             found = true;
                         }

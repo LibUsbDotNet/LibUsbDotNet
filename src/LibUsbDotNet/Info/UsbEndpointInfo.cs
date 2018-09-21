@@ -19,10 +19,8 @@
 // visit www.gnu.org.
 // 
 // 
-using System;
-using LibUsbDotNet.Descriptors;
-using LibUsbDotNet.Main;
-using LibUsb.Common;
+using System.Diagnostics;
+using System.Runtime.InteropServices;
 
 namespace LibUsbDotNet.Info
 {
@@ -30,43 +28,38 @@ namespace LibUsbDotNet.Info
     /// </summary> 
     public class UsbEndpointInfo : UsbBaseInfo
     {
-        internal IUsbEndpointDescriptor mUsbEndpointDescriptor;
-
-        internal UsbEndpointInfo(byte[] descriptor)
+        public static unsafe UsbEndpointInfo FromUsbEndpointDescriptor(EndpointDescriptor descriptor)
         {
-            mUsbEndpointDescriptor = new UsbEndpointDescriptor();
-            Helper.BytesToObject(descriptor, 0, Math.Min(UsbEndpointDescriptor.Size, descriptor[0]), mUsbEndpointDescriptor);
+            Debug.Assert(descriptor.DescriptorType == (int)DescriptorType.Endpoint, "An endpoint descriptor was expected");
+
+            var value = new UsbEndpointInfo();
+            value.Attributes = descriptor.Attributes;
+            value.EndpointAddress = descriptor.EndpointAddress;
+
+            value.mRawDescriptors = new byte[descriptor.ExtraLength];
+            if (descriptor.ExtraLength > 0)
+            {
+                Marshal.Copy(descriptor.Extra, value.mRawDescriptors, 0, descriptor.ExtraLength);
+            }
+
+            value.Interval = descriptor.Interval;
+            value.MaxPacketSize = descriptor.MaxPacketSize;
+            value.Refresh = descriptor.Refresh;
+            value.SyncAddress = descriptor.SynchAddress;
+
+            return value;
         }
 
-        public UsbEndpointInfo(IUsbEndpointDescriptor usbEndpointDescriptor) {
-            mUsbEndpointDescriptor = usbEndpointDescriptor;
-        }
+        public byte Attributes { get; private set; }
+        public byte EndpointAddress { get; private set; }
+        public byte Interval { get; private set; }
+        public ushort MaxPacketSize { get; private set; }
+        public byte Refresh { get; private set; }
+        public byte SyncAddress { get; private set; }
 
-        /// <summary>
-        /// Gets the <see cref="UsbEndpointDescriptor"/> information.
-        /// </summary>
-        public IUsbEndpointDescriptor Descriptor
+        public override string ToString()
         {
-            get { return mUsbEndpointDescriptor; }
+            return $"{this.EndpointAddress}";
         }
-
-        ///<summary>
-        ///Returns a <see cref="T:System.String"/> that represents the current <see cref="UsbEndpointInfo"/>.
-        ///</summary>
-        ///
-        ///<returns>
-        ///A <see cref="System.String"/> that represents the current <see cref="UsbEndpointInfo"/>.
-        ///</returns>
-        public override string ToString() { return Descriptor.ToString(); }
-
-        ///<summary>
-        ///Returns a <see cref="T:System.String"/> that represents the current <see cref="UsbEndpointInfo"/>.
-        ///</summary>
-        ///
-        ///<param name="prefixSeperator">The field prefix string.</param>
-        ///<param name="entitySperator">The field/value seperator string.</param>
-        ///<param name="suffixSeperator">The value suffix string.</param>
-        ///<returns>A formatted representation of the <see cref="UsbEndpointInfo"/>.</returns>
-        public string ToString(string prefixSeperator, string entitySperator, string suffixSeperator) { return Descriptor.ToString(prefixSeperator, entitySperator, suffixSeperator); }
     }
 }

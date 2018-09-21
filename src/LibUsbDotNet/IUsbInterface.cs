@@ -65,11 +65,6 @@ namespace LibUsbDotNet
         bool IsOpen { get; }
 
         /// <summary>
-        /// Gets the <see cref="UsbRegistry"/> class that opened the device, or null if the device was not opened by the <see cref="UsbRegistry"/> class.
-        /// </summary>
-        UsbRegistry UsbRegistryInfo { get; }
-
-        /// <summary>
         /// Closes and frees device resources.  Once closed the device cannot be reopened.  A new <see cref="UsbDevice"/> class must be obtained using the <see cref="UsbGlobals"/> class.
         /// </summary>
         /// <returns>True on success.</returns>
