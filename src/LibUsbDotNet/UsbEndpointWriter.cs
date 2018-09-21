@@ -28,9 +28,9 @@ namespace LibUsbDotNet
 {
     /// <summary>Contains methods for writing data to a <see cref="EndpointType.Bulk"/> or <see cref="EndpointType.Interrupt"/> endpoint using the overloaded <see cref="Write(byte[],int,out int)"/> functions.
     /// </summary> 
-    public class UsbEndpointWriter : UsbEndpointBase
+    public abstract class UsbEndpointWriter : UsbEndpointBase
     {
-        public UsbEndpointWriter(UsbDevice usbDevice, byte alternateInterfaceID, WriteEndpointID writeEndpointID, EndpointType endpointType)
+        public UsbEndpointWriter(IUsbDevice usbDevice, byte alternateInterfaceID, WriteEndpointID writeEndpointID, EndpointType endpointType)
             : base(usbDevice, alternateInterfaceID, (byte)writeEndpointID, endpointType) { }
 
 

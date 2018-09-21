@@ -26,16 +26,6 @@ using LibUsbDotNet.Main;
 
 namespace LibUsbDotNet
 {
-    partial class UsbDevice
-    {
-        internal static void FireUsbError(object sender, UsbError usbError)
-        {
-            EventHandler<UsbError> temp = UsbErrorEvent;
-            if (!ReferenceEquals(null, temp))
-                temp(sender, usbError);
-        }
-    }
-
     /// <summary> Describes a Usb error or setup API error.
     /// </summary> 
     public class UsbError : EventArgs
@@ -143,25 +133,7 @@ namespace LibUsbDotNet
 
         public static UsbError Error(ErrorCode errorCode, int ret, string description, object sender)
         {
-            string win32Error = String.Empty;
-            if (errorCode == ErrorCode.Win32Error && !UsbDevice.IsLinux && ret != 0)
-            {
-                win32Error = Kernel32.FormatSystemMessage(ret);
-            }
-            else if (errorCode == ErrorCode.MonoApiError && ret != 0)
-            {
-                Debug.Assert(false, "libusb-1.0 error codes should be resolved within LibUsbDotNet.LibUsb");
-                // win32Error = ((MonoUsbError) ret) + ":" + MonoUsbApi.StrError((MonoUsbError) ret);
-            }
-            UsbError err = new UsbError(errorCode, ret, win32Error, description, sender);
-            lock (mLastErrorString)
-            {
-                mLastErrorNumber = (int) err.ErrorCode;
-                mLastErrorString = err.ToString();
-            }
-            UsbDevice.FireUsbError(sender, err);
-
-            return err;
+            throw new NotImplementedException();
         }
     }
 }

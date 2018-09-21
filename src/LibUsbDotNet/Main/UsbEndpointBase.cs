@@ -43,10 +43,8 @@ namespace LibUsbDotNet.Main
         public static int MaxReadWrite = int.MaxValue;
 
         internal readonly byte mEpNum;
-        internal readonly UsbApiBase mUsbApi;
-        private readonly UsbDevice mUsbDevice;
+        private readonly IUsbDevice mUsbDevice;
         private readonly byte alternateInterfaceID;
-        private readonly SafeHandle mUsbHandle;
         private bool mIsDisposed;
         internal TransferDelegate mPipeTransferSubmit;
         private UsbTransfer mTransferContext;
@@ -54,12 +52,10 @@ namespace LibUsbDotNet.Main
         private EndpointType mEndpointType;
         private UsbInterfaceInfo mUsbInterfacetInfo;
 
-        internal UsbEndpointBase(UsbDevice usbDevice, byte alternateInterfaceID, byte epNum, EndpointType endpointType)
+        internal UsbEndpointBase(IUsbDevice usbDevice, byte alternateInterfaceID, byte epNum, EndpointType endpointType)
         {
             mUsbDevice = usbDevice;
             this.alternateInterfaceID = alternateInterfaceID;
-            mUsbApi = mUsbDevice.mUsbApi;
-            mUsbHandle = mUsbDevice.Handle;
             mEpNum = epNum;
             mEndpointType = endpointType;
             if ((mEpNum & 0x80) > 0)
@@ -99,15 +95,9 @@ namespace LibUsbDotNet.Main
         /// <summary>
         /// Gets the <see cref="UsbDevice"/> class this endpoint belongs to.
         /// </summary>
-        public UsbDevice Device
+        public IUsbDevice Device
         {
             get { return mUsbDevice; }
-        }
-
-
-        public SafeHandle Handle
-        {
-            get { return mUsbHandle; }
         }
 
         /// <summary>
@@ -175,7 +165,8 @@ namespace LibUsbDotNet.Main
         /// Discards any data that is cached in this endpoint.
         /// </summary>
         /// <returns>True on success.</returns>
-        public virtual bool Flush()
+        public abstract bool Flush();
+        /*
         {
             if (mIsDisposed) throw new ObjectDisposedException(GetType().Name);
 
@@ -184,13 +175,14 @@ namespace LibUsbDotNet.Main
             if (!bSuccess) UsbError.Error(ErrorCode.Win32Error, Marshal.GetLastWin32Error(), "FlushPipe", this);
 
             return bSuccess;
-        }
+        }*/
 
         /// <summary>
         /// Resets the data toggle and clears the stall condition on an enpoint.
         /// </summary>
         /// <returns>True on success.</returns>
-        public virtual bool Reset()
+        public abstract bool Reset();
+        /*
         {
             if (mIsDisposed) throw new ObjectDisposedException(GetType().Name);
 
@@ -199,7 +191,7 @@ namespace LibUsbDotNet.Main
             if (!bSuccess) UsbError.Error(ErrorCode.Win32Error, Marshal.GetLastWin32Error(), "ResetPipe", this);
 
             return bSuccess;
-        }
+        }*/
 
         /// <summary>
         /// Synchronous bulk/interrupt transfer function.
@@ -386,19 +378,14 @@ namespace LibUsbDotNet.Main
             mIsDisposed = true;
         }
 
-        private int ReadPipe(IntPtr pBuffer, int bufferLength, out int lengthTransferred, int isoPacketSize, IntPtr pOverlapped)
+        protected virtual int ReadPipe(IntPtr pBuffer, int bufferLength, out int lengthTransferred, int isoPacketSize, IntPtr pOverlapped)
         {
-            bool bSuccess = mUsbApi.ReadPipe(this, pBuffer, bufferLength, out lengthTransferred, isoPacketSize, pOverlapped);
-            if (!bSuccess) return Marshal.GetLastWin32Error();
-            return 0;
+            throw new NotSupportedException();
         }
 
-
-        private int WritePipe(IntPtr pBuffer, int bufferLength, out int lengthTransferred, int isoPacketSize, IntPtr pOverlapped)
+        protected virtual int WritePipe(IntPtr pBuffer, int bufferLength, out int lengthTransferred, int isoPacketSize, IntPtr pOverlapped)
         {
-            bool bSuccess = mUsbApi.WritePipe(this, pBuffer, bufferLength, out lengthTransferred, isoPacketSize, pOverlapped);
-            if (!bSuccess) return Marshal.GetLastWin32Error();
-            return 0;
+            throw new NotSupportedException();
         }
 
         #region Nested type: TransferDelegate

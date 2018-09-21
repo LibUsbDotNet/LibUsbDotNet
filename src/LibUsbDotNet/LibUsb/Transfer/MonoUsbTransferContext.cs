@@ -133,6 +133,8 @@ namespace LibUsbDotNet.LudnMonoLibUsb.Internal
         /// <param name="timeout">Time (milliseconds) to wait before the transfer times out.</param>
         public override void Fill(IntPtr buffer, int offset, int count, int timeout)
         {
+            throw new NotImplementedException();
+            /*
             allocTransfer(EndpointBase, true, 0, count);
 
             base.Fill(buffer, offset, count, timeout);
@@ -145,7 +147,7 @@ namespace LibUsbDotNet.LudnMonoLibUsb.Internal
             
             mTransfer.ActualLength = 0;
             mTransfer.Status = 0;
-            mTransfer.Flags = TransferFlags.None;
+            mTransfer.Flags = TransferFlags.None;*/
         }
 
         /// <summary>
@@ -158,6 +160,8 @@ namespace LibUsbDotNet.LudnMonoLibUsb.Internal
         /// <param name="isoPacketSize">Size of each isochronous packet.</param>
         public override void Fill(IntPtr buffer, int offset, int count, int timeout, int isoPacketSize)
         {
+            throw new NotImplementedException();
+            /*
             allocTransfer(EndpointBase, true, isoPacketSize, count);
 
             base.Fill(buffer, offset, count, timeout, isoPacketSize);
@@ -169,7 +173,7 @@ namespace LibUsbDotNet.LudnMonoLibUsb.Internal
 
             mTransfer.ActualLength = 0;
             mTransfer.Status = 0;
-            mTransfer.Flags = TransferFlags.None;
+            mTransfer.Flags = TransferFlags.None;*/
         }
 
         /// <summary>
@@ -188,6 +192,9 @@ namespace LibUsbDotNet.LudnMonoLibUsb.Internal
 
             if (!mTransferCompleteEvent.WaitOne(0)) return ErrorCode.ResourceBusy;
 
+            throw new NotImplementedException();
+
+            /*
             mTransfer.PtrBuffer = NextBufPtr;
             mTransfer.Length = RequestCount;
 
@@ -201,7 +208,7 @@ namespace LibUsbDotNet.LudnMonoLibUsb.Internal
                 return usbErr.ErrorCode;
             }
 
-            return ErrorCode.Success;
+            return ErrorCode.Success;*/
         }
 
         /// <summary>
@@ -212,6 +219,7 @@ namespace LibUsbDotNet.LudnMonoLibUsb.Internal
         /// <returns><see cref="ErrorCode.Success"/> if the transfer completes successfully, otherwise one of the other <see cref="ErrorCode"/> codes.</returns>
         public override ErrorCode Wait(out int transferredCount, bool cancel)
         {
+            /*
             transferredCount = 0;
             int ret = 0;
             Error monoError;
@@ -252,7 +260,9 @@ namespace LibUsbDotNet.LudnMonoLibUsb.Internal
                     mTransferCompleteEvent.Set();
                     MonoUsbErrorMessage.Error(ec, ret, String.Format("Wait:Critical timeout failure! The transfer callback function was not called within the allotted time."), EndpointBase);
                     return ec;
-            }
+            }*/
+
+            throw new NotImplementedException();
         }
 
         private static void TransferCallback(MonoUsbTransfer pTransfer)

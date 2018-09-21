@@ -39,7 +39,7 @@ namespace LibUsbDotNet
     /// <item>While the <see cref="DataReceivedEnabled"/> property is True, the overloaded <see cref="Read(byte[],int,out int)"/> functions cannot be used.</item>
     /// </list>
     /// </remarks>
-    public class UsbEndpointReader : UsbEndpointBase
+    public abstract class UsbEndpointReader : UsbEndpointBase
     {
         private static int mDefReadBufferSize = 4096;
 
@@ -50,7 +50,7 @@ namespace LibUsbDotNet
         private ThreadPriority mReadThreadPriority = ThreadPriority.Normal;
 #endif
 
-        public UsbEndpointReader(UsbDevice usbDevice, int readBufferSize, byte alternateInterfaceID, ReadEndpointID readEndpointID, EndpointType endpointType)
+        public UsbEndpointReader(IUsbDevice usbDevice, int readBufferSize, byte alternateInterfaceID, ReadEndpointID readEndpointID, EndpointType endpointType)
             : base(usbDevice, alternateInterfaceID, (Byte)readEndpointID, endpointType) { mReadBufferSize = readBufferSize; }
 
         /// <summary>

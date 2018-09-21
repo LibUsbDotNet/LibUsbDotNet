@@ -69,6 +69,9 @@ namespace LibUsbDotNet.Internal
         {
             if (mHasWaitBeenCalled) throw new UsbException(this, "Repeated calls to wait with a submit is not allowed.");
 
+            throw new NotImplementedException();
+
+            /*
             transferredCount = 0;
             bool bSuccess;
             // Temporarily release the transfer lock while we wait for something to happen.
@@ -100,7 +103,7 @@ namespace LibUsbDotNet.Internal
                 UsbError usbErr = UsbError.Error(ErrorCode.Win32Error, Marshal.GetLastWin32Error(), "GetOverlappedResult", EndpointBase);
                 return usbErr.ErrorCode;
             }
-            return ErrorCode.None; 
+            return ErrorCode.None; */
         }
     }
 }
