@@ -27,7 +27,7 @@ namespace LibUsbDotNet.LibUsb
     /// Represents a device which is managed by libusb. Use <see cref="UsbContext.List"/>
     /// to get a list of devices which are available for use.
     /// </summary>
-    public partial class UsbDevice : IDisposable, ICloneable
+    public partial class UsbDevice : IUsbDevice, IDisposable, ICloneable
     {
         private bool disposed;
 
