@@ -25,13 +25,6 @@ namespace LibUsbDotNet
     /// <summary>
     /// The <see cref="IUsbDevice"/> interface contains members needed to configure a USB device for use. 
     /// </summary>
-    /// <remarks>
-    /// Only "whole" usb devices have a <see cref="IUsbDevice"/> interface such as a 
-    /// <see cref="LibUsb.LibUsbDevice"/> or a <see cref="MonoUsbDevice"/>. This indicates
-    /// the USB device must be properly configured by the user before it can be used.
-    /// Partial or interfaces of devices such as a <see cref="WinUsbDevice"/> do not have an <see cref="IUsbDevice"/> 
-    /// interface. This indicates that the driver is handling device configuration.
-    /// </remarks>
     /// <example>
     /// This example uses the <see cref="IUsbDevice"/> interface to select the desired configuration and interface
     /// for usb devices that require it.
@@ -40,21 +33,21 @@ namespace LibUsbDotNet
     public interface IUsbDevice : IUsbInterface
     {
         /// <summary>
+        /// Gets the USB devices active configuration value. 
+        /// </summary>
+        /// <returs>
+        /// The active configuration value. A zero value means the device is not configured and a non-zero value indicates the device is configured.
+        /// </returns>
+        int Configuration { get; }
+
+        /// <summary>
         /// Sets the USB devices active configuration value. 
         /// </summary>
         /// <param name="config">The active configuration value. A zero value means the device is not configured and a non-zero value indicates the device is configured.</param>
-        /// <returns>True on success.</returns>
         /// <remarks>
         /// A USB device can have several different configurations, but only one active configuration.
         /// </remarks>
-        bool SetConfiguration(byte config);
-
-        /// <summary>
-        /// Gets the USB devices active configuration value. 
-        /// </summary>
-        /// <param name="config">The active configuration value. A zero value means the device is not configured and a non-zero value indicates the device is configured.</param>
-        /// <returns>True on success.</returns>
-        bool GetConfiguration(out byte config);
+        void SetConfiguration(int config);
 
         /// <summary>
         /// Gets the selected alternate interface of the specified interface.
@@ -62,7 +55,7 @@ namespace LibUsbDotNet
         /// <param name="interfaceID">The interface settings number (index) to retrieve the selected alternate interface setting for.</param>
         /// <param name="selectedAltInterfaceID">The alternate interface setting selected for use with the specified interface.</param>
         /// <returns>True on success.</returns>
-        bool GetAltInterfaceSetting(byte interfaceID, out byte selectedAltInterfaceID);
+        void GetAltInterfaceSetting(byte interfaceID, out byte selectedAltInterfaceID);
 
         /// <summary>
         /// Claims the specified interface of the device.
@@ -84,8 +77,6 @@ namespace LibUsbDotNet
         /// <remarks>
         /// After calling <see cref="ResetDevice"/>, the <see cref="UsbDevice"/> instance is disposed and
         /// no longer usable.  A new <see cref="UsbDevice"/> instance must be obtained from the device list.
-        /// </remarks>
-        /// <returns>True on success.</returns>
-        bool ResetDevice();
+        void ResetDevice();
     }
 }
