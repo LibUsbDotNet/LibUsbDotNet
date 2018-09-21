@@ -40,7 +40,7 @@ namespace LibUsbDotNet.DeviceNotify.Linux
         ///<summary>
         /// Gets the <see cref="UsbDeviceDescriptor"/> for the device that caused the event.
         ///</summary>
-        public IUsbDeviceDescriptor DeviceDescriptor
+        public DeviceDescriptor DeviceDescriptor
         {
             get { return mLinuxDevItem.DeviceDescriptor; }
         }
@@ -92,7 +92,7 @@ namespace LibUsbDotNet.DeviceNotify.Linux
         /// </summary>
         public int IdVendor
         {
-            get { return (int)((ushort)mLinuxDevItem.DeviceDescriptor.VendorID); }
+            get { return (int)((ushort)mLinuxDevItem.DeviceDescriptor.IdVendor); }
         }
 
         /// <summary>
@@ -100,7 +100,7 @@ namespace LibUsbDotNet.DeviceNotify.Linux
         /// </summary>
         public int IdProduct
         {
-            get { return (int)((ushort)mLinuxDevItem.DeviceDescriptor.ProductID); }
+            get { return (int)((ushort)mLinuxDevItem.DeviceDescriptor.IdProduct); }
         }
 
         /// <summary>

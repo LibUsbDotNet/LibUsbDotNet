@@ -19,12 +19,10 @@
 // visit www.gnu.org.
 // 
 // 
-using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
-using LibUsbDotNet.Descriptors;
-using LibUsbDotNet.Main;
-using LibUsb.Common;
+using System.Diagnostics;
+using System.Runtime.InteropServices;
 
 namespace LibUsbDotNet.Info
 {
@@ -32,116 +30,52 @@ namespace LibUsbDotNet.Info
     /// </summary> 
     public class UsbConfigInfo : UsbBaseInfo
     {
-        private readonly List<UsbInterfaceInfo> mInterfaceList = new List<UsbInterfaceInfo>();
-        internal readonly IUsbConfigDescriptor mUsbConfigDescriptor;
-        private String mConfigString;
-        internal UsbDevice mUsbDevice;
+        private readonly List<UsbInterfaceInfo> interfaces = new List<UsbInterfaceInfo>();
 
-        internal UsbConfigInfo(UsbDevice usbDevice, IUsbConfigDescriptor descriptor, ref List<byte[]> rawDescriptors)
+        internal static unsafe UsbConfigInfo FromUsbConfigDescriptor(global::LibUsbDotNet.LibUsb.UsbDevice device, ConfigDescriptor descriptor)
         {
-            mUsbDevice = usbDevice;
-            mUsbConfigDescriptor = descriptor;
-            mRawDescriptors = rawDescriptors;
+            Debug.Assert(descriptor.DescriptorType == (int)DescriptorType.Config, "A config descriptor was expected");
 
-            UsbInterfaceInfo currentInterface = null;
-            for (int iRawDescriptor = 0; iRawDescriptor < rawDescriptors.Count; iRawDescriptor++)
+            UsbConfigInfo value = new UsbConfigInfo();
+            value.Attributes = descriptor.Attributes;
+            value.Configuration = device.GetStringDescriptor(descriptor.Configuration, failSilently: true);
+            value.ConfigurationValue = descriptor.ConfigurationValue;
+
+            value.mRawDescriptors = new byte[descriptor.ExtraLength];
+            if (descriptor.ExtraLength > 0)
             {
-                byte[] bytesRawDescriptor = rawDescriptors[iRawDescriptor];
-
-                switch (bytesRawDescriptor[1])
-                {
-                    case (byte) DescriptorType.Interface:
-                        currentInterface = new UsbInterfaceInfo(usbDevice, bytesRawDescriptor);
-                        mRawDescriptors.RemoveAt(iRawDescriptor);
-                        mInterfaceList.Add(currentInterface);
-                        iRawDescriptor--;
-                        break;
-                    case (byte) DescriptorType.Endpoint:
-                        if (currentInterface == null)
-                            throw new UsbException(this, "Recieved and endpoint descriptor before receiving an interface descriptor.");
-
-                        currentInterface.mEndpointInfo.Add(new UsbEndpointInfo(bytesRawDescriptor));
-                        mRawDescriptors.RemoveAt(iRawDescriptor);
-                        iRawDescriptor--;
-                        break;
-                    default:
-                        if (currentInterface != null)
-                        {
-                            currentInterface.mRawDescriptors.Add(bytesRawDescriptor);
-                            mRawDescriptors.RemoveAt(iRawDescriptor);
-                            iRawDescriptor--;
-                        }
-                        break;
-                }
+                Marshal.Copy(descriptor.Extra, value.mRawDescriptors, 0, descriptor.ExtraLength);
             }
-        }
 
-        public UsbConfigInfo(UsbDevice usbDevice, IUsbConfigDescriptor configDescriptor, IEnumerable<UsbInterfaceInfo> usbInterfaceInfos)
-        {
-            mUsbDevice = usbDevice;
-
-            mUsbConfigDescriptor = configDescriptor;
-            mInterfaceList.AddRange(usbInterfaceInfos);
-        }
-
-        /// <summary>
-        /// Gets the actual <see cref="IUsbConfigDescriptor"/> for the current config.
-        /// </summary>
-        public IUsbConfigDescriptor Descriptor
-        {
-            get { return mUsbConfigDescriptor; }
-        }
-
-        /// <summary>
-        /// Gets the string representation of the <see cref="UsbConfigDescriptor.StringIndex"/> string index.
-        /// </summary>
-        public String ConfigString
-        {
-            get
+            var interfaces = (Interface*)descriptor.Interface;
+            for (int i = 0; i < descriptor.NumInterfaces; i++)
             {
-                if (ReferenceEquals(mConfigString, null))
-                {
-                    mConfigString = String.Empty;
-                    if (Descriptor.StringIndex > 0)
-                    {
-                        mUsbDevice.GetString(out mConfigString, mUsbDevice.Info.CurrentCultureLangID, Descriptor.StringIndex);
-                    }
-                }
-                return mConfigString;
+                var values = UsbInterfaceInfo.FromUsbInterface(device, interfaces[i]);
+                value.interfaces.AddRange(values);
             }
+
+            value.MaxPower = descriptor.MaxPower;
+
+            return value;
         }
+
+        public string Configuration { get; protected set; }
+        public byte Attributes { get; protected set; }
+        public int ConfigurationValue { get; protected set; }
+        public byte MaxPower { get; protected set; }
 
         /// <summary>
         /// Gets the collection of USB device interfaces associated with this <see cref="UsbConfigInfo"/> instance.
         /// </summary>
-        public ReadOnlyCollection<UsbInterfaceInfo> InterfaceInfoList
+        public ReadOnlyCollection<UsbInterfaceInfo> Interfaces
         {
-            get { return mInterfaceList.AsReadOnly(); }
+            get { return interfaces.AsReadOnly(); }
         }
 
-        ///<summary>
-        ///Returns a <see cref="T:System.String"/> that represents the current <see cref="UsbConfigInfo"/>.
-        ///</summary>
-        ///
-        ///<returns>
-        ///A <see cref="System.String"/> that represents the current <see cref="UsbConfigInfo"/>.
-        ///</returns>
-        public override string ToString() { return ToString("", UsbDescriptor.ToStringParamValueSeperator, UsbDescriptor.ToStringFieldSeperator); }
-
-        ///<summary>
-        ///Returns a <see cref="T:System.String"/> that represents the current <see cref="UsbConfigInfo"/>.
-        ///</summary>
-        ///
-        ///<param name="prefixSeperator">The field prefix string.</param>
-        ///<param name="entitySperator">The field/value seperator string.</param>
-        ///<param name="suffixSeperator">The value suffix string.</param>
-        ///<returns>A formatted representation of the <see cref="UsbConfigInfo"/>.</returns>
-        public string ToString(string prefixSeperator, string entitySperator, string suffixSeperator)
+        /// <inheritdoc/>
+        public override string ToString()
         {
-            Object[] values = {ConfigString};
-            string[] names = {"ConfigString"};
-            return Descriptor.ToString(prefixSeperator, entitySperator, suffixSeperator) +
-                   Helper.ToString(prefixSeperator, names, entitySperator, values, suffixSeperator);
+            return this.Configuration;
         }
     }
 }

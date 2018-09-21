@@ -19,12 +19,9 @@
 // visit www.gnu.org.
 // 
 // 
-using System;
-using System.Globalization;
-using System.Runtime.InteropServices;
-using LibUsbDotNet.Descriptors;
-using LibUsbDotNet.Main;
-using LibUsb.Common;
+
+using System.Collections.ObjectModel;
+using System.Diagnostics;
 
 namespace LibUsbDotNet.Info
 {
@@ -32,173 +29,58 @@ namespace LibUsbDotNet.Info
     /// </summary> 
     public class UsbDeviceInfo
     {
-        private const short NO_LANG = short.MaxValue;
-        private readonly IUsbDeviceDescriptor mDeviceDescriptor;
-        private short mCurrentCultureLangID = NO_LANG;
-        private String mManufacturerString;
-        private String mProductString;
-        private String mSerialString;
-        internal UsbDevice mUsbDevice;
+        private readonly Collection<UsbConfigInfo> configurations = new Collection<UsbConfigInfo>();
 
-        public UsbDeviceInfo(UsbDevice usbDevice)
+        public static UsbDeviceInfo FromUsbDeviceDescriptor(LibUsb.UsbDevice device, DeviceDescriptor descriptor)
         {
-            mUsbDevice = usbDevice;
-            GetDeviceDescriptor(mUsbDevice, out mDeviceDescriptor);
-        }
+            Debug.Assert(descriptor.DescriptorType == (int)DescriptorType.Device, "A config descriptor was expected");
 
-        public UsbDeviceInfo(UsbDevice usbDevice, UsbDeviceDescriptorBase usbDeviceDescriptor)
-        {
-            mUsbDevice = usbDevice;
+            var value = new UsbDeviceInfo();
+            value.Device = descriptor.Device;
+            value.DeviceClass = descriptor.DeviceClass;
+            value.DeviceProtocol = descriptor.DeviceProtocol;
+            value.DeviceSubClass = descriptor.DeviceSubClass;
+            value.ProductId = descriptor.IdProduct;
+            value.VendorId = descriptor.IdVendor;
+            value.Manufacturer = device.GetStringDescriptor(descriptor.Manufacturer, failSilently: true);
+            value.MaxPacketSize0 = descriptor.MaxPacketSize0;
 
-            mDeviceDescriptor = new UsbDeviceDescriptorBase(usbDeviceDescriptor);
-        }
-
-        /// <summary>
-        /// The raw <see cref="IUsbDeviceDescriptor"/> for the current <see cref="UsbDevice"/>.
-        /// </summary>
-        public IUsbDeviceDescriptor Descriptor
-        {
-            get { return mDeviceDescriptor; }
-        }
-
-        /// <summary>
-        /// Request all available languages from the USB device (string index 0) and return the most appropriate LCID given the current operating systems locale settings. See System.Globalization.CultureInfo.CurrentCulture.LCID.
-        /// </summary>
-        /// <remarks>
-        /// Once the USB devices CurrentCultureLangID has been retreived, subsequent request will return a cached copy of the LCID.
-        /// </remarks>
-        public short CurrentCultureLangID
-        {
-            get
+            for (byte i = 0; i < descriptor.NumConfigurations; i++)
             {
-                if (mCurrentCultureLangID == NO_LANG)
-                {
-                    short[] deviceLangIDs;
-                    if (mUsbDevice.GetLangIDs(out deviceLangIDs))
-                    {
-#if !NETSTANDARD1_5 && !NETSTANDARD1_6
-                        short currentCultureLangID = (short) CultureInfo.CurrentCulture.LCID;
-                        foreach (short deviceLangID in deviceLangIDs)
-                        {
-                            if (deviceLangID == currentCultureLangID)
-                            {
-                                mCurrentCultureLangID = deviceLangID;
-                                return mCurrentCultureLangID;
-                            }
-                        }
-#endif
-                    }
-
-                    mCurrentCultureLangID = deviceLangIDs.Length > 0 ? deviceLangIDs[0] : (short) 0;
-                }
-                return mCurrentCultureLangID;
+                var configDescriptor = device.GetConfigDescriptor(i);
+                value.configurations.Add(configDescriptor);
             }
+
+            value.Product = device.GetStringDescriptor(descriptor.Product, failSilently: true);
+            value.SerialNumber = device.GetStringDescriptor(descriptor.SerialNumber, failSilently: true);
+            value.Usb = descriptor.USB;
+            return value;
         }
 
-        /// <summary>
-        /// Gets the string representation of the <see cref="UsbDeviceDescriptor.ManufacturerStringIndex"/> string index.
-        /// </summary>
-        public String ManufacturerString
+        public ushort Device { get; protected set; }
+        public byte DeviceClass { get; protected set; }
+        public byte DeviceProtocol { get; protected set; }
+        public byte DeviceSubClass { get; protected set; }
+        public ushort ProductId { get; protected set; }
+        public ushort VendorId { get; protected set; }
+        public string Manufacturer { get; protected set; }
+        public byte MaxPacketSize0 { get; protected set; }
+        public byte NumConfigurations { get; protected set; }
+        public string Product { get; protected set; }
+        public string SerialNumber { get; protected set; }
+        public ushort Usb { get; protected set; }
+        public ReadOnlyCollection<UsbConfigInfo> Configurations { get { return new ReadOnlyCollection<UsbConfigInfo>(this.configurations); } }
+
+        public override string ToString()
         {
-            get
+            if (!string.IsNullOrEmpty(this.SerialNumber))
             {
-                if (ReferenceEquals(mManufacturerString, null))
-                {
-                    mManufacturerString = String.Empty;
-                    if (Descriptor.ManufacturerStringIndex > 0)
-                    {
-                        mUsbDevice.GetString(out mManufacturerString, CurrentCultureLangID, Descriptor.ManufacturerStringIndex);
-                    }
-                }
-                return mManufacturerString;
+                return $"{this.Manufacturer} {this.Product} ({this.SerialNumber})";
             }
-        }
-
-        /// <summary>
-        /// Gets the string representation of the <see cref="UsbDeviceDescriptor.ProductStringIndex"/> string index.
-        /// </summary>
-        public String ProductString
-        {
-            get
+            else
             {
-                if (ReferenceEquals(mProductString, null))
-                {
-                    mProductString = String.Empty;
-                    if (Descriptor.ProductStringIndex > 0)
-                    {
-                        mUsbDevice.GetString(out mProductString, CurrentCultureLangID, Descriptor.ProductStringIndex);
-                    }
-                }
-                return mProductString;
+                return $"{this.Manufacturer} {this.Product}";
             }
-        }
-
-        /// <summary>
-        /// Gets the string representation of the <see cref="UsbDeviceDescriptor.SerialStringIndex"/> string index.
-        /// </summary>
-        public String SerialString
-        {
-            get
-            {
-                if (ReferenceEquals(mSerialString, null))
-                {
-                    mSerialString = String.Empty;
-                    if (Descriptor.SerialStringIndex > 0)
-                    {
-                        mUsbDevice.GetString(out mSerialString, 0x0409, Descriptor.SerialStringIndex);
-                    }
-                }
-                return mSerialString;
-            }
-        }
-
-        ///<summary>
-        ///Returns a <see cref="T:System.String"/> that represents the current <see cref="UsbInterfaceInfo"/>.
-        ///</summary>
-        ///
-        ///<returns>
-        ///A <see cref="System.String"/> that represents the current <see cref="UsbInterfaceInfo"/>.
-        ///</returns>
-        public override string ToString() { return ToString("", UsbDescriptor.ToStringParamValueSeperator, UsbDescriptor.ToStringFieldSeperator); }
-
-        ///<summary>
-        ///Returns a <see cref="T:System.String"/> that represents the current <see cref="UsbInterfaceInfo"/>.
-        ///</summary>
-        ///
-        ///<param name="prefixSeperator">The field prefix string.</param>
-        ///<param name="entitySperator">The field/value seperator string.</param>
-        ///<param name="suffixSeperator">The value suffix string.</param>
-        ///<returns>A formatted representation of the <see cref="UsbInterfaceInfo"/>.</returns>
-        public string ToString(string prefixSeperator, string entitySperator, string suffixSeperator)
-        {
-            string[] names = {"ManufacturerString", "ProductString", "SerialString"};
-            Object[] values = {ManufacturerString, ProductString, SerialString};
-            return Descriptor.ToString(prefixSeperator, entitySperator, suffixSeperator) +
-                   Helper.ToString(prefixSeperator, names, entitySperator, values, suffixSeperator);
-        }
-
-        internal static bool GetDeviceDescriptor(UsbDevice usbDevice, out IUsbDeviceDescriptor deviceDescriptor)
-        {
-            if (usbDevice.CachedDeviceDescriptor!=null)
-            {
-                deviceDescriptor = usbDevice.CachedDeviceDescriptor;
-                return true;
-            }
-            deviceDescriptor = new UsbDeviceDescriptorBase();
-
-            GCHandle gcDeviceDescriptor = GCHandle.Alloc(deviceDescriptor, GCHandleType.Pinned);
-            int ret;
-            bool bSuccess = usbDevice.GetDescriptor((byte) DescriptorType.Device,
-                                                    0,
-                                                    0,
-                                                    gcDeviceDescriptor.AddrOfPinnedObject(),
-                                                    UsbDeviceDescriptorBase.Size,
-                                                    out ret);
-            gcDeviceDescriptor.Free();
-
-            if (bSuccess) return true;
-
-            return false;
         }
     }
 }

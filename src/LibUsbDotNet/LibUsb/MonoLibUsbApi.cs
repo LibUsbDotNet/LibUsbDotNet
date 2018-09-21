@@ -91,7 +91,7 @@ namespace MonoLibUsb
         /// <param name="deviceDescriptor">The <see cref="MonoUsbDeviceDescriptor"/> clas that will hold the data.</param>
         /// <returns>0 on success or a <see cref="MonoUsbError"/> code on failure.</returns>
         [DllImport(NativeMethods.LibUsbNativeLibrary, CallingConvention = NativeMethods.LibUsbCallingConvention, SetLastError = false, EntryPoint = "libusb_get_device_descriptor")]
-        public static extern int GetDeviceDescriptor([In] MonoUsbProfileHandle deviceProfileHandle, [Out] MonoUsbDeviceDescriptor deviceDescriptor);
+        public static extern int GetDeviceDescriptor([In] MonoUsbProfileHandle deviceProfileHandle, [Out] DeviceDescriptor deviceDescriptor);
 
         /// <summary>
         /// Get the USB configuration descriptor for the currently active configuration.

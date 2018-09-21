@@ -49,7 +49,7 @@ namespace LibUsbDotNet.LudnMonoLibUsb
             : base(null, null)
         {
             mMonoUSBProfile = monoUSBProfile;
-            mCachedDeviceDescriptor = new UsbDeviceDescriptorBase(monoUSBProfile.DeviceDescriptor);
+            mCachedDeviceDescriptor = monoUSBProfile.DeviceDescriptor;
         }
 
         internal static MonoUsbProfileList ProfileList
@@ -95,7 +95,7 @@ namespace LibUsbDotNet.LudnMonoLibUsb
                     for (int iProfile = 0; iProfile < mMonoUSBProfileList.Count; iProfile++)
                     {
                         MonoUsbProfile monoUSBProfile = mMonoUSBProfileList[iProfile];
-                        if (monoUSBProfile.DeviceDescriptor.BcdUsb == 0) continue;
+                        if (monoUSBProfile.DeviceDescriptor.USB == 0) continue;
                         MonoUsbDevice newDevice = new MonoUsbDevice(ref monoUSBProfile);
                         rtnList.Add(newDevice);
                     }
@@ -358,14 +358,6 @@ namespace LibUsbDotNet.LudnMonoLibUsb
             return true;
         }
 
-        /// <summary>
-        /// Gets the <see cref="UsbRegistry"/> class that opened the device, or null if the device was not opened by the <see cref="UsbRegistry"/> class.
-        /// </summary>
-        public override UsbRegistry UsbRegistryInfo
-        {
-            get { return null; }
-        }
-
         ///<summary>
         /// Gets the available configurations for this <see cref="UsbDevice"/>
         ///</summary>
@@ -397,11 +389,7 @@ namespace LibUsbDotNet.LudnMonoLibUsb
         {
             get
             {
-                if (ReferenceEquals(mDeviceInfo, null))
-                {
-                    mDeviceInfo = new UsbDeviceInfo(this, mMonoUSBProfile.DeviceDescriptor);
-                }
-                return mDeviceInfo;
+                throw new NotImplementedException();
             }
         }
 
@@ -495,44 +483,7 @@ namespace LibUsbDotNet.LudnMonoLibUsb
 
         private static ErrorCode GetConfigs(MonoUsbDevice usbDevice, out List<UsbConfigInfo> configInfoListRtn)
         {
-            configInfoListRtn = new List<UsbConfigInfo>();
-            UsbError usbError = null;
-            List<MonoUsbConfigDescriptor> configList = new List<MonoUsbConfigDescriptor>();
-            int iConfigs = usbDevice.Info.Descriptor.ConfigurationCount;
-
-            for (int iConfig = 0; iConfig < iConfigs; iConfig++)
-            {
-                MonoUsbConfigHandle nextConfigHandle;
-                int ret = MonoUsbApi.GetConfigDescriptor(usbDevice.mMonoUSBProfile.ProfileHandle, (byte) iConfig, out nextConfigHandle);
-                Debug.WriteLine(string.Format("GetConfigDescriptor:{0}", ret));
-                if (ret != 0 || nextConfigHandle.IsInvalid)
-                {
-                    usbError = MonoUsbErrorMessage.Error(ErrorCode.MonoApiError,
-                                              ret,
-                                              String.Format("GetConfigDescriptor Failed at index:{0}", iConfig),
-                                              usbDevice);
-                    return usbError.ErrorCode;
-                }
-                try
-                {
-                    MonoUsbConfigDescriptor nextConfig = new MonoUsbConfigDescriptor();
-                    Marshal.PtrToStructure(nextConfigHandle.DangerousGetHandle(), nextConfig);
-
-                    UsbConfigInfo nextConfigInfo = nextConfig.ToUsbConfigInfo(usbDevice);
-                    configInfoListRtn.Add(nextConfigInfo);
-                }
-                catch (Exception ex)
-                {
-                    MonoUsbErrorMessage.Error(ErrorCode.InvalidConfig, Marshal.GetLastWin32Error(), ex.ToString(), usbDevice);
-                }
-                finally
-                {
-                    if (!nextConfigHandle.IsInvalid)
-                        nextConfigHandle.Dispose();
-                }
-            }
-
-            return ErrorCode.Success;
+            throw new NotImplementedException();
         }
 
         internal static int RefreshProfileList()

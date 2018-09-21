@@ -31,7 +31,7 @@ namespace LibUsbDotNet.DeviceNotify.Linux
     {
         public readonly byte BusNumber;
         public readonly byte DeviceAddress;
-        public readonly IUsbDeviceDescriptor DeviceDescriptor;
+        public readonly DeviceDescriptor DeviceDescriptor;
         public readonly string DeviceFileName;
 
         public LinuxDevItem(string deviceFileName, byte busNumber, byte deviceAddress, byte[] fileDescriptor)
@@ -41,21 +41,21 @@ namespace LibUsbDotNet.DeviceNotify.Linux
             DeviceAddress = deviceAddress;
 
 
-            DeviceDescriptor = new UsbDeviceDescriptorBase();
+            DeviceDescriptor = new DeviceDescriptor();
             GCHandle gcFileDescriptor = GCHandle.Alloc(DeviceDescriptor, GCHandleType.Pinned);
             Marshal.Copy(fileDescriptor, 0, gcFileDescriptor.AddrOfPinnedObject(), Marshal.SizeOf(DeviceDescriptor));
 
             gcFileDescriptor.Free();
         }
 
-        public LinuxDevItem(string deviceFileName, byte busNumber, byte deviceAddress, MonoUsbDeviceDescriptor monoUsbDeviceDescriptor)
+        public LinuxDevItem(string deviceFileName, byte busNumber, byte deviceAddress, DeviceDescriptor monoUsbDeviceDescriptor)
         {
             DeviceFileName = deviceFileName;
             BusNumber = busNumber;
             DeviceAddress = deviceAddress;
 
 
-            DeviceDescriptor = new UsbDeviceDescriptorBase(monoUsbDeviceDescriptor);
+            DeviceDescriptor = monoUsbDeviceDescriptor;
         }
 
         public bool Equals(LinuxDevItem other)
@@ -81,7 +81,7 @@ namespace LibUsbDotNet.DeviceNotify.Linux
                 int result = (DeviceFileName != null ? DeviceFileName.GetHashCode() : 0);
                 result = (result*397) ^ BusNumber.GetHashCode();
                 result = (result*397) ^ DeviceAddress.GetHashCode();
-                result = (result*397) ^ (DeviceDescriptor != null ? DeviceDescriptor.GetHashCode() : 0);
+                result = (result*397) ^ DeviceDescriptor.GetHashCode();
                 return result;
             }
         }

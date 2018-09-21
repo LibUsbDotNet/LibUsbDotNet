@@ -75,12 +75,11 @@ namespace LibUsbDotNet
 
         protected readonly UsbEndpointList mActiveEndpoints;
         internal readonly UsbApiBase mUsbApi;
-        protected IUsbDeviceDescriptor mCachedDeviceDescriptor;
+        protected DeviceDescriptor mCachedDeviceDescriptor;
         protected List<UsbConfigInfo> mConfigs;
         protected int mCurrentConfigValue = -1;
         protected UsbDeviceInfo mDeviceInfo;
         protected SafeHandle mUsbHandle;
-        protected UsbRegistry mUsbRegistry;
 
         protected readonly Byte[] UsbAltInterfaceSettings = new byte[UsbConstants.MAX_DEVICES];
         protected readonly List<int> mClaimedInterfaces = new List<int>();
@@ -92,7 +91,7 @@ namespace LibUsbDotNet
             mActiveEndpoints = new UsbEndpointList();
         }
 
-        internal IUsbDeviceDescriptor CachedDeviceDescriptor
+        internal DeviceDescriptor CachedDeviceDescriptor
         {
             get { return mCachedDeviceDescriptor; }
         }
@@ -108,11 +107,7 @@ namespace LibUsbDotNet
         {
             get
             {
-                if ((ReferenceEquals(mConfigs, null)))
-                {
-                    mConfigs = GetDeviceConfigs(this);
-                }
-                return mConfigs.AsReadOnly();
+                throw new NotImplementedException();
             }
         }
 
@@ -123,20 +118,8 @@ namespace LibUsbDotNet
         {
             get
             {
-                if (ReferenceEquals(mDeviceInfo, null))
-                {
-                    mDeviceInfo = new UsbDeviceInfo(this);
-                }
-                return mDeviceInfo;
+                throw new NotImplementedException();
             }
-        }
-
-        /// <summary>
-        /// Gets the <see cref="UsbRegistry"/> class that opened the device, or null if the device was not opened by the <see cref="UsbRegistry"/> class.
-        /// </summary>
-        public virtual UsbRegistry UsbRegistryInfo
-        {
-            get { return mUsbRegistry; }
         }
 
         /// <summary>
@@ -301,55 +284,6 @@ namespace LibUsbDotNet
 
             UsbEndpointWriter epNew = new UsbEndpointWriter(this, altIntefaceID, writeEndpointID, endpointType);
             return (UsbEndpointWriter) mActiveEndpoints.Add(epNew);
-        }
-
-        internal static List<UsbConfigInfo> GetDeviceConfigs(UsbDevice usbDevice)
-        {
-            List<UsbConfigInfo> rtnConfigs = new List<UsbConfigInfo>();
-
-            byte[] cfgBuffer = new byte[UsbConstants.MAX_CONFIG_SIZE];
-
-            int iConfigs = usbDevice.Info.Descriptor.ConfigurationCount;
-            for (int iConfig = 0; iConfig < iConfigs; iConfig++)
-            {
-                int iBytesTransmitted;
-                bool bSuccess = usbDevice.GetDescriptor((byte) DescriptorType.Config, 0, 0, cfgBuffer, cfgBuffer.Length, out iBytesTransmitted);
-                if (bSuccess)
-                {
-                    if (iBytesTransmitted >= UsbConfigDescriptor.Size && cfgBuffer[1] == (byte) DescriptorType.Config)
-                    {
-                        UsbConfigDescriptor configDescriptor = new UsbConfigDescriptor();
-                        Helper.BytesToObject(cfgBuffer, 0, Math.Min(UsbConfigDescriptor.Size, cfgBuffer[0]), configDescriptor);
-
-                        if (configDescriptor.TotalLength == iBytesTransmitted)
-                        {
-                            List<byte[]> rawDescriptorList = new List<byte[]>();
-                            int iRawLengthPosition = configDescriptor.Length;
-                            while (iRawLengthPosition < configDescriptor.TotalLength)
-                            {
-                                byte[] rawDescriptor = new byte[cfgBuffer[iRawLengthPosition]];
-                                if (iRawLengthPosition + rawDescriptor.Length > iBytesTransmitted)
-                                    throw new UsbException(usbDevice, "Descriptor length is out of range.");
-
-                                Array.Copy(cfgBuffer, iRawLengthPosition, rawDescriptor, 0, rawDescriptor.Length);
-                                rawDescriptorList.Add(rawDescriptor);
-                                iRawLengthPosition += rawDescriptor.Length;
-                            }
-                            rtnConfigs.Add(new UsbConfigInfo(usbDevice, configDescriptor, ref rawDescriptorList));
-                        }
-                        else
-                            UsbError.Error(ErrorCode.InvalidConfig,
-                                           0,
-                                           "GetDeviceConfigs: USB config descriptor length doesn't match the length received.",
-                                           usbDevice);
-                    }
-                    else
-                        UsbError.Error(ErrorCode.InvalidConfig, 0, "GetDeviceConfigs: USB config descriptor is invalid.", usbDevice);
-                }
-                else
-                    UsbError.Error(ErrorCode.InvalidConfig, 0, "GetDeviceConfigs", usbDevice);
-            }
-            return rtnConfigs;
         }
 
         /// <summary>
