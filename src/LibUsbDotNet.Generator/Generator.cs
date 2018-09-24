@@ -35,14 +35,17 @@ namespace LibUsbDotNet.Generator
 
         public Dictionary<string, Method> Methods { get; } = new Dictionary<string, Method>();
 
-        public void AddType(string nativeName, IPrimitive type)
+        public IPrimitive AddType(string nativeName, IPrimitive type)
         {
             if (this.Types.ContainsKey(nativeName))
             {
-                return;
+                return this.Types[nativeName];
             }
-
-            this.Types.Add(nativeName, type);
+            else
+            {
+                this.Types.Add(nativeName, type);
+                return type;
+            }
         }
 
         public void AddMethod(string nativeName, Method method)
