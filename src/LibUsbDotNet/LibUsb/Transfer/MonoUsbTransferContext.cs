@@ -22,6 +22,7 @@
 using System;
 using System.Runtime.InteropServices;
 using System.Threading;
+using LibUsbDotNet.LibUsb;
 using LibUsbDotNet.Main;
 using MonoLibUsb;
 using MonoLibUsb.Transfer;
@@ -81,7 +82,15 @@ namespace LibUsbDotNet.LudnMonoLibUsb.Internal
 
             // Patch for using libusb-1.0 on windows with libusbwK.sys
             EndpointType endpointType = endpointBase.Type;
-            if (UsbDevice.IsLinux)
+
+            bool isLinux =
+#if NET45
+                false;
+#else
+                RuntimeInformation.IsOSPlatform(OSPlatform.Linux);
+#endif
+
+            if (isLinux)
             {
 
                 if (isoPacketSize > 0)
@@ -108,9 +117,8 @@ namespace LibUsbDotNet.LudnMonoLibUsb.Internal
 
             if (numIsoPackets > 0)
                 mTransfer.SetIsoPacketLengths(isoPacketSize);
-
-
         }
+
         private void freeTransfer()
         {
             if (mTransfer.IsInvalid || mOwnsTransfer == false) return;
@@ -133,21 +141,19 @@ namespace LibUsbDotNet.LudnMonoLibUsb.Internal
         /// <param name="timeout">Time (milliseconds) to wait before the transfer times out.</param>
         public override void Fill(IntPtr buffer, int offset, int count, int timeout)
         {
-            throw new NotImplementedException();
-            /*
             allocTransfer(EndpointBase, true, 0, count);
 
             base.Fill(buffer, offset, count, timeout);
 
-            mTransfer.Timeout =  timeout;
-            mTransfer.PtrDeviceHandle = EndpointBase.Handle.DangerousGetHandle();
+            mTransfer.Timeout =  (uint)timeout;
+            mTransfer.PtrDeviceHandle = EndpointBase.Device.DeviceHandle.DangerousGetHandle();
 
             mTransfer.PtrCallbackFn = Marshal.GetFunctionPointerForDelegate(mMonoUsbTransferCallbackDelegate);
 
             
             mTransfer.ActualLength = 0;
             mTransfer.Status = 0;
-            mTransfer.Flags = TransferFlags.None;*/
+            mTransfer.Flags = TransferFlags.None;
         }
 
         /// <summary>
@@ -160,20 +166,18 @@ namespace LibUsbDotNet.LudnMonoLibUsb.Internal
         /// <param name="isoPacketSize">Size of each isochronous packet.</param>
         public override void Fill(IntPtr buffer, int offset, int count, int timeout, int isoPacketSize)
         {
-            throw new NotImplementedException();
-            /*
             allocTransfer(EndpointBase, true, isoPacketSize, count);
 
             base.Fill(buffer, offset, count, timeout, isoPacketSize);
 
-            mTransfer.Timeout = timeout;
-            mTransfer.PtrDeviceHandle = EndpointBase.Handle.DangerousGetHandle();
+            mTransfer.Timeout = (uint)timeout;
+            mTransfer.PtrDeviceHandle = EndpointBase.Device.DeviceHandle.DangerousGetHandle();
 
             mTransfer.PtrCallbackFn = Marshal.GetFunctionPointerForDelegate(mMonoUsbTransferCallbackDelegate);
 
             mTransfer.ActualLength = 0;
             mTransfer.Status = 0;
-            mTransfer.Flags = TransferFlags.None;*/
+            mTransfer.Flags = TransferFlags.None;
         }
 
         /// <summary>
@@ -183,18 +187,15 @@ namespace LibUsbDotNet.LudnMonoLibUsb.Internal
         /// This functions submits the USB transfer and return immediately.
         /// </remarks>
         /// <returns>
-        /// <see cref="ErrorCode.Success"/> if the submit succeeds, 
-        /// otherwise one of the other <see cref="ErrorCode"/> codes.
+        /// <see cref="Error.Success"/> if the submit succeeds, 
+        /// otherwise one of the other <see cref="Error"/> codes.
         /// </returns>
-        public override ErrorCode Submit()
+        public override Error Submit()
         {
-            if (mTransferCancelEvent.WaitOne(0)) return ErrorCode.IoCancelled;
+            if (mTransferCancelEvent.WaitOne(0)) return Error.Io;
 
-            if (!mTransferCompleteEvent.WaitOne(0)) return ErrorCode.ResourceBusy;
+            if (!mTransferCompleteEvent.WaitOne(0)) return Error.Busy;
 
-            throw new NotImplementedException();
-
-            /*
             mTransfer.PtrBuffer = NextBufPtr;
             mTransfer.Length = RequestCount;
 
@@ -204,11 +205,10 @@ namespace LibUsbDotNet.LudnMonoLibUsb.Internal
             if (ret < 0)
             {
                 mTransferCompleteEvent.Set();
-                UsbError usbErr = MonoUsbErrorMessage.Error(ErrorCode.MonoApiError, ret, "SubmitTransfer", EndpointBase);
-                return usbErr.ErrorCode;
+                return (Error)ret;
             }
 
-            return ErrorCode.Success;*/
+            return Error.Success;
         }
 
         /// <summary>
@@ -217,13 +217,10 @@ namespace LibUsbDotNet.LudnMonoLibUsb.Internal
         /// <param name="transferredCount">The number of bytes transferred on <see cref="ErrorCode.Success"/>.</param>
         /// <param name="cancel">Not used for libusb-1.0. Transfers are always cancelled on timeout or error.</param>
         /// <returns><see cref="ErrorCode.Success"/> if the transfer completes successfully, otherwise one of the other <see cref="ErrorCode"/> codes.</returns>
-        public override ErrorCode Wait(out int transferredCount, bool cancel)
+        public override Error Wait(out int transferredCount, bool cancel)
         {
-            /*
             transferredCount = 0;
             int ret = 0;
-            Error monoError;
-            ErrorCode ec;
 
             int iWait = WaitHandle.WaitAny(new WaitHandle[] {mTransferCompleteEvent, mTransferCancelEvent},
                                            Timeout.Infinite);
@@ -234,14 +231,10 @@ namespace LibUsbDotNet.LudnMonoLibUsb.Internal
                     if (mTransfer.Status == TransferStatus.Completed)
                     {
                         transferredCount = mTransfer.ActualLength;
-                        return ErrorCode.Success;
+                        return Error.Success;
                     }
 
-                    string s;
-                    monoError = MonoUsbApi.MonoLibUsbErrorFromTransferStatus(mTransfer.Status);
-                    ec = MonoUsbApi.ErrorCodeFromLibUsbError((int)monoError, out s);
-                    MonoUsbErrorMessage.Error(ErrorCode.MonoApiError, (int)monoError, "Wait:" + s, EndpointBase);
-                    return ec;
+                    return MonoUsbErrorExtensions.ToError(mTransfer.Status);
                 case 1: // TransferCancelEvent
                     ret = (int)mTransfer.Cancel();
                     bool bTransferComplete = mTransferCompleteEvent.WaitOne(100);
@@ -249,20 +242,17 @@ namespace LibUsbDotNet.LudnMonoLibUsb.Internal
 
                     if (ret != 0 || !bTransferComplete)
                     {
-                        ec = ret == 0 ? ErrorCode.CancelIoFailed : ErrorCode.MonoApiError;
-                        MonoUsbErrorMessage.Error(ec, ret, String.Format("Wait:Unable to cancel transfer or the transfer did not return after it was cancelled. Cancelled:{0} TransferCompleted:{1}", (Error)ret, bTransferComplete), EndpointBase);
+                        var ec = ret == 0 ? Error.Io : Error.Other;
+                        // MonoUsbErrorMessage.Error(ec, ret, String.Format("Wait:Unable to cancel transfer or the transfer did not return after it was cancelled. Cancelled:{0} TransferCompleted:{1}", (Error)ret, bTransferComplete), EndpointBase);
                         return ec;
                     }
-                    return ErrorCode.IoCancelled;
+                    return Error.Io;
                 default: // Critical failure timeout
                     mTransfer.Cancel();
-                    ec = ((EndpointBase.EpNum & (byte)UsbCtrlFlags.Direction_In) > 0) ? ErrorCode.ReadFailed : ErrorCode.WriteFailed;
                     mTransferCompleteEvent.Set();
-                    MonoUsbErrorMessage.Error(ec, ret, String.Format("Wait:Critical timeout failure! The transfer callback function was not called within the allotted time."), EndpointBase);
-                    return ec;
-            }*/
-
-            throw new NotImplementedException();
+                    // MonoUsbErrorMessage.Error(ec, ret, String.Format("Wait:Critical timeout failure! The transfer callback function was not called within the allotted time."), EndpointBase);
+                    return Error.Io;
+            }
         }
 
         private static void TransferCallback(MonoUsbTransfer pTransfer)

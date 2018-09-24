@@ -1,7 +1,6 @@
-﻿using LibUsbDotNet.Main;
+﻿using LibUsbDotNet.LudnMonoLibUsb.Internal;
+using LibUsbDotNet.Main;
 using System;
-using System.Collections.Generic;
-using System.Text;
 
 namespace LibUsbDotNet.LibUsb
 {
@@ -22,7 +21,7 @@ namespace LibUsbDotNet.LibUsb
         public override bool Flush()
         {
             if (IsDisposed) throw new ObjectDisposedException(GetType().Name);
-            return ReadFlush() == ErrorCode.Success;
+            return ReadFlush() == Error.Success;
         }
 
         /// <summary>
@@ -39,7 +38,7 @@ namespace LibUsbDotNet.LibUsb
 
         protected override UsbTransfer CreateTransferContext()
         {
-            throw new NotImplementedException();
+            return new MonoUsbTransferContext(this);
         }
     }
 }

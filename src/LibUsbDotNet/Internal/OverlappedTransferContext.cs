@@ -38,13 +38,13 @@ namespace LibUsbDotNet.Internal
             get { return mOverlapped; }
         }
 
-        public override ErrorCode Submit()
+        public override Error Submit()
         {
             int iTransferred;
-            ErrorCode eReturn = ErrorCode.Success;
+            Error eReturn = Error.Success;
 
-            if (mTransferCancelEvent.WaitOne(0)) return ErrorCode.IoCancelled;
-            if (!mTransferCompleteEvent.WaitOne(0)) return ErrorCode.ResourceBusy;
+            if (mTransferCancelEvent.WaitOne(0)) return Error.Io;
+            if (!mTransferCompleteEvent.WaitOne(0)) return Error.Busy;
 
             mHasWaitBeenCalled = false;
             mTransferCompleteEvent.Reset();
@@ -58,14 +58,14 @@ namespace LibUsbDotNet.Internal
             if (ret != 0 && ret != (int) UsbStatusClodes.ErrorIoPending)
             {
                 mTransferCompleteEvent.Set();
-                UsbError usbErr = UsbError.Error(ErrorCode.Win32Error, Marshal.GetLastWin32Error(), "PipeTransferSubmit", EndpointBase);
+                // UsbError usbErr = UsbError.Error(ErrorCode.Win32Error, Marshal.GetLastWin32Error(), "PipeTransferSubmit", EndpointBase);
 
-                eReturn = usbErr.ErrorCode;
+                eReturn = Error.Other;
             }
             return eReturn;
         }
 
-        public override ErrorCode Wait(out int transferredCount, bool cancel) 
+        public override Error Wait(out int transferredCount, bool cancel) 
         {
             if (mHasWaitBeenCalled) throw new UsbException(this, "Repeated calls to wait with a submit is not allowed.");
 

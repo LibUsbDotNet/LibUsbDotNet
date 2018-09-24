@@ -19,6 +19,7 @@
 // visit www.gnu.org.
 // 
 // 
+using LibUsbDotNet.LudnMonoLibUsb.Internal;
 using LibUsbDotNet.Main;
 using System;
 
@@ -54,7 +55,7 @@ namespace LibUsbDotNet.LibUsb
 
         protected override UsbTransfer CreateTransferContext()
         {
-            throw new NotImplementedException();
+            return new MonoUsbTransferContext(this);
         }
     }
 }

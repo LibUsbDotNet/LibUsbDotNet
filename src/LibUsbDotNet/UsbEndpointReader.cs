@@ -26,6 +26,7 @@ using System.Threading;
 using System.Windows.Forms;
 #endif
 using LibUsbDotNet.Internal;
+using LibUsbDotNet.LibUsb;
 using LibUsbDotNet.Main;
 
 namespace LibUsbDotNet
@@ -50,7 +51,7 @@ namespace LibUsbDotNet
         private ThreadPriority mReadThreadPriority = ThreadPriority.Normal;
 #endif
 
-        public UsbEndpointReader(IUsbDevice usbDevice, int readBufferSize, byte alternateInterfaceID, ReadEndpointID readEndpointID, EndpointType endpointType)
+        public UsbEndpointReader(UsbDevice usbDevice, int readBufferSize, byte alternateInterfaceID, ReadEndpointID readEndpointID, EndpointType endpointType)
             : base(usbDevice, alternateInterfaceID, (Byte)readEndpointID, endpointType) { mReadBufferSize = readBufferSize; }
 
         /// <summary>
@@ -115,9 +116,9 @@ namespace LibUsbDotNet
         /// <param name="timeout">Maximum time to wait for the transfer to complete.  If the transfer times out, the IO operation will be cancelled.</param>
         /// <param name="transferLength">Number of bytes actually transferred.</param>
         /// <returns>
-        /// <see cref="ErrorCode"/>.<see cref="ErrorCode.None"/> on success.
+        /// <see cref="Error"/>.<see cref="Error.None"/> on success.
         /// </returns>
-        public virtual ErrorCode Read(byte[] buffer, int timeout, out int transferLength) { return Read(buffer, 0, buffer.Length, timeout, out transferLength); }
+        public virtual Error Read(byte[] buffer, int timeout, out int transferLength) { return Read(buffer, 0, buffer.Length, timeout, out transferLength); }
 
         /// <summary>
         /// Reads data from the current <see cref="UsbEndpointReader"/>.
@@ -128,9 +129,9 @@ namespace LibUsbDotNet
         /// <param name="timeout">Maximum time to wait for the transfer to complete.  If the transfer times out, the IO operation will be cancelled.</param>
         /// <param name="transferLength">Number of bytes actually transferred.</param>
         /// <returns>
-        /// <see cref="ErrorCode"/>.<see cref="ErrorCode.None"/> on success.
+        /// <see cref="Error"/>.<see cref="Error.None"/> on success.
         /// </returns>
-        public virtual ErrorCode Read(IntPtr buffer, int offset, int count, int timeout, out int transferLength) { return Transfer(buffer, offset, count, timeout, out transferLength); }
+        public virtual Error Read(IntPtr buffer, int offset, int count, int timeout, out int transferLength) { return Transfer(buffer, offset, count, timeout, out transferLength); }
 
         /// <summary>
         /// Reads data from the current <see cref="UsbEndpointReader"/>.
@@ -141,9 +142,9 @@ namespace LibUsbDotNet
         /// <param name="timeout">Maximum time to wait for the transfer to complete.  If the transfer times out, the IO operation will be cancelled.</param>
         /// <param name="transferLength">Number of bytes actually transferred.</param>
         /// <returns>
-        /// <see cref="ErrorCode"/>.<see cref="ErrorCode.None"/> on success.
+        /// <see cref="Error"/>.<see cref="Error.None"/> on success.
         /// </returns>
-        public virtual ErrorCode Read(byte[] buffer, int offset, int count, int timeout, out int transferLength) { return Transfer(buffer, offset, count, timeout, out transferLength); }
+        public virtual Error Read(byte[] buffer, int offset, int count, int timeout, out int transferLength) { return Transfer(buffer, offset, count, timeout, out transferLength); }
 
         /// <summary>
         /// Reads data from the current <see cref="UsbEndpointReader"/>.
@@ -154,9 +155,9 @@ namespace LibUsbDotNet
         /// <param name="timeout">Maximum time to wait for the transfer to complete.  If the transfer times out, the IO operation will be cancelled.</param>
         /// <param name="transferLength">Number of bytes actually transferred.</param>
         /// <returns>
-        /// <see cref="ErrorCode"/>.<see cref="ErrorCode.None"/> on success.
+        /// <see cref="Error"/>.<see cref="Error.None"/> on success.
         /// </returns>
-        public virtual ErrorCode Read(object buffer, int offset, int count, int timeout, out int transferLength) { return Transfer(buffer, offset, count, timeout, out transferLength); }
+        public virtual Error Read(object buffer, int offset, int count, int timeout, out int transferLength) { return Transfer(buffer, offset, count, timeout, out transferLength); }
 
         /// <summary>
         /// Reads data from the current <see cref="UsbEndpointReader"/>.
@@ -165,25 +166,25 @@ namespace LibUsbDotNet
         /// <param name="timeout">Maximum time to wait for the transfer to complete.  If the transfer times out, the IO operation will be cancelled.</param>
         /// <param name="transferLength">Number of bytes actually transferred.</param>
         /// <returns>
-        /// <see cref="ErrorCode"/>.<see cref="ErrorCode.None"/> on success.
+        /// <see cref="Error"/>.<see cref="Error.None"/> on success.
         /// </returns>
-        public virtual ErrorCode Read(object buffer, int timeout, out int transferLength) { return Transfer(buffer, 0, Marshal.SizeOf(buffer), timeout, out transferLength); }
+        public virtual Error Read(object buffer, int timeout, out int transferLength) { return Transfer(buffer, 0, Marshal.SizeOf(buffer), timeout, out transferLength); }
 
         /// <summary>
         /// Reads/discards data from the enpoint until no more data is available.
         /// </summary>
-        /// <returns>Alwats returns <see cref="ErrorCode.None"/> </returns>
-        public virtual ErrorCode ReadFlush()
+        /// <returns>Alwats returns <see cref="Error.None"/> </returns>
+        public virtual Error ReadFlush()
         {
             byte[] bufDummy = new byte[64];
             int iTransferred;
             int iBufCount = 0;
-            while (Read(bufDummy, 10, out iTransferred) == ErrorCode.None && iBufCount < 128)
+            while (Read(bufDummy, 10, out iTransferred) == Error.Success && iBufCount < 128)
             {
                 iBufCount++;
             }
 
-            return ErrorCode.None;
+            return Error.Success;
         }
 
 
@@ -206,8 +207,8 @@ namespace LibUsbDotNet
                 while (!overlappedTransferContext.IsCancelled)
                 {
                     int iTransferLength;
-                    ErrorCode eReturn = reader.Transfer(buf, 0, buf.Length, Timeout.Infinite, out iTransferLength);
-                    if (eReturn == ErrorCode.None)
+                    Error eReturn = reader.Transfer(buf, 0, buf.Length, Timeout.Infinite, out iTransferLength);
+                    if (eReturn == Error.Success)
                     {
                         EventHandler<EndpointDataEventArgs> temp = reader.DataReceived;
                         if (!ReferenceEquals(temp, null) && !overlappedTransferContext.IsCancelled)
@@ -216,13 +217,13 @@ namespace LibUsbDotNet
                         }
                         continue;
                     }
-                    if (eReturn != ErrorCode.IoTimedOut) break;
+                    if (eReturn != Error.Timeout) break;
                 }
             }
 #if !NETSTANDARD && !NETCOREAPP
             catch (ThreadAbortException)
             {
-                UsbError.Error(ErrorCode.ReceiveThreadTerminated,0, "ReadData:Read thread aborted.", reader);
+                // UsbError.Error(Error.ReceiveThreadTerminated,0, "ReadData:Read thread aborted.", reader);
             }
 #endif
             finally
@@ -267,7 +268,7 @@ namespace LibUsbDotNet
             }
             if (mReadThread.IsAlive)
             {
-                UsbError.Error(ErrorCode.ReceiveThreadTerminated,0, "Failed stopping read thread.", this);
+                // UsbError.Error(Error.ReceiveThreadTerminated,0, "Failed stopping read thread.", this);
 #if !NETSTANDARD && !NETCOREAPP
                 mReadThread.Abort();
 #endif
