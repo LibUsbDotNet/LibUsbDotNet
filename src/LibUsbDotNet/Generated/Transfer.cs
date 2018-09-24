@@ -46,7 +46,7 @@ namespace LibUsbDotNet
         /// <summary>
         ///  Handle of the device that this transfer will be submitted to
         /// </summary>
-        public DeviceHandle DevHandle;
+        public IntPtr DevHandle;
 
         /// <summary>
         ///  A bitwise OR combination of

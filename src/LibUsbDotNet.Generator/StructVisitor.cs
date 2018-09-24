@@ -164,14 +164,33 @@ namespace LibUsbDotNet.Generator
                     break;
 
                 case TypeKind.Pointer:
-                    yield return
-                        new Field()
-                        {
-                            Name = cursorSpelling,
-                            Type = cursor.GetTypeInfo().ToClrType(),
-                            Description = comment,
-                            Unsafe = true
-                        };
+                    var targetSpelling = cursor.GetTypeInfo().GetPointeeType().GetSpelling();
+                    var targetType = generator.Types.ContainsKey(targetSpelling) ? generator.Types[targetSpelling] : null;
+
+                    if (targetType is SafeHandle)
+                    {
+                        // Adding a SafeHandle to a struct would generate CS0208, so let's
+                        // use an IntPtr instead.
+                        yield return
+                            new Field()
+                            {
+                                Name = cursorSpelling,
+                                Type = "IntPtr",
+                                Description = comment,
+                                Unsafe = true
+                            };
+                    }
+                    else
+                    {
+                        yield return
+                            new Field()
+                            {
+                                Name = cursorSpelling,
+                                Type = cursor.GetTypeInfo().ToClrType(),
+                                Description = comment,
+                                Unsafe = true
+                            };
+                    }
 
                     break;
 
