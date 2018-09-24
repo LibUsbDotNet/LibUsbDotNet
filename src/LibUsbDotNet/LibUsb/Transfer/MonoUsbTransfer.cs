@@ -39,24 +39,10 @@ namespace MonoLibUsb.Transfer
     /// the <a href="http://libusb.sourceforge.net/api-1.0/structlibusb__transfer.html">struct libusb_transfer</a>.
     /// </note>
     /// </remarks>
-    [StructLayout(LayoutKind.Sequential)]
-    public struct MonoUsbTransfer 
+    public unsafe struct MonoUsbTransfer
     {
-        private static readonly int OfsActualLength = Marshal.OffsetOf(typeof (libusb_transfer), "actual_length").ToInt32();
-        private static readonly int OfsEndpoint = Marshal.OffsetOf(typeof (libusb_transfer), "endpoint").ToInt32();
-        private static readonly int OfsFlags = Marshal.OffsetOf(typeof (libusb_transfer), "flags").ToInt32();
-        private static readonly int OfsLength = Marshal.OffsetOf(typeof (libusb_transfer), "length").ToInt32();
-        private static readonly int OfsPtrBuffer = Marshal.OffsetOf(typeof (libusb_transfer), "pBuffer").ToInt32();
-        private static readonly int OfsPtrCallbackFn = Marshal.OffsetOf(typeof (libusb_transfer), "pCallbackFn").ToInt32();
-        private static readonly int OfsPtrDeviceHandle = Marshal.OffsetOf(typeof (libusb_transfer), "deviceHandle").ToInt32();
-        private static readonly int OfsPtrUserData = Marshal.OffsetOf(typeof (libusb_transfer), "pUserData").ToInt32();
-        private static readonly int OfsStatus = Marshal.OffsetOf(typeof (libusb_transfer), "status").ToInt32();
-        private static readonly int OfsTimeout = Marshal.OffsetOf(typeof (libusb_transfer), "timeout").ToInt32();
-        private static readonly int OfsType = Marshal.OffsetOf(typeof (libusb_transfer), "type").ToInt32();
-        private static readonly int OfsNumIsoPackets = Marshal.OffsetOf(typeof (libusb_transfer), "num_iso_packets").ToInt32();
-        private static readonly int OfsIsoPackets = Marshal.OffsetOf(typeof (libusb_transfer), "iso_packets").ToInt32();
+        private LibUsbDotNet.Transfer* handle;
 
-        private IntPtr handle;
         /// <summary>
         /// Allocate a libusb transfer with a specified number of isochronous packet descriptors 
         /// </summary>
@@ -69,14 +55,14 @@ namespace MonoLibUsb.Transfer
         /// <param name="numIsoPackets">number of isochronous packet descriptors to allocate.</param>
         public MonoUsbTransfer(int numIsoPackets)
         {
-            handle = MonoUsbApi.AllocTransfer(numIsoPackets);
+            this.handle = NativeMethods.AllocTransfer(numIsoPackets);
         }
 
         /// <summary>
         /// Creates a new wrapper for transfers allocated by <see cref="MonoUsbApi.AllocTransfer"/>,
         /// </summary>
         /// <param name="pTransfer">The pointer to the transfer that was previously allocated with<see cref="MonoUsbApi.AllocTransfer"/>. </param>
-        internal MonoUsbTransfer(IntPtr pTransfer)
+        internal MonoUsbTransfer(LibUsbDotNet.Transfer* pTransfer)
         {
             handle = pTransfer;
         }
@@ -86,8 +72,8 @@ namespace MonoLibUsb.Transfer
         /// </summary>
         public IntPtr PtrBuffer
         {
-            get { return Marshal.ReadIntPtr(handle, OfsPtrBuffer); }
-            set { Marshal.WriteIntPtr(handle, OfsPtrBuffer, value); }
+            get { return new IntPtr(this.handle->Buffer); }
+            set { this.handle->Buffer = (byte*)value; }
         }
 
         /// <summary>
@@ -95,8 +81,8 @@ namespace MonoLibUsb.Transfer
         /// </summary>
         public IntPtr PtrUserData
         {
-            get { return Marshal.ReadIntPtr(handle, OfsPtrUserData); }
-            set { Marshal.WriteIntPtr(handle, OfsPtrUserData, value); }
+            get { return this.handle->UserData; }
+            set { this.handle->UserData = value; }
         }
 
         /// <summary>
@@ -107,8 +93,8 @@ namespace MonoLibUsb.Transfer
         /// </remarks>
         public IntPtr PtrCallbackFn
         {
-            get { return Marshal.ReadIntPtr(handle, OfsPtrCallbackFn); }
-            set { Marshal.WriteIntPtr(handle, OfsPtrCallbackFn, value); }
+            get { return this.handle->Callback; }
+            set { this.handle->Callback = value; }
         }
 
         /// <summary>
@@ -116,8 +102,8 @@ namespace MonoLibUsb.Transfer
         /// </summary>
         public int ActualLength
         {
-            get { return Marshal.ReadInt32(handle, OfsActualLength); }
-            set { Marshal.WriteInt32(handle, OfsActualLength, value); }
+            get { return this.handle->ActualLength; }
+            set { this.handle->ActualLength = value; }
         }
 
         /// <summary>
@@ -125,8 +111,8 @@ namespace MonoLibUsb.Transfer
         /// </summary>
         public int Length
         {
-            get { return Marshal.ReadInt32(handle, OfsLength); }
-            set { Marshal.WriteInt32(handle, OfsLength, value); }
+            get { return this.handle->Length; }
+            set { this.handle->Length = value; }
         }
 
         /// <summary>
@@ -134,17 +120,17 @@ namespace MonoLibUsb.Transfer
         /// </summary>
         public TransferStatus Status
         {
-            get { return (TransferStatus)Marshal.ReadInt32(handle, OfsStatus); }
-            set { Marshal.WriteInt32(handle, OfsStatus, (int)value); }
+            get { return this.handle->Status; }
+            set { this.handle->Status = value; }
         }
 
         /// <summary>
         /// Timeout for this transfer in millseconds.
         /// </summary>
-        public int Timeout
+        public uint Timeout
         {
-            get { return Marshal.ReadInt32(handle, OfsTimeout); }
-            set { Marshal.WriteInt32(handle, OfsTimeout, value); }
+            get { return this.handle->Timeout; }
+            set { this.handle->Timeout = value; }
         }
 
         /// <summary>
@@ -152,8 +138,8 @@ namespace MonoLibUsb.Transfer
         /// </summary>
         public EndpointType Type
         {
-            get { return (EndpointType)Marshal.ReadByte(handle, OfsType); }
-            set { Marshal.WriteByte(handle, OfsType, (byte)value); }
+            get { return (EndpointType)this.handle->Type; }
+            set { this.handle->Type = (byte)value; }
         }
 
         /// <summary>
@@ -161,8 +147,8 @@ namespace MonoLibUsb.Transfer
         /// </summary>
         public byte Endpoint
         {
-            get { return Marshal.ReadByte(handle, OfsEndpoint); }
-            set { Marshal.WriteByte(handle, OfsEndpoint, value); }
+            get { return this.handle->Endpoint; }
+            set { this.handle->Endpoint = value; }
         }
 
         /// <summary>
@@ -170,8 +156,8 @@ namespace MonoLibUsb.Transfer
         /// </summary>
         public TransferFlags Flags
         {
-            get { return (TransferFlags)Marshal.ReadByte(handle, OfsFlags); }
-            set { Marshal.WriteByte(handle, OfsFlags, (byte)value); }
+            get { return (TransferFlags)this.handle->Flags; }
+            set { this.handle->Flags = (byte)value; }
         }
 
         /// <summary>
@@ -179,8 +165,8 @@ namespace MonoLibUsb.Transfer
         /// </summary>
         public IntPtr PtrDeviceHandle
         {
-            get { return Marshal.ReadIntPtr(handle, OfsPtrDeviceHandle); }
-            set { Marshal.WriteIntPtr(handle, OfsPtrDeviceHandle, value); }
+            get { return this.handle->DevHandle; }
+            set { this.handle->DevHandle = value; }
         }
 
         /// <summary>
@@ -188,8 +174,8 @@ namespace MonoLibUsb.Transfer
         /// </summary>
         public int NumIsoPackets
         {
-            get { return Marshal.ReadInt32(handle, OfsNumIsoPackets); }
-            set { Marshal.WriteInt32(handle, OfsNumIsoPackets, value); }
+            get { return this.handle->NumIsoPackets; }
+            set { this.handle->NumIsoPackets = value; }
         }
 
         /// <summary>
@@ -206,10 +192,10 @@ namespace MonoLibUsb.Transfer
         /// </remarks>
         public void Free()
         {
-            if (handle!=IntPtr.Zero)
+            if (handle != null)
             {
-                MonoUsbApi.FreeTransfer(handle);
-                handle = IntPtr.Zero;
+                NativeMethods.FreeTransfer(handle);
+                this.handle = null;
             }
         }
 
@@ -217,10 +203,9 @@ namespace MonoLibUsb.Transfer
         /// Gets a unqiue name for this transfer.
         /// </summary>
         /// <returns>A unqiue name for this transfer.</returns>
-        public String UniqueName()
+        public string UniqueName()
         {
-            String guidString = String.Format("_-EP[{0}]EP-_", handle);
-            return guidString;
+            return $"_-EP[{new IntPtr(this.handle)}]EP-_";
         }
 
         /// <summary>
@@ -231,8 +216,8 @@ namespace MonoLibUsb.Transfer
         public MonoUsbIsoPacket IsoPacket(int packetNumber)
         {
             if (packetNumber > NumIsoPackets) throw new ArgumentOutOfRangeException("packetNumber");
-            IntPtr pIsoPacket =
-                new IntPtr(handle.ToInt64() + OfsIsoPackets + (packetNumber * Marshal.SizeOf(typeof(libusb_iso_packet_descriptor))));
+            IsoPacketDescriptor* pIsoPacket =
+                (IsoPacketDescriptor *)this.handle + Marshal.SizeOf(typeof(LibUsbDotNet.Transfer)) + (packetNumber * Marshal.SizeOf(typeof(LibUsbDotNet.IsoPacketDescriptor)));
 
             return new MonoUsbIsoPacket(pIsoPacket);
         }
@@ -244,7 +229,7 @@ namespace MonoLibUsb.Transfer
         {
             get
             {
-                return (handle == IntPtr.Zero);
+                return (handle == null);
             }
         }
         /// <summary>
@@ -261,7 +246,7 @@ namespace MonoLibUsb.Transfer
         {
             if (IsInvalid) return Error.NoMem;
 
-            return (Error) MonoUsbApi.CancelTransfer(handle);
+            return (Error)NativeMethods.CancelTransfer(this.handle);
         }
         /// <summary>
         /// Helper function to populate the required <see cref="MonoUsbTransfer"/> properties for a bulk transfer.
@@ -293,13 +278,11 @@ namespace MonoLibUsb.Transfer
             Length = length;
             PtrCallbackFn = Marshal.GetFunctionPointerForDelegate(callback);
             PtrUserData = userData;
-            Timeout = timeout;
+            Timeout = (uint)timeout;
             Type = EndpointType.Bulk;
             Flags = TransferFlags.None;
             NumIsoPackets = 0;
             ActualLength = 0;
-
-
         }
 
         /// <summary>
@@ -332,7 +315,7 @@ namespace MonoLibUsb.Transfer
             Length = length;
             PtrCallbackFn = Marshal.GetFunctionPointerForDelegate(callback);
             PtrUserData = userData;
-            Timeout = timeout;
+            Timeout = (uint)timeout;
             Type = EndpointType.Interrupt;
             Flags = TransferFlags.None;
         }
@@ -360,7 +343,7 @@ namespace MonoLibUsb.Transfer
         public void FillIsochronous(DeviceHandle devHandle,
                  byte endpoint,
                  IntPtr buffer,
-                 int length,int numIsoPackets,
+                 int length, int numIsoPackets,
                  Delegate callback,
                  IntPtr userData,
                  int timeout)
@@ -371,12 +354,12 @@ namespace MonoLibUsb.Transfer
             Length = length;
             PtrCallbackFn = Marshal.GetFunctionPointerForDelegate(callback);
             PtrUserData = userData;
-            Timeout = timeout;
+            Timeout = (uint)timeout;
             Type = EndpointType.Isochronous;
             Flags = TransferFlags.None;
             NumIsoPackets = numIsoPackets;
         }
-        
+
         /// <summary>
         /// Convenience function to locate the position of an isochronous packet within the buffer of an isochronous transfer. 
         /// </summary>
@@ -397,7 +380,7 @@ namespace MonoLibUsb.Transfer
 
             for (int i = 0; i < packet; i++)
                 offset += IsoPacket(i).Length;
-            
+
             return new IntPtr(offset);
         }
 
@@ -457,7 +440,7 @@ namespace MonoLibUsb.Transfer
         public Error Submit()
         {
             if (IsInvalid) return Error.NoMem;
-            return (Error)MonoUsbApi.SubmitTransfer(handle);
+            return (Error)NativeMethods.SubmitTransfer(handle);
         }
 
         /// <summary>
@@ -478,8 +461,8 @@ namespace MonoLibUsb.Transfer
         /// <exception cref="OutOfMemoryException">If the transfer was not allocated.</exception>
         public static MonoUsbTransfer Alloc(int numIsoPackets)
         {
-            IntPtr p = MonoUsbApi.AllocTransfer(numIsoPackets);
-            if (p == IntPtr.Zero) throw new OutOfMemoryException("AllocTransfer");
+            LibUsbDotNet.Transfer* p = NativeMethods.AllocTransfer(numIsoPackets);
+            if (p == null) throw new OutOfMemoryException("AllocTransfer");
             return new MonoUsbTransfer(p);
         }
 
@@ -500,13 +483,13 @@ namespace MonoLibUsb.Transfer
         /// <param name="callback">callback function to be invoked on transfer completion</param>
         /// <param name="userData">user data to pass to callback function</param>
         /// <param name="timeout">timeout for the transfer in milliseconds</param>
-        public void FillControl(DeviceHandle devHandle, MonoUsbControlSetupHandle controlSetupHandle, Delegate callback, IntPtr userData, int timeout) 
+        public void FillControl(DeviceHandle devHandle, MonoUsbControlSetupHandle controlSetupHandle, Delegate callback, IntPtr userData, int timeout)
         {
             PtrDeviceHandle = devHandle.DangerousGetHandle();
             Endpoint = 0;
             PtrCallbackFn = Marshal.GetFunctionPointerForDelegate(callback);
             PtrUserData = userData;
-            Timeout = timeout;
+            Timeout = (uint)timeout;
             Type = EndpointType.Control;
             Flags = TransferFlags.None;
 
