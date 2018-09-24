@@ -1,5 +1,6 @@
 using System;
 using System.Runtime.InteropServices;
+using LibUsbDotNet;
 using LibUsbDotNet.Main;
 using MonoLibUsb.Transfer.Internal;
 
@@ -13,23 +14,14 @@ namespace MonoLibUsb.Transfer
     /// <note type="tip">This type is used for asynchronous control transfers only.</note>
     /// </remarks>
     /// <seealso cref="MonoUsbControlSetupHandle"/>
-    [StructLayout(LayoutKind.Sequential)]
-    public class MonoUsbControlSetup
+    public unsafe class MonoUsbControlSetup
     {
         /// <summary>
         /// Size of a Libusb-1.0 setup packet.
         /// </summary>
-        public static int SETUP_PACKET_SIZE = Marshal.SizeOf(typeof(libusb_control_setup));
-        
-        private static readonly int OfsRequestType = Marshal.OffsetOf(typeof(libusb_control_setup), "bmRequestType").ToInt32();
-        private static readonly int OfsRequest = Marshal.OffsetOf(typeof(libusb_control_setup), "bRequest").ToInt32();
-        private static readonly int OfsValue = Marshal.OffsetOf(typeof(libusb_control_setup), "wValue").ToInt32();
-        private static readonly int OfsIndex = Marshal.OffsetOf(typeof(libusb_control_setup), "wIndex").ToInt32();
-        private static readonly int OfsLength = Marshal.OffsetOf(typeof(libusb_control_setup), "wLength").ToInt32();
-        private static readonly int OfsPtrData = SETUP_PACKET_SIZE;
+        public static int SETUP_PACKET_SIZE = Marshal.SizeOf(typeof(ControlSetup));
 
-
-        private IntPtr handle;
+        private ControlSetup* handle;
 
         /// <summary>
         /// Creates a <see cref="MonoUsbControlSetup"/> structure for a control setup packet pointer.
@@ -38,7 +30,7 @@ namespace MonoLibUsb.Transfer
         /// The <paramref name="pControlSetup"/> pointer must be a pointer in memory to a valid Libusb-1.0 <a href="http://libusb.sourceforge.net/api-1.0/structlibusb__control__setup.html">libusb__control__setup</a> that was allocated with <see cref="MonoUsbControlSetupHandle"/>.
         /// </remarks>
         /// <param name="pControlSetup">Pointer to the setup packet.  This will usually be <see cref="MonoUsbTransfer.PtrBuffer">MonoUsbTransfer.PtrBuffer</see></param>
-        public MonoUsbControlSetup(IntPtr pControlSetup)
+        public MonoUsbControlSetup(ControlSetup* pControlSetup)
         {
             handle = pControlSetup;
         }
@@ -48,8 +40,8 @@ namespace MonoLibUsb.Transfer
         /// </summary>
         public byte RequestType
         {
-            get { return Marshal.ReadByte(handle, OfsRequestType); }
-            set { Marshal.WriteByte(handle, OfsRequestType, value); }
+            get { return this.handle->RequestType; }
+            set { this.handle->Request = value; }
         }
 
         /// <summary>
@@ -57,9 +49,10 @@ namespace MonoLibUsb.Transfer
         /// </summary>
         public byte Request
         {
-            get { return Marshal.ReadByte(handle, OfsRequest); }
-            set { Marshal.WriteByte(handle, OfsRequest, value); }
+            get { return this.handle->Request; }
+            set { this.handle->Request = value; }
         }
+
         /// <summary>
         /// The wValue.
         /// </summary>
@@ -68,8 +61,8 @@ namespace MonoLibUsb.Transfer
         /// </remarks>
         public short Value
         {
-            get { return Helper.HostEndianToLE16(Marshal.ReadInt16(handle, OfsValue)); }
-            set { Marshal.WriteInt16(handle, OfsValue, Helper.HostEndianToLE16(value)); }
+            get { return Helper.HostEndianToLE16((short)this.handle->Value); }
+            set { this.handle->Value = (ushort)Helper.HostEndianToLE16(value); }
 
         }
         /// <summary>
@@ -80,8 +73,8 @@ namespace MonoLibUsb.Transfer
         /// </remarks>
         public short Index
         {
-            get { return Helper.HostEndianToLE16(Marshal.ReadInt16(handle, OfsIndex)); }
-            set { Marshal.WriteInt16(handle, OfsIndex, Helper.HostEndianToLE16(value)); }
+            get { return Helper.HostEndianToLE16((short)this.handle->Index)); }
+            set { this.handle->Index = (ushort)Helper.HostEndianToLE16(value); }
         }
         /// <summary>
         /// Number of bytes to transfer. 
@@ -91,8 +84,8 @@ namespace MonoLibUsb.Transfer
         /// </remarks>
         public short Length
         {
-            get { return Helper.HostEndianToLE16(Marshal.ReadInt16(handle, OfsLength)); }
-            set { Marshal.WriteInt16(handle, OfsLength, Helper.HostEndianToLE16(value)); }
+            get { return Helper.HostEndianToLE16((short)this.handle->Length); }
+            set { this.handle->Length = (ushort)Helper.HostEndianToLE16(value); }
         }
 
         /// <summary>
@@ -103,9 +96,10 @@ namespace MonoLibUsb.Transfer
         {
             get
             {
-                return new IntPtr(handle.ToInt64() + OfsPtrData);
+                return new IntPtr(this.handle + Marshal.SizeOf(typeof(ControlSetup)));
             }
         }
+
         /// <summary>
         /// Copies data into <see cref="PtrData"/>.
         /// </summary>
