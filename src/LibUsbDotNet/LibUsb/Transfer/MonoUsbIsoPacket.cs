@@ -1,7 +1,5 @@
-using System;
-using System.Runtime.InteropServices;
 using LibUsbDotNet;
-using MonoLibUsb.Transfer.Internal;
+using System;
 
 namespace MonoLibUsb.Transfer
 {

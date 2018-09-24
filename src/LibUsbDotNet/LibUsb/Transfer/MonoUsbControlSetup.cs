@@ -1,8 +1,7 @@
-using System;
-using System.Runtime.InteropServices;
 using LibUsbDotNet;
 using LibUsbDotNet.Main;
-using MonoLibUsb.Transfer.Internal;
+using System;
+using System.Runtime.InteropServices;
 
 namespace MonoLibUsb.Transfer
 {
@@ -73,7 +72,7 @@ namespace MonoLibUsb.Transfer
         /// </remarks>
         public short Index
         {
-            get { return Helper.HostEndianToLE16((short)this.handle->Index)); }
+            get { return Helper.HostEndianToLE16((short)this.handle->Index); }
             set { this.handle->Index = (ushort)Helper.HostEndianToLE16(value); }
         }
         /// <summary>

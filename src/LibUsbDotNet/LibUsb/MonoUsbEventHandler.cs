@@ -131,7 +131,7 @@ namespace MonoLibUsb
                 if (mSessionHandle.IsInvalid)
                 {
                     mSessionHandle = null;
-                    throw new UsbException(typeof (MonoUsbApi), String.Format("Init:libusb_init Failed:Invalid Session Handle"));
+                    throw new UsbException(typeof (MonoUsbEventHandler), String.Format("Init:libusb_init Failed:Invalid Session Handle"));
                 }
             }
         }

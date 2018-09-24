@@ -300,6 +300,7 @@ namespace LibUsbDotNet.LibUsb
             NativeMethods.Open(this.device, ref deviceHandle).ThrowOnError();
 
             this.deviceHandle = DeviceHandle.DangerousCreate(deviceHandle);
+            this.descriptor = null;
         }
 
         /// <summary>

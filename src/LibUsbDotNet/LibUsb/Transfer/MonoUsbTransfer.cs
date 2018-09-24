@@ -23,7 +23,6 @@ using System;
 using System.Runtime.InteropServices;
 using LibUsbDotNet;
 using LibUsbDotNet.Main;
-using MonoLibUsb.Transfer.Internal;
 
 namespace MonoLibUsb.Transfer
 {
@@ -483,7 +482,7 @@ namespace MonoLibUsb.Transfer
         /// <param name="callback">callback function to be invoked on transfer completion</param>
         /// <param name="userData">user data to pass to callback function</param>
         /// <param name="timeout">timeout for the transfer in milliseconds</param>
-        public void FillControl(DeviceHandle devHandle, MonoUsbControlSetupHandle controlSetupHandle, Delegate callback, IntPtr userData, int timeout)
+        public unsafe void FillControl(DeviceHandle devHandle, MonoUsbControlSetupHandle controlSetupHandle, Delegate callback, IntPtr userData, int timeout)
         {
             PtrDeviceHandle = devHandle.DangerousGetHandle();
             Endpoint = 0;
@@ -495,7 +494,7 @@ namespace MonoLibUsb.Transfer
 
             IntPtr pSetupPacket = controlSetupHandle.DangerousGetHandle();
             PtrBuffer = pSetupPacket;
-            MonoUsbControlSetup w = new MonoUsbControlSetup(pSetupPacket);
+            MonoUsbControlSetup w = new MonoUsbControlSetup((ControlSetup*)pSetupPacket);
             Length = MonoUsbControlSetup.SETUP_PACKET_SIZE + w.Length;
         }
     }
