@@ -19,13 +19,12 @@
 // visit www.gnu.org.
 // 
 // 
+using LibUsbDotNet.LibUsb;
+using LibUsbDotNet.Main;
+using MonoLibUsb.Transfer;
 using System;
 using System.Runtime.InteropServices;
 using System.Threading;
-using LibUsbDotNet.LibUsb;
-using LibUsbDotNet.Main;
-using MonoLibUsb;
-using MonoLibUsb.Transfer;
 
 namespace LibUsbDotNet.LudnMonoLibUsb.Internal
 {
@@ -33,7 +32,9 @@ namespace LibUsbDotNet.LudnMonoLibUsb.Internal
     {
         private bool mOwnsTransfer;
 
-        private static readonly MonoUsbTransferDelegate mMonoUsbTransferCallbackDelegate = TransferCallback;
+        private static unsafe readonly TransferDelegate mMonoUsbTransferCallbackDelegate = TransferCallback;
+        private static readonly IntPtr mMonoUsbTransferCallbackPtr = Marshal.GetFunctionPointerForDelegate(mMonoUsbTransferCallbackDelegate);
+        
         private GCHandle mCompleteEventHandle;
         private MonoUsbTransfer mTransfer;
 
@@ -148,7 +149,7 @@ namespace LibUsbDotNet.LudnMonoLibUsb.Internal
             mTransfer.Timeout =  (uint)timeout;
             mTransfer.PtrDeviceHandle = EndpointBase.Device.DeviceHandle.DangerousGetHandle();
 
-            mTransfer.PtrCallbackFn = Marshal.GetFunctionPointerForDelegate(mMonoUsbTransferCallbackDelegate);
+            mTransfer.PtrCallbackFn = mMonoUsbTransferCallbackPtr;
 
             
             mTransfer.ActualLength = 0;
@@ -173,7 +174,7 @@ namespace LibUsbDotNet.LudnMonoLibUsb.Internal
             mTransfer.Timeout = (uint)timeout;
             mTransfer.PtrDeviceHandle = EndpointBase.Device.DeviceHandle.DangerousGetHandle();
 
-            mTransfer.PtrCallbackFn = Marshal.GetFunctionPointerForDelegate(mMonoUsbTransferCallbackDelegate);
+            mTransfer.PtrCallbackFn = mMonoUsbTransferCallbackPtr;
 
             mTransfer.ActualLength = 0;
             mTransfer.Status = 0;
@@ -255,9 +256,9 @@ namespace LibUsbDotNet.LudnMonoLibUsb.Internal
             }
         }
 
-        private static void TransferCallback(MonoUsbTransfer pTransfer)
+        private static unsafe void TransferCallback(Transfer* pTransfer)
         {
-            ManualResetEvent completeEvent = GCHandle.FromIntPtr(pTransfer.PtrUserData).Target as ManualResetEvent;
+            ManualResetEvent completeEvent = GCHandle.FromIntPtr(pTransfer->UserData).Target as ManualResetEvent;
             completeEvent.Set();
         }
     }
