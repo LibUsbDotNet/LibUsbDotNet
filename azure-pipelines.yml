@@ -1,0 +1,18 @@
+jobs:
+- job: windows
+  pool:
+    vmImage: 'vs2017-win2016'
+  steps:
+  - script: |
+      dotnet restore stage\LibUsbDotNet\LibUsbDotNet.csproj
+      dotnet build stage\LibUsbDotNet\LibUsbDotNet.csproj /p:Configuration=Release
+      dotnet pack stage\LibUsbDotNet\LibUsbDotNet.csproj /p:Configuration=Release
+      copy stage\LibUsbDotNet\bin\Release\LibUsbDotNet.*.nupkg %BUILD_ARTIFACTSTAGINGDIRECTORY%
+    displayName: 'Build'
+
+  - task: PublishBuildArtifacts@1
+    inputs:
+      pathtoPublish: '$(Build.ArtifactStagingDirectory)' 
+      artifactName: 'drop' 
+      publishLocation: 'Container'
+    displayName: 'Publish artifacts'
