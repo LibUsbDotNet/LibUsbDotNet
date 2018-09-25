@@ -1,7 +1,6 @@
-using System;
-using LibUsbDotNet;
 using LibUsbDotNet.Info;
-using LibUsbDotNet.Main;
+using LibUsbDotNet.LibUsb;
+using System;
 using System.Collections.ObjectModel;
 
 namespace Examples
@@ -11,40 +10,38 @@ namespace Examples
         public static void Main(string[] args)
         {
             // Dump all devices and descriptor information to console output.
-            var allDevices = UsbDevice.AllDevices;
-            foreach (var usbRegistry in allDevices)
+            using (UsbContext context = new UsbContext())
             {
-                Console.WriteLine(usbRegistry.Info.ToString());
-
-                if (usbRegistry.Open())
+                var allDevices = context.List();
+                foreach (var usbRegistry in allDevices)
                 {
-                    for (int iConfig = 0; iConfig < usbRegistry.Configs.Count; iConfig++)
+                    Console.WriteLine(usbRegistry.Info.ToString());
+
+                    if (usbRegistry.TryOpen())
                     {
-                        UsbConfigInfo configInfo = usbRegistry.Configs[iConfig];
-                        Console.WriteLine(configInfo.ToString());
-
-                        ReadOnlyCollection<UsbInterfaceInfo> interfaceList = configInfo.InterfaceInfoList;
-                        for (int iInterface = 0; iInterface < interfaceList.Count; iInterface++)
+                        for (int iConfig = 0; iConfig < usbRegistry.Configs.Count; iConfig++)
                         {
-                            UsbInterfaceInfo interfaceInfo = interfaceList[iInterface];
-                            Console.WriteLine(interfaceInfo.ToString());
+                            UsbConfigInfo configInfo = usbRegistry.Configs[iConfig];
+                            Console.WriteLine(configInfo.ToString());
 
-                            ReadOnlyCollection<UsbEndpointInfo> endpointList = interfaceInfo.EndpointInfoList;
-                            for (int iEndpoint = 0; iEndpoint < endpointList.Count; iEndpoint++)
+                            ReadOnlyCollection<UsbInterfaceInfo> interfaceList = configInfo.Interfaces;
+                            for (int iInterface = 0; iInterface < interfaceList.Count; iInterface++)
                             {
-                                Console.WriteLine(endpointList[iEndpoint].ToString());
+                                UsbInterfaceInfo interfaceInfo = interfaceList[iInterface];
+                                Console.WriteLine(interfaceInfo.ToString());
+
+                                ReadOnlyCollection<UsbEndpointInfo> endpointList = interfaceInfo.Endpoints;
+                                for (int iEndpoint = 0; iEndpoint < endpointList.Count; iEndpoint++)
+                                {
+                                    Console.WriteLine(endpointList[iEndpoint].ToString());
+                                }
                             }
                         }
-                    }
 
-                    usbRegistry.Close();
+                        usbRegistry.Close();
+                    }
                 }
             }
-
-
-            // Free usb resources.
-            // This is necessary for libusb-1.0 and Linux compatibility.
-            UsbDevice.Exit();
 
             // Wait for user input..
             Console.WriteLine("Press any key to exit");

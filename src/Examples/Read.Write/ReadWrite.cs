@@ -2,6 +2,7 @@
 using System.Text;
 using System.Text.RegularExpressions;
 using LibUsbDotNet;
+using LibUsbDotNet.LibUsb;
 using LibUsbDotNet.Main;
 
 namespace Examples
@@ -18,103 +19,102 @@ namespace Examples
 
         public static void Main(string[] args)
         {
-            ErrorCode ec = ErrorCode.None;
+            Error ec = Error.Success;
 
-            try
+            using (UsbContext context = new UsbContext())
             {
-                // Find and open the usb device.
-                MyUsbDevice = UsbDevice.OpenUsbDevice(MyUsbFinder);
-
-                // If the device is open and ready
-                if (MyUsbDevice == null) throw new Exception("Device Not Found.");
-
-                // If this is a "whole" usb device (libusb-win32, linux libusb)
-                // it will have an IUsbDevice interface. If not (WinUSB) the 
-                // variable will be null indicating this is an interface of a 
-                // device.
-                IUsbDevice wholeUsbDevice = MyUsbDevice as IUsbDevice;
-                if (!ReferenceEquals(wholeUsbDevice, null))
+                try
                 {
-                    // This is a "whole" USB device. Before it can be used, 
-                    // the desired configuration and interface must be selected.
+                    // Find and open the usb device.
+                    MyUsbDevice = context.Find(MyUsbFinder);
 
-                    // Select config #1
-                    wholeUsbDevice.SetConfiguration(1);
+                    // If the device is open and ready
+                    if (MyUsbDevice == null) throw new Exception("Device Not Found.");
 
-                    // Claim interface #0.
-                    wholeUsbDevice.ClaimInterface(0);
-                }
-
-                // open read endpoint 1.
-                UsbEndpointReader reader = MyUsbDevice.OpenEndpointReader(ReadEndpointID.Ep01);
-
-                // open write endpoint 1.
-                UsbEndpointWriter writer = MyUsbDevice.OpenEndpointWriter(WriteEndpointID.Ep01);
-
-                // Remove the exepath/startup filename text from the begining of the CommandLine.
-                string cmdLine = Regex.Replace(
-                    Environment.CommandLine, "^\".+?\"^.*? |^.*? ", "", RegexOptions.Singleline);
-
-                if (!String.IsNullOrEmpty(cmdLine))
-                {
-                    int bytesWritten;
-                    ec = writer.Write(Encoding.Default.GetBytes(cmdLine), 2000, out bytesWritten);
-                    if (ec != ErrorCode.None) throw new Exception(UsbDevice.LastErrorString);
-
-                    byte[] readBuffer = new byte[1024];
-                    while (ec == ErrorCode.None)
+                    // If this is a "whole" usb device (libusb-win32, linux libusb)
+                    // it will have an IUsbDevice interface. If not (WinUSB) the 
+                    // variable will be null indicating this is an interface of a 
+                    // device.
+                    IUsbDevice wholeUsbDevice = MyUsbDevice as IUsbDevice;
+                    if (!ReferenceEquals(wholeUsbDevice, null))
                     {
-                        int bytesRead;
+                        // This is a "whole" USB device. Before it can be used, 
+                        // the desired configuration and interface must be selected.
 
-                        // If the device hasn't sent data in the last 100 milliseconds,
-                        // a timeout error (ec = IoTimedOut) will occur. 
-                        ec = reader.Read(readBuffer, 100, out bytesRead);
+                        // Select config #1
+                        wholeUsbDevice.SetConfiguration(1);
 
-                        if (bytesRead == 0) throw new Exception("No more bytes!");
-
-                        // Write that output to the console.
-                        Console.Write(Encoding.Default.GetString(readBuffer, 0, bytesRead));
+                        // Claim interface #0.
+                        wholeUsbDevice.ClaimInterface(0);
                     }
 
-                    Console.WriteLine("\r\nDone!\r\n");
-                }
-                else
-                    throw new Exception("Nothing to do.");
-            }
-            catch (Exception ex)
-            {
-                Console.WriteLine();
-                Console.WriteLine((ec != ErrorCode.None ? ec + ":" : String.Empty) + ex.Message);
-            }
-            finally
-            {
-                if (MyUsbDevice != null) 
-                {
-                    if (MyUsbDevice.IsOpen)
+                    // open read endpoint 1.
+                    var reader = MyUsbDevice.OpenEndpointReader(ReadEndpointID.Ep01);
+
+                    // open write endpoint 1.
+                    var writer = MyUsbDevice.OpenEndpointWriter(WriteEndpointID.Ep01);
+
+                    // Remove the exepath/startup filename text from the begining of the CommandLine.
+                    string cmdLine = Regex.Replace(
+                        Environment.CommandLine, "^\".+?\"^.*? |^.*? ", "", RegexOptions.Singleline);
+
+                    if (!String.IsNullOrEmpty(cmdLine))
                     {
-                        // If this is a "whole" usb device (libusb-win32, linux libusb-1.0)
-                        // it exposes an IUsbDevice interface. If not (WinUSB) the 
-                        // 'wholeUsbDevice' variable will be null indicating this is 
-                        // an interface of a device; it does not require or support 
-                        // configuration and interface selection.
-                        IUsbDevice wholeUsbDevice = MyUsbDevice as IUsbDevice;
-                        if (!ReferenceEquals(wholeUsbDevice, null))
+                        int bytesWritten;
+                        ec = writer.Write(Encoding.Default.GetBytes(cmdLine), 2000, out bytesWritten);
+                        if (ec != Error.Success) throw new MonoUsbException(ec);
+
+                        byte[] readBuffer = new byte[1024];
+                        while (ec == Error.Success)
                         {
-                            // Release interface #0.
-                            wholeUsbDevice.ReleaseInterface(0);
+                            int bytesRead;
+
+                            // If the device hasn't sent data in the last 100 milliseconds,
+                            // a timeout error (ec = IoTimedOut) will occur. 
+                            ec = reader.Read(readBuffer, 100, out bytesRead);
+
+                            if (bytesRead == 0) throw new Exception("No more bytes!");
+
+                            // Write that output to the console.
+                            Console.Write(Encoding.Default.GetString(readBuffer, 0, bytesRead));
                         }
 
-                        MyUsbDevice.Close();
+                        Console.WriteLine("\r\nDone!\r\n");
                     }
-                    MyUsbDevice = null;
-
-                    // Free usb resources
-                    UsbDevice.Exit();
-
+                    else
+                        throw new Exception("Nothing to do.");
                 }
+                catch (Exception ex)
+                {
+                    Console.WriteLine();
+                    Console.WriteLine((ec != Error.Success ? ec + ":" : String.Empty) + ex.Message);
+                }
+                finally
+                {
+                    if (MyUsbDevice != null)
+                    {
+                        if (MyUsbDevice.IsOpen)
+                        {
+                            // If this is a "whole" usb device (libusb-win32, linux libusb-1.0)
+                            // it exposes an IUsbDevice interface. If not (WinUSB) the 
+                            // 'wholeUsbDevice' variable will be null indicating this is 
+                            // an interface of a device; it does not require or support 
+                            // configuration and interface selection.
+                            IUsbDevice wholeUsbDevice = MyUsbDevice as IUsbDevice;
+                            if (!ReferenceEquals(wholeUsbDevice, null))
+                            {
+                                // Release interface #0.
+                                wholeUsbDevice.ReleaseInterface(0);
+                            }
 
-                // Wait for user input..
-                Console.ReadKey();
+                            MyUsbDevice.Close();
+                        }
+                        MyUsbDevice = null;
+                    }
+
+                    // Wait for user input..
+                    Console.ReadKey();
+                }
             }
         }
     }

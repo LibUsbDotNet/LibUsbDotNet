@@ -21,6 +21,7 @@
 // 
 using LibUsbDotNet.Main;
 using System;
+using System.Collections.Generic;
 using System.Collections.ObjectModel;
 
 namespace LibUsbDotNet.LibUsb
@@ -126,6 +127,25 @@ namespace LibUsbDotNet.LibUsb
             }
 
             return null;
+        }
+
+        public UsbDeviceCollection FindAll(UsbDeviceFinder finder)
+        {
+            var matchingDevices = new List<UsbDevice>();
+
+            using (var list = this.List())
+            {
+                foreach (var device in list)
+                {
+                    if (finder.Check(device))
+                    {
+                        matchingDevices.Add(device.Clone());
+                    }
+                }
+            }
+
+            UsbDeviceCollection devices = new UsbDeviceCollection(matchingDevices);
+            return devices;
         }
 
         protected virtual void Dispose(bool disposing)
