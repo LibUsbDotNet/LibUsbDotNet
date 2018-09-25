@@ -44,7 +44,7 @@ namespace LibUsbDotNet.Main
         internal ManualResetEvent mCompleteEvent = new ManualResetEvent(false);
         internal GCHandle mGCBuffer;
         internal bool mIsComplete;
-        private ErrorCode mResult;
+        private Error mResult;
         private int mTrasferredLength;
         internal UsbEndpointBase mUsbEndpoint;
 
@@ -65,7 +65,7 @@ namespace LibUsbDotNet.Main
             mGCBuffer = GCHandle.Alloc(buffer, GCHandleType.Pinned);
         }
 
-        public ErrorCode Result
+        public Error Result
         {
             get { return mResult; }
         }
@@ -99,7 +99,7 @@ namespace LibUsbDotNet.Main
 
 #endregion
 
-        public ErrorCode SyncTransfer()
+        public Error SyncTransfer()
         {
             mResult = mUsbEndpoint.Transfer(mGCBuffer.AddrOfPinnedObject(), mOffset, mCount, mTimeout, out mTrasferredLength);
             mGCBuffer.Free();
@@ -193,11 +193,11 @@ namespace LibUsbDotNet.Main
             UsbStreamAsyncTransfer asyncTransfer = (UsbStreamAsyncTransfer) asyncResult;
             asyncTransfer.mCompleteEvent.WaitOne();
 
-            if (asyncTransfer.Result == ErrorCode.Success) return asyncTransfer.TransferredLength;
+            if (asyncTransfer.Result == Error.Success) return asyncTransfer.TransferredLength;
 
-            if (asyncTransfer.Result == ErrorCode.IoTimedOut)
+            if (asyncTransfer.Result == Error.Timeout)
                 throw new TimeoutException(String.Format("{0}:Endpoint 0x{1:X2} IO timed out.", asyncTransfer.Result, mUsbEndpoint.EpNum));
-            if (asyncTransfer.Result == ErrorCode.IoCancelled)
+            if (asyncTransfer.Result == Error.Interrupted)
                 throw new IOCancelledException(String.Format("{0}:Endpoint 0x{1:X2} IO was cancelled.", asyncTransfer.Result, mUsbEndpoint.EpNum));
 
             throw new IOException(string.Format("{0}:Failed reading from endpoint:{1}", asyncTransfer.Result, mUsbEndpoint.EpNum));
@@ -208,11 +208,11 @@ namespace LibUsbDotNet.Main
             UsbStreamAsyncTransfer asyncTransfer = (UsbStreamAsyncTransfer) asyncResult;
             asyncTransfer.mCompleteEvent.WaitOne();
 
-            if (asyncTransfer.Result == ErrorCode.Success && asyncTransfer.mCount == asyncTransfer.TransferredLength) return;
+            if (asyncTransfer.Result == Error.Success && asyncTransfer.mCount == asyncTransfer.TransferredLength) return;
 
-            if (asyncTransfer.Result == ErrorCode.IoTimedOut)
+            if (asyncTransfer.Result == Error.Timeout)
                 throw new TimeoutException(String.Format("{0}:Endpoint 0x{1:X2} IO timed out.", asyncTransfer.Result, mUsbEndpoint.EpNum));
-            if (asyncTransfer.Result == ErrorCode.IoCancelled)
+            if (asyncTransfer.Result == Error.Interrupted)
                 throw new IOCancelledException(String.Format("{0}:Endpoint 0x{1:X2} IO was cancelled.", asyncTransfer.Result, mUsbEndpoint.EpNum));
             if (asyncTransfer.mCount != asyncTransfer.TransferredLength)
                 throw new IOException(String.Format("{0}:Failed writing {1} byte(s) to endpoint 0x{2:X2}.",
@@ -232,12 +232,12 @@ namespace LibUsbDotNet.Main
                 throw new InvalidOperationException(String.Format("Cannot read from WriteEndpoint {0}.", (WriteEndpointID) mUsbEndpoint.EpNum));
 
             int transferred;
-            ErrorCode ec = mUsbEndpoint.Transfer(buffer, offset, count, ReadTimeout, out transferred);
+            Error ec = mUsbEndpoint.Transfer(buffer, offset, count, ReadTimeout, out transferred);
 
-            if (ec == ErrorCode.Success) return transferred;
+            if (ec == Error.Success) return transferred;
 
-            if (ec == ErrorCode.IoTimedOut) throw new TimeoutException(String.Format("{0}:Endpoint 0x{1:X2} IO timed out.", ec, mUsbEndpoint.EpNum));
-            if (ec == ErrorCode.IoCancelled)
+            if (ec == Error.Timeout) throw new TimeoutException(String.Format("{0}:Endpoint 0x{1:X2} IO timed out.", ec, mUsbEndpoint.EpNum));
+            if (ec == Error.Interrupted)
                 throw new IOCancelledException(String.Format("{0}:Endpoint 0x{1:X2} IO was cancelled.", ec, mUsbEndpoint.EpNum));
 
             throw new IOException(string.Format("{0}:Failed reading from endpoint:{1}", ec, mUsbEndpoint.EpNum));
@@ -255,12 +255,12 @@ namespace LibUsbDotNet.Main
                 throw new InvalidOperationException(String.Format("Cannot write to ReadEndpoint {0}.", (ReadEndpointID) mUsbEndpoint.EpNum));
 
             int transferred;
-            ErrorCode ec = mUsbEndpoint.Transfer(buffer, offset, count, WriteTimeout, out transferred);
+            Error ec = mUsbEndpoint.Transfer(buffer, offset, count, WriteTimeout, out transferred);
 
-            if (ec == ErrorCode.Success && count == transferred) return;
+            if (ec == Error.Success && count == transferred) return;
 
-            if (ec == ErrorCode.IoTimedOut) throw new TimeoutException(String.Format("{0}:Endpoint 0x{1:X2} IO timed out.", ec, mUsbEndpoint.EpNum));
-            if (ec == ErrorCode.IoCancelled)
+            if (ec == Error.Timeout) throw new TimeoutException(String.Format("{0}:Endpoint 0x{1:X2} IO timed out.", ec, mUsbEndpoint.EpNum));
+            if (ec == Error.Interrupted)
                 throw new IOCancelledException(String.Format("{0}:Endpoint 0x{1:X2} IO was cancelled.", ec, mUsbEndpoint.EpNum));
             if (count != transferred)
                 throw new IOException(String.Format("{0}:Failed writing {1} byte(s) to endpoint 0x{2:X2}.",

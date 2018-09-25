@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Diagnostics;
 using System.Runtime.InteropServices;
+using LibUsbDotNet;
 using LibUsbDotNet.Main;
 
 namespace MonoLibUsb.Transfer
@@ -12,7 +13,7 @@ namespace MonoLibUsb.Transfer
     /// <note type="tip">This type is used for asynchronous control transfers only.</note>
     /// </remarks>
     /// <seealso cref="MonoUsbControlSetup"/>
-    public class MonoUsbControlSetupHandle:SafeContextHandle
+    public unsafe class MonoUsbControlSetupHandle:SafeContextHandle
     {
         private MonoUsbControlSetup mSetupPacket;
         /// <summary>
@@ -75,7 +76,7 @@ namespace MonoLibUsb.Transfer
             if (pConfigMem == IntPtr.Zero) throw new OutOfMemoryException(String.Format("Marshal.AllocHGlobal failed allocating {0} bytes", packetSize));
             SetHandle(pConfigMem);
 
-            mSetupPacket = new MonoUsbControlSetup(pConfigMem);
+            mSetupPacket = new MonoUsbControlSetup((ControlSetup*)pConfigMem);
 
             mSetupPacket.RequestType = requestType;
             mSetupPacket.Request = request;

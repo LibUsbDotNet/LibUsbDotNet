@@ -24,6 +24,7 @@ using System.Collections.ObjectModel;
 using System.Runtime.InteropServices;
 using LibUsbDotNet.Info;
 using LibUsbDotNet.Internal;
+using LibUsbDotNet.LibUsb;
 
 namespace LibUsbDotNet.Main
 {
@@ -43,10 +44,8 @@ namespace LibUsbDotNet.Main
         public static int MaxReadWrite = int.MaxValue;
 
         internal readonly byte mEpNum;
-        internal readonly UsbApiBase mUsbApi;
         private readonly UsbDevice mUsbDevice;
         private readonly byte alternateInterfaceID;
-        private readonly SafeHandle mUsbHandle;
         private bool mIsDisposed;
         internal TransferDelegate mPipeTransferSubmit;
         private UsbTransfer mTransferContext;
@@ -58,8 +57,6 @@ namespace LibUsbDotNet.Main
         {
             mUsbDevice = usbDevice;
             this.alternateInterfaceID = alternateInterfaceID;
-            mUsbApi = mUsbDevice.mUsbApi;
-            mUsbHandle = mUsbDevice.Handle;
             mEpNum = epNum;
             mEndpointType = endpointType;
             if ((mEpNum & 0x80) > 0)
@@ -102,12 +99,6 @@ namespace LibUsbDotNet.Main
         public UsbDevice Device
         {
             get { return mUsbDevice; }
-        }
-
-
-        public SafeHandle Handle
-        {
-            get { return mUsbHandle; }
         }
 
         /// <summary>
@@ -166,7 +157,7 @@ namespace LibUsbDotNet.Main
         public virtual bool Abort()
         {
             if (mIsDisposed) throw new ObjectDisposedException(GetType().Name);
-            bool bSuccess = TransferContext.Cancel() == ErrorCode.Success;
+            bool bSuccess = TransferContext.Cancel() == Error.Success;
 
             return bSuccess;
         }
@@ -175,31 +166,33 @@ namespace LibUsbDotNet.Main
         /// Discards any data that is cached in this endpoint.
         /// </summary>
         /// <returns>True on success.</returns>
-        public virtual bool Flush()
+        public abstract bool Flush();
+        /*
         {
             if (mIsDisposed) throw new ObjectDisposedException(GetType().Name);
 
             bool bSuccess = mUsbApi.FlushPipe(mUsbHandle, EpNum);
 
-            if (!bSuccess) UsbError.Error(ErrorCode.Win32Error, Marshal.GetLastWin32Error(), "FlushPipe", this);
+            if (!bSuccess) UsbError.Error(Error.Win32Error, Marshal.GetLastWin32Error(), "FlushPipe", this);
 
             return bSuccess;
-        }
+        }*/
 
         /// <summary>
         /// Resets the data toggle and clears the stall condition on an enpoint.
         /// </summary>
         /// <returns>True on success.</returns>
-        public virtual bool Reset()
+        public abstract bool Reset();
+        /*
         {
             if (mIsDisposed) throw new ObjectDisposedException(GetType().Name);
 
             bool bSuccess = mUsbApi.ResetPipe(mUsbHandle, EpNum);
 
-            if (!bSuccess) UsbError.Error(ErrorCode.Win32Error, Marshal.GetLastWin32Error(), "ResetPipe", this);
+            if (!bSuccess) UsbError.Error(Error.Win32Error, Marshal.GetLastWin32Error(), "ResetPipe", this);
 
             return bSuccess;
-        }
+        }*/
 
         /// <summary>
         /// Synchronous bulk/interrupt transfer function.
@@ -210,7 +203,7 @@ namespace LibUsbDotNet.Main
         /// <param name="timeout">Maximum time to wait for the transfer to complete.</param>
         /// <param name="transferLength">Number of bytes actually transferred.</param>
         /// <returns>True on success.</returns>
-        public virtual ErrorCode Transfer(IntPtr buffer, int offset, int length, int timeout, out int transferLength) { return UsbTransfer.SyncTransfer(TransferContext, buffer, offset, length, timeout, out transferLength); }
+        public virtual Error Transfer(IntPtr buffer, int offset, int length, int timeout, out int transferLength) { return UsbTransfer.SyncTransfer(TransferContext, buffer, offset, length, timeout, out transferLength); }
 
         /// <summary>
         /// Creates, fills and submits an asynchronous <see cref="UsbTransfer"/> context.
@@ -222,21 +215,21 @@ namespace LibUsbDotNet.Main
         /// <param name="offset">Position in buffer that transferring begins.</param>
         /// <param name="length">Number of bytes, starting from thr offset parameter to transfer.</param>
         /// <param name="timeout">Maximum time to wait for the transfer to complete.</param>
-        /// <param name="transferContext">On <see cref="ErrorCode.Success"/>, a new transfer context.</param>
-        /// <returns><see cref="ErrorCode.Success"/> if the transfer context was created and <see cref="UsbTransfer.Submit"/> succeeded.</returns>
+        /// <param name="transferContext">On <see cref="Error.Success"/>, a new transfer context.</param>
+        /// <returns><see cref="Error.Success"/> if the transfer context was created and <see cref="UsbTransfer.Submit"/> succeeded.</returns>
         /// <seealso cref="SubmitAsyncTransfer(System.IntPtr,int,int,int,out LibUsbDotNet.Main.UsbTransfer)"/>
         /// <seealso cref="NewAsyncTransfer"/>
-        public virtual ErrorCode SubmitAsyncTransfer(object buffer, int offset, int length, int timeout, out UsbTransfer transferContext)
+        public virtual Error SubmitAsyncTransfer(object buffer, int offset, int length, int timeout, out UsbTransfer transferContext)
         {
             transferContext = CreateTransferContext();
             transferContext.Fill(buffer, offset, length, timeout);
 
-            ErrorCode ec = transferContext.Submit();
-            if (ec != ErrorCode.None)
+            Error ec = transferContext.Submit();
+            if (ec != Error.Success)
             {
                 transferContext.Dispose();
                 transferContext = null;
-                UsbError.Error(ec, 0, "SubmitAsyncTransfer Failed", this);
+                // UsbError.Error(ec, 0, "SubmitAsyncTransfer Failed", this);
             }
 
             return ec;
@@ -252,21 +245,21 @@ namespace LibUsbDotNet.Main
         /// <param name="offset">Position in buffer that transferring begins.</param>
         /// <param name="length">Number of bytes, starting from thr offset parameter to transfer.</param>
         /// <param name="timeout">Maximum time to wait for the transfer to complete.</param>
-        /// <param name="transferContext">On <see cref="ErrorCode.Success"/>, a new transfer context.</param>
-        /// <returns><see cref="ErrorCode.Success"/> if the transfer context was created and <see cref="UsbTransfer.Submit"/> succeeded.</returns>
+        /// <param name="transferContext">On <see cref="Error.Success"/>, a new transfer context.</param>
+        /// <returns><see cref="Error.Success"/> if the transfer context was created and <see cref="UsbTransfer.Submit"/> succeeded.</returns>
         /// <seealso cref="SubmitAsyncTransfer(object,int,int,int,out LibUsbDotNet.Main.UsbTransfer)"/>
         /// <seealso cref="NewAsyncTransfer"/>
-        public virtual ErrorCode SubmitAsyncTransfer(IntPtr buffer, int offset, int length, int timeout, out UsbTransfer transferContext)
+        public virtual Error SubmitAsyncTransfer(IntPtr buffer, int offset, int length, int timeout, out UsbTransfer transferContext)
         {
             transferContext = CreateTransferContext();
             transferContext.Fill(buffer, offset, length, timeout);
 
-            ErrorCode ec = transferContext.Submit();
-            if (ec != ErrorCode.None)
+            Error ec = transferContext.Submit();
+            if (ec != Error.Success)
             {
                 transferContext.Dispose();
                 transferContext = null;
-                UsbError.Error(ec, 0, "SubmitAsyncTransfer Failed", this);
+                // UsbError.Error(ec, 0, "SubmitAsyncTransfer Failed", this);
             }
 
             return ec;
@@ -363,10 +356,10 @@ namespace LibUsbDotNet.Main
         /// <param name="timeout">Maximum time to wait for the transfer to complete.</param>
         /// <param name="transferLength">Number of bytes actually transferred.</param>
         /// <returns>True on success.</returns>
-        public ErrorCode Transfer(object buffer, int offset, int length, int timeout, out int transferLength)
+        public Error Transfer(object buffer, int offset, int length, int timeout, out int transferLength)
         {
             PinnedHandle pinned = new PinnedHandle(buffer);
-            ErrorCode eReturn = Transfer(pinned.Handle, offset, length, timeout, out transferLength);
+            Error eReturn = Transfer(pinned.Handle, offset, length, timeout, out transferLength);
             pinned.Dispose();
             return eReturn;
         }
@@ -386,19 +379,14 @@ namespace LibUsbDotNet.Main
             mIsDisposed = true;
         }
 
-        private int ReadPipe(IntPtr pBuffer, int bufferLength, out int lengthTransferred, int isoPacketSize, IntPtr pOverlapped)
+        protected virtual int ReadPipe(IntPtr pBuffer, int bufferLength, out int lengthTransferred, int isoPacketSize, IntPtr pOverlapped)
         {
-            bool bSuccess = mUsbApi.ReadPipe(this, pBuffer, bufferLength, out lengthTransferred, isoPacketSize, pOverlapped);
-            if (!bSuccess) return Marshal.GetLastWin32Error();
-            return 0;
+            throw new NotSupportedException();
         }
 
-
-        private int WritePipe(IntPtr pBuffer, int bufferLength, out int lengthTransferred, int isoPacketSize, IntPtr pOverlapped)
+        protected virtual int WritePipe(IntPtr pBuffer, int bufferLength, out int lengthTransferred, int isoPacketSize, IntPtr pOverlapped)
         {
-            bool bSuccess = mUsbApi.WritePipe(this, pBuffer, bufferLength, out lengthTransferred, isoPacketSize, pOverlapped);
-            if (!bSuccess) return Marshal.GetLastWin32Error();
-            return 0;
+            throw new NotSupportedException();
         }
 
         #region Nested type: TransferDelegate

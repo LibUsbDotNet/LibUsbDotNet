@@ -22,13 +22,14 @@
 using System;
 using System.Runtime.InteropServices;
 using LibUsbDotNet.Internal;
+using LibUsbDotNet.LibUsb;
 using LibUsbDotNet.Main;
 
 namespace LibUsbDotNet
 {
     /// <summary>Contains methods for writing data to a <see cref="EndpointType.Bulk"/> or <see cref="EndpointType.Interrupt"/> endpoint using the overloaded <see cref="Write(byte[],int,out int)"/> functions.
     /// </summary> 
-    public class UsbEndpointWriter : UsbEndpointBase
+    public abstract class UsbEndpointWriter : UsbEndpointBase
     {
         public UsbEndpointWriter(UsbDevice usbDevice, byte alternateInterfaceID, WriteEndpointID writeEndpointID, EndpointType endpointType)
             : base(usbDevice, alternateInterfaceID, (byte)writeEndpointID, endpointType) { }
@@ -41,9 +42,9 @@ namespace LibUsbDotNet
         /// <param name="timeout">Maximum time to wait for the transfer to complete.  If the transfer times out, the IO operation will be cancelled.</param>
         /// <param name="transferLength">Number of bytes actually transferred.</param>
         /// <returns>
-        /// <see cref="ErrorCode"/>.<see cref="ErrorCode.None"/> on success.
+        /// <see cref="Error"/>.<see cref="Error.None"/> on success.
         /// </returns>
-        public virtual ErrorCode Write(byte[] buffer, int timeout, out int transferLength) { return Write(buffer, 0, buffer.Length, timeout, out transferLength); }
+        public virtual Error Write(byte[] buffer, int timeout, out int transferLength) { return Write(buffer, 0, buffer.Length, timeout, out transferLength); }
 
         /// <summary>
         /// Writes data to the current <see cref="UsbEndpointWriter"/>.
@@ -54,9 +55,9 @@ namespace LibUsbDotNet
         /// <param name="timeout">Maximum time to wait for the transfer to complete.  If the transfer times out, the IO operation will be cancelled.</param>
         /// <param name="transferLength">Number of bytes actually transferred.</param>
         /// <returns>
-        /// <see cref="ErrorCode"/>.<see cref="ErrorCode.None"/> on success.
+        /// <see cref="Error"/>.<see cref="Error.None"/> on success.
         /// </returns>
-        public virtual ErrorCode Write(IntPtr pBuffer, int offset, int count, int timeout, out int transferLength) { return Transfer(pBuffer, offset, count, timeout, out transferLength); }
+        public virtual Error Write(IntPtr pBuffer, int offset, int count, int timeout, out int transferLength) { return Transfer(pBuffer, offset, count, timeout, out transferLength); }
 
         /// <summary>
         /// Writes data to the current <see cref="UsbEndpointWriter"/>.
@@ -67,9 +68,9 @@ namespace LibUsbDotNet
         /// <param name="timeout">Maximum time to wait for the transfer to complete.  If the transfer times out, the IO operation will be cancelled.</param>
         /// <param name="transferLength">Number of bytes actually transferred.</param>
         /// <returns>
-        /// <see cref="ErrorCode"/>.<see cref="ErrorCode.None"/> on success.
+        /// <see cref="Error"/>.<see cref="Error.None"/> on success.
         /// </returns>
-        public virtual ErrorCode Write(byte[] buffer, int offset, int count, int timeout, out int transferLength) { return Transfer(buffer, offset, count, timeout, out transferLength); }
+        public virtual Error Write(byte[] buffer, int offset, int count, int timeout, out int transferLength) { return Transfer(buffer, offset, count, timeout, out transferLength); }
 
         /// <summary>
         /// Writes data to the current <see cref="UsbEndpointWriter"/>.
@@ -80,9 +81,9 @@ namespace LibUsbDotNet
         /// <param name="timeout">Maximum time to wait for the transfer to complete.  If the transfer times out, the IO operation will be cancelled.</param>
         /// <param name="transferLength">Number of bytes actually transferred.</param>
         /// <returns>
-        /// <see cref="ErrorCode"/>.<see cref="ErrorCode.None"/> on success.
+        /// <see cref="Error"/>.<see cref="Error.None"/> on success.
         /// </returns>
-        public virtual ErrorCode Write(object buffer, int offset, int count, int timeout, out int transferLength) { return Transfer(buffer, offset, count, timeout, out transferLength); }
+        public virtual Error Write(object buffer, int offset, int count, int timeout, out int transferLength) { return Transfer(buffer, offset, count, timeout, out transferLength); }
 
         /// <summary>
         /// Writes data to the current <see cref="UsbEndpointWriter"/>.
@@ -91,9 +92,9 @@ namespace LibUsbDotNet
         /// <param name="timeout">Maximum time to wait for the transfer to complete.  If the transfer times out, the IO operation will be cancelled.</param>
         /// <param name="transferLength">Number of bytes actually transferred.</param>
         /// <returns>
-        /// <see cref="ErrorCode"/>.<see cref="ErrorCode.None"/> on success.
+        /// <see cref="Error"/>.<see cref="Error.None"/> on success.
         /// </returns>
-        public virtual ErrorCode Write(object buffer, int timeout, out int transferLength) { return Write(buffer, 0, Marshal.SizeOf(buffer), timeout, out transferLength); }
+        public virtual Error Write(object buffer, int timeout, out int transferLength) { return Write(buffer, 0, Marshal.SizeOf(buffer), timeout, out transferLength); }
 
         protected override UsbTransfer CreateTransferContext() { return new OverlappedTransferContext(this); }
     }

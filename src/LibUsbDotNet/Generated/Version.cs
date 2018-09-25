@@ -38,7 +38,7 @@ namespace LibUsbDotNet
     ///  Structure providing the version of the libusb runtime
     /// </summary>
     [StructLayoutAttribute(LayoutKind.Sequential, Pack = NativeMethods.Pack)]
-    public struct Version
+    public unsafe struct Version
     {
         /// <summary>
         ///  Library major version.

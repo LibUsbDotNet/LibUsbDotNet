@@ -40,7 +40,7 @@ namespace LibUsbDotNet
     ///  All multiple-byte fields are represented in host-endian format.
     /// </summary>
     [StructLayoutAttribute(LayoutKind.Sequential, Pack = NativeMethods.Pack)]
-    public struct InterfaceDescriptor
+    public unsafe struct InterfaceDescriptor
     {
         /// <summary>
         ///  Size of this descriptor (in bytes)
@@ -95,13 +95,13 @@ namespace LibUsbDotNet
         ///  Array of endpoint descriptors. This length of this array is determined
         ///  by the bNumEndpoints field.
         /// </summary>
-        public IntPtr Endpoint;
+        public EndpointDescriptor* Endpoint;
 
         /// <summary>
         ///  Extra descriptors. If libusb encounters unknown interface descriptors,
         ///  it will store them here, should you wish to parse them.
         /// </summary>
-        public IntPtr Extra;
+        public byte* Extra;
 
         /// <summary>
         ///  Length of the extra descriptors, in bytes.

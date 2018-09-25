@@ -171,12 +171,12 @@ namespace LibUsbDotNet.Main
         /// Cancels a pending transfer that was previously submitted with <see cref="Submit"/>.
         /// </summary>
         /// <returns></returns>
-        public virtual ErrorCode Cancel()
+        public virtual Error Cancel()
         {
             mTransferCancelEvent.Set();
             //mTransferCompleteEvent.WaitOne(5000, false);
 
-            return ErrorCode.Success;
+            return Error.Success;
         }
 
         /// <summary>
@@ -186,25 +186,25 @@ namespace LibUsbDotNet.Main
         /// This functions submits the USB transfer and return immediately.
         /// </remarks>
         /// <returns>
-        /// <see cref="ErrorCode.Success"/> if the submit succeeds, 
-        /// otherwise one of the other <see cref="ErrorCode"/> codes.
+        /// <see cref="Error.Success"/> if the submit succeeds, 
+        /// otherwise one of the other <see cref="Error"/> codes.
         /// </returns>
-        public abstract ErrorCode Submit();
+        public abstract Error Submit();
 
         /// <summary>
         /// Wait for the transfer to complete, timeout, or get cancelled.
         /// </summary>
-        /// <param name="transferredCount">The number of bytes transferred on <see cref="ErrorCode.Success"/>.</param>
+        /// <param name="transferredCount">The number of bytes transferred on <see cref="Error.Success"/>.</param>
         /// <param name="cancel">If true, the transfer is cancelled if it does not complete within the time specified in <see cref="Timeout"/>.</param>
-        /// <returns><see cref="ErrorCode.Success"/> if the transfer completes successfully, otherwise one of the other <see cref="ErrorCode"/> codes.</returns>
-        public abstract ErrorCode Wait(out int transferredCount, bool cancel);
+        /// <returns><see cref="Error.Success"/> if the transfer completes successfully, otherwise one of the other <see cref="Error"/> codes.</returns>
+        public abstract Error Wait(out int transferredCount, bool cancel);
 
         /// <summary>
         /// Wait for the transfer to complete, timeout, or get cancelled.
         /// </summary>
-        /// <param name="transferredCount">The number of bytes transferred on <see cref="ErrorCode.Success"/>.</param>
-        /// <returns><see cref="ErrorCode.Success"/> if the transfer completes successfully, otherwise one of the other <see cref="ErrorCode"/> codes.</returns>
-        public ErrorCode Wait(out int transferredCount) { return Wait(out transferredCount, true); }
+        /// <param name="transferredCount">The number of bytes transferred on <see cref="Error.Success"/>.</param>
+        /// <returns><see cref="Error.Success"/> if the transfer completes successfully, otherwise one of the other <see cref="Error"/> codes.</returns>
+        public Error Wait(out int transferredCount) { return Wait(out transferredCount, true); }
 
         /// <summary>
         /// Fills the transfer with the data to <see cref="Submit"/>.
@@ -267,7 +267,7 @@ namespace LibUsbDotNet.Main
             mIsoPacketSize = isoPacketSize;
             Reset();
         }
-        internal static ErrorCode SyncTransfer(UsbTransfer transferContext,
+        internal static Error SyncTransfer(UsbTransfer transferContext,
                                        IntPtr buffer,
                                        int offset,
                                        int length,
@@ -276,7 +276,7 @@ namespace LibUsbDotNet.Main
         {
             return SyncTransfer(transferContext, buffer, offset, length, timeout, 0, out transferLength);
         }
-        internal static ErrorCode SyncTransfer(UsbTransfer transferContext,
+        internal static Error SyncTransfer(UsbTransfer transferContext,
                                                IntPtr buffer,
                                                int offset,
                                                int length,
@@ -297,20 +297,20 @@ namespace LibUsbDotNet.Main
                 transferLength = 0;
 
                 int transferred;
-                ErrorCode ec;
+                Error ec;
                 transferContext.Fill(buffer, offset, length, timeout, isoPacketSize);
 
                 while (true)
                 {
                     ec = transferContext.Submit();
-                    if (ec != ErrorCode.Success) return ec;
+                    if (ec != Error.Success) return ec;
 
                     ec = transferContext.Wait(out transferred);
-                    if (ec != ErrorCode.Success) return ec;
+                    if (ec != Error.Success) return ec;
 
                     transferLength += transferred;
 
-                    if ((ec != ErrorCode.None || transferred != UsbEndpointBase.MaxReadWrite) ||
+                    if ((ec != Error.Success || transferred != UsbEndpointBase.MaxReadWrite) ||
                         !transferContext.IncrementTransfer(transferred))
                         break;
                 }
@@ -472,7 +472,7 @@ namespace LibUsbDotNet.Main
         public readonly int BufferSize;
 
         /// <summary>
-        /// Time (in milliseconds) to wait for a transfer to complete before returning <see cref="ErrorCode.IoTimedOut"/>.
+        /// Time (in milliseconds) to wait for a transfer to complete before returning <see cref="Error.IoTimedOut"/>.
         /// </summary>
         public readonly int Timeout;
 
@@ -546,15 +546,15 @@ namespace LibUsbDotNet.Main
         /// Submits transfers until <see cref="MaxOutstandingIO"/> is reached then waits for the oldest transfer to complete.  
         /// </summary>
         /// <param name="handle">The queue handle to the <see cref="UsbTransfer"/> that completed.</param>
-        /// <returns><see cref="ErrorCode.Success"/> if data was transferred, or another <see cref="ErrorCode"/> on error.</returns>
-        public ErrorCode Transfer(out Handle handle)
+        /// <returns><see cref="Error.Success"/> if data was transferred, or another <see cref="Error"/> on error.</returns>
+        public Error Transfer(out Handle handle)
         {
             return transfer(this, out handle);
         }
-        private static ErrorCode transfer(UsbTransferQueue transferParam, out Handle handle)
+        private static Error transfer(UsbTransferQueue transferParam, out Handle handle)
         {
             handle = null;
-            ErrorCode ret = ErrorCode.Success;
+            Error ret = Error.Success;
 
             // Submit transfers until the maximum number of outstanding transfer(s) is reached.
             while (transferParam.mOutstandingTransferCount < transferParam.MaxOutstandingIO)
@@ -579,7 +579,7 @@ namespace LibUsbDotNet.Main
                 // Submit this transfer now.
                 handle.Context.Reset();
                 ret = handle.Context.Submit();
-                if (ret != ErrorCode.Success) goto Done;
+                if (ret != Error.Success) goto Done;
 
                 // Mark this handle has InUse.
                 handle.InUse = true;
@@ -601,7 +601,7 @@ namespace LibUsbDotNet.Main
                 // TransferHandleWaitIndex is the index of the oldest outstanding transfer.
                 handle = transferParam.mTransferHandles[transferParam.mTransferHandleWaitIndex];
                 ret = handle.Context.Wait(out handle.Transferred, false);
-                if (ret != ErrorCode.Success)
+                if (ret != Error.Success)
                     goto Done;
 
                 // Mark this handle has no longer InUse.
@@ -615,7 +615,7 @@ namespace LibUsbDotNet.Main
                 // Move TransferHandleWaitIndex to the oldest outstanding transfer.
                 IncWithRoll(ref transferParam.mTransferHandleWaitIndex, transferParam.MaxOutstandingIO);
 
-                return ErrorCode.Success;
+                return Error.Success;
             }
 
         Done:

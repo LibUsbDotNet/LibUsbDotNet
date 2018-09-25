@@ -50,11 +50,6 @@ namespace LibUsbDotNet
         ReadOnlyCollection<UsbConfigInfo> Configs { get; }
 
         /// <summary>
-        /// Returns the DriverMode this USB device is using.
-        /// </summary>
-        UsbDevice.DriverModeType DriverMode { get; }
-
-        /// <summary>
         /// Gets the actual device descriptor the the current <see cref="UsbDevice"/>.
         /// </summary>
         UsbDeviceInfo Info { get; }
@@ -65,30 +60,9 @@ namespace LibUsbDotNet
         bool IsOpen { get; }
 
         /// <summary>
-        /// Closes and frees device resources.  Once closed the device cannot be reopened.  A new <see cref="UsbDevice"/> class must be obtained using the <see cref="UsbGlobals"/> class.
+        /// Closes and frees device resources.
         /// </summary>
-        /// <returns>True on success.</returns>
-        bool Close();
-
-        /// <summary>
-        /// Sends/Receives an IO control message to endpoint 0.
-        /// </summary>
-        /// <param name="setupPacket">Contains parameters for the control request. See section 9.3 USB Device Requests of the Universal Serial Bus Specification Revision 2.0 for more information. </param>
-        /// <param name="buffer">Data to be sent/received from the device.</param>
-        /// <param name="bufferLength">Length of the buffer param.</param>
-        /// <param name="lengthTransferred">Number of bytes sent or received (depends on the direction of the control transfer).</param>
-        /// <returns>True on success.</returns>
-        bool ControlTransfer(ref UsbSetupPacket setupPacket, IntPtr buffer, int bufferLength, out int lengthTransferred);
-
-        /// <summary>
-        /// Transmits io control message to endpoint 0.
-        /// </summary>
-        /// <param name="setupPacket">Contains parameters for the control request. See section 9.3 USB Device Requests of the Universal Serial Bus Specification Revision 2.0 for more information. </param>
-        /// <param name="buffer">Data to be sent/received from the device.  Th</param>
-        /// <param name="bufferLength">Length of the buffer param.</param>
-        /// <param name="lengthTransferred">Number of bytes sent or received (depends on the direction of the control transfer).</param>
-        /// <returns>True on success.</returns>
-        bool ControlTransfer(ref UsbSetupPacket setupPacket, object buffer, int bufferLength, out int lengthTransferred);
+        void Close();
 
         /// <summary>
         /// Gets a specific descriptor from the device. See <see cref="DescriptorType"/> for more information.
@@ -151,8 +125,7 @@ namespace LibUsbDotNet
         ///<summary>
         /// Opens/re-opens this USB device instance for communication.
         ///</summary>
-        ///<returns>True if the device is already opened or was opened successfully.  False if the device does not exists or is no longer valid.</returns>
-        bool Open();
+        void Open();
 
         /// <summary>
         /// Opens a <see cref="EndpointType.Bulk"/> endpoint for reading

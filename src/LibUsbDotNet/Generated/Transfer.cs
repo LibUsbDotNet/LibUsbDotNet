@@ -41,7 +41,81 @@ namespace LibUsbDotNet
     ///  it back to the user.
     /// </summary>
     [StructLayoutAttribute(LayoutKind.Sequential, Pack = NativeMethods.Pack)]
-    public struct Transfer
+    public unsafe struct Transfer
     {
+        /// <summary>
+        ///  Handle of the device that this transfer will be submitted to
+        /// </summary>
+        public IntPtr DevHandle;
+
+        /// <summary>
+        ///  A bitwise OR combination of
+        /// </summary>
+        public byte Flags;
+
+        /// <summary>
+        ///  Address of the endpoint where this transfer will be sent.
+        /// </summary>
+        public byte Endpoint;
+
+        /// <summary>
+        ///  Type of the endpoint from
+        /// </summary>
+        public byte Type;
+
+        /// <summary>
+        ///  Timeout for this transfer in milliseconds. A value of 0 indicates no
+        ///  timeout.
+        /// </summary>
+        public uint Timeout;
+
+        /// <summary>
+        ///  The status of the transfer. Read-only, and only for use within
+        ///  transfer callback function.
+        ///  If this is an isochronous transfer, this field may read COMPLETED even
+        ///  if there were errors in the frames. Use the
+        ///  to determine if errors occurred.
+        /// </summary>
+        public TransferStatus Status;
+
+        /// <summary>
+        ///  Length of the data buffer
+        /// </summary>
+        public int Length;
+
+        /// <summary>
+        ///  Actual length of data that was transferred. Read-only, and only for
+        ///  use within transfer callback function. Not valid for isochronous
+        ///  endpoint transfers.
+        /// </summary>
+        public int ActualLength;
+
+        /// <summary>
+        ///  Callback function. This will be invoked when the transfer completes,
+        ///  fails, or is cancelled.
+        /// </summary>
+        public IntPtr Callback;
+
+        /// <summary>
+        ///  User context data to pass to the callback function.
+        /// </summary>
+        public IntPtr UserData;
+
+        /// <summary>
+        ///  Data buffer
+        /// </summary>
+        public byte* Buffer;
+
+        /// <summary>
+        ///  Number of isochronous packets. Only used for I/O with isochronous
+        ///  endpoints.
+        /// </summary>
+        public int NumIsoPackets;
+
+        /// <summary>
+        ///  Isochronous packet descriptors, for isochronous transfers only.
+        /// </summary>
+        public IntPtr IsoPacketDesc;
+
     }
 }

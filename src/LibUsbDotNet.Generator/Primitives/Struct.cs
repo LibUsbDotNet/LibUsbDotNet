@@ -16,7 +16,7 @@ namespace LibUsbDotNet.Generator.Primitives
         {
             get
             {
-                if (Fields.Any(f => f.FixedLengthString != null))
+                if (Fields.Any(f => f.FixedLengthString != null || f.Unsafe))
                 {
                     return "unsafe ";
                 }

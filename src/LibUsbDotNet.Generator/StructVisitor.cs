@@ -61,10 +61,18 @@ namespace LibUsbDotNet.Generator
                     Description = GetComment(cursor)
                 };
 
-                this.generator.AddType(nativeName, current);
+                // This is a lazy attempt to handle forward declarations. A better way would be as described here:
+                // https://joshpeterson.github.io/identifying-a-forward-declaration-with-libclang
+                // but libclang doesn't expose clang_getNullCursor (yet)
+                current = this.generator.AddType(nativeName, current) as Struct;
 
-                var visitor = new DelegatingCursorVisitor(this.Visit);
-                visitor.VisitChildren(cursor);
+                // If the struct is in use as a 'handle', this AddType would have returned an Handle and the 'as Struct'
+                // statement would have cast it to null. In that case, we don't create an explicit struct.
+                if (current != null)
+                {
+                    var visitor = new DelegatingCursorVisitor(this.Visit);
+                    visitor.VisitChildren(cursor);
+                }
 
                 return ChildVisitResult.Continue;
             }
@@ -156,13 +164,33 @@ namespace LibUsbDotNet.Generator
                     break;
 
                 case TypeKind.Pointer:
-                    var pointeeType = canonical.GetPointeeType().GetCanonicalType();
+                    var targetSpelling = cursor.GetTypeInfo().GetPointeeType().GetSpelling();
+                    var targetType = generator.Types.ContainsKey(targetSpelling) ? generator.Types[targetSpelling] : null;
 
-                    var intPtrMember = new Field();
-                    intPtrMember.Name = cursorSpelling;
-                    intPtrMember.Type = "IntPtr";
-                    intPtrMember.Description = comment;
-                    yield return intPtrMember;
+                    if (targetType is SafeHandle)
+                    {
+                        // Adding a SafeHandle to a struct would generate CS0208, so let's
+                        // use an IntPtr instead.
+                        yield return
+                            new Field()
+                            {
+                                Name = cursorSpelling,
+                                Type = "IntPtr",
+                                Description = comment,
+                                Unsafe = true
+                            };
+                    }
+                    else
+                    {
+                        yield return
+                            new Field()
+                            {
+                                Name = cursorSpelling,
+                                Type = cursor.GetTypeInfo().ToClrType(),
+                                Description = comment,
+                                Unsafe = true
+                            };
+                    }
 
                     break;
 

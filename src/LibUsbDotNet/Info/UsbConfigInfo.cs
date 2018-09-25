@@ -19,10 +19,10 @@
 // visit www.gnu.org.
 // 
 // 
+using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Diagnostics;
-using System.Runtime.InteropServices;
 
 namespace LibUsbDotNet.Info
 {
@@ -44,7 +44,8 @@ namespace LibUsbDotNet.Info
             value.mRawDescriptors = new byte[descriptor.ExtraLength];
             if (descriptor.ExtraLength > 0)
             {
-                Marshal.Copy(descriptor.Extra, value.mRawDescriptors, 0, descriptor.ExtraLength);
+                Span<byte> extra = new Span<byte>(descriptor.Extra, descriptor.ExtraLength);
+                extra.CopyTo(value.mRawDescriptors);
             }
 
             var interfaces = (Interface*)descriptor.Interface;

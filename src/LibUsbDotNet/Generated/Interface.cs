@@ -38,13 +38,13 @@ namespace LibUsbDotNet
     ///  A collection of alternate settings for a particular USB interface.
     /// </summary>
     [StructLayoutAttribute(LayoutKind.Sequential, Pack = NativeMethods.Pack)]
-    public struct Interface
+    public unsafe struct Interface
     {
         /// <summary>
         ///  Array of interface descriptors. The length of this array is determined
         ///  by the num_altsetting field.
         /// </summary>
-        public IntPtr Altsetting;
+        public InterfaceDescriptor* Altsetting;
 
         /// <summary>
         ///  The number of alternate settings that belong to this interface
