@@ -4,6 +4,8 @@
     <TargetFramework>netcoreapp2.1</TargetFramework>
     <IsPackable>false</IsPackable>
     <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
+    <SignAssembly>true</SignAssembly>
+    <AssemblyOriginatorKeyFile>../LibUsbDotNet\LibUsbDotNet.snk</AssemblyOriginatorKeyFile>
   </PropertyGroup>
 
   <ItemGroup>
