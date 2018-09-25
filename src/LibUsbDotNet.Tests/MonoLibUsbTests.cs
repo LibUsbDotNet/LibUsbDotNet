@@ -1,7 +1,5 @@
 ﻿using LibUsbDotNet;
-using MonoLibUsb.Descriptors;
 using System;
-using System.Runtime.InteropServices;
 using Xunit;
 
 namespace MonoLibUsb.Tests
