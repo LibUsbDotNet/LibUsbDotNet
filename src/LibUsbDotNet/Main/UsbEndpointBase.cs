@@ -374,6 +374,15 @@ namespace LibUsbDotNet.Main
                     if (epReader.DataReceivedEnabled) epReader.DataReceivedEnabled = false;
                 }
                 Abort();
+
+	            if (!ReferenceEquals(mTransferContext, null))
+	            {
+		            mTransferContext.Dispose();
+		            mTransferContext = null;
+	            }
+
+				mUsbDevice.ActiveEndpoints.RemoveFromList(this);
+
                 mUsbDevice.ActiveEndpoints.RemoveFromList(this);
             }
             mIsDisposed = true;
