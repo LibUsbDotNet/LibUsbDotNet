@@ -11,7 +11,7 @@
     <AssemblyName>LibUsbDotNet.LibUsbDotNet</AssemblyName>
     <PackageId>LibUsbDotNet</PackageId>
     <PackageProjectUrl>https://github.com/LibUsbDotNet/LibUsbDotNet/</PackageProjectUrl>
-    <PackageLicenseUrl>https://github.com/LibUsbDotNet/LibUsbDotNet/blob/master/stage/gpl-3.0.txt</PackageLicenseUrl>
+    <PackageLicenseUrl>https://github.com/LibUsbDotNet/LibUsbDotNet/blob/master/LICENSE</PackageLicenseUrl>
     <PackageIconUrl>http://c.fsdn.com/allura/p/libusbdotnet/icon</PackageIconUrl>
     <RepositoryType>git</RepositoryType>
     <RuntimeIdentifiers>win</RuntimeIdentifiers>
