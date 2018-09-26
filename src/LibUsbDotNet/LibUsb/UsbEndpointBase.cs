@@ -198,7 +198,29 @@ namespace LibUsbDotNet.LibUsb
         /// <param name="timeout">Maximum time to wait for the transfer to complete.</param>
         /// <param name="transferLength">Number of bytes actually transferred.</param>
         /// <returns>True on success.</returns>
-        public virtual Error Transfer(IntPtr buffer, int offset, int length, int timeout, out int transferLength) { return UsbTransfer.SyncTransfer(TransferContext, buffer, offset, length, timeout, out transferLength); }
+        public virtual unsafe Error Transfer(IntPtr buffer, int offset, int length, int timeout, out int transferLength)
+        {
+            int transferred = 0;
+            Error returnValue = 0;
+
+            switch (this.mEndpointType)
+            {
+                case EndpointType.Bulk:
+                    returnValue = NativeMethods.BulkTransfer(this.Device.DeviceHandle, this.mEpNum, (byte*)buffer + offset, length, ref transferred, (uint)timeout);
+                    transferLength = transferred;
+                    return returnValue;
+
+                case EndpointType.Interrupt:
+                    returnValue = NativeMethods.InterruptTransfer(this.Device.DeviceHandle, this.mEpNum, (byte*)buffer + offset, length, ref transferred, (uint)timeout);
+                    transferLength = transferred;
+                    return returnValue;
+
+                case EndpointType.Isochronous:
+                case EndpointType.Control:
+                default:
+                    return UsbTransfer.SyncTransfer(TransferContext, buffer, offset, length, timeout, out transferLength);
+            }
+        }
 
         /// <summary>
         /// Creates, fills and submits an asynchronous <see cref="UsbTransfer"/> context.
