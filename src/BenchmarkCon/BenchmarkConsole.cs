@@ -24,8 +24,10 @@ using System.Collections.ObjectModel;
 using System.Globalization;
 using System.IO;
 using System.Reflection;
+using System.Runtime.InteropServices;
 using System.Threading;
 using LibUsbDotNet.Info;
+using LibUsbDotNet.LibUsb;
 using LibUsbDotNet.Main;
 
 // ReSharper disable InconsistentNaming
@@ -116,7 +118,6 @@ namespace LibUsbDotNet
             public int VerifyBufferSize; // Size of VerifyBuffer
             public bool VerifyDetails; // If true, prints detailed information for each invalid byte.
             public int Vid; // Vendor ID
-            public UsbDevice.DriverModeType Driver;
         } ;
 
 // The benchmark transfer context used for asynchronous transfers.  see TransferAsync().
@@ -165,7 +166,7 @@ namespace LibUsbDotNet
 
 
 // Critical section for running status. 
-        private static string TRANSFER_DISPLAY(BENCHMARK_TRANSFER_PARAM TransferParam, string ReadingString, string WritingString) { return ((TransferParam.Ep.EndpointInfo.Descriptor.EndpointID & 0x80) == 0x80 ? ReadingString : WritingString); }
+        private static string TRANSFER_DISPLAY(BENCHMARK_TRANSFER_PARAM TransferParam, string ReadingString, string WritingString) { return ((TransferParam.Ep.EndpointInfo.EndpointAddress & 0x80) == 0x80 ? ReadingString : WritingString); }
 
         private static void INC_ROLL(ref int IncField, int RollOverValue)
         {
@@ -173,7 +174,7 @@ namespace LibUsbDotNet
                 IncField = 0;
         }
 
-        private static byte ENDPOINT_TYPE(BENCHMARK_TRANSFER_PARAM TransferParam) { return (byte) (TransferParam.Ep.EndpointInfo.Descriptor.Attributes & 3); }
+        private static byte ENDPOINT_TYPE(BENCHMARK_TRANSFER_PARAM TransferParam) { return (byte) (TransferParam.Ep.EndpointInfo.Attributes & 3); }
 
         private static void SetTestDefaults(BENCHMARK_TEST_PARAM test)
         {
@@ -193,13 +194,13 @@ namespace LibUsbDotNet
             first_interface = null;
 
             if (ReferenceEquals(config_descriptor, null)) return null;
-            ReadOnlyCollection<UsbInterfaceInfo> interfaces = config_descriptor.InterfaceInfoList;
+            ReadOnlyCollection<UsbInterfaceInfo> interfaces = config_descriptor.Interfaces;
             for (int intfIndex = 0; intfIndex < interfaces.Count; intfIndex++)
             {
                 if (ReferenceEquals(first_interface, null))
                     first_interface = interfaces[intfIndex];
-                if (interfaces[intfIndex].Descriptor.InterfaceID == interface_number &&
-                    (alt_interface_number==-1 || interfaces[intfIndex].Descriptor.AlternateID == alt_interface_number))
+                if (interfaces[intfIndex].Number == interface_number &&
+                    (alt_interface_number==-1 || interfaces[intfIndex].AlternateSetting == alt_interface_number))
                 {
                     return interfaces[intfIndex];
                 }
@@ -207,57 +208,35 @@ namespace LibUsbDotNet
 
             return null;
         }
-        private static UsbRegDeviceList GetBenchmarkDeviceList(BENCHMARK_TEST_PARAM testParam)
-        {
-            switch (testParam.Driver)
-            {
-                case UsbDevice.DriverModeType.Unknown:
-                    UsbDevice.ForceLibUsbWinBack = false;
-                    return UsbDevice.AllDevices;
-
-                case UsbDevice.DriverModeType.LibUsb:
-                    UsbDevice.ForceLibUsbWinBack = false;
-                    UsbDevice.ForceLegacyLibUsb = true;
-                    return UsbDevice.AllLibUsbDevices;
-
-                case UsbDevice.DriverModeType.WinUsb:
-                    UsbDevice.ForceLibUsbWinBack = false;
-                    return UsbDevice.AllWinUsbDevices;
-
-                case UsbDevice.DriverModeType.MonoLibUsb:
-                case UsbDevice.DriverModeType.LibUsbWinBack:
-                    UsbDevice.ForceLibUsbWinBack=true;
-                    return UsbDevice.AllLibUsbDevices;
-
-                default:
-                    throw new ArgumentOutOfRangeException();
-            }
-        }
         private static UsbDevice Bench_Open(BENCHMARK_TEST_PARAM test)
         {
             UsbDevice foundDevice;
-            UsbRegDeviceList usbRegDevices = GetBenchmarkDeviceList(test);
-            foreach (UsbRegistry usbRegDevice in usbRegDevices)
+            using (UsbContext context = new UsbContext())
             {
-                if (usbRegDevice.Vid == test.Vid && usbRegDevice.Pid == test.Pid)
-                {
-                    if (usbRegDevice.Open(out foundDevice))
-                    {
-                        if (foundDevice.Info.Descriptor.ConfigurationCount > 0)
-                        {
-                            UsbInterfaceInfo firstInterface;
-                            UsbInterfaceInfo foundInterface = usb_find_interface(foundDevice.Configs[0], test.Intf, test.Altf, out firstInterface);
-                            if (!ReferenceEquals(foundInterface, null))
-                            {
-                                return foundDevice;
-                            }
-                        }
+                var devices = context.List();
 
-                        foundDevice.Close();
+                foreach (var usbRegDevice in devices)
+                {
+                    if (usbRegDevice.Info.VendorId == test.Vid && usbRegDevice.Info.ProductId == test.Pid)
+                    {
+                        if (usbRegDevice.TryOpen())
+                        {
+                            if (usbRegDevice.Info.NumConfigurations > 0)
+                            {
+                                UsbInterfaceInfo firstInterface;
+                                UsbInterfaceInfo foundInterface = usb_find_interface(usbRegDevice.Configs[0], test.Intf, test.Altf, out firstInterface);
+                                if (!ReferenceEquals(foundInterface, null))
+                                {
+                                    return usbRegDevice.Clone();
+                                }
+                            }
+
+                            usbRegDevice.Close();
+                        }
                     }
                 }
+                return null;
             }
-            return null;
         }
 
         /// <summary>
@@ -273,9 +252,8 @@ namespace LibUsbDotNet
                                    0,
                                    (short) intf,
                                    1);
-            bool success = dev.ControlTransfer(ref getTestTypePacket, dataBuffer, dataBuffer.Length, out transferred);
+            transferred = dev.ControlTransfer(getTestTypePacket, dataBuffer, 0, dataBuffer.Length);
             testType = (BENCHMARK_DEVICE_TEST_TYPE) dataBuffer[0];
-            if (!success) return -1;
 
             return transferred;
         }
@@ -294,9 +272,7 @@ namespace LibUsbDotNet
                                    (short) intf,
                                    1);
 
-            bool success = dev.ControlTransfer(ref setTestTypePacket, dataBuffer, dataBuffer.Length, out transferred);
-            if (!success) return -1;
-
+            transferred = dev.ControlTransfer(setTestTypePacket, dataBuffer, 0, dataBuffer.Length);
             return transferred;
         }
 
@@ -374,20 +350,24 @@ namespace LibUsbDotNet
             return 0;
         }
 
-        private static ErrorCode TransferSync(BENCHMARK_TRANSFER_PARAM transferParam, out int transferred)
+        private static Error TransferSync(BENCHMARK_TRANSFER_PARAM transferParam, out int transferred)
         {
-            return transferParam.Ep.Transfer(transferParam.Buffer[0],
+            var handle = GCHandle.Alloc(transferParam.Buffer[0]);
+
+            var ret = transferParam.Ep.Transfer(handle.AddrOfPinnedObject(),
                                              0,
                                              transferParam.Test.BufferSize,
-                                             transferParam.Test.Timeout,
-                                             out transferred);
+                                             transferParam.Test.Timeout, out transferred);
+            handle.Free();
+
+            return ret;
         }
 
-        private static ErrorCode TransferAsync(BENCHMARK_TRANSFER_PARAM transferParam, out BENCHMARK_TRANSFER_HANDLE handleRef, out int transferred)
+        private static Error TransferAsync(BENCHMARK_TRANSFER_PARAM transferParam, out BENCHMARK_TRANSFER_HANDLE handleRef, out int transferred)
         {
             BENCHMARK_TRANSFER_HANDLE handle;
             handleRef = null;
-            ErrorCode ret = ErrorCode.Success;
+            Error ret = Error.Success;
 
             transferred = 0;
             // Submit transfers until the maximum number of outstanding transfer(s) is reached.
@@ -414,14 +394,14 @@ namespace LibUsbDotNet
                                         0,
                                         handle.DataMaxLength,
                                         transferParam.Test.Timeout,
-                                        transferParam.IsoPacketSize > 0 ? transferParam.IsoPacketSize : transferParam.Ep.EndpointInfo.Descriptor.MaxPacketSize);
+                                        transferParam.IsoPacketSize > 0 ? transferParam.IsoPacketSize : transferParam.Ep.EndpointInfo.MaxPacketSize);
                 }
 
 
                 // Submit this transfer now.
                 handle.Context.Reset();
                 ret = handle.Context.Submit();
-                if (ret != ErrorCode.Success) goto Done;
+                if (ret != Error.Success) goto Done;
 
                 // Mark this handle has InUse.
                 handle.InUse = true;
@@ -443,7 +423,7 @@ namespace LibUsbDotNet
                 // TransferHandleWaitIndex is the index of the oldest outstanding transfer.
                 handleRef = handle = transferParam.TransferHandles[transferParam.TransferHandleWaitIndex];
                 ret = handle.Context.Wait(out transferred, false);
-                if (ret != ErrorCode.Success)
+                if (ret != Error.Success)
                     goto Done;
 
                 // Mark this handle has no longer InUse.
@@ -467,7 +447,7 @@ namespace LibUsbDotNet
             int transferred;
             byte[] data;
             int i;
-            ErrorCode ret;
+            Error ret;
             BENCHMARK_TRANSFER_HANDLE handle;
             BENCHMARK_TRANSFER_PARAM transferParam = (BENCHMARK_TRANSFER_PARAM) state;
 
@@ -494,20 +474,20 @@ namespace LibUsbDotNet
                     CONERR("invalid transfer mode {0}\n", transferParam.Test.TransferMode);
                     goto Done;
                 }
-                if (ret != ErrorCode.Success)
+                if (ret != Error.Success)
                 {
                     // The user pressed 'Q'.
                     if (transferParam.Test.IsUserAborted) break;
 
                     // Transfer timed out
-                    if (ret == ErrorCode.IoTimedOut)
+                    if (ret == Error.Timeout)
                     {
                         transferParam.TotalTimeoutCount++;
                         transferParam.RunningTimeoutCount++;
                         CONWRN("Timeout #{0} {1} on Ep{2:X2}h..\n",
                                transferParam.RunningTimeoutCount,
                                TRANSFER_DISPLAY(transferParam, "reading", "writing"),
-                               transferParam.Ep.EndpointInfo.Descriptor.EndpointID);
+                               transferParam.Ep.EndpointInfo.EndpointAddress);
 
                         if (transferParam.RunningTimeoutCount > transferParam.Test.Retry)
                             break;
@@ -528,7 +508,7 @@ namespace LibUsbDotNet
                                transferParam.RunningErrorCount,
                                transferParam.Test.Retry + 1,
                                ret,
-                               UsbDevice.LastErrorString);
+                               null);
 
                         transferParam.Ep.Reset();
 
@@ -545,14 +525,14 @@ namespace LibUsbDotNet
                         {
                             transferParam.ShortTransferCount++;
                             CONWRN("Short transfer on Ep{0:X2}h expected {1} got {2}.\n",
-                                   transferParam.Ep.EndpointInfo.Descriptor.EndpointID,
+                                   transferParam.Ep.EndpointInfo.EndpointAddress,
                                    transferParam.Test.BufferSize,
                                    transferred);
                         }
                         else
                         {
                             CONWRN("Zero-length transfer on Ep{0:X2}h expected {1}.\n",
-                                   transferParam.Ep.EndpointInfo.Descriptor.EndpointID,
+                                   transferParam.Ep.EndpointInfo.EndpointAddress,
                                    transferParam.Test.BufferSize);
 
                             transferParam.TotalErrorCount++;
@@ -568,7 +548,7 @@ namespace LibUsbDotNet
                     }
 
                     if ((transferParam.Test.Verify) &&
-                        (transferParam.Ep.EndpointInfo.Descriptor.EndpointID & 0x80) != 0)
+                        (transferParam.Ep.EndpointInfo.EndpointAddress & 0x80) != 0)
                     {
                         VerifyData(transferParam, data, transferred);
                     }
@@ -759,26 +739,6 @@ namespace LibUsbDotNet
                 else if (GetParamIntValue(arg, "packetsize=", ref testParams.IsoPacketSize))
                 {
                 }
-                else if ((value = GetParamStrValue(arg, "driver=")) != null)
-                {
-                    if (GetParamStrValue(value, "winusb") != null)
-                    {
-                        testParams.Driver = UsbDevice.DriverModeType.WinUsb;
-                    }
-                    else if (GetParamStrValue(value, "libusb-win32") != null)
-                    {
-                        testParams.Driver = UsbDevice.DriverModeType.LibUsb;
-                    }
-                    else if (GetParamStrValue(value, "libusb10") != null)
-                    {
-                        testParams.Driver = UsbDevice.DriverModeType.MonoLibUsb;
-                    }
-                    else
-                    {
-                        CONERR("invalid driver argument! {0}\n", argv[iarg]);
-                        return -1;
-                    }
-                }
                 else if (GetParamStrValue(arg, "notestselect") != null)
                 {
                     testParams.NoTestSelect = true;
@@ -867,27 +827,27 @@ RefetchAltInterface:
                 goto Done;
             }
 
-            for (i = 0; i < testInterface.EndpointInfoList.Count; i++)
+            for (i = 0; i < testInterface.Endpoints.Count ; i++)
             {
                 if ((endpointID & 0x80) == 0x80)
                 {
                     // Use first endpoint that matches the direction
-                    if ((testInterface.EndpointInfoList[i].Descriptor.EndpointID & 0x80) == 0x80)
+                    if ((testInterface.Endpoints[i].EndpointAddress & 0x80) == 0x80)
                     {
                         transferParam.Ep = test.Device.OpenEndpointReader(
-                            (ReadEndpointID) testInterface.EndpointInfoList[i].Descriptor.EndpointID,
+                            (ReadEndpointID) testInterface.Endpoints[i].EndpointAddress,
                             0,
-                            (EndpointType) (testInterface.EndpointInfoList[i].Descriptor.Attributes & 0x3));
+                            (EndpointType) (testInterface.Endpoints[i].Attributes & 0x3));
                         break;
                     }
                 }
                 else
                 {
-                    if ((testInterface.EndpointInfoList[i].Descriptor.EndpointID & 0x80) == 0x00)
+                    if ((testInterface.Endpoints[i].EndpointAddress & 0x80) == 0x00)
                     {
                         transferParam.Ep = test.Device.OpenEndpointWriter(
-                            (WriteEndpointID) testInterface.EndpointInfoList[i].Descriptor.EndpointID,
-                            (EndpointType) (testInterface.EndpointInfoList[i].Descriptor.Attributes & 0x3));
+                            (WriteEndpointID) testInterface.Endpoints[i].EndpointAddress,
+                            (EndpointType) (testInterface.Endpoints[i].Attributes & 0x3));
                         break;
                     }
                 }
@@ -899,17 +859,17 @@ RefetchAltInterface:
                 goto Done;
             }
 
-            if (transferParam.Ep.EndpointInfo.Descriptor.MaxPacketSize==0)
+            if (transferParam.Ep.EndpointInfo.MaxPacketSize==0)
             {
                 transferParam.Test.Altf++;
                 goto RefetchAltInterface;
             }
-            if ((transferParam.Test.BufferSize%transferParam.Ep.EndpointInfo.Descriptor.MaxPacketSize) > 0)
+            if ((transferParam.Test.BufferSize%transferParam.Ep.EndpointInfo.MaxPacketSize) > 0)
             {
                 CONERR("buffer size {0} is not an interval of EP{1:X2}h maximum packet size of {2}!\n",
                        transferParam.Test.BufferSize,
-                       transferParam.Ep.EndpointInfo.Descriptor.EndpointID,
-                       transferParam.Ep.EndpointInfo.Descriptor.MaxPacketSize);
+                       transferParam.Ep.EndpointInfo.EndpointAddress,
+                       transferParam.Ep.EndpointInfo.MaxPacketSize);
 
                 FreeTransferParam(ref transferParam);
                 goto Done;
@@ -918,7 +878,7 @@ RefetchAltInterface:
             if (test.IsoPacketSize != 0)
                 transferParam.IsoPacketSize = test.IsoPacketSize;
             else
-                transferParam.IsoPacketSize = transferParam.Ep.EndpointInfo.Descriptor.MaxPacketSize;
+                transferParam.IsoPacketSize = transferParam.Ep.EndpointInfo.MaxPacketSize;
 
             if (ENDPOINT_TYPE(transferParam) == (byte) EndpointType.Isochronous)
                 transferParam.Test.TransferMode = BENCHMARK_TRANSFER_MODE.TRANSFER_MODE_ASYNC;
@@ -932,7 +892,7 @@ RefetchAltInterface:
             // a read only test.
             if (transferParam.Test.Verify &&
                 transferParam.Test.TestType == BENCHMARK_DEVICE_TEST_TYPE.TestTypeLoop &&
-                (transferParam.Ep.EndpointInfo.Descriptor.EndpointID & 0x80) == 0)
+                (transferParam.Ep.EndpointInfo.EndpointAddress & 0x80) == 0)
             {
                 // Data Format:
                 // [0][KeyByte] 2 3 4 5 ..to.. wMaxPacketSize (if data byte rolls it is incremented to 1)
@@ -943,11 +903,11 @@ RefetchAltInterface:
                 int transferIndex = 0;
                 UInt16 dataIndex;
                 int packetIndex;
-                int packetCount = ((transferParam.Test.BufferCount*transferParam.Test.BufferSize)/transferParam.Ep.EndpointInfo.Descriptor.MaxPacketSize);
+                int packetCount = ((transferParam.Test.BufferCount*transferParam.Test.BufferSize)/transferParam.Ep.EndpointInfo.MaxPacketSize);
                 for (packetIndex = 0; packetIndex < packetCount; packetIndex++)
                 {
                     indexC = 2;
-                    for (dataIndex = 0; dataIndex < transferParam.Ep.EndpointInfo.Descriptor.MaxPacketSize; dataIndex++)
+                    for (dataIndex = 0; dataIndex < transferParam.Ep.EndpointInfo.MaxPacketSize; dataIndex++)
                     {
                         if (dataIndex == 0) // Start
                             transferParam.Buffer[transferIndex][bufferIndex] = 0;
@@ -1048,8 +1008,8 @@ RefetchAltInterface:
             CONMSG("{0} {1} (Ep{2:X2}h) max packet size: {3}\n",
                    EndpointTypeDisplayString[ENDPOINT_TYPE(transferParam)],
                    TRANSFER_DISPLAY(transferParam, "Read", "Write"),
-                   transferParam.Ep.EndpointInfo.Descriptor.EndpointID,
-                   transferParam.Ep.EndpointInfo.Descriptor.MaxPacketSize);
+                   transferParam.Ep.EndpointInfo.EndpointAddress,
+                   transferParam.Ep.EndpointInfo.MaxPacketSize);
 
             if (transferParam.StartTick != 0)
             {
@@ -1114,12 +1074,12 @@ RefetchAltInterface:
                     if (!transferParam.ThreadHandle.IsAlive)
                     {
                         CONMSG("stopped Ep{0:X2}h thread.\n",
-                               transferParam.Ep.EndpointInfo.Descriptor.EndpointID);
+                               transferParam.Ep.EndpointInfo.EndpointAddress);
                         break;
                     }
                 }
                 Thread.Sleep(100);
-                CONMSG("waiting for Ep{0:X2}h thread..\n", transferParam.Ep.EndpointInfo.Descriptor.EndpointID);
+                CONMSG("waiting for Ep{0:X2}h thread..\n", transferParam.Ep.EndpointInfo.EndpointAddress);
             }
         }
 
@@ -1137,79 +1097,82 @@ RefetchAltInterface:
 
         private static int GetTestDeviceFromList(BENCHMARK_TEST_PARAM testParam)
         {
-            UsbRegDeviceList allRegDevices = GetBenchmarkDeviceList(testParam);
-            UsbInterfaceInfo firstInterface;
-
-            int ret = -1;
-
-            for (int i = 0; i < allRegDevices.Count; i++)
+            using (UsbContext context = new UsbContext())
             {
+                var allRegDevices = context.List();
+                UsbInterfaceInfo firstInterface;
 
+                int ret = -1;
+
+                for (int i = 0; i < allRegDevices.Count; i++)
                 {
-                    UsbRegistry usbRegDevice = allRegDevices[i];
 
-                    CONMSG("{0}. {1:X4}:{2:X4} {3}\n",
-                           i + 1,
-                           usbRegDevice.Vid,
-                           usbRegDevice.Pid,
-                           usbRegDevice.FullName);
-                }
-            }
-
-            if (allRegDevices.Count == 0)
-            {
-                CONERR0("No devices where found!\n");
-                ret = -1;
-                goto Done;
-            }
-
-            CONMSG("\nSelect device (1-{0}) :", allRegDevices.Count);
-            string userInputS = Console.ReadLine();
-            int userInput;
-            if (int.TryParse(userInputS, out userInput))
-                ret = 1;
-            else
-                ret = -1;
-            if (ret != 1 || userInput < 1)
-            {
-                CONMSG0("\n");
-                CONMSG0("Aborting..\n");
-                ret = -1;
-                goto Done;
-            }
-            CONMSG0("\n");
-            userInput--;
-            if (userInput >= 0 && userInput < allRegDevices.Count)
-            {
-                testParam.Device = allRegDevices[userInput].Device;
-
-                if (!ReferenceEquals(testParam.Device, null))
-                {
-                    testParam.Vid = testParam.Device.Info.Descriptor.VendorID;
-                    testParam.Pid = testParam.Device.Info.Descriptor.ProductID;
-
-                    if (usb_find_interface(testParam.Device.Configs[0], testParam.Intf, testParam.Altf, out firstInterface) == null)
                     {
-                        // the specified (or default) interface didn't exist, use the first one.
-                        if (firstInterface != null)
-                        {
-                            testParam.Intf = firstInterface.Descriptor.InterfaceID;
-                        }
-                        else
-                        {
-                            CONERR("device {0:X4}:{1:X4} does not have any interfaces!\n",
-                                   testParam.Vid,
-                                   testParam.Pid);
-                            ret = -1;
-                            goto Done;
-                        }
-                    }
-                    ret = 0;
-                }
-            }
+                        var usbRegDevice = allRegDevices[i];
 
-            Done:
-            return ret;
+                        CONMSG("{0}. {1:X4}:{2:X4} {3}\n",
+                               i + 1,
+                               usbRegDevice.Info.VendorId,
+                               usbRegDevice.Info.ProductId,
+                               usbRegDevice.Info.Product);
+                    }
+                }
+
+                if (allRegDevices.Count == 0)
+                {
+                    CONERR0("No devices where found!\n");
+                    ret = -1;
+                    goto Done;
+                }
+
+                CONMSG("\nSelect device (1-{0}) :", allRegDevices.Count);
+                string userInputS = Console.ReadLine();
+                int userInput;
+                if (int.TryParse(userInputS, out userInput))
+                    ret = 1;
+                else
+                    ret = -1;
+                if (ret != 1 || userInput < 1)
+                {
+                    CONMSG0("\n");
+                    CONMSG0("Aborting..\n");
+                    ret = -1;
+                    goto Done;
+                }
+                CONMSG0("\n");
+                userInput--;
+                if (userInput >= 0 && userInput < allRegDevices.Count)
+                {
+                    testParam.Device = allRegDevices[userInput].Clone();
+
+                    if (!ReferenceEquals(testParam.Device, null))
+                    {
+                        testParam.Vid = testParam.Device.Info.VendorId;
+                        testParam.Pid = testParam.Device.Info.ProductId;
+
+                        if (usb_find_interface(testParam.Device.Configs[0], testParam.Intf, testParam.Altf, out firstInterface) == null)
+                        {
+                            // the specified (or default) interface didn't exist, use the first one.
+                            if (firstInterface != null)
+                            {
+                                testParam.Intf = firstInterface.Number;
+                            }
+                            else
+                            {
+                                CONERR("device {0:X4}:{1:X4} does not have any interfaces!\n",
+                                       testParam.Vid,
+                                       testParam.Pid);
+                                ret = -1;
+                                goto Done;
+                            }
+                        }
+                        ret = 0;
+                    }
+                }
+
+                Done:
+                return ret;
+            }
         }
 
         private static int Main(string[] argv)
@@ -1256,7 +1219,7 @@ RefetchAltInterface:
             {
                 if (Bench_SetTestType(Test.Device, Test.TestType, Test.Intf) != 1)
                 {
-                    CONERR("setting bechmark test type #{0}!\n{1}\n", Test.TestType, UsbDevice.LastErrorString);
+                    CONERR("setting bechmark test type #{0}!\n{1}\n", Test.TestType, null);
                     goto Done;
                 }
             }
@@ -1275,24 +1238,12 @@ RefetchAltInterface:
                 // the desired configuration and interface must be selected.
 
                 // Select config #1
-                if (!wholeUsbDevice.SetConfiguration(1))
-                {
-                    CONERR("setting configuration #{0}!\n{1}\n", 1, UsbDevice.LastErrorString);
-                    goto Done;
-                }
+                wholeUsbDevice.SetConfiguration(1);
                 // Claim interface #0.
-                if (!wholeUsbDevice.ClaimInterface(Test.Intf))
-                {
-                    CONERR("select interface #{0}!\n{1}\n", Test.Intf, UsbDevice.LastErrorString);
-                    goto Done;
-                }
+                wholeUsbDevice.ClaimInterface(Test.Intf);
             }
 
-            if (!((IUsbInterface)Test.Device).SetAltInterface(Test.Altf))
-            {
-                CONERR("select alt interface #{0}!\n{1}\n", Test.Altf, UsbDevice.LastErrorString);
-                goto Done;
-            }                
+            Test.Device.SetAltInterface(Test.Altf);
 
             // If reading from the device create the read transfer param. This will also create
             // a thread in a suspended state.
@@ -1316,12 +1267,12 @@ RefetchAltInterface:
             {
                 if (ReadTest != null && WriteTest != null)
                 {
-                    if (CreateVerifyBuffer(Test, (ushort) WriteTest.Ep.EndpointInfo.Descriptor.MaxPacketSize) < 0)
+                    if (CreateVerifyBuffer(Test, (ushort) WriteTest.Ep.EndpointInfo.MaxPacketSize) < 0)
                         goto Done;
                 }
                 else if (ReadTest != null)
                 {
-                    if (CreateVerifyBuffer(Test, (ushort) ReadTest.Ep.EndpointInfo.Descriptor.MaxPacketSize) < 0)
+                    if (CreateVerifyBuffer(Test, (ushort) ReadTest.Ep.EndpointInfo.MaxPacketSize) < 0)
                         goto Done;
                 }
                 else
@@ -1472,7 +1423,6 @@ RefetchAltInterface:
             Console.ReadKey();
             CONMSG0("\n");
 
-            UsbDevice.Exit();
             return 0;
         }
 
