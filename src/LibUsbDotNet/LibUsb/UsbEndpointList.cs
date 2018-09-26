@@ -22,7 +22,7 @@
 using System.Collections;
 using System.Collections.Generic;
 
-namespace LibUsbDotNet.Main
+namespace LibUsbDotNet.LibUsb
 {
     /// <summary> Endpoint list.
     /// </summary> 

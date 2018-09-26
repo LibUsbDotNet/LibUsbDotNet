@@ -25,8 +25,10 @@ using System.Runtime.InteropServices;
 using LibUsbDotNet.Info;
 using LibUsbDotNet.Internal;
 using LibUsbDotNet.LibUsb;
+using LibUsbDotNet.LudnMonoLibUsb.Internal;
+using LibUsbDotNet.Main;
 
-namespace LibUsbDotNet.Main
+namespace LibUsbDotNet.LibUsb
 {
     /// <summary> 
     /// Endpoint members common to Read, Write, Bulk, and Interrupt <see cref="T:LibUsbDotNet.Main.EndpointType"/>.
@@ -148,7 +150,10 @@ namespace LibUsbDotNet.Main
 
         #endregion
 
-        protected abstract UsbTransfer CreateTransferContext();
+        protected virtual UsbTransfer CreateTransferContext()
+        {
+            return new MonoUsbTransferContext(this);
+        }
 
         /// <summary>
         /// Aborts pending IO operation on this enpoint of one exists.
@@ -162,37 +167,27 @@ namespace LibUsbDotNet.Main
             return bSuccess;
         }
 
-        /// <summary>
-        /// Discards any data that is cached in this endpoint.
-        /// </summary>
-        /// <returns>True on success.</returns>
-        public abstract bool Flush();
-        /*
-        {
-            if (mIsDisposed) throw new ObjectDisposedException(GetType().Name);
-
-            bool bSuccess = mUsbApi.FlushPipe(mUsbHandle, EpNum);
-
-            if (!bSuccess) UsbError.Error(Error.Win32Error, Marshal.GetLastWin32Error(), "FlushPipe", this);
-
-            return bSuccess;
-        }*/
 
         /// <summary>
-        /// Resets the data toggle and clears the stall condition on an enpoint.
+        /// This method has no effect on write endpoints, and always returns true.
         /// </summary>
-        /// <returns>True on success.</returns>
-        public abstract bool Reset();
-        /*
+        /// <returns><see langword="true"/></returns>
+        public virtual bool Flush()
         {
-            if (mIsDisposed) throw new ObjectDisposedException(GetType().Name);
+            return true;
+        }
 
-            bool bSuccess = mUsbApi.ResetPipe(mUsbHandle, EpNum);
-
-            if (!bSuccess) UsbError.Error(Error.Win32Error, Marshal.GetLastWin32Error(), "ResetPipe", this);
-
-            return bSuccess;
-        }*/
+        /// <summary>
+        /// Cancels pending transfers and clears the halt condition on an enpoint.
+        /// </summary>
+        /// <returns><see langword="true"/> on success.</returns>
+        public virtual bool Reset()
+        {
+            if (IsDisposed) throw new ObjectDisposedException(GetType().Name);
+            Abort();
+            NativeMethods.ClearHalt(this.Device.DeviceHandle, EpNum).ThrowOnError();
+            return true;
+        }
 
         /// <summary>
         /// Synchronous bulk/interrupt transfer function.

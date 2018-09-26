@@ -19,6 +19,7 @@
 // visit www.gnu.org.
 // 
 // 
+using LibUsbDotNet.LibUsb;
 using System;
 using System.IO;
 using System.Runtime.InteropServices;

@@ -19,12 +19,12 @@
 // visit www.gnu.org.
 // 
 // 
-using System;
-using System.Runtime.InteropServices;
-using System.Threading;
+using LibUsbDotNet.Internal;
 using LibUsbDotNet.Main;
+using System;
+using System.Threading;
 
-namespace LibUsbDotNet.Internal
+namespace LibUsbDotNet.LibUsb
 {
     internal class OverlappedTransferContext : UsbTransfer
     {
