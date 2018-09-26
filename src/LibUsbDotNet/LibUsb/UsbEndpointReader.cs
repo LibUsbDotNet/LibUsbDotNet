@@ -22,10 +22,6 @@
 using System;
 using System.Runtime.InteropServices;
 using System.Threading;
-#if !NETSTANDARD && !NETCOREAPP
-using System.Windows.Forms;
-#endif
-using LibUsbDotNet.Internal;
 using LibUsbDotNet.Main;
 
 namespace LibUsbDotNet.LibUsb
@@ -41,17 +37,13 @@ namespace LibUsbDotNet.LibUsb
     /// </remarks>
     public class UsbEndpointReader : UsbEndpointBase
     {
-        private static int mDefReadBufferSize = 4096;
-
-        private bool mDataReceivedEnabled;
         private int mReadBufferSize;
-        private Thread mReadThread;
-#if !NETSTANDARD && !NETCOREAPP
-        private ThreadPriority mReadThreadPriority = ThreadPriority.Normal;
-#endif
 
         public UsbEndpointReader(UsbDevice usbDevice, int readBufferSize, byte alternateInterfaceID, ReadEndpointID readEndpointID, EndpointType endpointType)
-            : base(usbDevice, alternateInterfaceID, (Byte)readEndpointID, endpointType) { mReadBufferSize = readBufferSize; }
+            : base(usbDevice, alternateInterfaceID, (Byte)readEndpointID, endpointType)
+        {
+            mReadBufferSize = readBufferSize;
+        }
 
         /// <summary>
         /// Default read buffer size when using the <see cref="DataReceived"/> event.
@@ -60,53 +52,7 @@ namespace LibUsbDotNet.LibUsb
         /// This value can be bypassed using the second parameter of the <see cref="UsbDevice.OpenEndpointReader(LibUsbDotNet.Main.ReadEndpointID,int)"/> method.
         /// The default is 4096.
         /// </remarks>
-        public static int DefReadBufferSize
-        {
-            get { return mDefReadBufferSize; }
-            set { mDefReadBufferSize = value; }
-        }
-
-        /// <summary>
-        /// Gets/Sets a value indicating if the <see cref="UsbEndpointReader.DataReceived"/> event should be used.
-        /// </summary>
-        /// <remarks>
-        /// If DataReceivedEnabled is true the <see cref="Read(byte[] , int , int , int, out int )"/> functions cannot be used.
-        /// </remarks>
-        public virtual bool DataReceivedEnabled
-        {
-            get { return mDataReceivedEnabled; }
-            set
-            {
-                if (value != mDataReceivedEnabled)
-                {
-                    StartStopReadThread();
-                }
-            }
-        }
-
-
-        /// <summary>
-        /// Size of the read buffer in bytes for the <see cref="UsbEndpointReader.DataReceived"/> event.
-        /// </summary>
-        /// <remarks>
-        /// Setting a large values, for example 64K will yield a lower number of <see cref="UsbEndpointReader.DataReceived"/> and a higher data rate. 
-        /// </remarks>
-        public int ReadBufferSize
-        {
-            get { return mReadBufferSize; }
-            set { mReadBufferSize = value; }
-        }
-
-#if !NETSTANDARD && !NETCOREAPP
-        /// <summary>
-        /// Gets/Sets the Priority level for the read thread when <see cref="DataReceivedEnabled"/> is true.
-        /// </summary>
-        public ThreadPriority ReadThreadPriority
-        {
-            get { return mReadThreadPriority; }
-            set { mReadThreadPriority = value; }
-        }
-#endif
+        public static int DefReadBufferSize { get; set; } = 4096;
 
         /// <summary>
         /// Reads data from the current <see cref="UsbEndpointReader"/>.
@@ -117,7 +63,10 @@ namespace LibUsbDotNet.LibUsb
         /// <returns>
         /// <see cref="Error"/>.<see cref="Error.None"/> on success.
         /// </returns>
-        public virtual Error Read(byte[] buffer, int timeout, out int transferLength) { return Read(buffer, 0, buffer.Length, timeout, out transferLength); }
+        public virtual Error Read(byte[] buffer, int timeout, out int transferLength)
+        {
+            return Read(buffer, 0, buffer.Length, timeout, out transferLength);
+        }
 
         /// <summary>
         /// Reads data from the current <see cref="UsbEndpointReader"/>.
@@ -130,7 +79,10 @@ namespace LibUsbDotNet.LibUsb
         /// <returns>
         /// <see cref="Error"/>.<see cref="Error.None"/> on success.
         /// </returns>
-        public virtual Error Read(IntPtr buffer, int offset, int count, int timeout, out int transferLength) { return Transfer(buffer, offset, count, timeout, out transferLength); }
+        public virtual Error Read(IntPtr buffer, int offset, int count, int timeout, out int transferLength)
+        {
+            return Transfer(buffer, offset, count, timeout, out transferLength);
+        }
 
         /// <summary>
         /// Reads data from the current <see cref="UsbEndpointReader"/>.
@@ -143,7 +95,10 @@ namespace LibUsbDotNet.LibUsb
         /// <returns>
         /// <see cref="Error"/>.<see cref="Error.None"/> on success.
         /// </returns>
-        public virtual Error Read(byte[] buffer, int offset, int count, int timeout, out int transferLength) { return Transfer(buffer, offset, count, timeout, out transferLength); }
+        public virtual Error Read(byte[] buffer, int offset, int count, int timeout, out int transferLength)
+        {
+            return Transfer(buffer, offset, count, timeout, out transferLength);
+        }
 
         /// <summary>
         /// Reads data from the current <see cref="UsbEndpointReader"/>.
@@ -156,7 +111,10 @@ namespace LibUsbDotNet.LibUsb
         /// <returns>
         /// <see cref="Error"/>.<see cref="Error.None"/> on success.
         /// </returns>
-        public virtual Error Read(object buffer, int offset, int count, int timeout, out int transferLength) { return Transfer(buffer, offset, count, timeout, out transferLength); }
+        public virtual Error Read(object buffer, int offset, int count, int timeout, out int transferLength)
+        {
+            return Transfer(buffer, offset, count, timeout, out transferLength);
+        }
 
         /// <summary>
         /// Reads data from the current <see cref="UsbEndpointReader"/>.
@@ -167,7 +125,10 @@ namespace LibUsbDotNet.LibUsb
         /// <returns>
         /// <see cref="Error"/>.<see cref="Error.None"/> on success.
         /// </returns>
-        public virtual Error Read(object buffer, int timeout, out int transferLength) { return Transfer(buffer, 0, Marshal.SizeOf(buffer), timeout, out transferLength); }
+        public virtual Error Read(object buffer, int timeout, out int transferLength)
+        {
+            return Transfer(buffer, 0, Marshal.SizeOf(buffer), timeout, out transferLength);
+        }
 
         /// <summary>
         /// Reads/discards data from the enpoint until no more data is available.
@@ -185,123 +146,5 @@ namespace LibUsbDotNet.LibUsb
 
             return Error.Success;
         }
-
-
-        private static void ReadData(object context)
-        {
-            UsbTransfer overlappedTransferContext = (UsbTransfer) context;
-            UsbEndpointReader reader = (UsbEndpointReader) overlappedTransferContext.EndpointBase;
-            reader.mDataReceivedEnabled = true;
-            EventHandler<DataReceivedEnabledChangedEventArgs> dataReceivedEnabledChangedEvent;
-
-            dataReceivedEnabledChangedEvent = reader.DataReceivedEnabledChanged;
-            if (!ReferenceEquals(dataReceivedEnabledChangedEvent,null))
-                dataReceivedEnabledChangedEvent(reader, new DataReceivedEnabledChangedEventArgs(reader.mDataReceivedEnabled));
-
-            overlappedTransferContext.Reset();
-
-            byte[] buf = new byte[reader.mReadBufferSize];
-            try
-            {
-                while (!overlappedTransferContext.IsCancelled)
-                {
-                    int iTransferLength;
-                    Error eReturn = reader.Transfer(buf, 0, buf.Length, Timeout.Infinite, out iTransferLength);
-                    if (eReturn == Error.Success)
-                    {
-                        EventHandler<EndpointDataEventArgs> temp = reader.DataReceived;
-                        if (!ReferenceEquals(temp, null) && !overlappedTransferContext.IsCancelled)
-                        {
-                            temp(reader, new EndpointDataEventArgs(buf, iTransferLength));
-                        }
-                        continue;
-                    }
-                    if (eReturn != Error.Timeout) break;
-                }
-            }
-#if !NETSTANDARD && !NETCOREAPP
-            catch (ThreadAbortException)
-            {
-                // UsbError.Error(Error.ReceiveThreadTerminated,0, "ReadData:Read thread aborted.", reader);
-            }
-#endif
-            finally
-            {
-                reader.Abort();
-                reader.mDataReceivedEnabled = false;
-
-                dataReceivedEnabledChangedEvent = reader.DataReceivedEnabledChanged;
-                if (!ReferenceEquals(dataReceivedEnabledChangedEvent, null))
-                    dataReceivedEnabledChangedEvent(reader, new DataReceivedEnabledChangedEventArgs(reader.mDataReceivedEnabled));
-
-            }
-        }
-
-        private void StartReadThread()
-        {
-            mReadThread = new Thread(ReadData);
-#if !NETSTANDARD && !NETCOREAPP
-            mReadThread.Priority = ReadThreadPriority;
-#endif
-            mReadThread.Start(TransferContext);
-            Thread.Sleep(1);
-#if !NETSTANDARD && !NETCOREAPP
-            Application.DoEvents();
-#endif
-        }
-
-        private bool StopReadThread()
-        {
-            Abort();
-            Thread.Sleep(1);
-#if !NETSTANDARD && !NETCOREAPP
-            Application.DoEvents();
-#endif
-            DateTime dtStart = DateTime.Now;
-            while (mReadThread.IsAlive && ((DateTime.Now - dtStart).TotalSeconds < 5)) // 5 sec fail-safe
-            {
-                Thread.Sleep(100);
-#if !NETSTANDARD && !NETCOREAPP
-                Application.DoEvents();
-#endif
-            }
-            if (mReadThread.IsAlive)
-            {
-                // UsbError.Error(Error.ReceiveThreadTerminated,0, "Failed stopping read thread.", this);
-#if !NETSTANDARD && !NETCOREAPP
-                mReadThread.Abort();
-#endif
-                return false;
-            }
-            return true;
-        }
-
-        private void StartStopReadThread()
-        {
-            if (IsDisposed) throw new ObjectDisposedException(GetType().FullName);
-
-            if (mDataReceivedEnabled)
-            {
-                StopReadThread();
-            }
-            else
-            {
-                StartReadThread();
-            }
-        }
-
-
-        /// <summary>
-        /// The DataReceived Event is fired when new data arrives for the current <see cref="UsbEndpointReader"/>.
-        /// </summary>
-        /// <remarks>To use the DataReceived event, <see cref="DataReceivedEnabled"/> must be set to truw.</remarks>
-        public virtual event EventHandler<EndpointDataEventArgs> DataReceived;
-       
-        /// <summary>
-        /// The <see cref="DataReceivedEnabledChanged"/> Event is fired when the <see cref="DataReceived"/> event is started or stopped.
-        /// </summary>
-        public virtual event EventHandler<DataReceivedEnabledChangedEventArgs> DataReceivedEnabledChanged;
-
-        protected override UsbTransfer CreateTransferContext() { return new OverlappedTransferContext(this); }
     }
 }

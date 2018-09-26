@@ -152,6 +152,7 @@ namespace LibUsbDotNet.LibUsb
 
         protected virtual UsbTransfer CreateTransferContext()
         {
+            // return new OverlappedTransferContext(this);
             return new MonoUsbTransferContext(this);
         }
 
@@ -166,7 +167,6 @@ namespace LibUsbDotNet.LibUsb
 
             return bSuccess;
         }
-
 
         /// <summary>
         /// This method has no effect on write endpoints, and always returns true.
@@ -364,10 +364,6 @@ namespace LibUsbDotNet.LibUsb
             if (!mIsDisposed)
             {
                 UsbEndpointReader epReader = this as UsbEndpointReader;
-                if (!ReferenceEquals(epReader, null))
-                {
-                    if (epReader.DataReceivedEnabled) epReader.DataReceivedEnabled = false;
-                }
                 Abort();
                 mUsbDevice.ActiveEndpoints.RemoveFromList(this);
             }

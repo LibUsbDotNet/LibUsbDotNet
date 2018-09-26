@@ -115,7 +115,9 @@ namespace LibUsbDotNet.Main
     {
         private readonly UsbEndpointBase mUsbEndpoint;
         private int mTimeout = UsbConstants.DEFAULT_TIMEOUT;
+#if !NETCOREAPP && !NETSTANDARD
         private Thread mWaitThread;
+#endif
 
         public UsbStream(UsbEndpointBase usbEndpoint) { mUsbEndpoint = usbEndpoint; }
 
