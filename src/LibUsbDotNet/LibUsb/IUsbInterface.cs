@@ -25,7 +25,7 @@ using LibUsbDotNet.Descriptors;
 using LibUsbDotNet.Info;
 using LibUsbDotNet.Main;
 
-namespace LibUsbDotNet
+namespace LibUsbDotNet.LibUsb
 {
     /// <summary>
     /// The <see cref="IUsbInterface"/> interface contains members needed communicate with an 

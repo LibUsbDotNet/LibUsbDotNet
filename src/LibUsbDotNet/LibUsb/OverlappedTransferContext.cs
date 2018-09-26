@@ -19,12 +19,11 @@
 // visit www.gnu.org.
 // 
 // 
-using System;
-using System.Runtime.InteropServices;
-using System.Threading;
+using LibUsbDotNet.Internal;
 using LibUsbDotNet.Main;
+using System;
 
-namespace LibUsbDotNet.Internal
+namespace LibUsbDotNet.LibUsb
 {
     internal class OverlappedTransferContext : UsbTransfer
     {
@@ -48,7 +47,7 @@ namespace LibUsbDotNet.Internal
 
             mHasWaitBeenCalled = false;
             mTransferCompleteEvent.Reset();
-            Overlapped.Init(mTransferCompleteEvent.GetSafeWaitHandle().DangerousGetHandle());
+            Overlapped.Init(mTransferCompleteEvent.SafeWaitHandle.DangerousGetHandle());
 
             int ret = EndpointBase.PipeTransferSubmit(NextBufPtr,
                                                       RequestCount,

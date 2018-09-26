@@ -36,7 +36,7 @@ namespace LibUsbDotNet.LibUsb
         /// </summary>
         /// <param name="readEndpointID">Endpoint number for read operations.</param>
         /// <returns>A <see cref="UsbEndpointReader"/> class ready for reading. If the specified endpoint is already been opened, the original <see cref="UsbEndpointReader"/> class is returned.</returns>
-        public LibUsbDotNet.UsbEndpointReader OpenEndpointReader(ReadEndpointID readEndpointID)
+        public UsbEndpointReader OpenEndpointReader(ReadEndpointID readEndpointID)
         {
             return OpenEndpointReader(readEndpointID, UsbEndpointReader.DefReadBufferSize);
         }
@@ -47,7 +47,7 @@ namespace LibUsbDotNet.LibUsb
         /// <param name="readEndpointID">Endpoint number for read operations.</param>
         /// <param name="readBufferSize">Size of the read buffer allocated for the <see cref="UsbEndpointReader.DataReceived"/> event.</param>
         /// <returns>A <see cref="UsbEndpointReader"/> class ready for reading. If the specified endpoint is already been opened, the original <see cref="UsbEndpointReader"/> class is returned.</returns>
-        public LibUsbDotNet.UsbEndpointReader OpenEndpointReader(ReadEndpointID readEndpointID, int readBufferSize)
+        public UsbEndpointReader OpenEndpointReader(ReadEndpointID readEndpointID, int readBufferSize)
         {
             return OpenEndpointReader(readEndpointID, readBufferSize, EndpointType.Bulk);
         }
@@ -59,7 +59,7 @@ namespace LibUsbDotNet.LibUsb
         /// <param name="readBufferSize">Size of the read buffer allocated for the <see cref="UsbEndpointReader.DataReceived"/> event.</param>
         /// <param name="endpointType">The type of endpoint to open.</param>
         /// <returns>A <see cref="UsbEndpointReader"/> class ready for reading. If the specified endpoint is already been opened, the original <see cref="UsbEndpointReader"/> class is returned.</returns>
-        public LibUsbDotNet.UsbEndpointReader OpenEndpointReader(ReadEndpointID readEndpointID, int readBufferSize, EndpointType endpointType)
+        public UsbEndpointReader OpenEndpointReader(ReadEndpointID readEndpointID, int readBufferSize, EndpointType endpointType)
         {
             foreach (UsbEndpointBase activeEndpoint in mActiveEndpoints)
                 if (activeEndpoint.EpNum == (byte)readEndpointID)
@@ -76,7 +76,7 @@ namespace LibUsbDotNet.LibUsb
         /// </summary>
         /// <param name="writeEndpointID">Endpoint number for read operations.</param>
         /// <returns>A <see cref="UsbEndpointWriter"/> class ready for writing. If the specified endpoint is already been opened, the original <see cref="UsbEndpointWriter"/> class is returned.</returns>
-        public LibUsbDotNet.UsbEndpointWriter OpenEndpointWriter(WriteEndpointID writeEndpointID)
+        public UsbEndpointWriter OpenEndpointWriter(WriteEndpointID writeEndpointID)
         {
             return OpenEndpointWriter(writeEndpointID, EndpointType.Bulk);
         }
@@ -87,7 +87,7 @@ namespace LibUsbDotNet.LibUsb
         /// <param name="writeEndpointID">Endpoint number for read operations.</param>
         /// <param name="endpointType">The type of endpoint to open.</param>
         /// <returns>A <see cref="UsbEndpointWriter"/> class ready for writing. If the specified endpoint is already been opened, the original <see cref="UsbEndpointWriter"/> class is returned.</returns>
-        public LibUsbDotNet.UsbEndpointWriter OpenEndpointWriter(WriteEndpointID writeEndpointID, EndpointType endpointType)
+        public UsbEndpointWriter OpenEndpointWriter(WriteEndpointID writeEndpointID, EndpointType endpointType)
         {
             foreach (UsbEndpointBase activeEndpoint in ActiveEndpoints)
                 if (activeEndpoint.EpNum == (byte)writeEndpointID)

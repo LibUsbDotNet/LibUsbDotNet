@@ -1,44 +1,150 @@
-ï»¿using LibUsbDotNet.LudnMonoLibUsb.Internal;
-using LibUsbDotNet.Main;
+// Copyright © 2006-2010 Travis Robinson. All rights reserved.
+// 
+// website: http://sourceforge.net/projects/libusbdotnet
+// e-mail:  libusbdotnet@gmail.com
+// 
+// This program is free software; you can redistribute it and/or modify it
+// under the terms of the GNU General Public License as published by the
+// Free Software Foundation; either version 2 of the License, or 
+// (at your option) any later version.
+// 
+// This program is distributed in the hope that it will be useful, but 
+// WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY
+// or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General Public License
+// for more details.
+// 
+// You should have received a copy of the GNU General Public License along
+// with this program; if not, write to the Free Software Foundation, Inc.,
+// 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA. or 
+// visit www.gnu.org.
+// 
+// 
 using System;
+using System.Runtime.InteropServices;
+using System.Threading;
+using LibUsbDotNet.Main;
 
 namespace LibUsbDotNet.LibUsb
 {
-    public class UsbEndpointReader : LibUsbDotNet.UsbEndpointReader
+    /// <summary>
+    /// Contains methods for retrieving data from a <see cref="EndpointType.Bulk"/> or <see cref="EndpointType.Interrupt"/> endpoint using the overloaded <see cref="Read(byte[],int,out int)"/> functions or a <see cref="DataReceived"/> event.
+    /// </summary> 
+    /// <remarks>
+    /// <list type="bullet">
+    /// <item>Before using the <see cref="DataReceived"/> event, the <see cref="DataReceivedEnabled"/> property must be set to true.</item>
+    /// <item>While the <see cref="DataReceivedEnabled"/> property is True, the overloaded <see cref="Read(byte[],int,out int)"/> functions cannot be used.</item>
+    /// </list>
+    /// </remarks>
+    public class UsbEndpointReader : UsbEndpointBase
     {
-        private readonly UsbDevice usbDevice;
+        private int mReadBufferSize;
 
-        internal UsbEndpointReader(UsbDevice usbDevice, int readBufferSize, byte alternateInterfaceID, ReadEndpointID readEndpointID, EndpointType endpointType)
-            : base(usbDevice, readBufferSize, alternateInterfaceID, readEndpointID, endpointType)
+        public UsbEndpointReader(UsbDevice usbDevice, int readBufferSize, byte alternateInterfaceID, ReadEndpointID readEndpointID, EndpointType endpointType)
+            : base(usbDevice, alternateInterfaceID, (Byte)readEndpointID, endpointType)
         {
-            this.usbDevice = usbDevice;
+            mReadBufferSize = readBufferSize;
         }
 
         /// <summary>
-        /// Calling this methods is that same as calling <see cref="UsbEndpointReader.ReadFlush"/>
+        /// Default read buffer size when using the <see cref="DataReceived"/> event.
         /// </summary>
-        /// <returns>True an success.</returns>
-        public override bool Flush()
+        /// <remarks>
+        /// This value can be bypassed using the second parameter of the <see cref="UsbDevice.OpenEndpointReader(LibUsbDotNet.Main.ReadEndpointID,int)"/> method.
+        /// The default is 4096.
+        /// </remarks>
+        public static int DefReadBufferSize { get; set; } = 4096;
+
+        /// <summary>
+        /// Reads data from the current <see cref="UsbEndpointReader"/>.
+        /// </summary>
+        /// <param name="buffer">The buffer to store the recieved data in.</param>
+        /// <param name="timeout">Maximum time to wait for the transfer to complete.  If the transfer times out, the IO operation will be cancelled.</param>
+        /// <param name="transferLength">Number of bytes actually transferred.</param>
+        /// <returns>
+        /// <see cref="Error"/>.<see cref="Error.None"/> on success.
+        /// </returns>
+        public virtual Error Read(byte[] buffer, int timeout, out int transferLength)
         {
-            if (IsDisposed) throw new ObjectDisposedException(GetType().Name);
-            return ReadFlush() == Error.Success;
+            return Read(buffer, 0, buffer.Length, timeout, out transferLength);
         }
 
         /// <summary>
-        /// Cancels pending transfers and clears the halt condition on an enpoint.
+        /// Reads data from the current <see cref="UsbEndpointReader"/>.
         /// </summary>
-        /// <returns>True on success.</returns>
-        public override bool Reset()
+        /// <param name="buffer">The buffer to store the recieved data in.</param>
+        /// <param name="offset">The position in buffer to start storing the data.</param>
+        /// <param name="count">The maximum number of bytes to receive.</param>
+        /// <param name="timeout">Maximum time to wait for the transfer to complete.  If the transfer times out, the IO operation will be cancelled.</param>
+        /// <param name="transferLength">Number of bytes actually transferred.</param>
+        /// <returns>
+        /// <see cref="Error"/>.<see cref="Error.None"/> on success.
+        /// </returns>
+        public virtual Error Read(IntPtr buffer, int offset, int count, int timeout, out int transferLength)
         {
-            if (IsDisposed) throw new ObjectDisposedException(GetType().Name);
-            Abort();
-            NativeMethods.ClearHalt(usbDevice.DeviceHandle, EpNum).ThrowOnError();
-            return true;
+            return Transfer(buffer, offset, count, timeout, out transferLength);
         }
 
-        protected override UsbTransfer CreateTransferContext()
+        /// <summary>
+        /// Reads data from the current <see cref="UsbEndpointReader"/>.
+        /// </summary>
+        /// <param name="buffer">The buffer to store the recieved data in.</param>
+        /// <param name="offset">The position in buffer to start storing the data.</param>
+        /// <param name="count">The maximum number of bytes to receive.</param>
+        /// <param name="timeout">Maximum time to wait for the transfer to complete.  If the transfer times out, the IO operation will be cancelled.</param>
+        /// <param name="transferLength">Number of bytes actually transferred.</param>
+        /// <returns>
+        /// <see cref="Error"/>.<see cref="Error.None"/> on success.
+        /// </returns>
+        public virtual Error Read(byte[] buffer, int offset, int count, int timeout, out int transferLength)
         {
-            return new MonoUsbTransferContext(this);
+            return Transfer(buffer, offset, count, timeout, out transferLength);
+        }
+
+        /// <summary>
+        /// Reads data from the current <see cref="UsbEndpointReader"/>.
+        /// </summary>
+        /// <param name="buffer">The buffer to store the recieved data in.</param>
+        /// <param name="offset">The position in buffer to start storing the data.</param>
+        /// <param name="count">The maximum number of bytes to receive.</param>
+        /// <param name="timeout">Maximum time to wait for the transfer to complete.  If the transfer times out, the IO operation will be cancelled.</param>
+        /// <param name="transferLength">Number of bytes actually transferred.</param>
+        /// <returns>
+        /// <see cref="Error"/>.<see cref="Error.None"/> on success.
+        /// </returns>
+        public virtual Error Read(object buffer, int offset, int count, int timeout, out int transferLength)
+        {
+            return Transfer(buffer, offset, count, timeout, out transferLength);
+        }
+
+        /// <summary>
+        /// Reads data from the current <see cref="UsbEndpointReader"/>.
+        /// </summary>
+        /// <param name="buffer">The buffer to store the recieved data in.</param>
+        /// <param name="timeout">Maximum time to wait for the transfer to complete.  If the transfer times out, the IO operation will be cancelled.</param>
+        /// <param name="transferLength">Number of bytes actually transferred.</param>
+        /// <returns>
+        /// <see cref="Error"/>.<see cref="Error.None"/> on success.
+        /// </returns>
+        public virtual Error Read(object buffer, int timeout, out int transferLength)
+        {
+            return Transfer(buffer, 0, Marshal.SizeOf(buffer), timeout, out transferLength);
+        }
+
+        /// <summary>
+        /// Reads/discards data from the enpoint until no more data is available.
+        /// </summary>
+        /// <returns>Alwats returns <see cref="Error.None"/> </returns>
+        public virtual Error ReadFlush()
+        {
+            byte[] bufDummy = new byte[64];
+            int iTransferred;
+            int iBufCount = 0;
+            while (Read(bufDummy, 10, out iTransferred) == Error.Success && iBufCount < 128)
+            {
+                iBufCount++;
+            }
+
+            return Error.Success;
         }
     }
 }

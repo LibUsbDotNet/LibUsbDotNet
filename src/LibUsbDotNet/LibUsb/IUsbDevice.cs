@@ -20,7 +20,7 @@
 // 
 // 
 
-namespace LibUsbDotNet
+namespace LibUsbDotNet.LibUsb
 {
     /// <summary>
     /// The <see cref="IUsbDevice"/> interface contains members needed to configure a USB device for use. 

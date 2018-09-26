@@ -1,4 +1,4 @@
-﻿// Copyright © 2006-2010 Travis Robinson. All rights reserved.
+// Copyright � 2006-2010 Travis Robinson. All rights reserved.
 // 
 // website: http://sourceforge.net/projects/libusbdotnet
 // e-mail:  libusbdotnet@gmail.com
@@ -19,43 +19,95 @@
 // visit www.gnu.org.
 // 
 // 
-using LibUsbDotNet.LudnMonoLibUsb.Internal;
 using LibUsbDotNet.Main;
 using System;
+using System.Runtime.InteropServices;
 
 namespace LibUsbDotNet.LibUsb
 {
-    public class UsbEndpointWriter : LibUsbDotNet.UsbEndpointWriter
+    /// <summary>Contains methods for writing data to a <see cref="EndpointType.Bulk"/> or <see cref="EndpointType.Interrupt"/> endpoint using the overloaded <see cref="Write(byte[],int,out int)"/> functions.
+    /// </summary> 
+    public class UsbEndpointWriter : UsbEndpointBase
     {
-        private readonly UsbDevice usbDevice;
-
-        internal UsbEndpointWriter(UsbDevice usbDevice, byte alternateInterfaceID, WriteEndpointID writeEndpointID, EndpointType endpointType)
-            : base(usbDevice, alternateInterfaceID, writeEndpointID, endpointType)
+        public UsbEndpointWriter(UsbDevice usbDevice, byte alternateInterfaceID, WriteEndpointID writeEndpointID, EndpointType endpointType)
+            : base(usbDevice, alternateInterfaceID, (byte)writeEndpointID, endpointType)
         {
-            this.usbDevice = usbDevice;
         }
 
         /// <summary>
-        /// This method has no effect on write endpoints, andalways returs true.
+        /// Writes data to the current <see cref="UsbEndpointWriter"/>.
         /// </summary>
-        /// <returns>True</returns>
-        public override bool Flush() { return true; }
-
-        /// <summary>
-        /// Cancels pending transfers and clears the halt condition on an enpoint.
-        /// </summary>
-        /// <returns>True on success.</returns>
-        public override bool Reset()
+        /// <param name="buffer">The buffer storing the data to write.</param>
+        /// <param name="timeout">Maximum time to wait for the transfer to complete.  If the transfer times out, the IO operation will be cancelled.</param>
+        /// <param name="transferLength">Number of bytes actually transferred.</param>
+        /// <returns>
+        /// <see cref="Error"/>.<see cref="Error.None"/> on success.
+        /// </returns>
+        public virtual Error Write(byte[] buffer, int timeout, out int transferLength)
         {
-            if (IsDisposed) throw new ObjectDisposedException(GetType().Name);
-            Abort();
-            NativeMethods.ClearHalt(this.usbDevice.DeviceHandle, EpNum).ThrowOnError();
-            return true;
+            return Write(buffer, 0, buffer.Length, timeout, out transferLength);
         }
 
-        protected override UsbTransfer CreateTransferContext()
+        /// <summary>
+        /// Writes data to the current <see cref="UsbEndpointWriter"/>.
+        /// </summary>
+        /// <param name="pBuffer">The buffer storing the data to write.</param>
+        /// <param name="offset">The position in buffer to start writing the data from.</param>
+        /// <param name="count">The number of bytes to write.</param>
+        /// <param name="timeout">Maximum time to wait for the transfer to complete.  If the transfer times out, the IO operation will be cancelled.</param>
+        /// <param name="transferLength">Number of bytes actually transferred.</param>
+        /// <returns>
+        /// <see cref="Error"/>.<see cref="Error.None"/> on success.
+        /// </returns>
+        public virtual Error Write(IntPtr pBuffer, int offset, int count, int timeout, out int transferLength)
         {
-            return new MonoUsbTransferContext(this);
+            return Transfer(pBuffer, offset, count, timeout, out transferLength);
+        }
+
+        /// <summary>
+        /// Writes data to the current <see cref="UsbEndpointWriter"/>.
+        /// </summary>
+        /// <param name="buffer">The buffer storing the data to write.</param>
+        /// <param name="offset">The position in buffer to start writing the data from.</param>
+        /// <param name="count">The number of bytes to write.</param>
+        /// <param name="timeout">Maximum time to wait for the transfer to complete.  If the transfer times out, the IO operation will be cancelled.</param>
+        /// <param name="transferLength">Number of bytes actually transferred.</param>
+        /// <returns>
+        /// <see cref="Error"/>.<see cref="Error.None"/> on success.
+        /// </returns>
+        public virtual Error Write(byte[] buffer, int offset, int count, int timeout, out int transferLength)
+        {
+            return Transfer(buffer, offset, count, timeout, out transferLength);
+        }
+
+        /// <summary>
+        /// Writes data to the current <see cref="UsbEndpointWriter"/>.
+        /// </summary>
+        /// <param name="buffer">The buffer storing the data to write.</param>
+        /// <param name="offset">The position in buffer to start writing the data from.</param>
+        /// <param name="count">The number of bytes to write.</param>
+        /// <param name="timeout">Maximum time to wait for the transfer to complete.  If the transfer times out, the IO operation will be cancelled.</param>
+        /// <param name="transferLength">Number of bytes actually transferred.</param>
+        /// <returns>
+        /// <see cref="Error"/>.<see cref="Error.None"/> on success.
+        /// </returns>
+        public virtual Error Write(object buffer, int offset, int count, int timeout, out int transferLength)
+        {
+            return Transfer(buffer, offset, count, timeout, out transferLength);
+        }
+
+        /// <summary>
+        /// Writes data to the current <see cref="UsbEndpointWriter"/>.
+        /// </summary>
+        /// <param name="buffer">The buffer storing the data to write.</param>
+        /// <param name="timeout">Maximum time to wait for the transfer to complete.  If the transfer times out, the IO operation will be cancelled.</param>
+        /// <param name="transferLength">Number of bytes actually transferred.</param>
+        /// <returns>
+        /// <see cref="Error"/>.<see cref="Error.None"/> on success.
+        /// </returns>
+        public virtual Error Write(object buffer, int timeout, out int transferLength)
+        {
+            return Write(buffer, 0, Marshal.SizeOf(buffer), timeout, out transferLength);
         }
     }
 }

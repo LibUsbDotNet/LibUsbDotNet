@@ -25,8 +25,10 @@ using System.Runtime.InteropServices;
 using LibUsbDotNet.Info;
 using LibUsbDotNet.Internal;
 using LibUsbDotNet.LibUsb;
+using LibUsbDotNet.LudnMonoLibUsb.Internal;
+using LibUsbDotNet.Main;
 
-namespace LibUsbDotNet.Main
+namespace LibUsbDotNet.LibUsb
 {
     /// <summary> 
     /// Endpoint members common to Read, Write, Bulk, and Interrupt <see cref="T:LibUsbDotNet.Main.EndpointType"/>.
@@ -148,7 +150,11 @@ namespace LibUsbDotNet.Main
 
         #endregion
 
-        protected abstract UsbTransfer CreateTransferContext();
+        protected virtual UsbTransfer CreateTransferContext()
+        {
+            // return new OverlappedTransferContext(this);
+            return new MonoUsbTransferContext(this);
+        }
 
         /// <summary>
         /// Aborts pending IO operation on this enpoint of one exists.
@@ -163,36 +169,25 @@ namespace LibUsbDotNet.Main
         }
 
         /// <summary>
-        /// Discards any data that is cached in this endpoint.
+        /// This method has no effect on write endpoints, and always returns true.
         /// </summary>
-        /// <returns>True on success.</returns>
-        public abstract bool Flush();
-        /*
+        /// <returns><see langword="true"/></returns>
+        public virtual bool Flush()
         {
-            if (mIsDisposed) throw new ObjectDisposedException(GetType().Name);
-
-            bool bSuccess = mUsbApi.FlushPipe(mUsbHandle, EpNum);
-
-            if (!bSuccess) UsbError.Error(Error.Win32Error, Marshal.GetLastWin32Error(), "FlushPipe", this);
-
-            return bSuccess;
-        }*/
+            return true;
+        }
 
         /// <summary>
-        /// Resets the data toggle and clears the stall condition on an enpoint.
+        /// Cancels pending transfers and clears the halt condition on an enpoint.
         /// </summary>
-        /// <returns>True on success.</returns>
-        public abstract bool Reset();
-        /*
+        /// <returns><see langword="true"/> on success.</returns>
+        public virtual bool Reset()
         {
-            if (mIsDisposed) throw new ObjectDisposedException(GetType().Name);
-
-            bool bSuccess = mUsbApi.ResetPipe(mUsbHandle, EpNum);
-
-            if (!bSuccess) UsbError.Error(Error.Win32Error, Marshal.GetLastWin32Error(), "ResetPipe", this);
-
-            return bSuccess;
-        }*/
+            if (IsDisposed) throw new ObjectDisposedException(GetType().Name);
+            Abort();
+            NativeMethods.ClearHalt(this.Device.DeviceHandle, EpNum).ThrowOnError();
+            return true;
+        }
 
         /// <summary>
         /// Synchronous bulk/interrupt transfer function.
@@ -203,7 +198,29 @@ namespace LibUsbDotNet.Main
         /// <param name="timeout">Maximum time to wait for the transfer to complete.</param>
         /// <param name="transferLength">Number of bytes actually transferred.</param>
         /// <returns>True on success.</returns>
-        public virtual Error Transfer(IntPtr buffer, int offset, int length, int timeout, out int transferLength) { return UsbTransfer.SyncTransfer(TransferContext, buffer, offset, length, timeout, out transferLength); }
+        public virtual unsafe Error Transfer(IntPtr buffer, int offset, int length, int timeout, out int transferLength)
+        {
+            int transferred = 0;
+            Error returnValue = 0;
+
+            switch (this.mEndpointType)
+            {
+                case EndpointType.Bulk:
+                    returnValue = NativeMethods.BulkTransfer(this.Device.DeviceHandle, this.mEpNum, (byte*)buffer + offset, length, ref transferred, (uint)timeout);
+                    transferLength = transferred;
+                    return returnValue;
+
+                case EndpointType.Interrupt:
+                    returnValue = NativeMethods.InterruptTransfer(this.Device.DeviceHandle, this.mEpNum, (byte*)buffer + offset, length, ref transferred, (uint)timeout);
+                    transferLength = transferred;
+                    return returnValue;
+
+                case EndpointType.Isochronous:
+                case EndpointType.Control:
+                default:
+                    return UsbTransfer.SyncTransfer(TransferContext, buffer, offset, length, timeout, out transferLength);
+            }
+        }
 
         /// <summary>
         /// Creates, fills and submits an asynchronous <see cref="UsbTransfer"/> context.
@@ -369,10 +386,6 @@ namespace LibUsbDotNet.Main
             if (!mIsDisposed)
             {
                 UsbEndpointReader epReader = this as UsbEndpointReader;
-                if (!ReferenceEquals(epReader, null))
-                {
-                    if (epReader.DataReceivedEnabled) epReader.DataReceivedEnabled = false;
-                }
                 Abort();
                 mUsbDevice.ActiveEndpoints.RemoveFromList(this);
             }

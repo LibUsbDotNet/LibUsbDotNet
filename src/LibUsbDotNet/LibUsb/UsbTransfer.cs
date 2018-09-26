@@ -19,11 +19,12 @@
 // visit www.gnu.org.
 // 
 // 
+using LibUsbDotNet.Main;
 using System;
 using System.Diagnostics;
 using System.Threading;
 
-namespace LibUsbDotNet.Main
+namespace LibUsbDotNet.LibUsb
 {
     /// <summary>
     /// Base class for async transfer context.
