@@ -22,342 +22,112 @@
 using LibUsbDotNet.LibUsb;
 using System;
 using System.IO;
-using System.Runtime.InteropServices;
-using System.Threading;
-#if !NETCOREAPP && !NETSTANDARD
-using System.Windows.Forms;
-#endif
 
 namespace LibUsbDotNet.Main
 {
-    public class IOCancelledException : IOException
-    {
-        public IOCancelledException(string message) : base(message)
-        {
-        }
-    }
-
-    public class UsbStreamAsyncTransfer : IAsyncResult
-    {
-        internal readonly int mCount;
-        internal readonly int mOffset;
-        internal readonly object mState;
-        private readonly int mTimeout;
-        internal AsyncCallback mCallback;
-        internal ManualResetEvent mCompleteEvent = new ManualResetEvent(false);
-        internal GCHandle mGCBuffer;
-        internal bool mIsComplete;
-        private Error mResult;
-        private int mTrasferredLength;
-        internal UsbEndpointBase mUsbEndpoint;
-
-        public UsbStreamAsyncTransfer(UsbEndpointBase usbEndpoint,
-                                      byte[] buffer,
-                                      int offset,
-                                      int count,
-                                      AsyncCallback callback,
-                                      object state,
-                                      int timeout)
-        {
-            this.mUsbEndpoint = usbEndpoint;
-            this.mOffset = offset;
-            this.mCount = count;
-            this.mState = state;
-            this.mTimeout = timeout;
-            this.mCallback = callback;
-            this.mGCBuffer = GCHandle.Alloc(buffer, GCHandleType.Pinned);
-        }
-
-        public Error Result
-        {
-            get { return this.mResult; }
-        }
-
-        public int TransferredLength
-        {
-            get { return this.mTrasferredLength; }
-        }
-
-#region IAsyncResult Members
-
-        public bool IsCompleted
-        {
-            get { return this.mIsComplete; }
-        }
-
-        public WaitHandle AsyncWaitHandle
-        {
-            get { return this.mCompleteEvent; }
-        }
-
-        public object AsyncState
-        {
-            get { return this.mState; }
-        }
-
-        public bool CompletedSynchronously
-        {
-            get { return false; }
-        }
-
-#endregion
-
-        public Error SyncTransfer()
-        {
-            this.mResult = this.mUsbEndpoint.Transfer(this.mGCBuffer.AddrOfPinnedObject(), this.mOffset, this.mCount, this.mTimeout, out this.mTrasferredLength);
-            this.mGCBuffer.Free();
-            this.mIsComplete = true;
-            if (this.mCallback != null)
-            {
-                this.mCallback(this as IAsyncResult);
-            }
-
-            this.mCompleteEvent.Set();
-            return this.mResult;
-        }
-    }
-
+    /// <summary>
+    /// A stream which reads and writes of an USB connection.
+    /// </summary>
     public class UsbStream : Stream
     {
-        private readonly UsbEndpointBase mUsbEndpoint;
-        private int mTimeout = UsbConstants.DEFAULT_TIMEOUT;
-#if !NETCOREAPP && !NETSTANDARD
-        private Thread mWaitThread;
-#endif
+        private readonly UsbEndpointWriter writer;
+        private readonly UsbEndpointReader reader;
+        private readonly byte[] readBuffer = new byte[4096];
+        private int readBufferOffset = 0;
+        private int readBufferLength = 0;
+        private long position = 0;
 
-        public UsbStream(UsbEndpointBase usbEndpoint)
+        /// <summary>
+        /// Initializes a new instance of the <see cref="UsbStream"/> class.
+        /// </summary>
+        /// <param name="writer">
+        /// A <see cref="UsbEndpointWriter"/> to which to write data.
+        /// </param>
+        /// <param name="reader">
+        /// A <see cref="UsbEndpointReader"/> from which to read data.
+        /// </param>
+        public UsbStream(UsbEndpointWriter writer, UsbEndpointReader reader)
         {
-            this.mUsbEndpoint = usbEndpoint;
+            if (writer == null && reader == null)
+            {
+                throw new ArgumentException("You must provide at least a reader or a writer");
+            }
+
+            this.writer = writer;
+            this.reader = reader;
         }
 
-#region NOT SUPPORTED
+        /// <inheritdoc/>
+        public override bool CanRead => this.reader != null;
 
-        public override long Length
-        {
-            get { throw new NotSupportedException(); }
-        }
+        /// <inheritdoc/>
+        public override bool CanSeek => false;
 
+        /// <inheritdoc/>
+        public override bool CanWrite => this.writer != null;
+
+        /// <inheritdoc/>
+        public override long Length => throw new NotSupportedException();
+
+        /// <inheritdoc/>
         public override long Position
         {
-            get { throw new NotSupportedException(); }
-            set { throw new NotSupportedException(); }
+            get => this.position;
+            set => throw new NotSupportedException();
         }
 
+        /// <inheritdoc/>
         public override long Seek(long offset, SeekOrigin origin)
         {
             throw new NotSupportedException();
         }
 
+        /// <inheritdoc/>
         public override void SetLength(long value)
         {
             throw new NotSupportedException();
         }
 
-#endregion
-
-#region Overridden Members
-
-#if !NETCOREAPP && !NETSTANDARD
-        public override IAsyncResult BeginRead(byte[] buffer, int offset, int count, AsyncCallback callback, object state)
-        {
-            UsbStreamAsyncTransfer asyncTransfer = new UsbStreamAsyncTransfer(this.mUsbEndpoint, buffer, offset, count, callback, state, this.ReadTimeout);
-            this.WaitThread.Start(asyncTransfer);
-            return asyncTransfer;
-        }
-
-        private Thread WaitThread
-        {
-            get
-            {
-                if (ReferenceEquals(this.mWaitThread, null))
-                {
-                    this.mWaitThread = new Thread(AsyncTransferFn);
-                }
-
-                while (this.mWaitThread.IsAlive)
-                {
-                    Application.DoEvents();
-                }
-
-                return this.mWaitThread;
-            }
-        }
-
-        public override IAsyncResult BeginWrite(byte[] buffer, int offset, int count, AsyncCallback callback, object state)
-        {
-            UsbStreamAsyncTransfer asyncTransfer = new UsbStreamAsyncTransfer(this.mUsbEndpoint, buffer, offset, count, callback, state, this.WriteTimeout);
-            this.WaitThread.Start(asyncTransfer);
-            return asyncTransfer;
-        }
-#endif
-
-        public override bool CanRead
-        {
-            get { return (this.mUsbEndpoint.EpNum & 0x80) == 0x80; }
-        }
-
-        public override bool CanSeek
-        {
-            get { return false; }
-        }
-
-        public override bool CanTimeout
-        {
-            get { return true; }
-        }
-
-        public override bool CanWrite
-        {
-            get { return (this.mUsbEndpoint.EpNum & 0x80) == 0; }
-        }
-
-#if !NETCOREAPP && !NETSTANDARD
-        public override int EndRead(IAsyncResult asyncResult)
-        {
-            UsbStreamAsyncTransfer asyncTransfer = (UsbStreamAsyncTransfer)asyncResult;
-            asyncTransfer.mCompleteEvent.WaitOne();
-
-            if (asyncTransfer.Result == Error.Success)
-            {
-                return asyncTransfer.TransferredLength;
-            }
-
-            if (asyncTransfer.Result == Error.Timeout)
-            {
-                throw new TimeoutException(string.Format("{0}:Endpoint 0x{1:X2} IO timed out.", asyncTransfer.Result, this.mUsbEndpoint.EpNum));
-            }
-
-            if (asyncTransfer.Result == Error.Interrupted)
-            {
-                throw new IOCancelledException(string.Format("{0}:Endpoint 0x{1:X2} IO was cancelled.", asyncTransfer.Result, this.mUsbEndpoint.EpNum));
-            }
-
-            throw new IOException(string.Format("{0}:Failed reading from endpoint:{1}", asyncTransfer.Result, this.mUsbEndpoint.EpNum));
-        }
-
-        public override void EndWrite(IAsyncResult asyncResult)
-        {
-            UsbStreamAsyncTransfer asyncTransfer = (UsbStreamAsyncTransfer)asyncResult;
-            asyncTransfer.mCompleteEvent.WaitOne();
-
-            if (asyncTransfer.Result == Error.Success && asyncTransfer.mCount == asyncTransfer.TransferredLength)
-            {
-                return;
-            }
-
-            if (asyncTransfer.Result == Error.Timeout)
-            {
-                throw new TimeoutException(string.Format("{0}:Endpoint 0x{1:X2} IO timed out.", asyncTransfer.Result, this.mUsbEndpoint.EpNum));
-            }
-
-            if (asyncTransfer.Result == Error.Interrupted)
-            {
-                throw new IOCancelledException(string.Format("{0}:Endpoint 0x{1:X2} IO was cancelled.", asyncTransfer.Result, this.mUsbEndpoint.EpNum));
-            }
-
-            if (asyncTransfer.mCount != asyncTransfer.TransferredLength)
-            {
-                throw new IOException(string.Format("{0}:Failed writing {1} byte(s) to endpoint 0x{2:X2}.",
-                                                    asyncTransfer.Result,
-                                                    asyncTransfer.mCount - asyncTransfer.TransferredLength,
-                                                    this.mUsbEndpoint.EpNum));
-            }
-
-            throw new IOException(string.Format("{0}:Failed writing to endpoint 0x{1:X2}", asyncTransfer.Result, this.mUsbEndpoint.EpNum));
-        }
-#endif
-
+        /// <inheritdoc/>
         public override void Flush()
         {
-            return;
+            throw new NotSupportedException();
         }
 
+        /// <inheritdoc/>
         public override int Read(byte[] buffer, int offset, int count)
         {
-            if (!this.CanRead)
+            // Don't block on calls to read 0 bytes of data.
+            if (count == 0)
             {
-                throw new InvalidOperationException(string.Format("Cannot read from WriteEndpoint {0}.", (WriteEndpointID)this.mUsbEndpoint.EpNum));
+                return 0;
             }
 
-            int transferred;
-            Error ec = this.mUsbEndpoint.Transfer(buffer, offset, count, this.ReadTimeout, out transferred);
-
-            if (ec == Error.Success)
+            // If the buffer has been exhausted, fetch new data
+            if (this.readBufferOffset >= this.readBufferLength)
             {
-                return transferred;
+                this.readBufferOffset = 0;
+                this.reader.Read(this.readBuffer, this.readBufferOffset, this.readBuffer.Length, -1, out int transferLength).ThrowOnError();
+
+                this.readBufferLength = transferLength;
             }
 
-            if (ec == Error.Timeout)
-            {
-                throw new TimeoutException(string.Format("{0}:Endpoint 0x{1:X2} IO timed out.", ec, this.mUsbEndpoint.EpNum));
-            }
+            // Read data from the buffer and return that to the caller.
+            int bytesAvailable = this.readBufferLength - this.readBufferOffset;
+            int read = Math.Min(bytesAvailable, count);
 
-            if (ec == Error.Interrupted)
-            {
-                throw new IOCancelledException(string.Format("{0}:Endpoint 0x{1:X2} IO was cancelled.", ec, this.mUsbEndpoint.EpNum));
-            }
+            Array.Copy(this.readBuffer, this.readBufferOffset, buffer, offset, read);
 
-            throw new IOException(string.Format("{0}:Failed reading from endpoint:{1}", ec, this.mUsbEndpoint.EpNum));
+            this.readBufferOffset += read;
+
+            this.position += read;
+            return read;
         }
 
-        public override int ReadTimeout
-        {
-            get { return this.mTimeout; }
-            set { this.mTimeout = value; }
-        }
-
+        /// <inheritdoc/>
         public override void Write(byte[] buffer, int offset, int count)
         {
-            if (!this.CanWrite)
-            {
-                throw new InvalidOperationException(string.Format("Cannot write to ReadEndpoint {0}.", (ReadEndpointID)this.mUsbEndpoint.EpNum));
-            }
-
-            int transferred;
-            Error ec = this.mUsbEndpoint.Transfer(buffer, offset, count, this.WriteTimeout, out transferred);
-
-            if (ec == Error.Success && count == transferred)
-            {
-                return;
-            }
-
-            if (ec == Error.Timeout)
-            {
-                throw new TimeoutException(string.Format("{0}:Endpoint 0x{1:X2} IO timed out.", ec, this.mUsbEndpoint.EpNum));
-            }
-
-            if (ec == Error.Interrupted)
-            {
-                throw new IOCancelledException(string.Format("{0}:Endpoint 0x{1:X2} IO was cancelled.", ec, this.mUsbEndpoint.EpNum));
-            }
-
-            if (count != transferred)
-            {
-                throw new IOException(string.Format("{0}:Failed writing {1} byte(s) to endpoint 0x{2:X2}.",
-                                                    ec,
-                                                    count - transferred,
-                                                    this.mUsbEndpoint.EpNum));
-            }
-
-            throw new IOException(string.Format("{0}:Failed writing to endpoint 0x{1:X2}", ec, this.mUsbEndpoint.EpNum));
+            this.writer.Write(buffer, offset, count, timeout: 1000, transferLength: out int transferLength).ThrowOnError();
         }
-
-        public override int WriteTimeout
-        {
-            get { return this.mTimeout; }
-            set { this.mTimeout = value; }
-        }
-
-#endregion
-
-#region STATIC Members
-
-        private static void AsyncTransferFn(object oContext)
-        {
-            UsbStreamAsyncTransfer context = oContext as UsbStreamAsyncTransfer;
-            context.SyncTransfer();
-        }
-
-#endregion
     }
 }
