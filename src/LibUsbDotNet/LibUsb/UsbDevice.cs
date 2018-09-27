@@ -91,7 +91,7 @@ namespace LibUsbDotNet.LibUsb
             }
             else
             {
-                return base.ToString();
+                return $"PID 0x{this.ProductId:X} - VID: 0x{this.VendorId:X}";
             }
         }
 

@@ -45,8 +45,10 @@ namespace LibUsbDotNet.Info
 
             for (byte i = 0; i < descriptor.NumConfigurations; i++)
             {
-                var configDescriptor = device.GetConfigDescriptor(i);
-                value.configurations.Add(configDescriptor);
+                if (device.TryGetConfigDescriptor(i, out var configDescriptor))
+                {
+                    value.configurations.Add(configDescriptor);
+                }
             }
 
             value.Product = device.GetStringDescriptor(descriptor.Product, failSilently: true);
