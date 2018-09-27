@@ -23,6 +23,7 @@ using LibUsbDotNet.Main;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.Threading;
 
 namespace LibUsbDotNet.LibUsb
 {
@@ -41,6 +42,9 @@ namespace LibUsbDotNet.LibUsb
         /// Tracks whether this context has been disposed of, or not.
         /// </summary>
         private bool disposed = false;
+
+        private Thread eventHandlingThread;
+        private bool shouldHandleEvents = false;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="UsbContext"/> class.
@@ -146,6 +150,38 @@ namespace LibUsbDotNet.LibUsb
 
             UsbDeviceCollection devices = new UsbDeviceCollection(matchingDevices);
             return devices;
+        }
+
+        public void StartHandlingEvents()
+        {
+            if (this.eventHandlingThread == null)
+            {
+                this.eventHandlingThread = new Thread(HandleEvents);
+                this.shouldHandleEvents = true;
+                this.eventHandlingThread.Start();
+            }
+        }
+
+        public void StopHandlingEvents()
+        {
+            if (this.eventHandlingThread != null)
+            {
+                this.shouldHandleEvents = false;
+                this.eventHandlingThread.Join();
+            }
+            else
+            {
+                throw new InvalidOperationException();
+            }
+        }
+
+        private void HandleEvents()
+        {
+            while (this.shouldHandleEvents)
+            {
+                int completed = this.shouldHandleEvents ? 0 : 1;
+                NativeMethods.HandleEventsCompleted(this.context, ref completed).ThrowOnError();
+            }
         }
 
         protected virtual void Dispose(bool disposing)
