@@ -55,6 +55,12 @@ namespace LibUsbDotNet.LibUsb
         /// <inheritdoc/>
         public UsbDeviceInfo Info => this.Descriptor;
 
+        /// <inheritdoc/>
+        public ushort VendorId => this.Descriptor.VendorId;
+
+        /// <inheritdoc/>
+        public ushort ProductId => this.Descriptor.ProductId;
+
         public ReadOnlyCollection<UsbConfigInfo> Configs
         {
             get

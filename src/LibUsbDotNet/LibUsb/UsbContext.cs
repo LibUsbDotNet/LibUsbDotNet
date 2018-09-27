@@ -56,6 +56,12 @@ namespace LibUsbDotNet.LibUsb
             this.context = Context.DangerousCreate(contextHandle);
         }
 
+        ~UsbContext()
+        {
+            // Put cleanup code in Dispose(bool disposing).
+            this.Dispose(false);
+        }
+
         /// <inheritdoc/>
         public void Dispose()
         {
@@ -65,12 +71,7 @@ namespace LibUsbDotNet.LibUsb
             GC.SuppressFinalize(this);
         }
 
-        /// <summary>
-        /// Set log message verbosity.
-        /// </summary>
-        /// <param name="level">
-        /// The requested debug level.
-        /// </param>
+        /// <inheritdoc/>
         public void SetDebugLevel(LogLevel level)
         {
             NativeMethods.SetDebug(this.context, (int)level);
@@ -79,7 +80,9 @@ namespace LibUsbDotNet.LibUsb
         /// <summary>
         /// Returns a list of USB devices currently attached to the system.
         /// </summary>
-        /// <returns></returns>
+        /// <returns>
+        /// A <see cref="UsbDeviceCollection"/> which contains the devices currently
+        /// attached to the system.</returns>
         /// <remarks>
         /// <para>
         /// This is your entry point into finding a USB device to operate.
@@ -95,7 +98,7 @@ namespace LibUsbDotNet.LibUsb
             IntPtr* list;
             var deviceCount = NativeMethods.GetDeviceList(this.context, &list);
 
-            Collection<UsbDevice> devices = new Collection<UsbDevice>();
+            Collection<IUsbDevice> devices = new Collection<IUsbDevice>();
 
             for (int i = 0; i < deviceCount.ToInt32(); i++)
             {
@@ -108,22 +111,30 @@ namespace LibUsbDotNet.LibUsb
             return new UsbDeviceCollection(devices);
         }
 
-        /// <summary>
-        /// Finds a specific device.
-        /// </summary>
-        /// <param name="finder">
-        /// A finder which contains the parameters of the device you want to find.
-        /// </param>
-        /// <returns>
-        /// If found, the requested device. Otherwise, <see langword="null"/>.
-        /// </returns>
-        public UsbDevice Find(UsbDeviceFinder finder)
+        /// <inheritdoc/>
+        public IUsbDevice Find(UsbDeviceFinder finder)
         {
+            if (finder == null)
+            {
+                throw new ArgumentNullException(nameof(finder));
+            }
+
+            return this.Find(finder.Check);
+        }
+
+        /// <inheritdoc/>
+        public IUsbDevice Find(Func<IUsbDevice, bool> predicate)
+        {
+            if (predicate == null)
+            {
+                throw new ArgumentNullException(nameof(predicate));
+            }
+
             using (var list = this.List())
             {
                 foreach (var device in list)
                 {
-                    if (finder.Check(device))
+                    if (predicate(device))
                     {
                         return device.Clone();
                     }
@@ -133,15 +144,32 @@ namespace LibUsbDotNet.LibUsb
             return null;
         }
 
+        /// <inheritdoc/>
         public UsbDeviceCollection FindAll(UsbDeviceFinder finder)
         {
-            var matchingDevices = new List<UsbDevice>();
+            if (finder == null)
+            {
+                throw new ArgumentNullException(nameof(finder));
+            }
+
+            return this.FindAll(finder.Check);
+        }
+
+        /// <inheritdoc/>
+        public UsbDeviceCollection FindAll(Func<IUsbDevice, bool> predicate)
+        {
+            if (predicate == null)
+            {
+                throw new ArgumentNullException(nameof(predicate));
+            }
+
+            var matchingDevices = new List<IUsbDevice>();
 
             using (var list = this.List())
             {
                 foreach (var device in list)
                 {
-                    if (finder.Check(device))
+                    if (predicate(device))
                     {
                         matchingDevices.Add(device.Clone());
                     }
@@ -175,15 +203,6 @@ namespace LibUsbDotNet.LibUsb
             }
         }
 
-        private void HandleEvents()
-        {
-            while (this.shouldHandleEvents)
-            {
-                int completed = this.shouldHandleEvents ? 0 : 1;
-                NativeMethods.HandleEventsCompleted(this.context, ref completed).ThrowOnError();
-            }
-        }
-
         protected virtual void Dispose(bool disposing)
         {
             if (!this.disposed)
@@ -199,10 +218,13 @@ namespace LibUsbDotNet.LibUsb
             }
         }
 
-        ~UsbContext()
+        private void HandleEvents()
         {
-            // Put cleanup code in Dispose(bool disposing).
-            this.Dispose(false);
+            while (this.shouldHandleEvents)
+            {
+                int completed = this.shouldHandleEvents ? 0 : 1;
+                NativeMethods.HandleEventsCompleted(this.context, ref completed).ThrowOnError();
+            }
         }
     }
 }

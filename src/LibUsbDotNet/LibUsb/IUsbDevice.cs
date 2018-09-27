@@ -33,7 +33,7 @@ namespace LibUsbDotNet.LibUsb
     /// for usb devices that require it.
     /// <code source="..\Examples\Read.Write\ReadWrite.cs" lang="cs"/>
     /// </example>
-    public interface IUsbDevice
+    public interface IUsbDevice : IDisposable
     {
         /// <summary>
         /// Gets the available configurations for this <see cref="UsbDevice"/>
@@ -49,9 +49,27 @@ namespace LibUsbDotNet.LibUsb
         UsbDeviceInfo Info { get; }
 
         /// <summary>
-        /// Gets a value indication whether the device handle is valid.
+        /// Gets a value indicating whether the device handle is valid.
         /// </summary>
         bool IsOpen { get; }
+
+        /// <summary>
+        /// Gets the USB devices active configuration value.
+        /// </summary>
+        /// <returs>
+        /// The active configuration value. A zero value means the device is not configured and a non-zero value indicates the device is configured.
+        /// </returns>
+        int Configuration { get; }
+
+        /// <summary>
+        /// Gets the Vendor ID (PID) of the vendor of this device.
+        /// </summary>
+        ushort VendorId { get; }
+
+        /// <summary>
+        /// Gets the Product ID (PID) of this device.
+        /// </summary>
+        ushort ProductId { get; }
 
         /// <summary>
         /// Closes and frees device resources.
@@ -161,14 +179,6 @@ namespace LibUsbDotNet.LibUsb
         UsbEndpointWriter OpenEndpointWriter(WriteEndpointID writeEndpointID, EndpointType endpointType);
 
         /// <summary>
-        /// Gets the USB devices active configuration value.
-        /// </summary>
-        /// <returs>
-        /// The active configuration value. A zero value means the device is not configured and a non-zero value indicates the device is configured.
-        /// </returns>
-        int Configuration { get; }
-
-        /// <summary>
         /// Sets the USB devices active configuration value.
         /// </summary>
         /// <param name="config">The active configuration value. A zero value means the device is not configured and a non-zero value indicates the device is configured.</param>
@@ -205,5 +215,45 @@ namespace LibUsbDotNet.LibUsb
         /// After calling <see cref="ResetDevice"/>, the <see cref="UsbDevice"/> instance is disposed and
         /// no longer usable.  A new <see cref="UsbDevice"/> instance must be obtained from the device list.
         void ResetDevice();
+
+        /// <summary>
+        /// Transmits control data over a default control endpoint.
+        /// </summary>
+        /// <param name="setupPacket">
+        /// An 8-byte setup packet which contains parameters for the control request.
+        /// See section 9.3 USB Device Requests of the Universal Serial Bus Specification Revision 2.0 for more information.
+        /// </param>
+        /// <returns>
+        /// The number of bytes sent or received (depends on the direction of the control transfer).
+        /// </returns>
+        int ControlTransfer(UsbSetupPacket setupPacket);
+
+        /// <summary>
+        /// Transmits control data over a default control endpoint.
+        /// </summary>
+        /// <param name="setupPacket">
+        /// An 8-byte setup packet which contains parameters for the control request.
+        /// See section 9.3 USB Device Requests of the Universal Serial Bus Specification Revision 2.0 for more information.
+        /// </param>
+        /// <param name="buffer">
+        /// Data to be sent/received from the device.
+        /// </param>
+        /// <param name="offset">
+        /// The offset of the first byte of the data to send.
+        /// </param>
+        /// <param name="length">
+        /// Length of the buffer param.
+        /// </param>
+        /// <returns>The number of bytes sent or received (depends on the direction of the control transfer).
+        /// </returns>
+        int ControlTransfer(UsbSetupPacket setupPacket, byte[] buffer, int offset, int length);
+
+        /// <summary>
+        /// Creates a clone of this device.
+        /// </summary>
+        /// <returns>
+        /// A new <see cref="UsbDevice"/> which represents a clone of this device.
+        /// </returns>
+        IUsbDevice Clone();
     }
 }

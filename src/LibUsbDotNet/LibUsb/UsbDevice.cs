@@ -59,7 +59,7 @@ namespace LibUsbDotNet.LibUsb
         /// <returns>
         /// A new <see cref="UsbDevice"/> which represents a clone of this device.
         /// </returns>
-        public UsbDevice Clone()
+        public IUsbDevice Clone()
         {
             return new UsbDevice(NativeMethods.RefDevice(this.device));
         }

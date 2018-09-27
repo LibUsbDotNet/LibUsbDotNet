@@ -29,7 +29,7 @@ namespace LibUsbDotNet.LibUsb
     /// A collection of <see cref="UsbDevice"/> objects. All devices in this collection are disposed
     /// of when youd dispose the collection.
     /// </summary>
-    public class UsbDeviceCollection : ReadOnlyCollection<UsbDevice>, IDisposable
+    public class UsbDeviceCollection : ReadOnlyCollection<IUsbDevice>, IDisposable
     {
         /// <summary>
         /// Initializes a new instance of the <see cref="UsbDeviceCollection"/> class.
@@ -37,7 +37,7 @@ namespace LibUsbDotNet.LibUsb
         /// <param name="list">
         /// The underlying list of devices.
         /// </param>
-        public UsbDeviceCollection(IList<UsbDevice> list)
+        public UsbDeviceCollection(IList<IUsbDevice> list)
             : base(list)
         {
         }
