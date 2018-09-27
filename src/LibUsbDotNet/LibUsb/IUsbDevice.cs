@@ -140,6 +140,15 @@ namespace LibUsbDotNet.LibUsb
         void Open();
 
         /// <summary>
+        /// Attempts to open this device.
+        /// </summary>
+        /// <returns>
+        /// <see langword="true" /> if the device could be opened successfully;
+        /// otherwise, <see langword="false"/>.
+        /// </returns>
+        bool TryOpen();
+
+        /// <summary>
         /// Opens a <see cref="EndpointType.Bulk"/> endpoint for reading
         /// </summary>
         /// <param name="readEndpointID">Endpoint number for read operations.</param>

@@ -289,13 +289,7 @@ namespace LibUsbDotNet.LibUsb
             this.descriptor = null;
         }
 
-        /// <summary>
-        /// Attempts to open this device.
-        /// </summary>
-        /// <returns>
-        /// <see langword="true" /> if the device could be opened successfully;
-        /// otherwise, <see langword="false"/>.
-        /// </returns>
+        /// <inheritdoc/>
         public bool TryOpen()
         {
             this.EnsureNotDisposed();
