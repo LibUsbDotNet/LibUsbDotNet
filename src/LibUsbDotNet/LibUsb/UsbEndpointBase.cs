@@ -19,21 +19,16 @@
 // visit www.gnu.org.
 // 
 // 
-using System;
-using System.Collections.ObjectModel;
-using System.Runtime.InteropServices;
 using LibUsbDotNet.Info;
-using LibUsbDotNet.Internal;
-using LibUsbDotNet.LibUsb;
-using LibUsbDotNet.LudnMonoLibUsb.Internal;
 using LibUsbDotNet.Main;
+using System;
 
 namespace LibUsbDotNet.LibUsb
 {
     /// <summary> 
     /// Endpoint members common to Read, Write, Bulk, and Interrupt <see cref="T:LibUsbDotNet.Main.EndpointType"/>.
     /// </summary> 
-    public abstract class UsbEndpointBase : IDisposable
+    public abstract class UsbEndpointBase
     {
         /// <summary>
         /// The maximum transfer payload size for all usb endpoints.
@@ -49,8 +44,6 @@ namespace LibUsbDotNet.LibUsb
         private readonly UsbDevice mUsbDevice;
         private readonly byte alternateInterfaceID;
         private bool mIsDisposed;
-        internal TransferDelegate mPipeTransferSubmit;
-        private UsbTransfer mTransferContext;
         private UsbEndpointInfo mUsbEndpointInfo;
         private EndpointType mEndpointType;
         private UsbInterfaceInfo mUsbInterfacetInfo;
@@ -61,38 +54,6 @@ namespace LibUsbDotNet.LibUsb
             this.alternateInterfaceID = alternateInterfaceID;
             mEpNum = epNum;
             mEndpointType = endpointType;
-            if ((mEpNum & 0x80) > 0)
-            {
-                mPipeTransferSubmit = ReadPipe;
-            }
-            else
-                mPipeTransferSubmit = WritePipe;
-        }
-
-
-        internal virtual TransferDelegate PipeTransferSubmit
-        {
-            get { return mPipeTransferSubmit; }
-        }
-
-        internal UsbTransfer TransferContext
-        {
-            get
-            {
-                if (ReferenceEquals(mTransferContext, null))
-                {
-                    mTransferContext = CreateTransferContext();
-                }
-                return mTransferContext;
-            }
-        }
-
-        /// <summary>
-        /// Gets a value indicating if the object is disposed.
-        /// </summary>
-        public bool IsDisposed
-        {
-            get { return mIsDisposed; }
         }
 
         /// <summary>
@@ -141,54 +102,6 @@ namespace LibUsbDotNet.LibUsb
             }
         }
 
-        #region IDisposable Members
-
-        /// <summary>
-        /// Frees resources associated with the endpoint.  Once disposed this <see cref="UsbEndpointBase"/> cannot be used.
-        /// </summary>
-        public virtual void Dispose() { DisposeAndRemoveFromList(); }
-
-        #endregion
-
-        protected virtual UsbTransfer CreateTransferContext()
-        {
-            // return new OverlappedTransferContext(this);
-            return new MonoUsbTransferContext(this);
-        }
-
-        /// <summary>
-        /// Aborts pending IO operation on this enpoint of one exists.
-        /// </summary>
-        /// <returns>True on success or if no pending IO operation exits.</returns>
-        public virtual bool Abort()
-        {
-            if (mIsDisposed) throw new ObjectDisposedException(GetType().Name);
-            bool bSuccess = TransferContext.Cancel() == Error.Success;
-
-            return bSuccess;
-        }
-
-        /// <summary>
-        /// This method has no effect on write endpoints, and always returns true.
-        /// </summary>
-        /// <returns><see langword="true"/></returns>
-        public virtual bool Flush()
-        {
-            return true;
-        }
-
-        /// <summary>
-        /// Cancels pending transfers and clears the halt condition on an enpoint.
-        /// </summary>
-        /// <returns><see langword="true"/> on success.</returns>
-        public virtual bool Reset()
-        {
-            if (IsDisposed) throw new ObjectDisposedException(GetType().Name);
-            Abort();
-            NativeMethods.ClearHalt(this.Device.DeviceHandle, EpNum).ThrowOnError();
-            return true;
-        }
-
         /// <summary>
         /// Synchronous bulk/interrupt transfer function.
         /// </summary>
@@ -218,83 +131,8 @@ namespace LibUsbDotNet.LibUsb
                 case EndpointType.Isochronous:
                 case EndpointType.Control:
                 default:
-                    return UsbTransfer.SyncTransfer(TransferContext, buffer, offset, length, timeout, out transferLength);
+                    return AsyncTransfer.TransferAsync(this.Device.DeviceHandle, this.mEpNum, this.mEndpointType, buffer, offset, length, timeout, out transferLength);
             }
-        }
-
-        /// <summary>
-        /// Creates, fills and submits an asynchronous <see cref="UsbTransfer"/> context.
-        /// </summary>
-        /// <remarks>
-        /// <note type="tip">This is a non-blocking asynchronous transfer function. This function returns immediately after the context is created and submitted.</note>
-        /// </remarks>
-        /// <param name="buffer">A caller-allocated buffer for the data that is transferred.</param>
-        /// <param name="offset">Position in buffer that transferring begins.</param>
-        /// <param name="length">Number of bytes, starting from thr offset parameter to transfer.</param>
-        /// <param name="timeout">Maximum time to wait for the transfer to complete.</param>
-        /// <param name="transferContext">On <see cref="Error.Success"/>, a new transfer context.</param>
-        /// <returns><see cref="Error.Success"/> if the transfer context was created and <see cref="UsbTransfer.Submit"/> succeeded.</returns>
-        /// <seealso cref="SubmitAsyncTransfer(System.IntPtr,int,int,int,out LibUsbDotNet.Main.UsbTransfer)"/>
-        /// <seealso cref="NewAsyncTransfer"/>
-        public virtual Error SubmitAsyncTransfer(object buffer, int offset, int length, int timeout, out UsbTransfer transferContext)
-        {
-            transferContext = CreateTransferContext();
-            transferContext.Fill(buffer, offset, length, timeout);
-
-            Error ec = transferContext.Submit();
-            if (ec != Error.Success)
-            {
-                transferContext.Dispose();
-                transferContext = null;
-                // UsbError.Error(ec, 0, "SubmitAsyncTransfer Failed", this);
-            }
-
-            return ec;
-        }
-
-        /// <summary>
-        /// Creates, fills and submits an asynchronous <see cref="UsbTransfer"/> context.
-        /// </summary>
-        /// <remarks>
-        /// <note type="tip">This is a non-blocking asynchronous transfer function. This function returns immediately after the context is created and submitted.</note>
-        /// </remarks>
-        /// <param name="buffer">A caller-allocated buffer for the data that is transferred.</param>
-        /// <param name="offset">Position in buffer that transferring begins.</param>
-        /// <param name="length">Number of bytes, starting from thr offset parameter to transfer.</param>
-        /// <param name="timeout">Maximum time to wait for the transfer to complete.</param>
-        /// <param name="transferContext">On <see cref="Error.Success"/>, a new transfer context.</param>
-        /// <returns><see cref="Error.Success"/> if the transfer context was created and <see cref="UsbTransfer.Submit"/> succeeded.</returns>
-        /// <seealso cref="SubmitAsyncTransfer(object,int,int,int,out LibUsbDotNet.Main.UsbTransfer)"/>
-        /// <seealso cref="NewAsyncTransfer"/>
-        public virtual Error SubmitAsyncTransfer(IntPtr buffer, int offset, int length, int timeout, out UsbTransfer transferContext)
-        {
-            transferContext = CreateTransferContext();
-            transferContext.Fill(buffer, offset, length, timeout);
-
-            Error ec = transferContext.Submit();
-            if (ec != Error.Success)
-            {
-                transferContext.Dispose();
-                transferContext = null;
-                // UsbError.Error(ec, 0, "SubmitAsyncTransfer Failed", this);
-            }
-
-            return ec;
-        }
-        /// <summary>
-        /// Creates a <see cref="UsbTransfer"/> context for asynchronous transfers.
-        /// </summary>
-        /// <remarks>
-        /// <para> This method returns a new, empty transfer context.  Unlike <see cref="SubmitAsyncTransfer(object,int,int,int,out LibUsbDotNet.Main.UsbTransfer)">SubmitAsyncTransfer</see>, this context is <c>not</c> filled and submitted.</para>
-        /// <note type="tip">This is a non-blocking asynchronous transfer function. This function returns immediately after the context created.</note>
-        /// </remarks>
-        /// <returns>A new <see cref="UsbTransfer"/> context.</returns>
-        /// <seealso cref="SubmitAsyncTransfer(System.IntPtr,int,int,int,out LibUsbDotNet.Main.UsbTransfer)"/>
-        /// <seealso cref="SubmitAsyncTransfer(object,int,int,int,out LibUsbDotNet.Main.UsbTransfer)"/>
-        public UsbTransfer NewAsyncTransfer()
-        {
-            UsbTransfer transfer = CreateTransferContext();
-            return transfer;
         }
 
         /// <summary>
@@ -379,27 +217,6 @@ namespace LibUsbDotNet.LibUsb
             Error eReturn = Transfer(pinned.Handle, offset, length, timeout, out transferLength);
             pinned.Dispose();
             return eReturn;
-        }
-
-        private void DisposeAndRemoveFromList()
-        {
-            if (!mIsDisposed)
-            {
-                UsbEndpointReader epReader = this as UsbEndpointReader;
-                Abort();
-                mUsbDevice.ActiveEndpoints.RemoveFromList(this);
-            }
-            mIsDisposed = true;
-        }
-
-        protected virtual int ReadPipe(IntPtr pBuffer, int bufferLength, out int lengthTransferred, int isoPacketSize, IntPtr pOverlapped)
-        {
-            throw new NotSupportedException();
-        }
-
-        protected virtual int WritePipe(IntPtr pBuffer, int bufferLength, out int lengthTransferred, int isoPacketSize, IntPtr pOverlapped)
-        {
-            throw new NotSupportedException();
         }
 
         #region Nested type: TransferDelegate

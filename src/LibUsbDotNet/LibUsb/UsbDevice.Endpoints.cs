@@ -26,11 +26,6 @@ namespace LibUsbDotNet.LibUsb
     // Implements functionality for the UsbDevice class related to endpoints.
     public partial class UsbDevice
     {
-        protected readonly UsbEndpointList mActiveEndpoints = new UsbEndpointList();
-
-        /// <inheritdoc/>
-        public UsbEndpointList ActiveEndpoints => this.mActiveEndpoints;
-
         /// <summary>
         /// Opens a <see cref="EndpointType.Bulk"/> endpoint for reading
         /// </summary>
@@ -61,14 +56,9 @@ namespace LibUsbDotNet.LibUsb
         /// <returns>A <see cref="UsbEndpointReader"/> class ready for reading. If the specified endpoint is already been opened, the original <see cref="UsbEndpointReader"/> class is returned.</returns>
         public UsbEndpointReader OpenEndpointReader(ReadEndpointID readEndpointID, int readBufferSize, EndpointType endpointType)
         {
-            foreach (UsbEndpointBase activeEndpoint in mActiveEndpoints)
-                if (activeEndpoint.EpNum == (byte)readEndpointID)
-                    return (UsbEndpointReader)activeEndpoint;
-
             byte altIntefaceID = mClaimedInterfaces.Count == 0 ? UsbAltInterfaceSettings[0] : UsbAltInterfaceSettings[mClaimedInterfaces[mClaimedInterfaces.Count - 1]];
 
-            UsbEndpointReader epNew = new UsbEndpointReader(this, readBufferSize, altIntefaceID, readEndpointID, endpointType);
-            return (UsbEndpointReader)ActiveEndpoints.Add(epNew);
+            return new UsbEndpointReader(this, readBufferSize, altIntefaceID, readEndpointID, endpointType);
         }
 
         /// <summary>
@@ -89,14 +79,9 @@ namespace LibUsbDotNet.LibUsb
         /// <returns>A <see cref="UsbEndpointWriter"/> class ready for writing. If the specified endpoint is already been opened, the original <see cref="UsbEndpointWriter"/> class is returned.</returns>
         public UsbEndpointWriter OpenEndpointWriter(WriteEndpointID writeEndpointID, EndpointType endpointType)
         {
-            foreach (UsbEndpointBase activeEndpoint in ActiveEndpoints)
-                if (activeEndpoint.EpNum == (byte)writeEndpointID)
-                    return (UsbEndpointWriter)activeEndpoint;
-
             byte altIntefaceID = mClaimedInterfaces.Count == 0 ? UsbAltInterfaceSettings[0] : UsbAltInterfaceSettings[mClaimedInterfaces[mClaimedInterfaces.Count - 1]];
 
-            UsbEndpointWriter epNew = new UsbEndpointWriter(this, altIntefaceID, writeEndpointID, endpointType);
-            return (UsbEndpointWriter)mActiveEndpoints.Add(epNew);
+            return new UsbEndpointWriter(this, altIntefaceID, writeEndpointID, endpointType);
         }
     }
 }
