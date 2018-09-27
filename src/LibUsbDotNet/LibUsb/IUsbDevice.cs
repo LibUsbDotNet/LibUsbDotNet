@@ -1,24 +1,24 @@
 // Copyright © 2006-2010 Travis Robinson. All rights reserved.
-// 
+//
 // website: http://sourceforge.net/projects/libusbdotnet
 // e-mail:  libusbdotnet@gmail.com
-// 
+//
 // This program is free software; you can redistribute it and/or modify it
 // under the terms of the GNU General Public License as published by the
-// Free Software Foundation; either version 2 of the License, or 
+// Free Software Foundation; either version 2 of the License, or
 // (at your option) any later version.
-// 
-// This program is distributed in the hope that it will be useful, but 
+//
+// This program is distributed in the hope that it will be useful, but
 // WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY
 // or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General Public License
 // for more details.
-// 
+//
 // You should have received a copy of the GNU General Public License along
 // with this program; if not, write to the Free Software Foundation, Inc.,
-// 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA. or 
+// 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA. or
 // visit www.gnu.org.
-// 
-// 
+//
+//
 
 using LibUsbDotNet.Info;
 using LibUsbDotNet.Main;
@@ -28,7 +28,7 @@ using System.Collections.ObjectModel;
 namespace LibUsbDotNet.LibUsb
 {
     /// <summary>
-    /// The <see cref="IUsbDevice"/> interface contains members needed to configure a USB device for use. 
+    /// The <see cref="IUsbDevice"/> interface contains members needed to configure a USB device for use.
     /// </summary>
     /// <example>
     /// This example uses the <see cref="IUsbDevice"/> interface to select the desired configuration and interface
@@ -90,7 +90,7 @@ namespace LibUsbDotNet.LibUsb
         /// device. Typically there aren't many - often only one. The
         /// language IDs are 16 bit numbers, and they start at the third byte
         /// in the descriptor. See USB 2.0 specification, section 9.6.7, for
-        /// more information on this. 
+        /// more information on this.
         /// </summary>
         /// <returns>A collection of LCIDs that the current <see cref="UsbDevice"/> supports.</returns>
         bool GetLangIDs(out short[] langIDs);
@@ -163,7 +163,7 @@ namespace LibUsbDotNet.LibUsb
         UsbEndpointWriter OpenEndpointWriter(WriteEndpointID writeEndpointID, EndpointType endpointType);
 
         /// <summary>
-        /// Gets the USB devices active configuration value. 
+        /// Gets the USB devices active configuration value.
         /// </summary>
         /// <returs>
         /// The active configuration value. A zero value means the device is not configured and a non-zero value indicates the device is configured.
@@ -171,7 +171,7 @@ namespace LibUsbDotNet.LibUsb
         int Configuration { get; }
 
         /// <summary>
-        /// Sets the USB devices active configuration value. 
+        /// Sets the USB devices active configuration value.
         /// </summary>
         /// <param name="config">The active configuration value. A zero value means the device is not configured and a non-zero value indicates the device is configured.</param>
         /// <remarks>

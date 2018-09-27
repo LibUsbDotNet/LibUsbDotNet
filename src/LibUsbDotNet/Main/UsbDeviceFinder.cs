@@ -1,24 +1,24 @@
 // Copyright © 2006-2010 Travis Robinson. All rights reserved.
-// 
+//
 // website: http://sourceforge.net/projects/libusbdotnet
 // e-mail:  libusbdotnet@gmail.com
-// 
+//
 // This program is free software; you can redistribute it and/or modify it
 // under the terms of the GNU General Public License as published by the
-// Free Software Foundation; either version 2 of the License, or 
+// Free Software Foundation; either version 2 of the License, or
 // (at your option) any later version.
-// 
-// This program is distributed in the hope that it will be useful, but 
+//
+// This program is distributed in the hope that it will be useful, but
 // WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY
 // or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General Public License
 // for more details.
-// 
+//
 // You should have received a copy of the GNU General Public License along
 // with this program; if not, write to the Free Software Foundation, Inc.,
-// 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA. or 
+// 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA. or
 // visit www.gnu.org.
-// 
-// 
+//
+//
 using LibUsbDotNet.LibUsb;
 using System;
 using System.Runtime.Serialization;
@@ -26,23 +26,23 @@ using System.Runtime.Serialization;
 namespace LibUsbDotNet.Main
 {
     /// <summary>
-    /// Finds and identifies usb devices. Used for easily locating  
+    /// Finds and identifies usb devices. Used for easily locating
     /// </summary>
     /// <remarks>
     /// <list type="bullet">
     /// <item>
-    /// Instances of this class can optionally be passed directly into 
-    /// <see cref="UsbDevice.OpenUsbDevice(LibUsbDotNet.Main.UsbDeviceFinder)"/> 
+    /// Instances of this class can optionally be passed directly into
+    /// <see cref="UsbDevice.OpenUsbDevice(LibUsbDotNet.Main.UsbDeviceFinder)"/>
     /// to quickly find and open a specific usb device in one step.
     /// </item>
     /// <item>
-    /// Pass instances of this class into the 
-    /// <see cref="UsbRegDeviceList.Find(UsbDeviceFinder)"/>, 
-    /// <see cref="UsbRegDeviceList.FindAll(UsbDeviceFinder)"/>,  
-    /// or <see cref="UsbRegDeviceList.FindLast(UsbDeviceFinder)"/> 
-    /// functions of a  <see cref="UsbRegDeviceList"/> 
+    /// Pass instances of this class into the
+    /// <see cref="UsbRegDeviceList.Find(UsbDeviceFinder)"/>,
+    /// <see cref="UsbRegDeviceList.FindAll(UsbDeviceFinder)"/>,
+    /// or <see cref="UsbRegDeviceList.FindLast(UsbDeviceFinder)"/>
+    /// functions of a  <see cref="UsbRegDeviceList"/>
     /// instance to find connected usb devices without opening devices or interrogating the bus.
-    /// After locating the required <see cref="UsbRegistry"/> instance, call the 
+    /// After locating the required <see cref="UsbRegistry"/> instance, call the
     /// <see cref="UsbRegistry.Open"/> method to start using the <see cref="UsbDevice"/> instance.
     /// </item>
     /// </list>
@@ -129,14 +129,16 @@ namespace LibUsbDotNet.Main
         }
 
         /// <summary>
-        /// Use a serialization stream to fill the <see cref="UsbDeviceFinder"/> class. 
+        /// Use a serialization stream to fill the <see cref="UsbDeviceFinder"/> class.
         /// </summary>
         /// <param name="info"></param>
         /// <param name="context"></param>
         protected UsbDeviceFinder(SerializationInfo info, StreamingContext context)
         {
             if (info == null)
+            {
                 throw new ArgumentNullException("info");
+            }
 
             this.Vid = (int)info.GetValue("Vid", typeof(int));
             this.Pid = (int)info.GetValue("Pid", typeof(int));
@@ -146,12 +148,14 @@ namespace LibUsbDotNet.Main
         }
 
         /// <summary>
-        /// 
+        ///
         /// </summary>
-        protected UsbDeviceFinder() { }
+        protected UsbDeviceFinder()
+        {
+        }
 
         /// <summary>
-        /// The device interface guid string to find, or <see cref="String.Empty"/> to ignore.
+        /// The device interface guid string to find, or <see cref="string.Empty"/> to ignore.
         /// </summary>
         public Guid? DeviceInterfaceGuid
         {
@@ -216,7 +220,9 @@ namespace LibUsbDotNet.Main
         public void GetObjectData(SerializationInfo info, StreamingContext context)
         {
             if (info == null)
+            {
                 throw new ArgumentNullException("info");
+            }
 
             info.AddValue("Vid", this.Vid);
             info.AddValue("Pid", this.Pid);
@@ -260,7 +266,7 @@ namespace LibUsbDotNet.Main
 
                 return true;
             }
-            catch (MonoUsbException ex) when (ex.ErrorCode == Error.NotFound)
+            catch (LibUsb.UsbException ex) when (ex.ErrorCode == Error.NotFound)
             {
                 // The device has probably disconnected while we were inspecting it. Continue.
                 return false;

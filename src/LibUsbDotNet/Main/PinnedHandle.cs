@@ -1,30 +1,29 @@
 ﻿// Copyright © 2006-2010 Travis Robinson. All rights reserved.
-// 
+//
 // website: http://sourceforge.net/projects/libusbdotnet
 // e-mail:  libusbdotnet@gmail.com
-// 
+//
 // This program is free software; you can redistribute it and/or modify it
 // under the terms of the GNU General Public License as published by the
-// Free Software Foundation; either version 2 of the License, or 
+// Free Software Foundation; either version 2 of the License, or
 // (at your option) any later version.
-// 
-// This program is distributed in the hope that it will be useful, but 
+//
+// This program is distributed in the hope that it will be useful, but
 // WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY
 // or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General Public License
 // for more details.
-// 
+//
 // You should have received a copy of the GNU General Public License along
 // with this program; if not, write to the Free Software Foundation, Inc.,
-// 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA. or 
+// 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA. or
 // visit www.gnu.org.
-// 
-// 
+//
+//
 using System;
 using System.Runtime.InteropServices;
 
 namespace LibUsbDotNet.Main
 {
-
     /// <summary>
     /// Used for allocating a <see cref="GCHandle"/> to access the underlying pointer of an object.
     /// </summary>
@@ -42,12 +41,11 @@ namespace LibUsbDotNet.Main
         // Track whether Dispose has been called.
         private bool disposed;
 
-
         /// <summary>
         /// Creates a pinned object.
         /// </summary>
         /// <param name="objectToPin">
-        /// The object can be any blittable class, or array.  If a <see cref="GCHandle"/> is passed it will be used "as-is" and no pinning will take place. 
+        /// The object can be any blittable class, or array.  If a <see cref="GCHandle"/> is passed it will be used "as-is" and no pinning will take place.
         /// </param>
         public PinnedHandle(object objectToPin)
         {
@@ -57,22 +55,22 @@ namespace LibUsbDotNet.Main
                 {
                     // This object is already a GCHandle, just use its AddrOfPinnedObject()
                     // This class will not free this GCHandle when dispposing.
-                    mGCHandle = (GCHandle)objectToPin;
-                    handle = mGCHandle.AddrOfPinnedObject();
+                    this.mGCHandle = (GCHandle)objectToPin;
+                    this.handle = this.mGCHandle.AddrOfPinnedObject();
                 }
                 else if (objectToPin is IntPtr)
                 {
                     // This object is an IntPtr, the user is manging this on his own.
-                    handle = (IntPtr)objectToPin;
+                    this.handle = (IntPtr)objectToPin;
                 }
                 else
                 {
                     // This is a blittable class or structure, or an array fo blittable class or structures.
-                    mGCHandle = GCHandle.Alloc(objectToPin, GCHandleType.Pinned);
-                    handle = mGCHandle.AddrOfPinnedObject();
+                    this.mGCHandle = GCHandle.Alloc(objectToPin, GCHandleType.Pinned);
+                    this.handle = this.mGCHandle.AddrOfPinnedObject();
 
                     // This class will free the GcHandle when its disposed.
-                    isGCHandleOwner = true;
+                    this.isGCHandleOwner = true;
                 }
             }
         }
@@ -82,7 +80,7 @@ namespace LibUsbDotNet.Main
         /// </summary>
         public IntPtr Handle
         {
-            get { return handle; }
+            get { return this.handle; }
         }
 
         #region IDisposable Members
@@ -93,7 +91,7 @@ namespace LibUsbDotNet.Main
         /// <filterpriority>2</filterpriority>
         public void Dispose()
         {
-            Dispose(true);
+            this.Dispose(true);
             // This object will be cleaned up by the Dispose method.
             // Therefore, you should call GC.SupressFinalize to
             // take this object off the finalization queue
@@ -125,16 +123,15 @@ namespace LibUsbDotNet.Main
                 // unmanaged resources here.
                 // If disposing is false,
                 // only the following code is executed.
-                if (isGCHandleOwner && handle != IntPtr.Zero)
+                if (this.isGCHandleOwner && this.handle != IntPtr.Zero)
                 {
-                    isGCHandleOwner = false;
-                    handle = IntPtr.Zero;
-                    mGCHandle.Free();
+                    this.isGCHandleOwner = false;
+                    this.handle = IntPtr.Zero;
+                    this.mGCHandle.Free();
                 }
 
-
                 // disposing has been done.
-                disposed = true;
+                this.disposed = true;
 
             }
         }
@@ -148,7 +145,7 @@ namespace LibUsbDotNet.Main
             // Do not re-create Dispose clean-up code here.
             // Calling Dispose(false) is optimal in terms of
             // readability and maintainability.
-            Dispose(false);
+            this.Dispose(false);
         }
     }
 }

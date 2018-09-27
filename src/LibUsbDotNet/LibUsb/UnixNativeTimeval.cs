@@ -1,7 +1,28 @@
+// Copyright © 2006-2010 Travis Robinson. All rights reserved.
+//
+// website: http://sourceforge.net/projects/libusbdotnet
+// e-mail:  libusbdotnet@gmail.com
+//
+// This program is free software; you can redistribute it and/or modify it
+// under the terms of the GNU General Public License as published by the
+// Free Software Foundation; either version 2 of the License, or
+// (at your option) any later version.
+//
+// This program is distributed in the hope that it will be useful, but
+// WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY
+// or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General Public License
+// for more details.
+//
+// You should have received a copy of the GNU General Public License along
+// with this program; if not, write to the Free Software Foundation, Inc.,
+// 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA. or
+// visit www.gnu.org.
+//
+//
 using System;
 using System.Runtime.InteropServices;
 
-namespace MonoLibUsb
+namespace LibUsbDotNet.LibUsb
 {
     /// <summary>
     /// Unix mono.net timeval structure.
@@ -25,8 +46,8 @@ namespace MonoLibUsb
         /// </summary>
         public long tv_sec
         {
-            get { return mTvSecInternal.ToInt64(); }
-            set { mTvSecInternal = new IntPtr(value); }
+            get { return this.mTvSecInternal.ToInt64(); }
+            set { this.mTvSecInternal = new IntPtr(value); }
         }
 
         /// <summary>
@@ -34,8 +55,8 @@ namespace MonoLibUsb
         /// </summary>
         public long tv_usec
         {
-            get { return mTvUSecInternal.ToInt64(); }
-            set { mTvUSecInternal = new IntPtr(value); }
+            get { return this.mTvUSecInternal.ToInt64(); }
+            set { this.mTvUSecInternal = new IntPtr(value); }
         }
 
         /// <summary>
@@ -45,8 +66,8 @@ namespace MonoLibUsb
         /// <param name="tvUsec">milliseconds</param>
         public UnixNativeTimeval(long tvSec, long tvUsec)
         {
-            mTvSecInternal = new IntPtr(tvSec);
-            mTvUSecInternal = new IntPtr(tvUsec);
+            this.mTvSecInternal = new IntPtr(tvSec);
+            this.mTvUSecInternal = new IntPtr(tvUsec);
         }
     }
 }

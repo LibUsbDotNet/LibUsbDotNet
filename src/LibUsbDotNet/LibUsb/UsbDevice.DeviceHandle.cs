@@ -1,24 +1,24 @@
 ﻿// Copyright © 2006-2010 Travis Robinson. All rights reserved.
-// 
+//
 // website: http://sourceforge.net/projects/libusbdotnet
 // e-mail:  libusbdotnet@gmail.com
-// 
+//
 // This program is free software; you can redistribute it and/or modify it
 // under the terms of the GNU General Public License as published by the
-// Free Software Foundation; either version 2 of the License, or 
+// Free Software Foundation; either version 2 of the License, or
 // (at your option) any later version.
-// 
-// This program is distributed in the hope that it will be useful, but 
+//
+// This program is distributed in the hope that it will be useful, but
 // WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY
 // or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General Public License
 // for more details.
-// 
+//
 // You should have received a copy of the GNU General Public License along
 // with this program; if not, write to the Free Software Foundation, Inc.,
-// 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA. or 
+// 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA. or
 // visit www.gnu.org.
-// 
-// 
+//
+//
 using LibUsbDotNet.Descriptors;
 using LibUsbDotNet.Main;
 using System;
@@ -145,20 +145,20 @@ namespace LibUsbDotNet.LibUsb
         /// <summary>
         /// Transmits control data over a default control endpoint.
         /// </summary>
-        /// <param name="setupPacket">An 8-byte setup packet which contains parameters for the control request. 
+        /// <param name="setupPacket">An 8-byte setup packet which contains parameters for the control request.
         /// See section 9.3 USB Device Requests of the Universal Serial Bus Specification Revision 2.0 for more information. </param>
         /// <param name="buffer">Data to be sent/received from the device.</param>
         /// <param name="bufferLength">Length of the buffer param.</param>
         /// <returns>The number of bytes sent or received (depends on the direction of the control transfer).</returns>
         public unsafe int ControlTransfer(UsbSetupPacket setupPacket)
         {
-            return ControlTransfer(setupPacket, null, 0, 0);
+            return this.ControlTransfer(setupPacket, null, 0, 0);
         }
 
         /// <summary>
         /// Transmits control data over a default control endpoint.
         /// </summary>
-        /// <param name="setupPacket">An 8-byte setup packet which contains parameters for the control request. 
+        /// <param name="setupPacket">An 8-byte setup packet which contains parameters for the control request.
         /// See section 9.3 USB Device Requests of the Universal Serial Bus Specification Revision 2.0 for more information. </param>
         /// <param name="buffer">Data to be sent/received from the device.</param>
         /// <param name="bufferLength">Length of the buffer param.</param>
@@ -204,7 +204,7 @@ namespace LibUsbDotNet.LibUsb
             }
             else
             {
-                throw new MonoUsbException((Error)result);
+                throw new UsbException((Error)result);
             }
         }
 
@@ -226,7 +226,7 @@ namespace LibUsbDotNet.LibUsb
 
             if (ret < 0)
             {
-                throw new MonoUsbException((Error)ret);
+                throw new UsbException((Error)ret);
             }
 
             transferLength = ret;
@@ -238,7 +238,7 @@ namespace LibUsbDotNet.LibUsb
         {
             using (PinnedHandle p = new PinnedHandle(buffer))
             {
-                return GetDescriptor(descriptorType, index, langId, p.Handle, bufferLength, out transferLength);
+                return this.GetDescriptor(descriptorType, index, langId, p.Handle, bufferLength, out transferLength);
             }
         }
 
@@ -251,7 +251,7 @@ namespace LibUsbDotNet.LibUsb
             LangStringDescriptor sd = new LangStringDescriptor(UsbDescriptor.Size + (16 * sizeof(short)));
 
             int ret;
-            bool bSuccess = GetDescriptor((byte)DescriptorType.String, 0, 0, sd.Ptr, sd.MaxSize, out ret);
+            bool bSuccess = this.GetDescriptor((byte)DescriptorType.String, 0, 0, sd.Ptr, sd.MaxSize, out ret);
             bSuccess = sd.Get(out langIDs);
             sd.Free();
             return bSuccess;
@@ -266,7 +266,7 @@ namespace LibUsbDotNet.LibUsb
             stringData = null;
             int iTransferLength;
             LangStringDescriptor sd = new LangStringDescriptor(255);
-            bool bSuccess = GetDescriptor((byte)DescriptorType.String, stringIndex, langId, sd.Ptr, sd.MaxSize, out iTransferLength);
+            bool bSuccess = this.GetDescriptor((byte)DescriptorType.String, stringIndex, langId, sd.Ptr, sd.MaxSize, out iTransferLength);
             if (bSuccess && iTransferLength > UsbDescriptor.Size && sd.Length == iTransferLength)
             {
                 bSuccess = sd.Get(out stringData);
@@ -354,7 +354,7 @@ namespace LibUsbDotNet.LibUsb
         {
             if (!this.IsOpen)
             {
-                throw new UsbException(this, "The device has not been opened. You need to call Open() first.");
+                throw new UsbException("The device has not been opened. You need to call Open() first.");
             }
         }
     }

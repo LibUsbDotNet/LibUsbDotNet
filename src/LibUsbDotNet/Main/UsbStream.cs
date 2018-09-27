@@ -1,24 +1,24 @@
 ﻿// Copyright © 2006-2009 Travis Robinson. All rights reserved.
-// 
+//
 // website: http://sourceforge.net/projects/libusbdotnet
 // e-mail:  libusbdotnet@gmail.com
-// 
+//
 // This program is free software; you can redistribute it and/or modify it
 // under the terms of the GNU General Public License as published by the
-// Free Software Foundation; either version 2 of the License, or 
+// Free Software Foundation; either version 2 of the License, or
 // (at your option) any later version.
-// 
-// This program is distributed in the hope that it will be useful, but 
+//
+// This program is distributed in the hope that it will be useful, but
 // WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY
 // or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General Public License
 // for more details.
-// 
+//
 // You should have received a copy of the GNU General Public License along
 // with this program; if not, write to the Free Software Foundation, Inc.,
-// 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA. or 
+// 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA. or
 // visit www.gnu.org.
-// 
-// 
+//
+//
 using LibUsbDotNet.LibUsb;
 using System;
 using System.IO;
@@ -32,7 +32,9 @@ namespace LibUsbDotNet.Main
 {
     public class IOCancelledException : IOException
     {
-        public IOCancelledException(string message) : base(message) { }
+        public IOCancelledException(string message) : base(message)
+        {
+        }
     }
 
     public class UsbStreamAsyncTransfer : IAsyncResult
@@ -57,40 +59,40 @@ namespace LibUsbDotNet.Main
                                       object state,
                                       int timeout)
         {
-            mUsbEndpoint = usbEndpoint;
-            mOffset = offset;
-            mCount = count;
-            mState = state;
-            mTimeout = timeout;
-            mCallback = callback;
-            mGCBuffer = GCHandle.Alloc(buffer, GCHandleType.Pinned);
+            this.mUsbEndpoint = usbEndpoint;
+            this.mOffset = offset;
+            this.mCount = count;
+            this.mState = state;
+            this.mTimeout = timeout;
+            this.mCallback = callback;
+            this.mGCBuffer = GCHandle.Alloc(buffer, GCHandleType.Pinned);
         }
 
         public Error Result
         {
-            get { return mResult; }
+            get { return this.mResult; }
         }
 
         public int TransferredLength
         {
-            get { return mTrasferredLength; }
+            get { return this.mTrasferredLength; }
         }
 
 #region IAsyncResult Members
 
         public bool IsCompleted
         {
-            get { return mIsComplete; }
+            get { return this.mIsComplete; }
         }
 
         public WaitHandle AsyncWaitHandle
         {
-            get { return mCompleteEvent; }
+            get { return this.mCompleteEvent; }
         }
 
         public object AsyncState
         {
-            get { return mState; }
+            get { return this.mState; }
         }
 
         public bool CompletedSynchronously
@@ -102,12 +104,16 @@ namespace LibUsbDotNet.Main
 
         public Error SyncTransfer()
         {
-            mResult = mUsbEndpoint.Transfer(mGCBuffer.AddrOfPinnedObject(), mOffset, mCount, mTimeout, out mTrasferredLength);
-            mGCBuffer.Free();
-            mIsComplete = true;
-            if (mCallback != null) mCallback(this as IAsyncResult);
-            mCompleteEvent.Set();
-            return mResult;
+            this.mResult = this.mUsbEndpoint.Transfer(this.mGCBuffer.AddrOfPinnedObject(), this.mOffset, this.mCount, this.mTimeout, out this.mTrasferredLength);
+            this.mGCBuffer.Free();
+            this.mIsComplete = true;
+            if (this.mCallback != null)
+            {
+                this.mCallback(this as IAsyncResult);
+            }
+
+            this.mCompleteEvent.Set();
+            return this.mResult;
         }
     }
 
@@ -119,7 +125,10 @@ namespace LibUsbDotNet.Main
         private Thread mWaitThread;
 #endif
 
-        public UsbStream(UsbEndpointBase usbEndpoint) { mUsbEndpoint = usbEndpoint; }
+        public UsbStream(UsbEndpointBase usbEndpoint)
+        {
+            this.mUsbEndpoint = usbEndpoint;
+        }
 
 #region NOT SUPPORTED
 
@@ -134,10 +143,15 @@ namespace LibUsbDotNet.Main
             set { throw new NotSupportedException(); }
         }
 
+        public override long Seek(long offset, SeekOrigin origin)
+        {
+            throw new NotSupportedException();
+        }
 
-        public override long Seek(long offset, SeekOrigin origin) { throw new NotSupportedException(); }
-
-        public override void SetLength(long value) { throw new NotSupportedException(); }
+        public override void SetLength(long value)
+        {
+            throw new NotSupportedException();
+        }
 
 #endregion
 
@@ -146,33 +160,40 @@ namespace LibUsbDotNet.Main
 #if !NETCOREAPP && !NETSTANDARD
         public override IAsyncResult BeginRead(byte[] buffer, int offset, int count, AsyncCallback callback, object state)
         {
-            UsbStreamAsyncTransfer asyncTransfer = new UsbStreamAsyncTransfer(mUsbEndpoint, buffer, offset, count, callback, state, ReadTimeout);
-            WaitThread.Start(asyncTransfer);
+            UsbStreamAsyncTransfer asyncTransfer = new UsbStreamAsyncTransfer(this.mUsbEndpoint, buffer, offset, count, callback, state, this.ReadTimeout);
+            this.WaitThread.Start(asyncTransfer);
             return asyncTransfer;
         }
+
         private Thread WaitThread
         {
             get
             {
-                if (ReferenceEquals(mWaitThread,null))
-                    mWaitThread=new Thread(AsyncTransferFn);
-                
-                while (mWaitThread.IsAlive)Application.DoEvents();
-                
-                return mWaitThread;
+                if (ReferenceEquals(this.mWaitThread, null))
+                {
+                    this.mWaitThread = new Thread(AsyncTransferFn);
+                }
+
+                while (this.mWaitThread.IsAlive)
+                {
+                    Application.DoEvents();
+                }
+
+                return this.mWaitThread;
             }
         }
+
         public override IAsyncResult BeginWrite(byte[] buffer, int offset, int count, AsyncCallback callback, object state)
         {
-            UsbStreamAsyncTransfer asyncTransfer = new UsbStreamAsyncTransfer(mUsbEndpoint, buffer, offset, count, callback, state, WriteTimeout);
-            WaitThread.Start(asyncTransfer);
+            UsbStreamAsyncTransfer asyncTransfer = new UsbStreamAsyncTransfer(this.mUsbEndpoint, buffer, offset, count, callback, state, this.WriteTimeout);
+            this.WaitThread.Start(asyncTransfer);
             return asyncTransfer;
         }
 #endif
 
         public override bool CanRead
         {
-            get { return (mUsbEndpoint.EpNum & 0x80) == 0x80; }
+            get { return (this.mUsbEndpoint.EpNum & 0x80) == 0x80; }
         }
 
         public override bool CanSeek
@@ -187,97 +208,144 @@ namespace LibUsbDotNet.Main
 
         public override bool CanWrite
         {
-            get { return (mUsbEndpoint.EpNum & 0x80) == 0; }
+            get { return (this.mUsbEndpoint.EpNum & 0x80) == 0; }
         }
 
 #if !NETCOREAPP && !NETSTANDARD
         public override int EndRead(IAsyncResult asyncResult)
         {
-            UsbStreamAsyncTransfer asyncTransfer = (UsbStreamAsyncTransfer) asyncResult;
+            UsbStreamAsyncTransfer asyncTransfer = (UsbStreamAsyncTransfer)asyncResult;
             asyncTransfer.mCompleteEvent.WaitOne();
 
-            if (asyncTransfer.Result == Error.Success) return asyncTransfer.TransferredLength;
+            if (asyncTransfer.Result == Error.Success)
+            {
+                return asyncTransfer.TransferredLength;
+            }
 
             if (asyncTransfer.Result == Error.Timeout)
-                throw new TimeoutException(String.Format("{0}:Endpoint 0x{1:X2} IO timed out.", asyncTransfer.Result, mUsbEndpoint.EpNum));
-            if (asyncTransfer.Result == Error.Interrupted)
-                throw new IOCancelledException(String.Format("{0}:Endpoint 0x{1:X2} IO was cancelled.", asyncTransfer.Result, mUsbEndpoint.EpNum));
+            {
+                throw new TimeoutException(string.Format("{0}:Endpoint 0x{1:X2} IO timed out.", asyncTransfer.Result, this.mUsbEndpoint.EpNum));
+            }
 
-            throw new IOException(string.Format("{0}:Failed reading from endpoint:{1}", asyncTransfer.Result, mUsbEndpoint.EpNum));
+            if (asyncTransfer.Result == Error.Interrupted)
+            {
+                throw new IOCancelledException(string.Format("{0}:Endpoint 0x{1:X2} IO was cancelled.", asyncTransfer.Result, this.mUsbEndpoint.EpNum));
+            }
+
+            throw new IOException(string.Format("{0}:Failed reading from endpoint:{1}", asyncTransfer.Result, this.mUsbEndpoint.EpNum));
         }
 
         public override void EndWrite(IAsyncResult asyncResult)
         {
-            UsbStreamAsyncTransfer asyncTransfer = (UsbStreamAsyncTransfer) asyncResult;
+            UsbStreamAsyncTransfer asyncTransfer = (UsbStreamAsyncTransfer)asyncResult;
             asyncTransfer.mCompleteEvent.WaitOne();
 
-            if (asyncTransfer.Result == Error.Success && asyncTransfer.mCount == asyncTransfer.TransferredLength) return;
+            if (asyncTransfer.Result == Error.Success && asyncTransfer.mCount == asyncTransfer.TransferredLength)
+            {
+                return;
+            }
 
             if (asyncTransfer.Result == Error.Timeout)
-                throw new TimeoutException(String.Format("{0}:Endpoint 0x{1:X2} IO timed out.", asyncTransfer.Result, mUsbEndpoint.EpNum));
+            {
+                throw new TimeoutException(string.Format("{0}:Endpoint 0x{1:X2} IO timed out.", asyncTransfer.Result, this.mUsbEndpoint.EpNum));
+            }
+
             if (asyncTransfer.Result == Error.Interrupted)
-                throw new IOCancelledException(String.Format("{0}:Endpoint 0x{1:X2} IO was cancelled.", asyncTransfer.Result, mUsbEndpoint.EpNum));
+            {
+                throw new IOCancelledException(string.Format("{0}:Endpoint 0x{1:X2} IO was cancelled.", asyncTransfer.Result, this.mUsbEndpoint.EpNum));
+            }
+
             if (asyncTransfer.mCount != asyncTransfer.TransferredLength)
-                throw new IOException(String.Format("{0}:Failed writing {1} byte(s) to endpoint 0x{2:X2}.",
+            {
+                throw new IOException(string.Format("{0}:Failed writing {1} byte(s) to endpoint 0x{2:X2}.",
                                                     asyncTransfer.Result,
                                                     asyncTransfer.mCount - asyncTransfer.TransferredLength,
-                                                    mUsbEndpoint.EpNum));
+                                                    this.mUsbEndpoint.EpNum));
+            }
 
-            throw new IOException(String.Format("{0}:Failed writing to endpoint 0x{1:X2}", asyncTransfer.Result, mUsbEndpoint.EpNum));
+            throw new IOException(string.Format("{0}:Failed writing to endpoint 0x{1:X2}", asyncTransfer.Result, this.mUsbEndpoint.EpNum));
         }
 #endif
 
-        public override void Flush() { return; }
+        public override void Flush()
+        {
+            return;
+        }
 
         public override int Read(byte[] buffer, int offset, int count)
         {
-            if (!CanRead)
-                throw new InvalidOperationException(String.Format("Cannot read from WriteEndpoint {0}.", (WriteEndpointID) mUsbEndpoint.EpNum));
+            if (!this.CanRead)
+            {
+                throw new InvalidOperationException(string.Format("Cannot read from WriteEndpoint {0}.", (WriteEndpointID)this.mUsbEndpoint.EpNum));
+            }
 
             int transferred;
-            Error ec = mUsbEndpoint.Transfer(buffer, offset, count, ReadTimeout, out transferred);
+            Error ec = this.mUsbEndpoint.Transfer(buffer, offset, count, this.ReadTimeout, out transferred);
 
-            if (ec == Error.Success) return transferred;
+            if (ec == Error.Success)
+            {
+                return transferred;
+            }
 
-            if (ec == Error.Timeout) throw new TimeoutException(String.Format("{0}:Endpoint 0x{1:X2} IO timed out.", ec, mUsbEndpoint.EpNum));
+            if (ec == Error.Timeout)
+            {
+                throw new TimeoutException(string.Format("{0}:Endpoint 0x{1:X2} IO timed out.", ec, this.mUsbEndpoint.EpNum));
+            }
+
             if (ec == Error.Interrupted)
-                throw new IOCancelledException(String.Format("{0}:Endpoint 0x{1:X2} IO was cancelled.", ec, mUsbEndpoint.EpNum));
+            {
+                throw new IOCancelledException(string.Format("{0}:Endpoint 0x{1:X2} IO was cancelled.", ec, this.mUsbEndpoint.EpNum));
+            }
 
-            throw new IOException(string.Format("{0}:Failed reading from endpoint:{1}", ec, mUsbEndpoint.EpNum));
+            throw new IOException(string.Format("{0}:Failed reading from endpoint:{1}", ec, this.mUsbEndpoint.EpNum));
         }
 
         public override int ReadTimeout
         {
-            get { return mTimeout; }
-            set { mTimeout = value; }
+            get { return this.mTimeout; }
+            set { this.mTimeout = value; }
         }
 
         public override void Write(byte[] buffer, int offset, int count)
         {
-            if (!CanWrite)
-                throw new InvalidOperationException(String.Format("Cannot write to ReadEndpoint {0}.", (ReadEndpointID) mUsbEndpoint.EpNum));
+            if (!this.CanWrite)
+            {
+                throw new InvalidOperationException(string.Format("Cannot write to ReadEndpoint {0}.", (ReadEndpointID)this.mUsbEndpoint.EpNum));
+            }
 
             int transferred;
-            Error ec = mUsbEndpoint.Transfer(buffer, offset, count, WriteTimeout, out transferred);
+            Error ec = this.mUsbEndpoint.Transfer(buffer, offset, count, this.WriteTimeout, out transferred);
 
-            if (ec == Error.Success && count == transferred) return;
+            if (ec == Error.Success && count == transferred)
+            {
+                return;
+            }
 
-            if (ec == Error.Timeout) throw new TimeoutException(String.Format("{0}:Endpoint 0x{1:X2} IO timed out.", ec, mUsbEndpoint.EpNum));
+            if (ec == Error.Timeout)
+            {
+                throw new TimeoutException(string.Format("{0}:Endpoint 0x{1:X2} IO timed out.", ec, this.mUsbEndpoint.EpNum));
+            }
+
             if (ec == Error.Interrupted)
-                throw new IOCancelledException(String.Format("{0}:Endpoint 0x{1:X2} IO was cancelled.", ec, mUsbEndpoint.EpNum));
+            {
+                throw new IOCancelledException(string.Format("{0}:Endpoint 0x{1:X2} IO was cancelled.", ec, this.mUsbEndpoint.EpNum));
+            }
+
             if (count != transferred)
-                throw new IOException(String.Format("{0}:Failed writing {1} byte(s) to endpoint 0x{2:X2}.",
+            {
+                throw new IOException(string.Format("{0}:Failed writing {1} byte(s) to endpoint 0x{2:X2}.",
                                                     ec,
                                                     count - transferred,
-                                                    mUsbEndpoint.EpNum));
+                                                    this.mUsbEndpoint.EpNum));
+            }
 
-            throw new IOException(String.Format("{0}:Failed writing to endpoint 0x{1:X2}", ec, mUsbEndpoint.EpNum));
+            throw new IOException(string.Format("{0}:Failed writing to endpoint 0x{1:X2}", ec, this.mUsbEndpoint.EpNum));
         }
 
         public override int WriteTimeout
         {
-            get { return mTimeout; }
-            set { mTimeout = value; }
+            get { return this.mTimeout; }
+            set { this.mTimeout = value; }
         }
 
 #endregion

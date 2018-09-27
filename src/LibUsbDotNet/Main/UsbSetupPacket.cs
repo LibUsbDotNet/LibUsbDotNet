@@ -1,32 +1,32 @@
 // Copyright © 2006-2010 Travis Robinson. All rights reserved.
-// 
+//
 // website: http://sourceforge.net/projects/libusbdotnet
 // e-mail:  libusbdotnet@gmail.com
-// 
+//
 // This program is free software; you can redistribute it and/or modify it
 // under the terms of the GNU General Public License as published by the
-// Free Software Foundation; either version 2 of the License, or 
+// Free Software Foundation; either version 2 of the License, or
 // (at your option) any later version.
-// 
-// This program is distributed in the hope that it will be useful, but 
+//
+// This program is distributed in the hope that it will be useful, but
 // WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY
 // or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General Public License
 // for more details.
-// 
+//
 // You should have received a copy of the GNU General Public License along
 // with this program; if not, write to the Free Software Foundation, Inc.,
-// 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA. or 
+// 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA. or
 // visit www.gnu.org.
-// 
-// 
+//
+//
 using System.Runtime.InteropServices;
 
 namespace LibUsbDotNet.Main
 {
     /// <summary> Transfers data to the main control endpoint (Endpoint 0).
-    /// </summary> 
+    /// </summary>
     /// <remarks> All USB devices respond to requests from the host on the device’s Default Control Pipe. These requests are made using control transfers. The request and the request’s parameters are sent to the device in the Setup packet. The host is responsible for establishing the values passed in the fields. Every Setup packet has eight bytes.
-    /// </remarks> 
+    /// </remarks>
     [StructLayout(LayoutKind.Sequential, Pack = 1)]
     public struct UsbSetupPacket
     {
@@ -102,14 +102,14 @@ namespace LibUsbDotNet.Main
         /// <param name="wlength">See <see cref="UsbSetupPacket.Length"/>.</param>
         public UsbSetupPacket(byte bRequestType, byte bRequest, int wValue, int wIndex, int wlength)
         {
-        	unchecked
-        	{
-	        	RequestType = (byte)(bRequestType & 0xFF);
-	            Request =  (byte)(bRequest & 0xFF);
-	            Value =  (short)(wValue & 0xFFFF);
-	            Index = (short)(wIndex & 0xFFFF);
-	            Length =  (short)(wlength & 0xFFFF);
-        	}
+            unchecked
+            {
+                this.RequestType = (byte)(bRequestType & 0xFF);
+                this.Request = (byte)(bRequest & 0xFF);
+                this.Value = (short)(wValue & 0xFFFF);
+                this.Index = (short)(wIndex & 0xFFFF);
+                this.Length = (short)(wlength & 0xFFFF);
+            }
         }
     }
 }

@@ -1,23 +1,23 @@
 ﻿// Copyright © 2006-2010 Travis Robinson. All rights reserved.
-// 
+//
 // website: http://sourceforge.net/projects/libusbdotnet
 // e-mail:  libusbdotnet@gmail.com
-// 
+//
 // This program is free software; you can redistribute it and/or modify it
 // under the terms of the GNU General Public License as published by the
-// Free Software Foundation; either version 2 of the License, or 
+// Free Software Foundation; either version 2 of the License, or
 // (at your option) any later version.
-// 
-// This program is distributed in the hope that it will be useful, but 
+//
+// This program is distributed in the hope that it will be useful, but
 // WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY
 // or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General Public License
 // for more details.
-// 
+//
 // You should have received a copy of the GNU General Public License along
 // with this program; if not, write to the Free Software Foundation, Inc.,
-// 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA. or 
+// 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA. or
 // visit www.gnu.org.
-// 
+//
 
 using LibUsbDotNet.Main;
 using System.Collections.Generic;
@@ -39,20 +39,20 @@ namespace LibUsbDotNet.LibUsb
         {
             this.EnsureOpen();
 
-            if (mClaimedInterfaces.Contains(interfaceID))
+            if (this.mClaimedInterfaces.Contains(interfaceID))
             {
                 return true;
             }
 
             NativeMethods.ClaimInterface(this.deviceHandle, interfaceID).ThrowOnError();
-            mClaimedInterfaces.Add(interfaceID);
+            this.mClaimedInterfaces.Add(interfaceID);
             return true;
         }
 
         public bool GetAltInterface(out int alternateID)
         {
-            int interfaceID = mClaimedInterfaces.Count == 0 ? 0 : mClaimedInterfaces[mClaimedInterfaces.Count - 1];
-            return GetAltInterface(interfaceID, out alternateID);
+            int interfaceID = this.mClaimedInterfaces.Count == 0 ? 0 : this.mClaimedInterfaces[this.mClaimedInterfaces.Count - 1];
+            return this.GetAltInterface(interfaceID, out alternateID);
         }
 
         /// <summary>
@@ -63,7 +63,7 @@ namespace LibUsbDotNet.LibUsb
         /// <returns>True on success.</returns>
         public bool GetAltInterface(int interfaceID, out int alternateID)
         {
-            alternateID = UsbAltInterfaceSettings[interfaceID & (UsbConstants.MAX_DEVICES - 1)];
+            alternateID = this.UsbAltInterfaceSettings[interfaceID & (UsbConstants.MAX_DEVICES - 1)];
             return true;
         }
 
@@ -85,7 +85,7 @@ namespace LibUsbDotNet.LibUsb
             setupPkt.Index = interfaceID;
             setupPkt.Length = 1;
 
-            uTransferLength = ControlTransfer(setupPkt, buf, 0, buf.Length);
+            uTransferLength = this.ControlTransfer(setupPkt, buf, 0, buf.Length);
             if (uTransferLength == 1)
             {
                 selectedAltInterfaceID = buf[0];
@@ -121,7 +121,7 @@ namespace LibUsbDotNet.LibUsb
             this.EnsureOpen();
 
             NativeMethods.SetInterfaceAltSetting(this.deviceHandle, interfaceID, alternateID).ThrowOnError();
-            UsbAltInterfaceSettings[interfaceID & (UsbConstants.MAX_DEVICES - 1)] = (byte)alternateID;
+            this.UsbAltInterfaceSettings[interfaceID & (UsbConstants.MAX_DEVICES - 1)] = (byte)alternateID;
             return true;
         }
 
@@ -132,8 +132,12 @@ namespace LibUsbDotNet.LibUsb
         /// <returns>True on success.</returns>
         public bool SetAltInterface(int alternateID)
         {
-            if (mClaimedInterfaces.Count == 0) throw new UsbException(this, "You must claim an interface before setting an alternate interface.");
-            return SetAltInterface(mClaimedInterfaces[mClaimedInterfaces.Count - 1], alternateID);
+            if (this.mClaimedInterfaces.Count == 0)
+            {
+                throw new UsbException("You must claim an interface before setting an alternate interface.");
+            }
+
+            return this.SetAltInterface(this.mClaimedInterfaces[this.mClaimedInterfaces.Count - 1], alternateID);
         }
     }
 }

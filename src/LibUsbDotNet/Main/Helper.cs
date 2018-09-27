@@ -1,25 +1,24 @@
 // Copyright © 2006-2010 Travis Robinson. All rights reserved.
-// 
+//
 // website: http://sourceforge.net/projects/libusbdotnet
 // e-mail:  libusbdotnet@gmail.com
-// 
+//
 // This program is free software; you can redistribute it and/or modify it
 // under the terms of the GNU General Public License as published by the
-// Free Software Foundation; either version 2 of the License, or 
+// Free Software Foundation; either version 2 of the License, or
 // (at your option) any later version.
-// 
-// This program is distributed in the hope that it will be useful, but 
+//
+// This program is distributed in the hope that it will be useful, but
 // WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY
 // or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General Public License
 // for more details.
-// 
+//
 // You should have received a copy of the GNU General Public License along
 // with this program; if not, write to the Free Software Foundation, Inc.,
-// 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA. or 
+// 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA. or
 // visit www.gnu.org.
-// 
-// 
-using System.Runtime.InteropServices;
+//
+//
 using System.Text;
 
 namespace LibUsbDotNet.Main
@@ -29,17 +28,6 @@ namespace LibUsbDotNet.Main
     /// </summary>
     public static class Helper
     {
-        /// <summary>
-        /// Swaps low and high bytes on big endian systems.  Has no effect on little endian systems.
-        /// </summary>
-        /// <param name="swapValue">The value to convert.</param>
-        /// <returns>a swapped value an big endian system, the same value on little endian systems</returns>
-        public static short HostEndianToLE16(short swapValue)
-        {
-            HostEndian16BitValue rtn = new HostEndian16BitValue(swapValue);
-            return (short)rtn.U16;
-        }
-
         /// <summary>
         /// Builds a delimited string of names and values.
         /// </summary>
@@ -54,29 +42,11 @@ namespace LibUsbDotNet.Main
             StringBuilder sb = new StringBuilder();
 
             for (int i = 0; i < names.Length; i++)
-                sb.Append(sep0 + names[i] + sep1 + values[i] + sep2);
-
-            return sb.ToString();
-        }
-
-        [StructLayout(LayoutKind.Explicit, Pack = 1)]
-        internal struct HostEndian16BitValue
-        {
-            public HostEndian16BitValue(short x)
             {
-                U16 = 0;
-                B1 = (byte)(x >> 8);
-                B0 = (byte)(x & 0xff);
+                sb.Append(sep0 + names[i] + sep1 + values[i] + sep2);
             }
 
-            [FieldOffset(0)]
-            public readonly ushort U16;
-
-            [FieldOffset(0)]
-            public readonly byte B0;
-
-            [FieldOffset(1)]
-            public readonly byte B1;
+            return sb.ToString();
         }
     }
 }
