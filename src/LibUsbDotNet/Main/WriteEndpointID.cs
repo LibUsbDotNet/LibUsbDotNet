@@ -29,58 +29,72 @@ namespace LibUsbDotNet.Main
         /// Endpoint 1
         /// </summary>
         Ep01 = 0x01,
+
         /// <summary>
         /// Endpoint 2
         /// </summary>
         Ep02 = 0x02,
+
         /// <summary>
         /// Endpoint 3
         /// </summary>
         Ep03 = 0x03,
+
         /// <summary>
         /// Endpoint 4
         /// </summary>
         Ep04 = 0x04,
+
         /// <summary>
         /// Endpoint 5
         /// </summary>
         Ep05 = 0x05,
+
         /// <summary>
         /// Endpoint 6
         /// </summary>
         Ep06 = 0x06,
+
         /// <summary>
         /// Endpoint 7
         /// </summary>
         Ep07 = 0x07,
+
         /// <summary>
         /// Endpoint 8
         /// </summary>
         Ep08 = 0x08,
+
         /// <summary>
         /// Endpoint 9
         /// </summary>
         Ep09 = 0x09,
+
         /// <summary>
         /// Endpoint 10
         /// </summary>
         Ep10 = 0x0A,
+
         /// <summary>
         /// Endpoint 11
         /// </summary>
         Ep11 = 0x0B,
+
         /// <summary>
         /// Endpoint 12
         /// </summary>
         Ep12 = 0x0C,
+
         /// <summary>
         /// Endpoint 13
         /// </summary>
         Ep13 = 0x0D,
+
         /// <summary>
         /// Endpoint 14
         /// </summary>
         Ep14 = 0x0E,
+
         /// <summary>
         /// Endpoint 15
         /// </summary>

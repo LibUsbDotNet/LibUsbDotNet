@@ -32,7 +32,7 @@ namespace LibUsbDotNet.Info
     ///         </p></remarks>
     public abstract class UsbBaseInfo
     {
-        protected byte[] mRawDescriptors
+        protected byte[] RawDescriptors { get; set; }
 #if NET45
             = new byte[] { };
 #else
@@ -44,7 +44,7 @@ namespace LibUsbDotNet.Info
         /// </summary>
         public ReadOnlyCollection<byte> CustomDescriptors
         {
-            get { return new ReadOnlyCollection<byte>(new List<byte>(this.mRawDescriptors)); }
+            get { return new ReadOnlyCollection<byte>(new List<byte>(this.RawDescriptors)); }
         }
     }
 }

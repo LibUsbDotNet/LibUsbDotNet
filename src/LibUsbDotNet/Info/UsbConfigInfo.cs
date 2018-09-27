@@ -41,11 +41,11 @@ namespace LibUsbDotNet.Info
             value.Configuration = device.GetStringDescriptor(descriptor.Configuration, failSilently: true);
             value.ConfigurationValue = descriptor.ConfigurationValue;
 
-            value.mRawDescriptors = new byte[descriptor.ExtraLength];
+            value.RawDescriptors = new byte[descriptor.ExtraLength];
             if (descriptor.ExtraLength > 0)
             {
                 Span<byte> extra = new Span<byte>(descriptor.Extra, descriptor.ExtraLength);
-                extra.CopyTo(value.mRawDescriptors);
+                extra.CopyTo(value.RawDescriptors);
             }
 
             var interfaces = (Interface*)descriptor.Interface;

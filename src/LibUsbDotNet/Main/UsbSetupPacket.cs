@@ -74,26 +74,9 @@ namespace LibUsbDotNet.Main
         /// This field specifies the length of the data transferred during the second phase of the control transfer. The direction of data transfer (host-to-device or device-to-host) is indicated by the Direction bit of the <see cref="RequestType"/> field. If this field is zero, there is no data transfer phase. On an input request, a device must never return more data than is indicated by the wLength value; it may return less. On an output request, wLength will always indicate the exact amount of data to be sent by the host. Device behavior is undefined if the host should send more data than is specified in wLength.
         /// </summary>
         public short Length;
-/*
+
         /// <summary>
-        /// Creates a new instance of a <see cref="UsbSetupPacket"/> and initializes all the fields with the following parameters.
-        /// </summary>
-        /// <param name="requestType">See <see cref="UsbSetupPacket.RequestType"/>.</param>
-        /// <param name="request">See <see cref="UsbSetupPacket.Request"/>.</param>
-        /// <param name="value">See <see cref="UsbSetupPacket.Value"/>.</param>
-        /// <param name="index">See <see cref="UsbSetupPacket.Index"/>.</param>
-        /// <param name="length">See <see cref="UsbSetupPacket.Length"/>.</param>
-        public UsbSetupPacket(byte requestType, byte request, short value, short index, short length)
-        {
-            RequestType = requestType;
-            Request = request;
-            Value = value;
-            Index = index;
-            Length = length;
-        }
-*/
-        /// <summary>
-        /// Creates a new instance of a <see cref="UsbSetupPacket"/> and initializes all the fields with the following parameters.
+        /// Initializes a new instance of the <see cref="UsbSetupPacket"/> struct and initializes all the fields with the following parameters.
         /// </summary>
         /// <param name="bRequestType">See <see cref="UsbSetupPacket.RequestType"/>.</param>
         /// <param name="bRequest">See <see cref="UsbSetupPacket.Request"/>.</param>

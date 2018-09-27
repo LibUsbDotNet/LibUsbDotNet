@@ -182,7 +182,7 @@ namespace LibUsbDotNet.LibUsb
                         (ushort)setupPacket.Index,
                         data,
                         (ushort)length,
-                        UsbConstants.DEFAULT_TIMEOUT);
+                        UsbConstants.DefaultTimeout);
                 }
             }
             else
@@ -195,7 +195,7 @@ namespace LibUsbDotNet.LibUsb
                     (ushort)setupPacket.Index,
                     null,
                     0,
-                    UsbConstants.DEFAULT_TIMEOUT);
+                    UsbConstants.DefaultTimeout);
             }
 
             if (result >= 0)

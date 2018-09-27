@@ -17,8 +17,6 @@
 // with this program; if not, write to the Free Software Foundation, Inc.,
 // 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA. or
 // visit www.gnu.org.
-//
-//
 
 using LibUsbDotNet.Info;
 using LibUsbDotNet.Main;
@@ -37,9 +35,9 @@ namespace LibUsbDotNet.LibUsb
     /// </example>
     public interface IUsbDevice
     {
-        ///<summary>
+        /// <summary>
         /// Gets the available configurations for this <see cref="UsbDevice"/>
-        ///</summary>
+        /// </summary>
         /// <remarks>
         /// The first time this property is accessed it will query the <see cref="UsbDevice"/> for all configurations.  Subsequent request will return a cached copy of all configurations.
         /// </remarks>
@@ -51,7 +49,7 @@ namespace LibUsbDotNet.LibUsb
         UsbDeviceInfo Info { get; }
 
         /// <summary>
-        /// Gets a value indication if the device handle is valid.
+        /// Gets a value indication whether the device handle is valid.
         /// </summary>
         bool IsOpen { get; }
 
@@ -118,9 +116,9 @@ namespace LibUsbDotNet.LibUsb
         /// <returns>True on success.</returns>
         bool GetAltInterface(out int alternateID);
 
-        ///<summary>
+        /// <summary>
         /// Opens/re-opens this USB device instance for communication.
-        ///</summary>
+        /// </summary>
         void Open();
 
         /// <summary>
@@ -184,7 +182,6 @@ namespace LibUsbDotNet.LibUsb
         /// </summary>
         /// <param name="interfaceID">The interface settings number (index) to retrieve the selected alternate interface setting for.</param>
         /// <param name="selectedAltInterfaceID">The alternate interface setting selected for use with the specified interface.</param>
-        /// <returns>True on success.</returns>
         void GetAltInterfaceSetting(byte interfaceID, out byte selectedAltInterfaceID);
 
         /// <summary>

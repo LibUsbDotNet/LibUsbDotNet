@@ -36,11 +36,11 @@ namespace LibUsbDotNet.Info
             value.Attributes = descriptor.Attributes;
             value.EndpointAddress = descriptor.EndpointAddress;
 
-            value.mRawDescriptors = new byte[descriptor.ExtraLength];
+            value.RawDescriptors = new byte[descriptor.ExtraLength];
             if (descriptor.ExtraLength > 0)
             {
                 Span<byte> extra = new Span<byte>(descriptor.Extra, descriptor.ExtraLength);
-                extra.CopyTo(value.mRawDescriptors);
+                extra.CopyTo(value.RawDescriptors);
             }
 
             value.Interval = descriptor.Interval;

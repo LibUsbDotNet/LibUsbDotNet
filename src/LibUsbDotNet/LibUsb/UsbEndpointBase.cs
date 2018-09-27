@@ -30,17 +30,7 @@ namespace LibUsbDotNet.LibUsb
     /// </summary>
     public abstract class UsbEndpointBase
     {
-        /// <summary>
-        /// The maximum transfer payload size for all usb endpoints.
-        /// </summary>
-        /// <remarks>
-        /// Transfers greater than this amount are automatically split into
-        /// multiple transfers.  This applies to all endpoint transfer methods
-        /// (reads and writes). The default is 4megs (4,194,304 bytes)
-        /// </remarks>
-        public static int MaxReadWrite = int.MaxValue;
-
-        internal readonly byte mEpNum;
+        private readonly byte mEpNum;
         private readonly UsbDevice mUsbDevice;
         private readonly byte alternateInterfaceID;
         private UsbEndpointInfo mUsbEndpointInfo;
@@ -75,7 +65,7 @@ namespace LibUsbDotNet.LibUsb
         }
 
         /// <summary>
-        /// Returns the <see cref="EndpointType"/> for this endpoint.
+        /// Gets the <see cref="EndpointType"/> for this endpoint.
         /// </summary>
         public EndpointType Type
         {
@@ -83,7 +73,7 @@ namespace LibUsbDotNet.LibUsb
         }
 
         /// <summary>
-        /// Returns the <see cref="UsbEndpointInfo"/> descriptor for this endpoint.
+        /// Gets the <see cref="UsbEndpointInfo"/> descriptor for this endpoint.
         /// </summary>
         public UsbEndpointInfo EndpointInfo
         {
@@ -156,18 +146,18 @@ namespace LibUsbDotNet.LibUsb
                 {
                     foreach (UsbEndpointInfo endpointInfo in interfaceInfo.Endpoints)
                     {
-                        if ((endpointAddress & UsbConstants.ENDPOINT_NUMBER_MASK) == 0)
+                        if ((endpointAddress & UsbConstants.EndpointNumberMask) == 0)
                         {
                             // find first read/write endpoint
-                            if ((endpointAddress & UsbConstants.ENDPOINT_DIR_MASK) == 0 &&
-                                (endpointInfo.EndpointAddress & UsbConstants.ENDPOINT_DIR_MASK) == 0)
+                            if ((endpointAddress & UsbConstants.EndpointDirectionMask) == 0 &&
+                                (endpointInfo.EndpointAddress & UsbConstants.EndpointDirectionMask) == 0)
                             {
                                 // first write endpoint
                                 found = true;
                             }
 
-                            if ((endpointAddress & UsbConstants.ENDPOINT_DIR_MASK) != 0 &&
-                                (endpointInfo.EndpointAddress & UsbConstants.ENDPOINT_DIR_MASK) != 0)
+                            if ((endpointAddress & UsbConstants.EndpointDirectionMask) != 0 &&
+                                (endpointInfo.EndpointAddress & UsbConstants.EndpointDirectionMask) != 0)
                             {
                                 // first read endpoint
                                 found = true;
