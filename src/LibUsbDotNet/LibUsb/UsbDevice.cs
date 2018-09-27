@@ -45,7 +45,7 @@ namespace LibUsbDotNet.LibUsb
                 throw new ArgumentNullException(nameof(device));
             }
 
-            if(device == Device.Zero || device.IsClosed || device.IsInvalid)
+            if (device == Device.Zero || device.IsClosed || device.IsInvalid)
             {
                 throw new ArgumentOutOfRangeException(nameof(device));
             }

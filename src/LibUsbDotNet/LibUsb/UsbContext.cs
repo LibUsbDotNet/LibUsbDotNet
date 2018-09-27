@@ -53,14 +53,14 @@ namespace LibUsbDotNet.LibUsb
         {
             IntPtr contextHandle = IntPtr.Zero;
             NativeMethods.Init(ref contextHandle).ThrowOnError();
-            context = Context.DangerousCreate(contextHandle);
+            this.context = Context.DangerousCreate(contextHandle);
         }
 
         /// <inheritdoc/>
         public void Dispose()
         {
             // Put cleanup code in Dispose(bool disposing).
-            Dispose(true);
+            this.Dispose(true);
 
             GC.SuppressFinalize(this);
         }
@@ -156,7 +156,7 @@ namespace LibUsbDotNet.LibUsb
         {
             if (this.eventHandlingThread == null)
             {
-                this.eventHandlingThread = new Thread(HandleEvents);
+                this.eventHandlingThread = new Thread(this.HandleEvents);
                 this.shouldHandleEvents = true;
                 this.eventHandlingThread.Start();
             }
@@ -186,7 +186,7 @@ namespace LibUsbDotNet.LibUsb
 
         protected virtual void Dispose(bool disposing)
         {
-            if (!disposed)
+            if (!this.disposed)
             {
                 if (disposing)
                 {
@@ -195,14 +195,14 @@ namespace LibUsbDotNet.LibUsb
 
                 // Free unmanaged resources (unmanaged objects) and override a finalizer below.
                 // Set large fields to null.
-                disposed = true;
+                this.disposed = true;
             }
         }
 
         ~UsbContext()
         {
             // Put cleanup code in Dispose(bool disposing).
-            Dispose(false);
+            this.Dispose(false);
         }
     }
 }

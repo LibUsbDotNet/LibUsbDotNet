@@ -152,7 +152,7 @@ namespace LibUsbDotNet.LibUsb
         /// <returns>The number of bytes sent or received (depends on the direction of the control transfer).</returns>
         public unsafe int ControlTransfer(UsbSetupPacket setupPacket)
         {
-            return ControlTransfer(setupPacket, null, 0, 0);
+            return this.ControlTransfer(setupPacket, null, 0, 0);
         }
 
         /// <summary>
@@ -238,7 +238,7 @@ namespace LibUsbDotNet.LibUsb
         {
             using (PinnedHandle p = new PinnedHandle(buffer))
             {
-                return GetDescriptor(descriptorType, index, langId, p.Handle, bufferLength, out transferLength);
+                return this.GetDescriptor(descriptorType, index, langId, p.Handle, bufferLength, out transferLength);
             }
         }
 
@@ -251,7 +251,7 @@ namespace LibUsbDotNet.LibUsb
             LangStringDescriptor sd = new LangStringDescriptor(UsbDescriptor.Size + (16 * sizeof(short)));
 
             int ret;
-            bool bSuccess = GetDescriptor((byte)DescriptorType.String, 0, 0, sd.Ptr, sd.MaxSize, out ret);
+            bool bSuccess = this.GetDescriptor((byte)DescriptorType.String, 0, 0, sd.Ptr, sd.MaxSize, out ret);
             bSuccess = sd.Get(out langIDs);
             sd.Free();
             return bSuccess;
@@ -266,7 +266,7 @@ namespace LibUsbDotNet.LibUsb
             stringData = null;
             int iTransferLength;
             LangStringDescriptor sd = new LangStringDescriptor(255);
-            bool bSuccess = GetDescriptor((byte)DescriptorType.String, stringIndex, langId, sd.Ptr, sd.MaxSize, out iTransferLength);
+            bool bSuccess = this.GetDescriptor((byte)DescriptorType.String, stringIndex, langId, sd.Ptr, sd.MaxSize, out iTransferLength);
             if (bSuccess && iTransferLength > UsbDescriptor.Size && sd.Length == iTransferLength)
             {
                 bSuccess = sd.Get(out stringData);

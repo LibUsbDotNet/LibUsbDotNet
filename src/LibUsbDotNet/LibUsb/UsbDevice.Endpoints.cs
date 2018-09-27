@@ -33,7 +33,7 @@ namespace LibUsbDotNet.LibUsb
         /// <returns>A <see cref="UsbEndpointReader"/> class ready for reading. If the specified endpoint is already been opened, the original <see cref="UsbEndpointReader"/> class is returned.</returns>
         public UsbEndpointReader OpenEndpointReader(ReadEndpointID readEndpointID)
         {
-            return OpenEndpointReader(readEndpointID, UsbEndpointReader.DefReadBufferSize);
+            return this.OpenEndpointReader(readEndpointID, UsbEndpointReader.DefReadBufferSize);
         }
 
         /// <summary>
@@ -44,7 +44,7 @@ namespace LibUsbDotNet.LibUsb
         /// <returns>A <see cref="UsbEndpointReader"/> class ready for reading. If the specified endpoint is already been opened, the original <see cref="UsbEndpointReader"/> class is returned.</returns>
         public UsbEndpointReader OpenEndpointReader(ReadEndpointID readEndpointID, int readBufferSize)
         {
-            return OpenEndpointReader(readEndpointID, readBufferSize, EndpointType.Bulk);
+            return this.OpenEndpointReader(readEndpointID, readBufferSize, EndpointType.Bulk);
         }
 
         /// <summary>
@@ -56,7 +56,7 @@ namespace LibUsbDotNet.LibUsb
         /// <returns>A <see cref="UsbEndpointReader"/> class ready for reading. If the specified endpoint is already been opened, the original <see cref="UsbEndpointReader"/> class is returned.</returns>
         public UsbEndpointReader OpenEndpointReader(ReadEndpointID readEndpointID, int readBufferSize, EndpointType endpointType)
         {
-            byte altIntefaceID = mClaimedInterfaces.Count == 0 ? UsbAltInterfaceSettings[0] : UsbAltInterfaceSettings[mClaimedInterfaces[mClaimedInterfaces.Count - 1]];
+            byte altIntefaceID = this.mClaimedInterfaces.Count == 0 ? this.UsbAltInterfaceSettings[0] : this.UsbAltInterfaceSettings[this.mClaimedInterfaces[this.mClaimedInterfaces.Count - 1]];
 
             return new UsbEndpointReader(this, readBufferSize, altIntefaceID, readEndpointID, endpointType);
         }
@@ -68,7 +68,7 @@ namespace LibUsbDotNet.LibUsb
         /// <returns>A <see cref="UsbEndpointWriter"/> class ready for writing. If the specified endpoint is already been opened, the original <see cref="UsbEndpointWriter"/> class is returned.</returns>
         public UsbEndpointWriter OpenEndpointWriter(WriteEndpointID writeEndpointID)
         {
-            return OpenEndpointWriter(writeEndpointID, EndpointType.Bulk);
+            return this.OpenEndpointWriter(writeEndpointID, EndpointType.Bulk);
         }
 
         /// <summary>
@@ -79,7 +79,7 @@ namespace LibUsbDotNet.LibUsb
         /// <returns>A <see cref="UsbEndpointWriter"/> class ready for writing. If the specified endpoint is already been opened, the original <see cref="UsbEndpointWriter"/> class is returned.</returns>
         public UsbEndpointWriter OpenEndpointWriter(WriteEndpointID writeEndpointID, EndpointType endpointType)
         {
-            byte altIntefaceID = mClaimedInterfaces.Count == 0 ? UsbAltInterfaceSettings[0] : UsbAltInterfaceSettings[mClaimedInterfaces[mClaimedInterfaces.Count - 1]];
+            byte altIntefaceID = this.mClaimedInterfaces.Count == 0 ? this.UsbAltInterfaceSettings[0] : this.UsbAltInterfaceSettings[this.mClaimedInterfaces[this.mClaimedInterfaces.Count - 1]];
 
             return new UsbEndpointWriter(this, altIntefaceID, writeEndpointID, endpointType);
         }

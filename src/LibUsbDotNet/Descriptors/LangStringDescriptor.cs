@@ -33,32 +33,32 @@ namespace LibUsbDotNet.Descriptors
 
         protected UsbMemChunk(int maxSize)
         {
-            mMaxSize = maxSize;
-            mMemPointer = Marshal.AllocHGlobal(maxSize);
+            this.mMaxSize = maxSize;
+            this.mMemPointer = Marshal.AllocHGlobal(maxSize);
         }
 
         public int MaxSize
         {
-            get { return mMaxSize; }
+            get { return this.mMaxSize; }
         }
 
         public IntPtr Ptr
         {
-            get { return mMemPointer; }
+            get { return this.mMemPointer; }
         }
 
         public void Free()
         {
-            if (mMemPointer != IntPtr.Zero)
+            if (this.mMemPointer != IntPtr.Zero)
             {
-                Marshal.FreeHGlobal(mMemPointer);
-                mMemPointer = IntPtr.Zero;
+                Marshal.FreeHGlobal(this.mMemPointer);
+                this.mMemPointer = IntPtr.Zero;
             }
         }
 
         ~UsbMemChunk()
         {
-            Free();
+            this.Free();
         }
     }
 
@@ -66,8 +66,8 @@ namespace LibUsbDotNet.Descriptors
     {
         #region FIELD_OFFSETS
 
-        private static readonly int OfsDescriptorType = Marshal.OffsetOf(typeof (UsbDescriptor), "DescriptorType").ToInt32();
-        private static readonly int OfsLength = Marshal.OffsetOf(typeof (UsbDescriptor), "Length").ToInt32();
+        private static readonly int OfsDescriptorType = Marshal.OffsetOf(typeof(UsbDescriptor), "DescriptorType").ToInt32();
+        private static readonly int OfsLength = Marshal.OffsetOf(typeof(UsbDescriptor), "Length").ToInt32();
 
         #endregion
 
@@ -78,20 +78,20 @@ namespace LibUsbDotNet.Descriptors
 
         public DescriptorType DescriptorType
         {
-            get { return (DescriptorType)Marshal.ReadByte(Ptr, OfsDescriptorType); }
-            set { Marshal.WriteByte(Ptr, OfsDescriptorType, (byte)value); }
+            get { return (DescriptorType)Marshal.ReadByte(this.Ptr, OfsDescriptorType); }
+            set { Marshal.WriteByte(this.Ptr, OfsDescriptorType, (byte)value); }
         }
 
         public byte Length
         {
-            get { return Marshal.ReadByte(Ptr, OfsLength); }
-            set { Marshal.WriteByte(Ptr, OfsLength, value); }
+            get { return Marshal.ReadByte(this.Ptr, OfsLength); }
+            set { Marshal.WriteByte(this.Ptr, OfsLength, value); }
         }
 
         public bool Get(out short[] langIds)
         {
             langIds = new short[0];
-            int totalLength = Length;
+            int totalLength = this.Length;
             if (totalLength <= 2)
             {
                 return false;
@@ -103,7 +103,7 @@ namespace LibUsbDotNet.Descriptors
             int startOffset = UsbDescriptor.Size;
             for (int iElement = 0; iElement < langIds.Length; iElement++)
             {
-                langIds[iElement] = Marshal.ReadInt16(Ptr, startOffset + (sizeof (ushort) *iElement));
+                langIds[iElement] = Marshal.ReadInt16(this.Ptr, startOffset + (sizeof(ushort) *iElement));
             }
 
             return true;
@@ -111,8 +111,8 @@ namespace LibUsbDotNet.Descriptors
 
         public bool Get(out byte[] bytes)
         {
-            bytes = new byte[Length];
-            Marshal.Copy(Ptr, bytes, 0, bytes.Length);
+            bytes = new byte[this.Length];
+            Marshal.Copy(this.Ptr, bytes, 0, bytes.Length);
             return true;
         }
 
@@ -121,7 +121,7 @@ namespace LibUsbDotNet.Descriptors
             str = string.Empty;
 
             byte[] bytes;
-            if (Get(out bytes))
+            if (this.Get(out bytes))
             {
                 if (bytes.Length <= UsbDescriptor.Size)
                 {

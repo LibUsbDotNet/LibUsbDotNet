@@ -49,10 +49,10 @@ namespace LibUsbDotNet.LibUsb
 
         internal UsbEndpointBase(UsbDevice usbDevice, byte alternateInterfaceID, byte epNum, EndpointType endpointType)
         {
-            mUsbDevice = usbDevice;
+            this.mUsbDevice = usbDevice;
             this.alternateInterfaceID = alternateInterfaceID;
-            mEpNum = epNum;
-            mEndpointType = endpointType;
+            this.mEpNum = epNum;
+            this.mEndpointType = endpointType;
         }
 
         /// <summary>
@@ -60,7 +60,7 @@ namespace LibUsbDotNet.LibUsb
         /// </summary>
         public UsbDevice Device
         {
-            get { return mUsbDevice; }
+            get { return this.mUsbDevice; }
         }
 
         /// <summary>
@@ -70,7 +70,7 @@ namespace LibUsbDotNet.LibUsb
         {
             get
             {
-                return mEpNum;
+                return this.mEpNum;
             }
         }
 
@@ -79,7 +79,7 @@ namespace LibUsbDotNet.LibUsb
         /// </summary>
         public EndpointType Type
         {
-            get { return mEndpointType; }
+            get { return this.mEndpointType; }
         }
 
         /// <summary>
@@ -89,16 +89,16 @@ namespace LibUsbDotNet.LibUsb
         {
             get
             {
-                if (ReferenceEquals(mUsbEndpointInfo, null))
+                if (ReferenceEquals(this.mUsbEndpointInfo, null))
                 {
-                    if (!LookupEndpointInfo(Device.Configs[0], alternateInterfaceID, mEpNum, out mUsbInterfacetInfo, out mUsbEndpointInfo))
+                    if (!LookupEndpointInfo(this.Device.Configs[0], this.alternateInterfaceID, this.mEpNum, out this.mUsbInterfacetInfo, out this.mUsbEndpointInfo))
                     {
                         // throw new UsbException(this, String.Format("Failed locating endpoint {0} for the current usb configuration.", mEpNum));
                         return null;
                     }
                 }
 
-                return mUsbEndpointInfo;
+                return this.mUsbEndpointInfo;
             }
         }
 
@@ -216,7 +216,7 @@ namespace LibUsbDotNet.LibUsb
         public Error Transfer(object buffer, int offset, int length, int timeout, out int transferLength)
         {
             PinnedHandle pinned = new PinnedHandle(buffer);
-            Error eReturn = Transfer(pinned.Handle, offset, length, timeout, out transferLength);
+            Error eReturn = this.Transfer(pinned.Handle, offset, length, timeout, out transferLength);
             pinned.Dispose();
             return eReturn;
         }

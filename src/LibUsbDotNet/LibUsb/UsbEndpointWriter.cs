@@ -45,7 +45,7 @@ namespace LibUsbDotNet.LibUsb
         /// </returns>
         public virtual Error Write(byte[] buffer, int timeout, out int transferLength)
         {
-            return Write(buffer, 0, buffer.Length, timeout, out transferLength);
+            return this.Write(buffer, 0, buffer.Length, timeout, out transferLength);
         }
 
         /// <summary>
@@ -61,7 +61,7 @@ namespace LibUsbDotNet.LibUsb
         /// </returns>
         public virtual Error Write(IntPtr pBuffer, int offset, int count, int timeout, out int transferLength)
         {
-            return Transfer(pBuffer, offset, count, timeout, out transferLength);
+            return this.Transfer(pBuffer, offset, count, timeout, out transferLength);
         }
 
         /// <summary>
@@ -77,7 +77,7 @@ namespace LibUsbDotNet.LibUsb
         /// </returns>
         public virtual Error Write(byte[] buffer, int offset, int count, int timeout, out int transferLength)
         {
-            return Transfer(buffer, offset, count, timeout, out transferLength);
+            return this.Transfer(buffer, offset, count, timeout, out transferLength);
         }
 
         /// <summary>
@@ -93,7 +93,7 @@ namespace LibUsbDotNet.LibUsb
         /// </returns>
         public virtual Error Write(object buffer, int offset, int count, int timeout, out int transferLength)
         {
-            return Transfer(buffer, offset, count, timeout, out transferLength);
+            return this.Transfer(buffer, offset, count, timeout, out transferLength);
         }
 
         /// <summary>
@@ -107,7 +107,7 @@ namespace LibUsbDotNet.LibUsb
         /// </returns>
         public virtual Error Write(object buffer, int timeout, out int transferLength)
         {
-            return Write(buffer, 0, Marshal.SizeOf(buffer), timeout, out transferLength);
+            return this.Write(buffer, 0, Marshal.SizeOf(buffer), timeout, out transferLength);
         }
     }
 }

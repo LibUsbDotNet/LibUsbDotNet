@@ -36,7 +36,7 @@ namespace LibUsbDotNet.Main
         public UsbException(object sender, string description)
             : base(description)
         {
-            mSender = sender;
+            this.mSender = sender;
         }
 
         /// <summary>
@@ -44,7 +44,7 @@ namespace LibUsbDotNet.Main
         /// </summary>
         public object Sender
         {
-            get { return mSender; }
+            get { return this.mSender; }
         }
     }
 }

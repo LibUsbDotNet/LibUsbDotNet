@@ -95,7 +95,7 @@ namespace LibUsbDotNet.Info
         /// </summary>
         public ReadOnlyCollection<UsbEndpointInfo> Endpoints
         {
-            get { return endpoints.AsReadOnly(); }
+            get { return this.endpoints.AsReadOnly(); }
         }
 
         public override string ToString()

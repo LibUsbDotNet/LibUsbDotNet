@@ -42,7 +42,7 @@ namespace LibUsbDotNet.LibUsb
         public UsbEndpointReader(UsbDevice usbDevice, int readBufferSize, byte alternateInterfaceID, ReadEndpointID readEndpointID, EndpointType endpointType)
             : base(usbDevice, alternateInterfaceID, (byte)readEndpointID, endpointType)
         {
-            mReadBufferSize = readBufferSize;
+            this.mReadBufferSize = readBufferSize;
         }
 
         /// <summary>
@@ -65,7 +65,7 @@ namespace LibUsbDotNet.LibUsb
         /// </returns>
         public virtual Error Read(byte[] buffer, int timeout, out int transferLength)
         {
-            return Read(buffer, 0, buffer.Length, timeout, out transferLength);
+            return this.Read(buffer, 0, buffer.Length, timeout, out transferLength);
         }
 
         /// <summary>
@@ -81,7 +81,7 @@ namespace LibUsbDotNet.LibUsb
         /// </returns>
         public virtual Error Read(IntPtr buffer, int offset, int count, int timeout, out int transferLength)
         {
-            return Transfer(buffer, offset, count, timeout, out transferLength);
+            return this.Transfer(buffer, offset, count, timeout, out transferLength);
         }
 
         /// <summary>
@@ -97,7 +97,7 @@ namespace LibUsbDotNet.LibUsb
         /// </returns>
         public virtual Error Read(byte[] buffer, int offset, int count, int timeout, out int transferLength)
         {
-            return Transfer(buffer, offset, count, timeout, out transferLength);
+            return this.Transfer(buffer, offset, count, timeout, out transferLength);
         }
 
         /// <summary>
@@ -113,7 +113,7 @@ namespace LibUsbDotNet.LibUsb
         /// </returns>
         public virtual Error Read(object buffer, int offset, int count, int timeout, out int transferLength)
         {
-            return Transfer(buffer, offset, count, timeout, out transferLength);
+            return this.Transfer(buffer, offset, count, timeout, out transferLength);
         }
 
         /// <summary>
@@ -127,7 +127,7 @@ namespace LibUsbDotNet.LibUsb
         /// </returns>
         public virtual Error Read(object buffer, int timeout, out int transferLength)
         {
-            return Transfer(buffer, 0, Marshal.SizeOf(buffer), timeout, out transferLength);
+            return this.Transfer(buffer, 0, Marshal.SizeOf(buffer), timeout, out transferLength);
         }
 
         /// <summary>
@@ -139,7 +139,7 @@ namespace LibUsbDotNet.LibUsb
             byte[] bufDummy = new byte[64];
             int iTransferred;
             int iBufCount = 0;
-            while (Read(bufDummy, 10, out iTransferred) == Error.Success && iBufCount < 128)
+            while (this.Read(bufDummy, 10, out iTransferred) == Error.Success && iBufCount < 128)
             {
                 iBufCount++;
             }

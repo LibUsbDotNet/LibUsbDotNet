@@ -24,7 +24,6 @@ using System.Runtime.InteropServices;
 
 namespace LibUsbDotNet.Main
 {
-
     /// <summary>
     /// Used for allocating a <see cref="GCHandle"/> to access the underlying pointer of an object.
     /// </summary>
@@ -56,22 +55,22 @@ namespace LibUsbDotNet.Main
                 {
                     // This object is already a GCHandle, just use its AddrOfPinnedObject()
                     // This class will not free this GCHandle when dispposing.
-                    mGCHandle = (GCHandle)objectToPin;
-                    handle = mGCHandle.AddrOfPinnedObject();
+                    this.mGCHandle = (GCHandle)objectToPin;
+                    this.handle = this.mGCHandle.AddrOfPinnedObject();
                 }
                 else if (objectToPin is IntPtr)
                 {
                     // This object is an IntPtr, the user is manging this on his own.
-                    handle = (IntPtr)objectToPin;
+                    this.handle = (IntPtr)objectToPin;
                 }
                 else
                 {
                     // This is a blittable class or structure, or an array fo blittable class or structures.
-                    mGCHandle = GCHandle.Alloc(objectToPin, GCHandleType.Pinned);
-                    handle = mGCHandle.AddrOfPinnedObject();
+                    this.mGCHandle = GCHandle.Alloc(objectToPin, GCHandleType.Pinned);
+                    this.handle = this.mGCHandle.AddrOfPinnedObject();
 
                     // This class will free the GcHandle when its disposed.
-                    isGCHandleOwner = true;
+                    this.isGCHandleOwner = true;
                 }
             }
         }
@@ -81,7 +80,7 @@ namespace LibUsbDotNet.Main
         /// </summary>
         public IntPtr Handle
         {
-            get { return handle; }
+            get { return this.handle; }
         }
 
         #region IDisposable Members
@@ -92,7 +91,7 @@ namespace LibUsbDotNet.Main
         /// <filterpriority>2</filterpriority>
         public void Dispose()
         {
-            Dispose(true);
+            this.Dispose(true);
             // This object will be cleaned up by the Dispose method.
             // Therefore, you should call GC.SupressFinalize to
             // take this object off the finalization queue
@@ -124,15 +123,15 @@ namespace LibUsbDotNet.Main
                 // unmanaged resources here.
                 // If disposing is false,
                 // only the following code is executed.
-                if (isGCHandleOwner && handle != IntPtr.Zero)
+                if (this.isGCHandleOwner && this.handle != IntPtr.Zero)
                 {
-                    isGCHandleOwner = false;
-                    handle = IntPtr.Zero;
-                    mGCHandle.Free();
+                    this.isGCHandleOwner = false;
+                    this.handle = IntPtr.Zero;
+                    this.mGCHandle.Free();
                 }
 
                 // disposing has been done.
-                disposed = true;
+                this.disposed = true;
 
             }
         }
@@ -146,7 +145,7 @@ namespace LibUsbDotNet.Main
             // Do not re-create Dispose clean-up code here.
             // Calling Dispose(false) is optimal in terms of
             // readability and maintainability.
-            Dispose(false);
+            this.Dispose(false);
         }
     }
 }

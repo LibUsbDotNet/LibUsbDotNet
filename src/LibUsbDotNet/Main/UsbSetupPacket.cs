@@ -102,14 +102,14 @@ namespace LibUsbDotNet.Main
         /// <param name="wlength">See <see cref="UsbSetupPacket.Length"/>.</param>
         public UsbSetupPacket(byte bRequestType, byte bRequest, int wValue, int wIndex, int wlength)
         {
-        	unchecked
-        	{
-	        	RequestType = (byte)(bRequestType & 0xFF);
-	            Request = (byte)(bRequest & 0xFF);
-	            Value = (short)(wValue & 0xFFFF);
-	            Index = (short)(wIndex & 0xFFFF);
-	            Length = (short)(wlength & 0xFFFF);
-        	}
+            unchecked
+            {
+                this.RequestType = (byte)(bRequestType & 0xFF);
+                this.Request = (byte)(bRequest & 0xFF);
+                this.Value = (short)(wValue & 0xFFFF);
+                this.Index = (short)(wIndex & 0xFFFF);
+                this.Length = (short)(wlength & 0xFFFF);
+            }
         }
     }
 }

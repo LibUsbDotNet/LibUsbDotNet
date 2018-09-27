@@ -25,8 +25,8 @@ namespace LibUsbDotNet.LibUsb
         /// </summary>
         public long tv_sec
         {
-            get { return mTvSecInternal.ToInt64(); }
-            set { mTvSecInternal = new IntPtr(value); }
+            get { return this.mTvSecInternal.ToInt64(); }
+            set { this.mTvSecInternal = new IntPtr(value); }
         }
 
         /// <summary>
@@ -34,8 +34,8 @@ namespace LibUsbDotNet.LibUsb
         /// </summary>
         public long tv_usec
         {
-            get { return mTvUSecInternal.ToInt64(); }
-            set { mTvUSecInternal = new IntPtr(value); }
+            get { return this.mTvUSecInternal.ToInt64(); }
+            set { this.mTvUSecInternal = new IntPtr(value); }
         }
 
         /// <summary>
@@ -45,8 +45,8 @@ namespace LibUsbDotNet.LibUsb
         /// <param name="tvUsec">milliseconds</param>
         public UnixNativeTimeval(long tvSec, long tvUsec)
         {
-            mTvSecInternal = new IntPtr(tvSec);
-            mTvUSecInternal = new IntPtr(tvUsec);
+            this.mTvSecInternal = new IntPtr(tvSec);
+            this.mTvUSecInternal = new IntPtr(tvUsec);
         }
     }
 }

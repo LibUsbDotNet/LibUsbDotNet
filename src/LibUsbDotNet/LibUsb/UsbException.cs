@@ -65,7 +65,7 @@ namespace LibUsbDotNet.LibUsb
         {
             IntPtr errorString = NativeMethods.StrError(errorCode);
 
-            if(errorString != IntPtr.Zero)
+            if (errorString != IntPtr.Zero)
             {
                 // From the documentation: 'The caller must not free() the returned string.'
                 return Marshal.PtrToStringAnsi(errorString);

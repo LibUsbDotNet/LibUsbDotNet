@@ -47,7 +47,7 @@ namespace LibUsbDotNet.Descriptors
         /// <summary>
         /// Total size of this structure in bytes.
         /// </summary>
-        public static readonly int Size = Marshal.SizeOf(typeof (UsbDescriptor));
+        public static readonly int Size = Marshal.SizeOf(typeof(UsbDescriptor));
 
         /// <summary>
         /// Length of structure reported by the associated usb device.
@@ -64,7 +64,7 @@ namespace LibUsbDotNet.Descriptors
         /// </summary>
         public override string ToString()
         {
-            object[] values = {Length, DescriptorType };
+            object[] values = {this.Length, this.DescriptorType };
             string[] names = {"Length", "DescriptorType" };
 
             return Helper.ToString("", names, ToStringParamValueSeperator, values, ToStringFieldSeperator);

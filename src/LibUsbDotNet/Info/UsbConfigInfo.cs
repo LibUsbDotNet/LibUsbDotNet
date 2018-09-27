@@ -73,7 +73,7 @@ namespace LibUsbDotNet.Info
         /// </summary>
         public ReadOnlyCollection<UsbInterfaceInfo> Interfaces
         {
-            get { return interfaces.AsReadOnly(); }
+            get { return this.interfaces.AsReadOnly(); }
         }
 
         /// <inheritdoc/>

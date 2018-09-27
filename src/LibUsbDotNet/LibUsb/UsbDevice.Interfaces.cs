@@ -39,20 +39,20 @@ namespace LibUsbDotNet.LibUsb
         {
             this.EnsureOpen();
 
-            if (mClaimedInterfaces.Contains(interfaceID))
+            if (this.mClaimedInterfaces.Contains(interfaceID))
             {
                 return true;
             }
 
             NativeMethods.ClaimInterface(this.deviceHandle, interfaceID).ThrowOnError();
-            mClaimedInterfaces.Add(interfaceID);
+            this.mClaimedInterfaces.Add(interfaceID);
             return true;
         }
 
         public bool GetAltInterface(out int alternateID)
         {
-            int interfaceID = mClaimedInterfaces.Count == 0 ? 0 : mClaimedInterfaces[mClaimedInterfaces.Count - 1];
-            return GetAltInterface(interfaceID, out alternateID);
+            int interfaceID = this.mClaimedInterfaces.Count == 0 ? 0 : this.mClaimedInterfaces[this.mClaimedInterfaces.Count - 1];
+            return this.GetAltInterface(interfaceID, out alternateID);
         }
 
         /// <summary>
@@ -63,7 +63,7 @@ namespace LibUsbDotNet.LibUsb
         /// <returns>True on success.</returns>
         public bool GetAltInterface(int interfaceID, out int alternateID)
         {
-            alternateID = UsbAltInterfaceSettings[interfaceID & (UsbConstants.MAX_DEVICES - 1)];
+            alternateID = this.UsbAltInterfaceSettings[interfaceID & (UsbConstants.MAX_DEVICES - 1)];
             return true;
         }
 
@@ -85,7 +85,7 @@ namespace LibUsbDotNet.LibUsb
             setupPkt.Index = interfaceID;
             setupPkt.Length = 1;
 
-            uTransferLength = ControlTransfer(setupPkt, buf, 0, buf.Length);
+            uTransferLength = this.ControlTransfer(setupPkt, buf, 0, buf.Length);
             if (uTransferLength == 1)
             {
                 selectedAltInterfaceID = buf[0];
@@ -121,7 +121,7 @@ namespace LibUsbDotNet.LibUsb
             this.EnsureOpen();
 
             NativeMethods.SetInterfaceAltSetting(this.deviceHandle, interfaceID, alternateID).ThrowOnError();
-            UsbAltInterfaceSettings[interfaceID & (UsbConstants.MAX_DEVICES - 1)] = (byte)alternateID;
+            this.UsbAltInterfaceSettings[interfaceID & (UsbConstants.MAX_DEVICES - 1)] = (byte)alternateID;
             return true;
         }
 
@@ -132,12 +132,12 @@ namespace LibUsbDotNet.LibUsb
         /// <returns>True on success.</returns>
         public bool SetAltInterface(int alternateID)
         {
-            if (mClaimedInterfaces.Count == 0)
+            if (this.mClaimedInterfaces.Count == 0)
             {
                 throw new UsbException("You must claim an interface before setting an alternate interface.");
             }
 
-            return SetAltInterface(mClaimedInterfaces[mClaimedInterfaces.Count - 1], alternateID);
+            return this.SetAltInterface(this.mClaimedInterfaces[this.mClaimedInterfaces.Count - 1], alternateID);
         }
     }
 }
