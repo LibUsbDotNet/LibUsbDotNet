@@ -1,24 +1,24 @@
 // Copyright © 2006-2010 Travis Robinson. All rights reserved.
-// 
+//
 // website: http://sourceforge.net/projects/libusbdotnet
 // e-mail:  libusbdotnet@gmail.com
-// 
+//
 // This program is free software; you can redistribute it and/or modify it
 // under the terms of the GNU General Public License as published by the
-// Free Software Foundation; either version 2 of the License, or 
+// Free Software Foundation; either version 2 of the License, or
 // (at your option) any later version.
-// 
-// This program is distributed in the hope that it will be useful, but 
+//
+// This program is distributed in the hope that it will be useful, but
 // WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY
 // or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General Public License
 // for more details.
-// 
+//
 // You should have received a copy of the GNU General Public License along
 // with this program; if not, write to the Free Software Foundation, Inc.,
-// 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA. or 
+// 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA. or
 // visit www.gnu.org.
-// 
-// 
+//
+//
 using System;
 using System.Runtime.InteropServices;
 using System.Text;
@@ -56,7 +56,10 @@ namespace LibUsbDotNet.Descriptors
             }
         }
 
-        ~UsbMemChunk() { Free(); }
+        ~UsbMemChunk()
+        {
+            Free();
+        }
     }
 
     internal class LangStringDescriptor : UsbMemChunk
@@ -69,12 +72,14 @@ namespace LibUsbDotNet.Descriptors
         #endregion
 
         public LangStringDescriptor(int maxSize)
-            : base(maxSize) { }
+            : base(maxSize)
+        {
+        }
 
         public DescriptorType DescriptorType
         {
-            get { return (DescriptorType) Marshal.ReadByte(Ptr, OfsDescriptorType); }
-            set { Marshal.WriteByte(Ptr, OfsDescriptorType, (byte) value); }
+            get { return (DescriptorType)Marshal.ReadByte(Ptr, OfsDescriptorType); }
+            set { Marshal.WriteByte(Ptr, OfsDescriptorType, (byte)value); }
         }
 
         public byte Length
@@ -87,16 +92,20 @@ namespace LibUsbDotNet.Descriptors
         {
             langIds = new short[0];
             int totalLength = Length;
-            if (totalLength <= 2) return false;
+            if (totalLength <= 2)
+            {
+                return false;
+            }
 
-            int elementCount = (totalLength - 2)/2;
+            int elementCount = (totalLength - 2) /2;
             langIds = new short[elementCount];
 
             int startOffset = UsbDescriptor.Size;
             for (int iElement = 0; iElement < langIds.Length; iElement++)
             {
-                langIds[iElement] = Marshal.ReadInt16(Ptr, startOffset + (sizeof (ushort)*iElement));
+                langIds[iElement] = Marshal.ReadInt16(Ptr, startOffset + (sizeof (ushort) *iElement));
             }
+
             return true;
         }
 
@@ -122,6 +131,7 @@ namespace LibUsbDotNet.Descriptors
                 {
                     str = Encoding.Unicode.GetString(bytes, UsbDescriptor.Size, bytes.Length - UsbDescriptor.Size);
                 }
+
                 return true;
             }
 
