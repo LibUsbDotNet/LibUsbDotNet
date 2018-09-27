@@ -43,7 +43,6 @@ namespace LibUsbDotNet.LibUsb
         internal readonly byte mEpNum;
         private readonly UsbDevice mUsbDevice;
         private readonly byte alternateInterfaceID;
-        private bool mIsDisposed;
         private UsbEndpointInfo mUsbEndpointInfo;
         private EndpointType mEndpointType;
         private UsbInterfaceInfo mUsbInterfacetInfo;

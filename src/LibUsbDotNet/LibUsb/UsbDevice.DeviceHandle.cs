@@ -204,7 +204,7 @@ namespace LibUsbDotNet.LibUsb
             }
             else
             {
-                throw new MonoUsbException((Error)result);
+                throw new UsbException((Error)result);
             }
         }
 
@@ -226,7 +226,7 @@ namespace LibUsbDotNet.LibUsb
 
             if (ret < 0)
             {
-                throw new MonoUsbException((Error)ret);
+                throw new UsbException((Error)ret);
             }
 
             transferLength = ret;
@@ -354,7 +354,7 @@ namespace LibUsbDotNet.LibUsb
         {
             if (!this.IsOpen)
             {
-                throw new UsbException(this, "The device has not been opened. You need to call Open() first.");
+                throw new UsbException("The device has not been opened. You need to call Open() first.");
             }
         }
     }

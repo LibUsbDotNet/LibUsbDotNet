@@ -25,10 +25,10 @@ namespace LibUsbDotNet.LibUsb
     /// <summary>
     /// Provides extension methods for the <see cref="Error"/> enumeration.
     /// </summary>
-    public static class MonoUsbErrorExtensions
+    public static class ErrorExtensions
     {
         /// <summary>
-        /// Throws a <see cref="MonoUsbException"/> if the value of <paramref name="error"/> is not <see cref="Error.Success"/>.
+        /// Throws a <see cref="UsbException"/> if the value of <paramref name="error"/> is not <see cref="Error.Success"/>.
         /// </summary>
         /// <param name="error">
         /// The error code based on which to throw an exception.
@@ -37,7 +37,7 @@ namespace LibUsbDotNet.LibUsb
         {
             if (error != Error.Success)
             {
-                throw new MonoUsbException(error);
+                throw new UsbException(error);
             }
         }
 
@@ -57,7 +57,7 @@ namespace LibUsbDotNet.LibUsb
 
             if (value < 0)
             {
-                throw new MonoUsbException(error);
+                throw new UsbException(error);
             }
             else
             {

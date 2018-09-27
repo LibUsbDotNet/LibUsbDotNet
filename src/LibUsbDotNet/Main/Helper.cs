@@ -19,7 +19,6 @@
 // visit www.gnu.org.
 // 
 // 
-using System.Runtime.InteropServices;
 using System.Text;
 
 namespace LibUsbDotNet.Main
@@ -29,17 +28,6 @@ namespace LibUsbDotNet.Main
     /// </summary>
     public static class Helper
     {
-        /// <summary>
-        /// Swaps low and high bytes on big endian systems.  Has no effect on little endian systems.
-        /// </summary>
-        /// <param name="swapValue">The value to convert.</param>
-        /// <returns>a swapped value an big endian system, the same value on little endian systems</returns>
-        public static short HostEndianToLE16(short swapValue)
-        {
-            HostEndian16BitValue rtn = new HostEndian16BitValue(swapValue);
-            return (short)rtn.U16;
-        }
-
         /// <summary>
         /// Builds a delimited string of names and values.
         /// </summary>
@@ -57,26 +45,6 @@ namespace LibUsbDotNet.Main
                 sb.Append(sep0 + names[i] + sep1 + values[i] + sep2);
 
             return sb.ToString();
-        }
-
-        [StructLayout(LayoutKind.Explicit, Pack = 1)]
-        internal struct HostEndian16BitValue
-        {
-            public HostEndian16BitValue(short x)
-            {
-                U16 = 0;
-                B1 = (byte)(x >> 8);
-                B0 = (byte)(x & 0xff);
-            }
-
-            [FieldOffset(0)]
-            public readonly ushort U16;
-
-            [FieldOffset(0)]
-            public readonly byte B0;
-
-            [FieldOffset(1)]
-            public readonly byte B1;
         }
     }
 }

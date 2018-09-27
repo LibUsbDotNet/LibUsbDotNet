@@ -260,7 +260,7 @@ namespace LibUsbDotNet.Main
 
                 return true;
             }
-            catch (MonoUsbException ex) when (ex.ErrorCode == Error.NotFound)
+            catch (LibUsb.UsbException ex) when (ex.ErrorCode == Error.NotFound)
             {
                 // The device has probably disconnected while we were inspecting it. Continue.
                 return false;

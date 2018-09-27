@@ -29,7 +29,7 @@
 // 
 //
 
-using MonoLibUsb;
+using LibUsbDotNet.LibUsb;
 using System;
 using System.Runtime.InteropServices;
 

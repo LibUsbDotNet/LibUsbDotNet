@@ -132,7 +132,7 @@ namespace LibUsbDotNet.LibUsb
         /// <returns>True on success.</returns>
         public bool SetAltInterface(int alternateID)
         {
-            if (mClaimedInterfaces.Count == 0) throw new UsbException(this, "You must claim an interface before setting an alternate interface.");
+            if (mClaimedInterfaces.Count == 0) throw new UsbException("You must claim an interface before setting an alternate interface.");
             return SetAltInterface(mClaimedInterfaces[mClaimedInterfaces.Count - 1], alternateID);
         }
     }
