@@ -55,6 +55,12 @@ namespace LibUsbDotNet.LibUsb
         /// <inheritdoc/>
         public UsbDeviceInfo Info => this.Descriptor;
 
+        /// <inheritdoc/>
+        public ushort VendorId => this.Descriptor.VendorId;
+
+        /// <inheritdoc/>
+        public ushort ProductId => this.Descriptor.ProductId;
+
         public ReadOnlyCollection<UsbConfigInfo> Configs
         {
             get
@@ -241,7 +247,32 @@ namespace LibUsbDotNet.LibUsb
         /// <returns>
         /// The requested descriptor.
         /// </returns>
-        public unsafe UsbConfigInfo GetConfigDescriptor(byte configIndex)
+        public UsbConfigInfo GetConfigDescriptor(byte configIndex)
+        {
+            if (this.TryGetConfigDescriptor(configIndex, out UsbConfigInfo descriptor))
+            {
+                return descriptor;
+            }
+            else
+            {
+                throw new UsbException(Error.NotFound);
+            }
+        }
+
+        /// <summary>
+        /// Attempts to get a USB configuration descriptor based on its index.
+        /// </summary>
+        /// <param name="configIndex">
+        /// The index of the configuration you wish to retrieve
+        /// </param>
+        /// <param name="descriptor">
+        /// The requested descriptor.
+        /// </param>
+        /// <returns>
+        /// <see langword="true"/> if the descriptor could be loaded correctly; otherwise,
+        /// <see langword="false" ">.
+        /// </returns>
+        public unsafe bool TryGetConfigDescriptor(byte configIndex, out UsbConfigInfo descriptor)
         {
             this.EnsureNotDisposed();
 
@@ -250,9 +281,19 @@ namespace LibUsbDotNet.LibUsb
 
             try
             {
-                NativeMethods.GetConfigDescriptor(this.device, configIndex, &list).ThrowOnError();
+                var ret = NativeMethods.GetConfigDescriptor(this.device, configIndex, &list);
+
+                if (ret == Error.NotFound)
+                {
+                    descriptor = null;
+                    return false;
+                }
+
+                ret.ThrowOnError();
+
                 value = UsbConfigInfo.FromUsbConfigDescriptor(this, list[0]);
-                return value;
+                descriptor = value;
+                return true;
             }
             finally
             {

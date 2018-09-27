@@ -76,7 +76,7 @@ namespace LibUsbDotNet.Main
         }
 
         /// <summary>
-        /// The raw pointer in memory of the pinned object.
+        /// Gets the raw pointer in memory of the pinned object.
         /// </summary>
         public IntPtr Handle
         {
@@ -92,6 +92,7 @@ namespace LibUsbDotNet.Main
         public void Dispose()
         {
             this.Dispose(true);
+
             // This object will be cleaned up by the Dispose method.
             // Therefore, you should call GC.SupressFinalize to
             // take this object off the finalization queue

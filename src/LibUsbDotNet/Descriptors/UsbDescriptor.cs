@@ -19,9 +19,8 @@
 // visit www.gnu.org.
 //
 //
-using System;
-using System.Runtime.InteropServices;
 using LibUsbDotNet.Main;
+using System.Runtime.InteropServices;
 
 #pragma warning disable 649
 
@@ -37,12 +36,12 @@ namespace LibUsbDotNet.Descriptors
         /// <summary>
         /// String value used to seperate the name/value pairs for all ToString overloads of the descriptor classes.
         /// </summary>
-        public static string ToStringParamValueSeperator = ":";
+        public const string ToStringParamValueSeperator = ":";
 
         /// <summary>
         /// String value used to seperate the name/value groups for all ToString overloads of the descriptor classes.
         /// </summary>
-        public static string ToStringFieldSeperator = "\r\n";
+        public const string ToStringFieldSeperator = "\r\n";
 
         /// <summary>
         /// Total size of this structure in bytes.
@@ -52,22 +51,20 @@ namespace LibUsbDotNet.Descriptors
         /// <summary>
         /// Length of structure reported by the associated usb device.
         /// </summary>
-        public byte Length;
+        private byte length;
 
         /// <summary>
         /// Type of structure reported by the associated usb device.
         /// </summary>
-        public DescriptorType DescriptorType;
+        private DescriptorType descriptorType;
 
-        /// <summary>
-        /// String representation of the UsbDescriptor class.
-        /// </summary>
+        /// <inheritdoc/>
         public override string ToString()
         {
-            object[] values = {this.Length, this.DescriptorType };
+            object[] values = { this.length, this.descriptorType };
             string[] names = { "Length", "DescriptorType" };
 
-            return Helper.ToString("", names, ToStringParamValueSeperator, values, ToStringFieldSeperator);
+            return Helper.ToString(string.Empty, names, ToStringParamValueSeperator, values, ToStringFieldSeperator);
         }
     }
 }

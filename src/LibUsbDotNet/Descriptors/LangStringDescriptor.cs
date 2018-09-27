@@ -19,49 +19,11 @@
 // visit www.gnu.org.
 //
 //
-using System;
 using System.Runtime.InteropServices;
 using System.Text;
 
 namespace LibUsbDotNet.Descriptors
 {
-    internal abstract class UsbMemChunk
-    {
-        private readonly int mMaxSize;
-
-        private IntPtr mMemPointer = IntPtr.Zero;
-
-        protected UsbMemChunk(int maxSize)
-        {
-            this.mMaxSize = maxSize;
-            this.mMemPointer = Marshal.AllocHGlobal(maxSize);
-        }
-
-        public int MaxSize
-        {
-            get { return this.mMaxSize; }
-        }
-
-        public IntPtr Ptr
-        {
-            get { return this.mMemPointer; }
-        }
-
-        public void Free()
-        {
-            if (this.mMemPointer != IntPtr.Zero)
-            {
-                Marshal.FreeHGlobal(this.mMemPointer);
-                this.mMemPointer = IntPtr.Zero;
-            }
-        }
-
-        ~UsbMemChunk()
-        {
-            this.Free();
-        }
-    }
-
     internal class LangStringDescriptor : UsbMemChunk
     {
         #region FIELD_OFFSETS

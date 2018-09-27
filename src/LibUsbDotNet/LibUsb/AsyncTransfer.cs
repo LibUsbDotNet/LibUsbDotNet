@@ -29,8 +29,8 @@ namespace LibUsbDotNet.LibUsb
 {
     public class AsyncTransfer
     {
-        private static readonly ConcurrentDictionary<int, ManualResetEventSlim> transfers = new ConcurrentDictionary<int, ManualResetEventSlim>();
-        private static readonly object transferLock = new object();
+        private static readonly ConcurrentDictionary<int, ManualResetEventSlim> Transfers = new ConcurrentDictionary<int, ManualResetEventSlim>();
+        private static readonly object TransferLock = new object();
         private static int transferIndex = 0;
 
         private static unsafe TransferDelegate transferDelegate = new TransferDelegate(Callback);
@@ -49,7 +49,7 @@ namespace LibUsbDotNet.LibUsb
             return TransferAsync(device, endPoint, endPointType, buffer, offset, length, timeout, 0, out transferLength);
         }
 
-        internal unsafe static Error TransferAsync(
+        internal static unsafe Error TransferAsync(
             DeviceHandle device,
             byte endPoint,
             EndpointType endPointType,
@@ -84,12 +84,12 @@ namespace LibUsbDotNet.LibUsb
 
             int transferId = 0;
 
-            lock (transferLock)
+            lock (TransferLock)
             {
                 transferId = transferIndex++;
             }
 
-            transfers.AddOrUpdate(transferId, mre, (index, data) => throw new NotImplementedException());
+            Transfers.AddOrUpdate(transferId, mre, (index, data) => throw new NotImplementedException());
 
             // Fill common properties
             transfer->DevHandle = device.DangerousGetHandle();
@@ -151,7 +151,7 @@ namespace LibUsbDotNet.LibUsb
         private static unsafe void Callback(Transfer* transfer)
         {
             int id = transfer->UserData.ToInt32();
-            transfers.TryRemove(id, out ManualResetEventSlim transferData);
+            Transfers.TryRemove(id, out ManualResetEventSlim transferData);
             transferData.Set();
         }
     }

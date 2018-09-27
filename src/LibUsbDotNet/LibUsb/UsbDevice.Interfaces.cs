@@ -17,7 +17,6 @@
 // with this program; if not, write to the Free Software Foundation, Inc.,
 // 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA. or
 // visit www.gnu.org.
-//
 
 using LibUsbDotNet.Main;
 using System.Collections.Generic;
@@ -27,8 +26,8 @@ namespace LibUsbDotNet.LibUsb
     // Implements functionality for the UsbDevice class, related to Interfaces
     public partial class UsbDevice
     {
-        protected readonly List<int> mClaimedInterfaces = new List<int>();
-        protected readonly byte[] UsbAltInterfaceSettings = new byte[UsbConstants.MAX_DEVICES];
+        private readonly List<int> mClaimedInterfaces = new List<int>();
+        private readonly byte[] usbAltInterfaceSettings = new byte[UsbConstants.MaxDeviceCount];
 
         /// <summary>
         /// Claims the specified interface of the device.
@@ -63,7 +62,7 @@ namespace LibUsbDotNet.LibUsb
         /// <returns>True on success.</returns>
         public bool GetAltInterface(int interfaceID, out int alternateID)
         {
-            alternateID = this.UsbAltInterfaceSettings[interfaceID & (UsbConstants.MAX_DEVICES - 1)];
+            alternateID = this.usbAltInterfaceSettings[interfaceID & (UsbConstants.MaxDeviceCount - 1)];
             return true;
         }
 
@@ -121,7 +120,7 @@ namespace LibUsbDotNet.LibUsb
             this.EnsureOpen();
 
             NativeMethods.SetInterfaceAltSetting(this.deviceHandle, interfaceID, alternateID).ThrowOnError();
-            this.UsbAltInterfaceSettings[interfaceID & (UsbConstants.MAX_DEVICES - 1)] = (byte)alternateID;
+            this.usbAltInterfaceSettings[interfaceID & (UsbConstants.MaxDeviceCount - 1)] = (byte)alternateID;
             return true;
         }
 

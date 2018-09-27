@@ -17,8 +17,6 @@
 // with this program; if not, write to the Free Software Foundation, Inc.,
 // 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA. or
 // visit www.gnu.org.
-//
-//
 
 using System.Collections.ObjectModel;
 using System.Diagnostics;
@@ -47,8 +45,10 @@ namespace LibUsbDotNet.Info
 
             for (byte i = 0; i < descriptor.NumConfigurations; i++)
             {
-                var configDescriptor = device.GetConfigDescriptor(i);
-                value.configurations.Add(configDescriptor);
+                if (device.TryGetConfigDescriptor(i, out var configDescriptor))
+                {
+                    value.configurations.Add(configDescriptor);
+                }
             }
 
             value.Product = device.GetStringDescriptor(descriptor.Product, failSilently: true);

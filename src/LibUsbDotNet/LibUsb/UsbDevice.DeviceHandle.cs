@@ -142,27 +142,13 @@ namespace LibUsbDotNet.LibUsb
             }
         }
 
-        /// <summary>
-        /// Transmits control data over a default control endpoint.
-        /// </summary>
-        /// <param name="setupPacket">An 8-byte setup packet which contains parameters for the control request.
-        /// See section 9.3 USB Device Requests of the Universal Serial Bus Specification Revision 2.0 for more information. </param>
-        /// <param name="buffer">Data to be sent/received from the device.</param>
-        /// <param name="bufferLength">Length of the buffer param.</param>
-        /// <returns>The number of bytes sent or received (depends on the direction of the control transfer).</returns>
+        /// <inheritdoc/>
         public unsafe int ControlTransfer(UsbSetupPacket setupPacket)
         {
             return this.ControlTransfer(setupPacket, null, 0, 0);
         }
 
-        /// <summary>
-        /// Transmits control data over a default control endpoint.
-        /// </summary>
-        /// <param name="setupPacket">An 8-byte setup packet which contains parameters for the control request.
-        /// See section 9.3 USB Device Requests of the Universal Serial Bus Specification Revision 2.0 for more information. </param>
-        /// <param name="buffer">Data to be sent/received from the device.</param>
-        /// <param name="bufferLength">Length of the buffer param.</param>
-        /// <returns>The number of bytes sent or received (depends on the direction of the control transfer).</returns>
+        /// <inheritdoc/>
         public unsafe int ControlTransfer(UsbSetupPacket setupPacket, byte[] buffer, int offset, int length)
         {
             this.EnsureNotDisposed();
@@ -182,7 +168,7 @@ namespace LibUsbDotNet.LibUsb
                         (ushort)setupPacket.Index,
                         data,
                         (ushort)length,
-                        UsbConstants.DEFAULT_TIMEOUT);
+                        UsbConstants.DefaultTimeout);
                 }
             }
             else
@@ -195,7 +181,7 @@ namespace LibUsbDotNet.LibUsb
                     (ushort)setupPacket.Index,
                     null,
                     0,
-                    UsbConstants.DEFAULT_TIMEOUT);
+                    UsbConstants.DefaultTimeout);
             }
 
             if (result >= 0)

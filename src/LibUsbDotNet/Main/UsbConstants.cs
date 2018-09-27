@@ -28,33 +28,21 @@ namespace LibUsbDotNet.Main
         /// <summary>
         /// Default timeout for all USB IO operations.
         /// </summary>
-        public const int DEFAULT_TIMEOUT = 1000;
-
-        internal const bool EXIT_CONTEXT = false;
-
-        /// <summary>
-        /// Maximum size of a config descriptor.
-        /// </summary>
-        public const int MAX_CONFIG_SIZE = 4096;
+        public const int DefaultTimeout = 1000;
 
         /// <summary>
         /// Maximum number of USB devices connected to the driver at once.
         /// </summary>
-        public const int MAX_DEVICES = 256;
-
-        /// <summary>
-        /// Maximum number of endpoints per device.
-        /// </summary>
-        public const int MAX_ENDPOINTS = 32;
+        public const int MaxDeviceCount = 256;
 
         /// <summary>
         /// Endpoint direction mask.
         /// </summary>
-        public const byte ENDPOINT_DIR_MASK = 0x80;
+        public const byte EndpointDirectionMask = 0x80;
 
         /// <summary>
         /// Endpoint number mask.
         /// </summary>
-        public const byte ENDPOINT_NUMBER_MASK = 0xf;
+        public const byte EndpointNumberMask = 0xf;
     }
 }

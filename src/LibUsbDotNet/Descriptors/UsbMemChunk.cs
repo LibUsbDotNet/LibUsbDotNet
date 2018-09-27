@@ -17,38 +17,46 @@
 // with this program; if not, write to the Free Software Foundation, Inc.,
 // 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA. or
 // visit www.gnu.org.
-//
-//
-using System;
-using System.Collections.Generic;
-using System.Collections.ObjectModel;
 
-namespace LibUsbDotNet.LibUsb
+using System;
+using System.Runtime.InteropServices;
+
+namespace LibUsbDotNet.Descriptors
 {
-    /// <summary>
-    /// A collection of <see cref="UsbDevice"/> objects. All devices in this collection are disposed
-    /// of when youd dispose the collection.
-    /// </summary>
-    public class UsbDeviceCollection : ReadOnlyCollection<IUsbDevice>, IDisposable
+    internal abstract class UsbMemChunk
     {
-        /// <summary>
-        /// Initializes a new instance of the <see cref="UsbDeviceCollection"/> class.
-        /// </summary>
-        /// <param name="list">
-        /// The underlying list of devices.
-        /// </param>
-        public UsbDeviceCollection(IList<IUsbDevice> list)
-            : base(list)
+        private readonly int mMaxSize;
+
+        private IntPtr mMemPointer = IntPtr.Zero;
+
+        protected UsbMemChunk(int maxSize)
         {
+            this.mMaxSize = maxSize;
+            this.mMemPointer = Marshal.AllocHGlobal(maxSize);
         }
 
-        /// <inheritdoc/>
-        public void Dispose()
+        public int MaxSize
         {
-            foreach (var device in this)
+            get { return this.mMaxSize; }
+        }
+
+        public IntPtr Ptr
+        {
+            get { return this.mMemPointer; }
+        }
+
+        public void Free()
+        {
+            if (this.mMemPointer != IntPtr.Zero)
             {
-                device.Dispose();
+                Marshal.FreeHGlobal(this.mMemPointer);
+                this.mMemPointer = IntPtr.Zero;
             }
+        }
+
+        ~UsbMemChunk()
+        {
+            this.Free();
         }
     }
 }
