@@ -171,7 +171,7 @@ namespace LibUsbDotNet.Main
             {
                 if (ReferenceEquals(this.mWaitThread, null))
                 {
-                    this.mWaitThread =new Thread(AsyncTransferFn);
+                    this.mWaitThread = new Thread(AsyncTransferFn);
                 }
 
                 while (this.mWaitThread.IsAlive)

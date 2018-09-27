@@ -65,7 +65,7 @@ namespace LibUsbDotNet.Descriptors
         public override string ToString()
         {
             object[] values = {this.Length, this.DescriptorType };
-            string[] names = {"Length", "DescriptorType" };
+            string[] names = { "Length", "DescriptorType" };
 
             return Helper.ToString("", names, ToStringParamValueSeperator, values, ToStringFieldSeperator);
         }

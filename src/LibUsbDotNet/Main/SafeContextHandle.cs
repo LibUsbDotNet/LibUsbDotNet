@@ -62,7 +62,7 @@ namespace LibUsbDotNet.Main
             {
                 if (this.handle != IntPtr.Zero)
                 {
-                    return (this.handle == new IntPtr(-1));
+                    return this.handle == new IntPtr(-1);
                 }
 
                 return true;

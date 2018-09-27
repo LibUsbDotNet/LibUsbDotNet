@@ -97,13 +97,13 @@ namespace LibUsbDotNet.Descriptors
                 return false;
             }
 
-            int elementCount = (totalLength - 2) /2;
+            int elementCount = (totalLength - 2) / 2;
             langIds = new short[elementCount];
 
             int startOffset = UsbDescriptor.Size;
             for (int iElement = 0; iElement < langIds.Length; iElement++)
             {
-                langIds[iElement] = Marshal.ReadInt16(this.Ptr, startOffset + (sizeof(ushort) *iElement));
+                langIds[iElement] = Marshal.ReadInt16(this.Ptr, startOffset + (sizeof(ushort) * iElement));
             }
 
             return true;

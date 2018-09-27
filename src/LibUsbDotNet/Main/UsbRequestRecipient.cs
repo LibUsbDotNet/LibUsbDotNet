@@ -32,14 +32,17 @@ namespace LibUsbDotNet.Main
         /// Device is recipient.
         /// </summary>
         RecipDevice = 0x00,
+
         /// <summary>
         /// Endpoint is recipient.
         /// </summary>
         RecipEndpoint = 0x02,
+
         /// <summary>
         /// Interface is recipient.
         /// </summary>
         RecipInterface = 0x01,
+
         /// <summary>
         /// Other is recipient.
         /// </summary>

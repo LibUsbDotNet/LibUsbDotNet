@@ -32,6 +32,7 @@ namespace LibUsbDotNet.Main
         /// In Direction
         /// </summary>
         Direction_In = 0x80,
+
         /// <summary>
         /// Out Direction
         /// </summary>
@@ -41,14 +42,17 @@ namespace LibUsbDotNet.Main
         /// Device is recipient.
         /// </summary>
         Recipient_Device = 0x00,
+
         /// <summary>
         /// Endpoint is recipient.
         /// </summary>
         Recipient_Endpoint = 0x02,
+
         /// <summary>
         /// Interface is recipient.
         /// </summary>
         Recipient_Interface = 0x01,
+
         /// <summary>
         /// Other is recipient.
         /// </summary>
@@ -57,18 +61,21 @@ namespace LibUsbDotNet.Main
         /// <summary>
         /// Class specific request.
         /// </summary>
-        RequestType_Class = (0x01 << 5),
+        RequestType_Class = 0x01 << 5,
+
         /// <summary>
         /// RESERVED.
         /// </summary>
-        RequestType_Reserved = (0x03 << 5),
+        RequestType_Reserved = 0x03 << 5,
+
         /// <summary>
         /// Standard request.
         /// </summary>
-        RequestType_Standard = (0x00 << 5),
+        RequestType_Standard = 0x00 << 5,
+
         /// <summary>
         /// Vendor specific request.
         /// </summary>
-        RequestType_Vendor = (0x02 << 5),
+        RequestType_Vendor = 0x02 << 5,
     }
 }

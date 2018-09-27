@@ -56,11 +56,5 @@ namespace LibUsbDotNet.Main
         /// Endpoint number mask.
         /// </summary>
         public const byte ENDPOINT_NUMBER_MASK = 0xf;
-
-        ///// <summary>
-        ///// See <see cref="UsbError.Handled"/>.  Number of RETRIES before failed regardless of the handled field value.
-        ///// </summary>
-        //public const int MAX_FAIL_RETRIES_ON_HANDLED_ERROR = 4;
-
     }
 }
