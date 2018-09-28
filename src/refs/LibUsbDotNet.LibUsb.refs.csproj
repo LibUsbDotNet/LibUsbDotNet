@@ -1,15 +1,24 @@
 <Project Sdk="MSBuild.Sdk.Extras">
 
   <PropertyGroup>
-    <TargetFrameworks>netstandard1.6;netstandard2.0;netcoreapp2.0</TargetFrameworks>
+    <TargetFrameworks>netstandard2.0</TargetFrameworks>
     <TargetFrameworks Condition="'$(OS)' == 'Windows_NT'">$(TargetFrameworks);net45</TargetFrameworks>
   </PropertyGroup>
+
+  <ItemGroup Condition=" '$(TargetFramework)' == 'net45' ">
+    <Reference Include="System.Windows.Forms" />
+    <Reference Include="System" />
+    <Reference Include="Microsoft.CSharp" />
+    <PackageReference Include="System.Memory" Version="4.5.1" />
+  </ItemGroup>
+
+  <ItemGroup Condition="'$(TargetFramework)' == 'netstandard2.0'">
+    <PackageReference Include="System.Memory" Version="4.5.1" />
+  </ItemGroup>
 
   <ItemGroup>
     <PackageReference Include="Nerdbank.GitVersioning" Version="2.2.13" PrivateAssets="all" />
 
     <Compile Include="..\LibUsbDotNet.LibUsb\**\*.cs" Exclude="..\LibUsbDotNet.LibUsb\obj\**" />
-
-    <ProjectReference Include="..\LibUsbDotNet\LibUsbDotNet.csproj" />
   </ItemGroup>
 </Project>
