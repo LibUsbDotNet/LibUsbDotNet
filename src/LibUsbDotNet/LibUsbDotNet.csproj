@@ -6,7 +6,7 @@
     <Authors>Travis Robinson;Stevie-O;Quamotion</Authors>
     <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
     <TargetFrameworks>netstandard2.0;netcoreapp2.1</TargetFrameworks>
-    <RuntimeIdentifiers>win;linux;osx</RuntimeIdentifiers>
+    <RuntimeIdentifiers>win-x86;win-x64;linux-x64;osx-x64</RuntimeIdentifiers>
     <TargetFrameworks Condition="'$(OS)' == 'Windows_NT'">$(TargetFrameworks);net45</TargetFrameworks>
     <DefineConstants Condition="'$(BuildingInsideVisualStudio)' == 'true'">$(DefineConstants);WIN</DefineConstants>
     <ExtrasBuildEachRuntimeIdentifier Condition="'$(BuildingInsideVisualStudio)' != 'true' AND ($(TargetFramework.StartsWith('netstandard')) OR $(TargetFramework.StartsWith('netcoreapp')))">true</ExtrasBuildEachRuntimeIdentifier>
@@ -26,6 +26,10 @@
     <Reference Include="System.Windows.Forms" />
     <Reference Include="System" />
     <Reference Include="Microsoft.CSharp" />
+    <PackageReference Include="System.Memory" Version="4.5.1" />
+  </ItemGroup>
+
+  <ItemGroup Condition="'$(TargetFramework)' == 'netstandard2.0'">
     <PackageReference Include="System.Memory" Version="4.5.1" />
   </ItemGroup>
 
