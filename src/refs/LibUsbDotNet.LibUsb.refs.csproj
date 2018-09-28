@@ -3,6 +3,7 @@
   <PropertyGroup>
     <TargetFrameworks>netstandard2.0</TargetFrameworks>
     <TargetFrameworks Condition="'$(OS)' == 'Windows_NT'">$(TargetFrameworks);net45</TargetFrameworks>
+    <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
   </PropertyGroup>
 
   <ItemGroup Condition=" '$(TargetFramework)' == 'net45' ">
@@ -18,7 +19,9 @@
 
   <ItemGroup>
     <PackageReference Include="Nerdbank.GitVersioning" Version="2.2.13" PrivateAssets="all" />
+  </ItemGroup>
 
-    <Compile Include="..\LibUsbDotNet.LibUsb\**\*.cs" Exclude="..\LibUsbDotNet.LibUsb\obj\**" />
+  <ItemGroup>
+    <Compile Include="..\LibUsbDotNet\**\*.cs" Exclude="..\LibUsbDotNet\obj\**" />
   </ItemGroup>
 </Project>
