@@ -53,4 +53,14 @@
       <Pack>true</Pack>
     </Content>
   </ItemGroup>
+
+  <ItemGroup>
+    <!-- Because (lib)usb-1.0.[dll,so,dylib] includes a dot in the core assembly name (usb-1.0),
+         name resolution does not work correctly for [DllImport] attributes in .NET Core and we
+         need separate assemblies on Windows and Unix platforms.
+          This means we also need a reference assembly.
+          See https://oren.codes/2018/07/03/create-and-pack-reference-assemblies/
+         and https://oren.codes/2018/07/09/create-and-pack-reference-assemblies-made-easy/ -->
+    <ReferenceAssemblyProjectReference Include="..\refs\LibUsbDotNet.LibUsb.refs.csproj" />
+  </ItemGroup>
 </Project>
