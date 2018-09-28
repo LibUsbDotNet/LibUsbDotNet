@@ -1,13 +1,12 @@
 ﻿<Project Sdk="MSBuild.Sdk.Extras">
 
   <PropertyGroup>
-    <Description>.NET C# USB library for WinUSB, LibUsb-Win32, and libusb-1.0. Using the common device classes, applications work with all operating systems and drivers without modification. Lots of example code. Open source software at sourceforge.net.</Description>
+    <Description>.NET C# USB library for libusb-1.0. You can write applications that with on all operating systems and drivers without modification. Lots of example code. Open source software hosted on GitHub.</Description>
     <AssemblyTitle>LibUsbDotNet for .NET Core</AssemblyTitle>
     <Authors>Travis Robinson;Stevie-O;Quamotion</Authors>
     <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
-    <TargetFrameworks>netstandard2.0</TargetFrameworks>
+    <TargetFrameworks>netstandard2.0;netcoreapp2.1</TargetFrameworks>
     <TargetFrameworks Condition="'$(OS)' == 'Windows_NT'">$(TargetFrameworks);net45</TargetFrameworks>
-    <RuntimeIdentifiers>win;linux;osx</RuntimeIdentifiers>
     <DefineConstants Condition="'$(BuildingInsideVisualStudio)' == 'true'">$(DefineConstants);WIN</DefineConstants>
     <ExtrasBuildEachRuntimeIdentifier Condition="'$(BuildingInsideVisualStudio)' != 'true' AND ($(TargetFramework.StartsWith('netstandard')) OR $(TargetFramework.StartsWith('netcoreapp')))">true</ExtrasBuildEachRuntimeIdentifier>
     <DefineConstants>$(DefineConstants);LIBUSBDOTNET</DefineConstants>
@@ -26,14 +25,10 @@
     <Reference Include="System.Windows.Forms" />
     <Reference Include="System" />
     <Reference Include="Microsoft.CSharp" />
-  </ItemGroup>
-
-  <ItemGroup Condition=" '$(TargetFramework)' == 'netstandard2.0' OR '$(TargetFramework)' == 'netcoreapp2.0' ">
-    <PackageReference Include="Microsoft.Win32.Registry" Version="4.5.0" />
+    <PackageReference Include="System.Memory" Version="4.5.1" />
   </ItemGroup>
 
   <ItemGroup>
-    <PackageReference Include="System.Memory" Version="4.5.1" />
     <PackageReference Include="Nerdbank.GitVersioning" Version="2.2.13" PrivateAssets="all" />
     <PackageReference Include="Microsoft.SourceLink.GitHub" Version="1.0.0-beta-63127-02" PrivateAssets="All" />
   </ItemGroup>
