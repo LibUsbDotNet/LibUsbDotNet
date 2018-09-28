@@ -45,13 +45,14 @@ namespace LibUsbDotNet
 #if WIN_X64 || WIN_X86 || NET45 || WIN7_X64 || WIN7_X86 // win7-x64, win7-x64 during testing only.
         internal const string LibUsbNativeLibrary = "libusb-1.0.dll";
         internal const CallingConvention LibUsbCallingConvention = CallingConvention.StdCall;
-#endif
-#if LINUX_X86 || LINUX_X64 || UBUNTU || UBUNTU_16_04_X64 || UBUNTU_16_04_ARM64 // ubuntu during testing only.
+#elif LINUX_X64 || UBUNTU || UBUNTU_16_04_X64 || UBUNTU_16_04_ARM64 // ubuntu during testing only.
         internal const string LibUsbNativeLibrary = "libusb-1.0.so";
         internal const CallingConvention LibUsbCallingConvention = CallingConvention.Cdecl;
-#endif
-#if OSX_X64 || OSX_10_12_X64 // osx during testing only
+#elif OSX_X64 || OSX_10_12_X64 // osx during testing only
         internal const string LibUsbNativeLibrary = "libusb-1.0.0.dylib";
+        internal const CallingConvention LibUsbCallingConvention = CallingConvention.Cdecl;
+#elif REFERENCE_ASSEMBLY
+        internal const string LibUsbNativeLibrary = "usb";
         internal const CallingConvention LibUsbCallingConvention = CallingConvention.Cdecl;
 #endif
 
