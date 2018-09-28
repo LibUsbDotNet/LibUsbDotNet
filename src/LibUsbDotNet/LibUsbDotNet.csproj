@@ -1,8 +1,8 @@
 ﻿<Project Sdk="MSBuild.Sdk.Extras">
 
   <PropertyGroup>
-    <Description>.NET C# USB library for libusb-1.0. You can write applications that with on all operating systems and drivers without modification. Lots of example code. Open source software hosted on GitHub.</Description>
-    <AssemblyTitle>LibUsbDotNet for .NET Core</AssemblyTitle>
+    <Description>.NET USB library, which acts as a wrapper for libusb-1.0. You can write applications that with on all operating systems and drivers without modification. Lots of example code. Open source software hosted on GitHub.</Description>
+    <AssemblyTitle>LibUsbDotNet</AssemblyTitle>
     <Authors>Travis Robinson;Stevie-O;Quamotion</Authors>
     <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
     <TargetFrameworks>netstandard2.0;netcoreapp2.1</TargetFrameworks>
