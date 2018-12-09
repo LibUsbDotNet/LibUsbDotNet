@@ -1,15 +1,15 @@
-﻿using System;
-using System.Text;
-using System.Text.RegularExpressions;
-using LibUsbDotNet;
+﻿using LibUsbDotNet;
 using LibUsbDotNet.LibUsb;
 using LibUsbDotNet.Main;
+using System;
+using System.Text;
+using System.Text.RegularExpressions;
 
 namespace Examples
 {
     internal class ReadWrite
     {
-        public static UsbDevice MyUsbDevice;
+        public static IUsbDevice MyUsbDevice;
 
         #region SET YOUR USB Vendor and Product ID!
 
@@ -19,9 +19,9 @@ namespace Examples
 
         public static void Main(string[] args)
         {
-            Error ec = Error.Success;
+            var ec = Error.Success;
 
-            using (UsbContext context = new UsbContext())
+            using (var context = new UsbContext())
             {
                 try
                 {
@@ -35,7 +35,7 @@ namespace Examples
                     // it will have an IUsbDevice interface. If not (WinUSB) the 
                     // variable will be null indicating this is an interface of a 
                     // device.
-                    IUsbDevice wholeUsbDevice = MyUsbDevice as IUsbDevice;
+                    var wholeUsbDevice = MyUsbDevice as IUsbDevice;
                     if (!ReferenceEquals(wholeUsbDevice, null))
                     {
                         // This is a "whole" USB device. Before it can be used, 
@@ -55,23 +55,21 @@ namespace Examples
                     var writer = MyUsbDevice.OpenEndpointWriter(WriteEndpointID.Ep01);
 
                     // Remove the exepath/startup filename text from the begining of the CommandLine.
-                    string cmdLine = Regex.Replace(
+                    var cmdLine = Regex.Replace(
                         Environment.CommandLine, "^\".+?\"^.*? |^.*? ", "", RegexOptions.Singleline);
 
-                    if (!String.IsNullOrEmpty(cmdLine))
+                    if (!string.IsNullOrEmpty(cmdLine))
                     {
-                        int bytesWritten;
-                        ec = writer.Write(Encoding.Default.GetBytes(cmdLine), 2000, out bytesWritten);
-                        if (ec != Error.Success) throw new MonoUsbException(ec);
+                        ec = writer.Write(Encoding.Default.GetBytes(cmdLine), 2000, out var bytesWritten);
+                        if (ec != Error.Success) throw new Exception($"The command line {cmdLine} failed with an error of {ec}.");
 
-                        byte[] readBuffer = new byte[1024];
+                        var readBuffer = new byte[1024];
                         while (ec == Error.Success)
                         {
-                            int bytesRead;
 
                             // If the device hasn't sent data in the last 100 milliseconds,
                             // a timeout error (ec = IoTimedOut) will occur. 
-                            ec = reader.Read(readBuffer, 100, out bytesRead);
+                            ec = reader.Read(readBuffer, 100, out var bytesRead);
 
                             if (bytesRead == 0) throw new Exception("No more bytes!");
 
@@ -87,7 +85,7 @@ namespace Examples
                 catch (Exception ex)
                 {
                     Console.WriteLine();
-                    Console.WriteLine((ec != Error.Success ? ec + ":" : String.Empty) + ex.Message);
+                    Console.WriteLine((ec != Error.Success ? ec + ":" : string.Empty) + ex.Message);
                 }
                 finally
                 {
@@ -100,7 +98,7 @@ namespace Examples
                             // 'wholeUsbDevice' variable will be null indicating this is 
                             // an interface of a device; it does not require or support 
                             // configuration and interface selection.
-                            IUsbDevice wholeUsbDevice = MyUsbDevice as IUsbDevice;
+                            var wholeUsbDevice = MyUsbDevice as IUsbDevice;
                             if (!ReferenceEquals(wholeUsbDevice, null))
                             {
                                 // Release interface #0.
