@@ -1,118 +1,53 @@
 ﻿using LibUsbDotNet;
 using LibUsbDotNet.LibUsb;
 using LibUsbDotNet.Main;
-using System;
-using System.Text;
-using System.Text.RegularExpressions;
+using System.Linq;
 
 namespace Examples
 {
     internal class ReadWrite
     {
-        public static IUsbDevice MyUsbDevice;
+        //Put your Product Id Here
+        private const int ProductId = 0x0001;
 
-        #region SET YOUR USB Vendor and Product ID!
-
-        public static UsbDeviceFinder MyUsbFinder = new UsbDeviceFinder(1234, 1);
-
-        #endregion
+        //Put your Vendor Id Here
+        private const int VendorId = 0x0001;
 
         public static void Main(string[] args)
         {
-            var ec = Error.Success;
-
             using (var context = new UsbContext())
             {
-                try
-                {
-                    // Find and open the usb device.
-                    MyUsbDevice = context.Find(MyUsbFinder);
+                context.SetDebugLevel(LogLevel.Info);
 
-                    // If the device is open and ready
-                    if (MyUsbDevice == null) throw new Exception("Device Not Found.");
+                //Get a list of all connected devices
+                var usbDeviceCollection = context.List();
 
-                    // If this is a "whole" usb device (libusb-win32, linux libusb)
-                    // it will have an IUsbDevice interface. If not (WinUSB) the 
-                    // variable will be null indicating this is an interface of a 
-                    // device.
-                    var wholeUsbDevice = MyUsbDevice as IUsbDevice;
-                    if (!ReferenceEquals(wholeUsbDevice, null))
-                    {
-                        // This is a "whole" USB device. Before it can be used, 
-                        // the desired configuration and interface must be selected.
+                //Narrow down the device by vendor and pid
+                var selectedDevice = usbDeviceCollection.FirstOrDefault(d => d.ProductId == ProductId && d.VendorId == VendorId);
 
-                        // Select config #1
-                        wholeUsbDevice.SetConfiguration(1);
+                //Open the device
+                selectedDevice.Open();
 
-                        // Claim interface #0.
-                        wholeUsbDevice.ClaimInterface(0);
-                    }
+                //Get the first config number of the interface
+                selectedDevice.ClaimInterface(selectedDevice.Configs[0].Interfaces[0].Number);
 
-                    // open read endpoint 1.
-                    var reader = MyUsbDevice.OpenEndpointReader(ReadEndpointID.Ep01);
+                //Open up the endpoints
+                var writeEndpoint = selectedDevice.OpenEndpointWriter(WriteEndpointID.Ep01);
+                var readEnpoint = selectedDevice.OpenEndpointReader(ReadEndpointID.Ep01);
 
-                    // open write endpoint 1.
-                    var writer = MyUsbDevice.OpenEndpointWriter(WriteEndpointID.Ep01);
+                //Create a buffer with some data in it
+                var buffer = new byte[64];
+                buffer[0] = 0x3f;
+                buffer[1] = 0x23;
+                buffer[2] = 0x23;
 
-                    // Remove the exepath/startup filename text from the begining of the CommandLine.
-                    var cmdLine = Regex.Replace(
-                        Environment.CommandLine, "^\".+?\"^.*? |^.*? ", "", RegexOptions.Singleline);
+                //Write three bytes
+                writeEndpoint.Write(buffer, 3000, out var bytesWritten);
 
-                    if (!string.IsNullOrEmpty(cmdLine))
-                    {
-                        ec = writer.Write(Encoding.Default.GetBytes(cmdLine), 2000, out var bytesWritten);
-                        if (ec != Error.Success) throw new Exception($"The command line {cmdLine} failed with an error of {ec}.");
+                var readBuffer = new byte[64];
 
-                        var readBuffer = new byte[1024];
-                        while (ec == Error.Success)
-                        {
-
-                            // If the device hasn't sent data in the last 100 milliseconds,
-                            // a timeout error (ec = IoTimedOut) will occur. 
-                            ec = reader.Read(readBuffer, 100, out var bytesRead);
-
-                            if (bytesRead == 0) throw new Exception("No more bytes!");
-
-                            // Write that output to the console.
-                            Console.Write(Encoding.Default.GetString(readBuffer, 0, bytesRead));
-                        }
-
-                        Console.WriteLine("\r\nDone!\r\n");
-                    }
-                    else
-                        throw new Exception("Nothing to do.");
-                }
-                catch (Exception ex)
-                {
-                    Console.WriteLine();
-                    Console.WriteLine((ec != Error.Success ? ec + ":" : string.Empty) + ex.Message);
-                }
-                finally
-                {
-                    if (MyUsbDevice != null)
-                    {
-                        if (MyUsbDevice.IsOpen)
-                        {
-                            // If this is a "whole" usb device (libusb-win32, linux libusb-1.0)
-                            // it exposes an IUsbDevice interface. If not (WinUSB) the 
-                            // 'wholeUsbDevice' variable will be null indicating this is 
-                            // an interface of a device; it does not require or support 
-                            // configuration and interface selection.
-                            var wholeUsbDevice = MyUsbDevice as IUsbDevice;
-                            if (!ReferenceEquals(wholeUsbDevice, null))
-                            {
-                                // Release interface #0.
-                                wholeUsbDevice.ReleaseInterface(0);
-                            }
-
-                            MyUsbDevice.Close();
-                        }
-                        MyUsbDevice = null;
-                    }
-
-                    // Wait for user input..
-                    Console.ReadKey();
-                }
+                //Read some data
+                readEnpoint.Read(readBuffer, 3000, out var readBytes);
             }
         }
     }
