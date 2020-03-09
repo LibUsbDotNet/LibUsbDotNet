@@ -1,6 +1,6 @@
 variables:
-  libusbBuild: 59 # 20180921.5
-  libusbkBuild: 84 # 20180921.5
+  libusbBuild: 155 # 20200309.1
+  libusbkBuild: 153 # 20200309.1
 
 jobs:
 - job: windows
