@@ -15,7 +15,6 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\LibUsbDotNet.LibUsb\LibUsbDotNet.LibUsb.csproj" />
     <ProjectReference Include="..\LibUsbDotNet\LibUsbDotNet.csproj" />
   </ItemGroup>
 
