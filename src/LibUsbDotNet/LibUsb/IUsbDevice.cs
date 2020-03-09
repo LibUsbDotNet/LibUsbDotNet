@@ -121,6 +121,36 @@ namespace LibUsbDotNet.LibUsb
         bool GetString(out string stringData, short langId, byte stringIndex);
 
         /// <summary>
+        /// Retrieve a descriptor from a device.
+        /// </summary>
+        /// <param name="descriptorIndex">
+        /// The index of the descriptor to retieve.
+        /// </param>
+        /// <param name="failSilently">
+        /// <see langword="true"/> to return <see langword="null"/> when the descriptor could not be
+        /// received; <see langword="false"/> to throw an <see cref="UsbException"/> instead.
+        /// </param>
+        /// <returns>
+        /// The value of the requested descriptor.
+        /// </returns>
+        string GetStringDescriptor(byte descriptorIndex, bool failSilently = false);
+
+        /// <summary>
+        /// Attempts to get a USB configuration descriptor based on its index.
+        /// </summary>
+        /// <param name="configIndex">
+        /// The index of the configuration you wish to retrieve
+        /// </param>
+        /// <param name="descriptor">
+        /// The requested descriptor.
+        /// </param>
+        /// <returns>
+        /// <see langword="true"/> if the descriptor could be loaded correctly; otherwise,
+        /// <see langword="false">.
+        /// </returns>
+        bool TryGetConfigDescriptor(byte configIndex, out UsbConfigInfo descriptor);
+
+        /// <summary>
         /// sets the alternate interface number for the previously claimed interface. <see cref="IUsbDevice.ClaimInterface"/>
         /// </summary>
         /// <param name="alternateID">The alternate interface number.</param>

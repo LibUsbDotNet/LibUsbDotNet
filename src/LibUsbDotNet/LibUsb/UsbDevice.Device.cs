@@ -270,7 +270,7 @@ namespace LibUsbDotNet.LibUsb
         /// </param>
         /// <returns>
         /// <see langword="true"/> if the descriptor could be loaded correctly; otherwise,
-        /// <see langword="false" ">.
+        /// <see langword="false">.
         /// </returns>
         public unsafe bool TryGetConfigDescriptor(byte configIndex, out UsbConfigInfo descriptor)
         {
