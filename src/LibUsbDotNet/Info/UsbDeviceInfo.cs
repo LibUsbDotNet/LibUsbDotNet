@@ -27,9 +27,16 @@ namespace LibUsbDotNet.Info
     /// </summary>
     public class UsbDeviceInfo
     {
+        /// <summary>
+        /// Initializes a new instance of the <see cref="UsbDeviceInfo"/> class.
+        /// </summary>
+        protected UsbDeviceInfo()
+        {
+        }
+
         private readonly Collection<UsbConfigInfo> configurations = new Collection<UsbConfigInfo>();
 
-        public static UsbDeviceInfo FromUsbDeviceDescriptor(LibUsb.UsbDevice device, DeviceDescriptor descriptor)
+        public static UsbDeviceInfo FromUsbDeviceDescriptor(LibUsb.IUsbDevice device, DeviceDescriptor descriptor)
         {
             Debug.Assert(descriptor.DescriptorType == (int)DescriptorType.Device, "A config descriptor was expected");
 
