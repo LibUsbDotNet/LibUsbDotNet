@@ -46,7 +46,7 @@ namespace LibUsbDotNet
         internal const string LibUsbNativeLibrary = "libusb-1.0.dll";
         internal const CallingConvention LibUsbCallingConvention = CallingConvention.StdCall;
 #elif LINUX_X64 || LINUX_ARM64 || UBUNTU || UBUNTU_16_04_X64 || UBUNTU_16_04_ARM64 // ubuntu during testing only.
-        internal const string LibUsbNativeLibrary = "libusb-1.0.so";
+        internal const string LibUsbNativeLibrary ="libusb-1.0.so.0";
         internal const CallingConvention LibUsbCallingConvention = CallingConvention.Cdecl;
 #elif OSX_X64 || OSX_10_12_X64 // osx during testing only
         internal const string LibUsbNativeLibrary = "libusb-1.0.0.dylib";
