@@ -73,13 +73,17 @@ namespace LibUsbDotNet.LibUsb
         /// <inheritdoc/>
         public void Dispose()
         {
-            // Close the libusb_device_handle if required.
-            this.Close();
+            if (!this.disposed)
+            {
+                // Close the libusb_device_handle if required.
+                this.Close();
 
-            // Close the libusb_device handle.
-            this.device.Dispose();
+                // Close the libusb_device handle.
+                this.deviceHandle.Dispose();
+                this.device.Dispose();
 
-            this.disposed = true;
+                this.disposed = true;
+            }
         }
 
         /// <inheritdoc/>
