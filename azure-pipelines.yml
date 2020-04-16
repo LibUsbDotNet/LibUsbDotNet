@@ -32,8 +32,7 @@ jobs:
     displayName: 'download libusbK artifacts'
 
   - script: |
-      dotnet pack src\LibUsbDotNet\LibUsbDotNet.csproj -c Release
-      copy src\LibUsbDotNet\bin\Release\LibUsbDotNet.*.nupkg %BUILD_ARTIFACTSTAGINGDIRECTORY%
+      dotnet pack src\LibUsbDotNet\LibUsbDotNet.csproj -c Release -o %BUILD_ARTIFACTSTAGINGDIRECTORY%
     displayName: 'Build'
 
   - script: |
