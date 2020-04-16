@@ -79,7 +79,6 @@ namespace LibUsbDotNet.LibUsb
                 this.Close();
 
                 // Close the libusb_device handle.
-                this.deviceHandle.Dispose();
                 this.device.Dispose();
 
                 this.disposed = true;
