@@ -275,40 +275,13 @@ namespace LibUsbDotNet.LibUsb
         /// </summary>
         public void Open()
         {
-            this.EnsureNotDisposed();
-
-            if (this.IsOpen)
-            {
-                return;
-            }
-
-            IntPtr deviceHandle = IntPtr.Zero;
-            NativeMethods.Open(this.device, ref deviceHandle).ThrowOnError();
-
-            this.deviceHandle = DeviceHandle.DangerousCreate(deviceHandle);
-            this.descriptor = null;
+            this.OpenNative().ThrowOnError();
         }
 
         /// <inheritdoc/>
         public bool TryOpen()
         {
-            this.EnsureNotDisposed();
-
-            if (this.IsOpen)
-            {
-                return true;
-            }
-
-            IntPtr deviceHandle = IntPtr.Zero;
-            if (NativeMethods.Open(this.device, ref deviceHandle) == Error.Success)
-            {
-                this.deviceHandle = DeviceHandle.DangerousCreate(deviceHandle);
-                return true;
-            }
-            else
-            {
-                return false;
-            }
+            return this.OpenNative() == Error.Success;
         }
 
         /// <summary>
@@ -336,6 +309,27 @@ namespace LibUsbDotNet.LibUsb
             {
                 throw new UsbException("The device has not been opened. You need to call Open() first.");
             }
+        }
+
+        private Error OpenNative()
+        {
+            this.EnsureNotDisposed();
+
+            if (this.IsOpen)
+            {
+                return Error.Success;
+            }
+
+            IntPtr deviceHandle = IntPtr.Zero;
+            var ret = NativeMethods.Open(this.device, ref deviceHandle);
+            
+            if (ret == Error.Success)
+            {
+                this.deviceHandle = DeviceHandle.DangerousCreate(deviceHandle);
+                this.descriptor = null;
+            }
+
+            return ret;
         }
     }
 }
