@@ -12,7 +12,7 @@
     <ExtrasBuildEachRuntimeIdentifier Condition="'$(BuildingInsideVisualStudio)' != 'true' AND ($(TargetFramework.StartsWith('netstandard')) OR $(TargetFramework.StartsWith('netcoreapp')))">true</ExtrasBuildEachRuntimeIdentifier>
     <DefineConstants>$(DefineConstants);LIBUSBDOTNET</DefineConstants>
     <PackageProjectUrl>https://github.com/LibUsbDotNet/LibUsbDotNet/</PackageProjectUrl>
-    <PackageLicenseUrl>https://github.com/LibUsbDotNet/LibUsbDotNet/blob/master/LICENSE</PackageLicenseUrl>
+    <PackageLicenseExpression>LGPL-3.0-or-later</PackageLicenseExpression>
     <PackageIconUrl>http://c.fsdn.com/allura/p/libusbdotnet/icon</PackageIconUrl>
     <RepositoryType>git</RepositoryType>
     <PublishRepositoryUrl>true</PublishRepositoryUrl>
