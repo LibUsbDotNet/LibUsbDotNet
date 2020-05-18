@@ -91,7 +91,6 @@ namespace LibUsbDotNet.Main
         /// <inheritdoc/>
         public override void Flush()
         {
-            throw new NotSupportedException();
         }
 
         /// <inheritdoc/>
