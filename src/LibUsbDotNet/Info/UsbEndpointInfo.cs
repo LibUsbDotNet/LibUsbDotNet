@@ -51,17 +51,17 @@ namespace LibUsbDotNet.Info
             return value;
         }
 
-        public byte Attributes { get; private set; }
+        public virtual byte Attributes { get; private set; }
 
-        public byte EndpointAddress { get; private set; }
+        public virtual byte EndpointAddress { get; private set; }
 
-        public byte Interval { get; private set; }
+        public virtual byte Interval { get; private set; }
 
-        public ushort MaxPacketSize { get; private set; }
+        public virtual ushort MaxPacketSize { get; private set; }
 
-        public byte Refresh { get; private set; }
+        public virtual byte Refresh { get; private set; }
 
-        public byte SyncAddress { get; private set; }
+        public virtual byte SyncAddress { get; private set; }
 
         public override string ToString()
         {

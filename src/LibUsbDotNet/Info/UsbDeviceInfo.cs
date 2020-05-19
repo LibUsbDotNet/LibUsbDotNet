@@ -64,31 +64,31 @@ namespace LibUsbDotNet.Info
             return value;
         }
 
-        public ushort Device { get; protected set; }
+        public virtual ushort Device { get; protected set; }
 
-        public byte DeviceClass { get; protected set; }
+        public virtual byte DeviceClass { get; protected set; }
 
-        public byte DeviceProtocol { get; protected set; }
+        public virtual byte DeviceProtocol { get; protected set; }
 
-        public byte DeviceSubClass { get; protected set; }
+        public virtual byte DeviceSubClass { get; protected set; }
 
-        public ushort ProductId { get; protected set; }
+        public virtual ushort ProductId { get; protected set; }
 
-        public ushort VendorId { get; protected set; }
+        public virtual ushort VendorId { get; protected set; }
 
-        public string Manufacturer { get; protected set; }
+        public virtual string Manufacturer { get; protected set; }
 
-        public byte MaxPacketSize0 { get; protected set; }
+        public virtual byte MaxPacketSize0 { get; protected set; }
 
-        public byte NumConfigurations { get; protected set; }
+        public virtual byte NumConfigurations { get; protected set; }
 
-        public string Product { get; protected set; }
+        public virtual string Product { get; protected set; }
 
-        public string SerialNumber { get; protected set; }
+        public virtual string SerialNumber { get; protected set; }
 
-        public ushort Usb { get; protected set; }
+        public virtual ushort Usb { get; protected set; }
 
-        public ReadOnlyCollection<UsbConfigInfo> Configurations
+        public virtual ReadOnlyCollection<UsbConfigInfo> Configurations
         {
             get { return new ReadOnlyCollection<UsbConfigInfo>(this.configurations); }
         }

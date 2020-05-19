@@ -42,7 +42,7 @@ namespace LibUsbDotNet.Info
         /// <summary>
         /// Gets the device-specific custom descriptor lists.
         /// </summary>
-        public ReadOnlyCollection<byte> CustomDescriptors
+        public virtual ReadOnlyCollection<byte> CustomDescriptors
         {
             get { return new ReadOnlyCollection<byte>(new List<byte>(this.RawDescriptors)); }
         }

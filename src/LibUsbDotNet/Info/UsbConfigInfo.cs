@@ -60,18 +60,18 @@ namespace LibUsbDotNet.Info
             return value;
         }
 
-        public string Configuration { get; protected set; }
+        public virtual string Configuration { get; protected set; }
 
-        public byte Attributes { get; protected set; }
+        public virtual byte Attributes { get; protected set; }
 
-        public int ConfigurationValue { get; protected set; }
+        public virtual int ConfigurationValue { get; protected set; }
 
-        public byte MaxPower { get; protected set; }
+        public virtual byte MaxPower { get; protected set; }
 
         /// <summary>
         /// Gets the collection of USB device interfaces associated with this <see cref="UsbConfigInfo"/> instance.
         /// </summary>
-        public ReadOnlyCollection<UsbInterfaceInfo> Interfaces
+        public virtual ReadOnlyCollection<UsbInterfaceInfo> Interfaces
         {
             get { return this.interfaces.AsReadOnly(); }
         }

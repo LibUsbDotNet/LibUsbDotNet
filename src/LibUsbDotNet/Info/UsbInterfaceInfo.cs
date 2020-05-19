@@ -78,22 +78,22 @@ namespace LibUsbDotNet.Info
             return value;
         }
 
-        public byte AlternateSetting { get; private set; }
+        public virtual byte AlternateSetting { get; private set; }
 
-        public ClassCode Class { get; private set; }
+        public virtual ClassCode Class { get; private set; }
 
-        public int Number { get; private set; }
+        public virtual int Number { get; private set; }
 
-        public byte Protocol { get; private set; }
+        public virtual byte Protocol { get; private set; }
 
-        public string Interface { get; private set; }
+        public virtual string Interface { get; private set; }
 
-        public byte SubClass { get; private set; }
+        public virtual byte SubClass { get; private set; }
 
         /// <summary>
         /// Gets the collection of endpoint descriptors associated with this interface.
         /// </summary>
-        public ReadOnlyCollection<UsbEndpointInfo> Endpoints
+        public virtual ReadOnlyCollection<UsbEndpointInfo> Endpoints
         {
             get { return this.endpoints.AsReadOnly(); }
         }
