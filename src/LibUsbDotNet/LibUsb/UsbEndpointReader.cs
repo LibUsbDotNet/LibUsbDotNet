@@ -39,7 +39,7 @@ namespace LibUsbDotNet.LibUsb
     {
         private int mReadBufferSize;
 
-        public UsbEndpointReader(UsbDevice usbDevice, int readBufferSize, byte alternateInterfaceID, ReadEndpointID readEndpointID, EndpointType endpointType)
+        public UsbEndpointReader(IUsbDevice usbDevice, int readBufferSize, byte alternateInterfaceID, ReadEndpointID readEndpointID, EndpointType endpointType)
             : base(usbDevice, alternateInterfaceID, (byte)readEndpointID, endpointType)
         {
             this.mReadBufferSize = readBufferSize;

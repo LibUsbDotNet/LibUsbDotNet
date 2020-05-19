@@ -31,13 +31,13 @@ namespace LibUsbDotNet.LibUsb
     public abstract class UsbEndpointBase
     {
         private readonly byte mEpNum;
-        private readonly UsbDevice mUsbDevice;
+        private readonly IUsbDevice mUsbDevice;
         private readonly byte alternateInterfaceID;
         private UsbEndpointInfo mUsbEndpointInfo;
         private EndpointType mEndpointType;
         private UsbInterfaceInfo mUsbInterfacetInfo;
 
-        internal UsbEndpointBase(UsbDevice usbDevice, byte alternateInterfaceID, byte epNum, EndpointType endpointType)
+        internal UsbEndpointBase(IUsbDevice usbDevice, byte alternateInterfaceID, byte epNum, EndpointType endpointType)
         {
             this.mUsbDevice = usbDevice;
             this.alternateInterfaceID = alternateInterfaceID;
@@ -48,7 +48,7 @@ namespace LibUsbDotNet.LibUsb
         /// <summary>
         /// Gets the <see cref="UsbDevice"/> class this endpoint belongs to.
         /// </summary>
-        public UsbDevice Device
+        public IUsbDevice Device
         {
             get { return this.mUsbDevice; }
         }

@@ -36,6 +36,12 @@ namespace LibUsbDotNet.LibUsb
     public interface IUsbDevice : IDisposable
     {
         /// <summary>
+        /// Gets the underlying device handle. The handle is populated when you open the device
+        /// using <see cref="Open"/>, and cleared when you close the device using <see cref="Close"/>.
+        /// </summary>
+        DeviceHandle DeviceHandle { get; }
+
+        /// <summary>
         /// Gets the available configurations for this <see cref="UsbDevice"/>
         /// </summary>
         /// <remarks>

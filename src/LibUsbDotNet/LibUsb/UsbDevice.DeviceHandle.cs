@@ -35,7 +35,8 @@ namespace LibUsbDotNet.LibUsb
         /// </summary>
         private DeviceHandle deviceHandle;
 
-        internal DeviceHandle DeviceHandle
+        /// <inheritdoc/>
+        public DeviceHandle DeviceHandle
         {
             get { return this.deviceHandle; }
         }
