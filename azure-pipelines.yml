@@ -1,6 +1,6 @@
 variables:
-  libusbBuild: 155 # 20200309.1
-  libusbkBuild: 153 # 20200309.1
+  libusbBuild: 208 # 20201202.4
+  libusbkBuild: 209 # 20201202.1
 
 jobs:
 - job: windows
@@ -14,9 +14,20 @@ jobs:
       pipeline: '2'
       runVersion: 'specific'
       runId: $(libusbBuild)
-      artifact: 'drop'
+      artifact: 'windows'
       path: '$(System.ArtifactsDirectory)/drop'
-    displayName: 'download libusb artifacts'
+    displayName: 'download libusb windows artifacts'
+
+  - task: DownloadPipelineArtifact@2
+    inputs:
+      source: 'specific'
+      project: 'libusbdotnet'
+      pipeline: '2'
+      runVersion: 'specific'
+      runId: $(libusbBuild)
+      artifact: 'macos'
+      path: '$(System.ArtifactsDirectory)/drop'
+    displayName: 'download libusb macOS artifacts'
 
   - task: DownloadPipelineArtifact@2
     inputs:
@@ -25,7 +36,7 @@ jobs:
       pipeline: '3'
       runVersion: 'specific'
       runId: $(libusbkBuild)
-      artifact: 'drop'
+      artifact: 'windows'
       path: '$(System.ArtifactsDirectory)/drop'
     displayName: 'download libusbK artifacts'
 
@@ -61,9 +72,9 @@ jobs:
       pipeline: '2'
       runVersion: 'specific'
       runId: $(libusbBuild)
-      artifact: 'drop'
+      artifact: 'macos'
       path: '$(System.ArtifactsDirectory)/drop'
-    displayName: 'download libusb artifacts'
+    displayName: 'download libusb macOS artifacts'
 
   - script: |
       dotnet pack src/LibUsbDotNet/LibUsbDotNet.csproj -c Release
