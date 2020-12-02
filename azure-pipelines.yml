@@ -7,28 +7,26 @@ jobs:
   pool:
     vmImage: 'windows-2019'
   steps:
-  - task: DownloadBuildArtifacts@0
+  - task: DownloadPipelineArtifact@2
     inputs:
-      buildType: 'specific'
+      source: 'specific'
       project: 'libusbdotnet'
       pipeline: '2'
-      buildVersionToDownload: 'specific'
-      buildId: $(libusbBuild)
-      downloadType: 'single'
-      artifactName: 'drop'
-      downloadPath: '$(System.ArtifactsDirectory)'
+      runVersion: 'specific'
+      runId: $(libusbBuild)
+      artifact: 'drop'
+      path: '$(System.ArtifactsDirectory)/drop'
     displayName: 'download libusb artifacts'
 
-  - task: DownloadBuildArtifacts@0
+  - task: DownloadPipelineArtifact@2
     inputs:
-      buildType: 'specific'
+      source: 'specific'
       project: 'libusbdotnet'
       pipeline: '3'
-      buildVersionToDownload: 'specific'
-      buildId: $(libusbkBuild)
-      downloadType: 'single'
-      artifactName: 'drop'
-      downloadPath: '$(System.ArtifactsDirectory)'
+      runVersion: 'specific'
+      runId: $(libusbkBuild)
+      artifact: 'drop'
+      path: '$(System.ArtifactsDirectory)/drop'
     displayName: 'download libusbK artifacts'
 
   - script: |
@@ -56,16 +54,15 @@ jobs:
   pool:
     vmImage: 'macOS-10.15'
   steps:
-  - task: DownloadBuildArtifacts@0
+  - task: DownloadPipelineArtifact@2
     inputs:
-      buildType: 'specific'
+      source: 'specific'
       project: 'libusbdotnet'
       pipeline: '2'
-      buildVersionToDownload: 'specific'
-      buildId: $(libusbBuild)
-      downloadType: 'single'
-      artifactName: 'drop'
-      downloadPath: '$(System.ArtifactsDirectory)'
+      runVersion: 'specific'
+      runId: $(libusbBuild)
+      artifact: 'drop'
+      path: '$(System.ArtifactsDirectory)/drop'
     displayName: 'download libusb artifacts'
 
   - script: |
