@@ -27,10 +27,10 @@ namespace LibUsbDotNet
 {
     internal static unsafe partial class NativeMethods
     {
-        [DllImport(LibUsbNativeLibrary, CallingConvention = LibUsbCallingConvention, EntryPoint = "libusb_get_device_list")]
+        [DllImport(LibUsbNativeLibrary, EntryPoint = "libusb_get_device_list")]
         public static extern IntPtr GetDeviceList(Context ctx, IntPtr** list);
 
-        [DllImport(LibUsbNativeLibrary, CallingConvention = LibUsbCallingConvention, EntryPoint = "libusb_free_device_list")]
+        [DllImport(LibUsbNativeLibrary, EntryPoint = "libusb_free_device_list")]
         public static extern IntPtr FreeDeviceList(IntPtr* list, int unrefDevices);
     }
 }

@@ -1,16 +1,12 @@
-﻿<Project Sdk="MSBuild.Sdk.Extras">
+﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
     <Description>.NET USB library, which acts as a wrapper for libusb-1.0. You can write applications that with on all operating systems and drivers without modification. Lots of example code. Open source software hosted on GitHub.</Description>
     <AssemblyTitle>LibUsbDotNet</AssemblyTitle>
     <Authors>Travis Robinson;Stevie-O;Quamotion</Authors>
     <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
-    <TargetFrameworks>netstandard2.0;netcoreapp2.1</TargetFrameworks>
-    <RuntimeIdentifiers>win-x86;win-x64;linux-x64;linux-arm64;linux-arm;osx-x64</RuntimeIdentifiers>
+    <TargetFrameworks>netcoreapp3.1</TargetFrameworks>
     <TargetFrameworks Condition="'$(OS)' == 'Windows_NT'">$(TargetFrameworks);net45</TargetFrameworks>
-    <DefineConstants Condition="'$(BuildingInsideVisualStudio)' == 'true'">$(DefineConstants);WIN</DefineConstants>
-    <ExtrasBuildEachRuntimeIdentifier Condition="'$(BuildingInsideVisualStudio)' != 'true' AND ($(TargetFramework.StartsWith('netstandard')) OR $(TargetFramework.StartsWith('netcoreapp')))">true</ExtrasBuildEachRuntimeIdentifier>
-    <DefineConstants>$(DefineConstants);LIBUSBDOTNET</DefineConstants>
     <PackageProjectUrl>https://github.com/LibUsbDotNet/LibUsbDotNet/</PackageProjectUrl>
     <PackageLicenseExpression>LGPL-3.0-or-later</PackageLicenseExpression>
     <PackageIconUrl>http://c.fsdn.com/allura/p/libusbdotnet/icon</PackageIconUrl>
@@ -24,13 +20,8 @@
   </PropertyGroup>
 
   <ItemGroup Condition=" '$(TargetFramework)' == 'net45' ">
-    <Reference Include="System.Windows.Forms" />
     <Reference Include="System" />
     <Reference Include="Microsoft.CSharp" />
-    <PackageReference Include="System.Memory" Version="4.5.1" />
-  </ItemGroup>
-
-  <ItemGroup Condition="'$(TargetFramework)' == 'netstandard2.0'">
     <PackageReference Include="System.Memory" Version="4.5.1" />
   </ItemGroup>
 
@@ -53,15 +44,5 @@
       <PackagePath>runtimes/osx-x64/native/%(Filename)%(Extension)</PackagePath>
       <Pack>true</Pack>
     </Content>
-  </ItemGroup>
-
-  <ItemGroup>
-    <!-- Because (lib)usb-1.0.[dll,so,dylib] includes a dot in the core assembly name (usb-1.0),
-         name resolution does not work correctly for [DllImport] attributes in .NET Core and we
-         need separate assemblies on Windows and Unix platforms.
-          This means we also need a reference assembly.
-          See https://oren.codes/2018/07/03/create-and-pack-reference-assemblies/
-         and https://oren.codes/2018/07/09/create-and-pack-reference-assemblies-made-easy/ -->
-    <ReferenceAssemblyProjectReference Include="..\refs\LibUsbDotNet.LibUsb.refs.csproj" />
   </ItemGroup>
 </Project>
