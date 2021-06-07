@@ -29,7 +29,6 @@ using LibUsbDotNet;
 using LibUsbDotNet.Descriptors;
 using LibUsbDotNet.Info;
 using LibUsbDotNet.Main;
-using LibUsbDotNet.LudnMonoLibUsb;
 using LibUsbDotNet.LibUsb;
 
 namespace Test_Info
@@ -37,14 +36,14 @@ namespace Test_Info
     public partial class fTestInfo : Form
     {
         private readonly UsbContext context = new UsbContext();
-        private UsbDevice mUsbDevice;
-        private UsbDevice mUsbRegistry;
+        private IUsbDevice mUsbDevice;
+        private IUsbDevice mUsbRegistry;
         private UsbDeviceCollection mDevList;
 
         public fTestInfo() { InitializeComponent(); }
 
         #region STATIC Members
-        private static StringBuilder getDescriptorReport(UsbDevice usbRegistry)
+        private static StringBuilder getDescriptorReport(IUsbDevice usbRegistry)
         {
             StringBuilder sbReport = new StringBuilder();
 
@@ -91,7 +90,7 @@ namespace Test_Info
         }
 
 
-        private void addDevice(UsbDevice deviceReg, string display)
+        private void addDevice(IUsbDevice deviceReg, string display)
         {
             if (!deviceReg.TryOpen()) return;
             mUsbRegistry = deviceReg;

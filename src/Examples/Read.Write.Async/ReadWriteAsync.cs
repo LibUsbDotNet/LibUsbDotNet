@@ -13,7 +13,7 @@ namespace Examples
 {
     internal class ReadWriteAsync
     {
-        public static UsbDevice MyUsbDevice;
+        public static IUsbDevice MyUsbDevice;
 
         #region SET YOUR USB Vendor and Product ID!
 
