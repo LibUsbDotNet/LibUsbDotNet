@@ -8,7 +8,11 @@ jobs:
       dotnet build stage\LibUsbDotNet\LibUsbDotNet.csproj /p:Configuration=Release
       dotnet pack stage\LibUsbDotNet\LibUsbDotNet.csproj /p:Configuration=Release
       copy stage\LibUsbDotNet\bin\Release\LibUsbDotNet.*.nupkg %BUILD_ARTIFACTSTAGINGDIRECTORY%
-    displayName: 'Build'
+    displayName: 'Build LibUsbDotNet core library'
+    
+  - script: |
+      dotnet build stage\LibUsbDotNet.sln /p:Configuration=Release
+    displayName: 'Build LibUsbDotNet solution'
 
   - task: PublishBuildArtifacts@1
     inputs:

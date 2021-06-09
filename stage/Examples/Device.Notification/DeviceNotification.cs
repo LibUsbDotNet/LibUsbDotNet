@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Windows.Forms;
 using LibUsbDotNet.DeviceNotify;
 
 namespace Device.Notification
@@ -19,8 +18,7 @@ namespace Device.Notification
             Console.WriteLine("Waiting for system level device events..");
             Console.Write("[Press any key to exit]");
 
-            while (!Console.KeyAvailable)
-                Application.DoEvents();
+            Console.ReadKey(intercept: true);
 
             UsbDeviceNotifier.Enabled = false;  // Disable the device notifier
 
