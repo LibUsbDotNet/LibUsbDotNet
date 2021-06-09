@@ -238,22 +238,29 @@ namespace LibUsbDotNet.Main
         {
             try
             {
-                if (this.Vid != null && usbDevice.Info.VendorId != this.Vid.Value)
+                if (this.Vid != null && 
+                    this.Vid != int.MaxValue &&
+                    this.Vid.Value != usbDevice.Info.VendorId)
                 {
                     return false;
                 }
 
-                if (this.Pid != null && usbDevice.Info.ProductId != this.Pid.Value)
+                if (this.Pid != null && 
+                    this.Pid != int.MaxValue &&
+                    this.Pid.Value != usbDevice.Info.ProductId)
                 {
                     return false;
                 }
 
-                if (this.Revision != null && usbDevice.Info.Usb != this.Revision.Value)
+                if (this.Revision != null && 
+                    this.Revision != int.MaxValue && 
+                    this.Revision.Value != usbDevice.Info.Usb)
                 {
                     return false;
                 }
 
-                if (this.SerialNumber != null && usbDevice.Info.SerialNumber != this.SerialNumber)
+                if (this.SerialNumber != null &&
+                    this.SerialNumber != usbDevice.Info.SerialNumber)
                 {
                     return false;
                 }

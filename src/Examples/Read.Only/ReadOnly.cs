@@ -25,7 +25,7 @@ namespace Examples
                 try
                 {
                     // Find and open the usb device.
-                    MyUsbDevice = context.Find(MyUsbFinder);
+                    MyUsbDevice = (UsbDevice)context.Find(MyUsbFinder);
 
                     // If the device is open and ready
                     if (MyUsbDevice == null) throw new Exception("Device Not Found.");
