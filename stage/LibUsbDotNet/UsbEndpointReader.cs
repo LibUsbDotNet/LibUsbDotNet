@@ -46,7 +46,7 @@ namespace LibUsbDotNet
         private bool mDataReceivedEnabled;
         private int mReadBufferSize;
         private Thread mReadThread;
-#if !NETSTANDARD && !NETCOREAPP
+#if NETFRAMEWORK || NETSTANDARD2_0_OR_GREATER || NETCOREAPP2_0_OR_GREATER
         private ThreadPriority mReadThreadPriority = ThreadPriority.Normal;
 #endif
 
@@ -97,7 +97,7 @@ namespace LibUsbDotNet
             set { mReadBufferSize = value; }
         }
 
-#if !NETSTANDARD && !NETCOREAPP
+#if NETFRAMEWORK || NETSTANDARD2_0_OR_GREATER || NETCOREAPP2_0_OR_GREATER
         /// <summary>
         /// Gets/Sets the Priority level for the read thread when <see cref="DataReceivedEnabled"/> is true.
         /// </summary>
@@ -219,7 +219,7 @@ namespace LibUsbDotNet
                     if (eReturn != ErrorCode.IoTimedOut) break;
                 }
             }
-#if !NETSTANDARD && !NETCOREAPP
+#if NETFRAMEWORK || NETSTANDARD2_0_OR_GREATER || NETCOREAPP2_0_OR_GREATER
             catch (ThreadAbortException)
             {
                 UsbError.Error(ErrorCode.ReceiveThreadTerminated,0, "ReadData:Read thread aborted.", reader);
@@ -240,7 +240,7 @@ namespace LibUsbDotNet
         private void StartReadThread()
         {
             mReadThread = new Thread(ReadData);
-#if !NETSTANDARD && !NETCOREAPP
+#if NETFRAMEWORK || NETSTANDARD2_0_OR_GREATER || NETCOREAPP2_0_OR_GREATER
             mReadThread.Priority = ReadThreadPriority;
 #endif
             mReadThread.Start(TransferContext);
