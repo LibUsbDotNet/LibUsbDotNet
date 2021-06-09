@@ -6,6 +6,10 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <EmbeddedResource Include="BenchmarkHelp.txt" />
+  </ItemGroup>
+
+  <ItemGroup>
     <ProjectReference Include="..\LibUsbDotNet\LibUsbDotNet.csproj" />
   </ItemGroup>
 
