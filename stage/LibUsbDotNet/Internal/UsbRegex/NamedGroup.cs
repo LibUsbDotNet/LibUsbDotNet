@@ -21,7 +21,7 @@
 // 
 namespace LibUsbDotNet.Internal.UsbRegex
 {
-    internal struct NamedGroup
+    public struct NamedGroup
     {
         public readonly string GroupName;
         public readonly int GroupNumber;
