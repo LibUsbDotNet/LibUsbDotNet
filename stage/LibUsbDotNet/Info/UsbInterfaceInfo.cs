@@ -48,6 +48,11 @@ namespace LibUsbDotNet.Info
         {
             mUsbDevice = usbDevice;
 
+            if (monoUSBAltInterfaceDescriptor.ExtraLength > 0)
+            {
+                this.mRawDescriptors.Add(monoUSBAltInterfaceDescriptor.ExtraBytes);
+            }
+
             mUsbInterfaceDescriptor = new UsbInterfaceDescriptor(monoUSBAltInterfaceDescriptor);
             List<MonoUsbEndpointDescriptor> monoUsbEndpoints = monoUSBAltInterfaceDescriptor.EndpointList;
             foreach (MonoUsbEndpointDescriptor monoUSBEndpoint in monoUsbEndpoints)
