@@ -119,3 +119,51 @@ jobs:
         with:
           name: LibUsbDotNet-${{ github.run_id }}
           path: '${{ github.workspace }}/nuget/' 
+
+  libusbdotnet_macos:
+    runs-on: macos-10.15
+
+    needs: [ libusb_windows, libusb_osx ]
+
+    env:
+      VCPKG_ROOT: /usr/local/share/vcpkg
+
+    steps:
+      - uses: actions/checkout@v2
+        with:
+          fetch-depth: 0
+
+      - uses: actions/download-artifact@v2
+        with:
+          name: libusb-${{ github.run_id }}
+          path: ${{ env.VCPKG_ROOT }}/installed/
+
+      - uses: actions/setup-dotnet@v1
+        with:
+          dotnet-version: '6.0.x'
+
+      - name: Test
+        run: |
+          export LD_LIBRARY_PATH=$VCPKG_ROOT/installed/x64-osx-dynamic/lib/:$LD_LIBRARY_PATH
+          dotnet test src/LibUsbDotNet.Tests/LibUsbDotNet.Tests.csproj
+
+  libusbdotnet_ubuntu:
+    runs-on: ubuntu-20.04
+
+    steps:
+      - uses: actions/checkout@v2
+        with:
+          fetch-depth: 0
+
+      - uses: actions/setup-dotnet@v1
+        with:
+          dotnet-version: '6.0.x'
+
+      - name: Install libusb
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y libusb-1.0-0
+
+      - name: Test
+        run: |
+          dotnet test src/LibUsbDotNet.Tests/LibUsbDotNet.Tests.csproj
