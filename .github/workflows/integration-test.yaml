@@ -1,0 +1,32 @@
+name: integration_tests
+on:
+  push:
+    branches:
+      - main
+  pull_request:
+
+jobs:
+  ubuntu:
+    runs-on: macos-10.15
+
+    steps:
+      - uses: actions/checkout@v2
+        with:
+          fetch-depth: 0
+
+      - name: List software versions
+        run: |
+          vboxmanage --version
+          vagrant --version
+      
+      - name: Provision and start VM
+        run: vagrant up
+        working-directory: ci/ubuntu-20.04
+
+      - name: Run script inside VM
+        run: vagrant ssh -c 'lsusb -t'
+        working-directory: ci/ubuntu-20.04
+
+      - name: Destroy VM
+        run: vagrant destroy -f
+        working-directory: ci/ubuntu-20.04
