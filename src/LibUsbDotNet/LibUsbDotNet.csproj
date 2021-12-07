@@ -26,22 +26,30 @@
   </ItemGroup>
 
   <ItemGroup>
-    <PackageReference Include="Nerdbank.GitVersioning" Version="3.3.37" PrivateAssets="all" />
+    <PackageReference Include="Nerdbank.GitVersioning" Version="3.4.244" PrivateAssets="all" />
     <PackageReference Include="Microsoft.SourceLink.GitHub" Version="1.0.0" PrivateAssets="All" />
   </ItemGroup>
 
   <ItemGroup>
-    <!-- Build artifacts, these are available during the Azure pipeline build -->
-    <Content Include="$(SYSTEM_ARTIFACTSDIRECTORY)/drop/runtimes/win-x64/native/*.*">
+    <!-- Build artifacts, these are available during the GitHub actions build -->
+    <Content Include="$(VCPKG_ROOT)/installed/x64-windows/bin/libusb-1.0.dll">
       <PackagePath>runtimes/win-x64/native/%(Filename)%(Extension)</PackagePath>
       <Pack>true</Pack>
     </Content>
-    <Content Include="$(SYSTEM_ARTIFACTSDIRECTORY)/drop/runtimes/win-x86/native/*.*">
+    <Content Include="$(VCPKG_ROOT)/installed/x86-windows/bin/libusb-1.0.dll">
       <PackagePath>runtimes/win-x86/native/%(Filename)%(Extension)</PackagePath>
       <Pack>true</Pack>
     </Content>
-    <Content Include="$(SYSTEM_ARTIFACTSDIRECTORY)/drop/runtimes/osx-x64/native/*.*">
+    <Content Include="$(VCPKG_ROOT)/installed/arm64-windows/bin/libusb-1.0.dll">
+      <PackagePath>runtimes/win-arm64/native/%(Filename)%(Extension)</PackagePath>
+      <Pack>true</Pack>
+    </Content>
+    <Content Include="$(VCPKG_ROOT)/installed/x64-osx-dynamic/lib/libusb-1.0.dylib">
       <PackagePath>runtimes/osx-x64/native/%(Filename)%(Extension)</PackagePath>
+      <Pack>true</Pack>
+    </Content>
+    <Content Include="$(VCPKG_ROOT)/installed/arm64-osx-dynamic/lib/libusb-1.0.dylib">
+      <PackagePath>runtimes/osx-arm64/native/%(Filename)%(Extension)</PackagePath>
       <Pack>true</Pack>
     </Content>
   </ItemGroup>

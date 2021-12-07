@@ -75,3 +75,47 @@ jobs:
         with:
           name: ${{ matrix.package.name }}-${{ github.run_id }}-buildtree
           path: ${{ env.VCPKG_ROOT }}/buildtrees/${{ matrix.package.name }}/
+
+  libusbdotnet_windows:
+    runs-on: windows-2019
+
+    needs: [ libusb_windows, libusb_osx ]
+
+    env:
+      VCPKG_ROOT: C:\vcpkg
+
+    steps:
+      - uses: actions/checkout@v2
+        with:
+          fetch-depth: 0
+
+      - uses: actions/download-artifact@v2
+        with:
+          name: libusb-${{ github.run_id }}
+          path: ${{ env.VCPKG_ROOT }}/installed/
+
+      - uses: actions/setup-dotnet@v1
+        with:
+          dotnet-version: '6.0.x'
+
+      - name: Build
+        run: dotnet pack src\LibUsbDotNet\LibUsbDotNet.csproj -c Release -o ${{ github.workspace }}/nuget/
+
+      - name: Test (x64)
+        run: |
+          set PATH=%PATH%;%VCPKG_ROOT%\installed\x64-windows\bin
+          dotnet test src\LibUsbDotNet.Tests\LibUsbDotNet.Tests.csproj -p:RuntimeIdentifier=win7-x64
+        shell: cmd
+
+      - name: Test (x86)
+        run: |
+          set PATH=%PATH%;%VCPKG_ROOT%\installed\x86-windows\bin
+          dotnet test src\LibUsbDotNet.Tests\LibUsbDotNet.Tests.csproj -p:RuntimeIdentifier=win7-x86
+        shell: cmd
+
+      - name: Upload LibUsbDotNet NuGet package
+        uses: actions/upload-artifact@v2
+        if: always()
+        with:
+          name: LibUsbDotNet-${{ github.run_id }}
+          path: '${{ github.workspace }}/nuget/' 
