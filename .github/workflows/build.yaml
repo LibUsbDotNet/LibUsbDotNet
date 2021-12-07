@@ -1,0 +1,77 @@
+name: build
+on:
+  push:
+    branches:
+      - main
+  pull_request:
+
+jobs:
+  libusb_windows:
+    runs-on: windows-2019
+
+    strategy:
+      matrix:
+        triplet:
+          - "x86-windows"
+          - "x64-windows"
+          - "arm64-windows"
+
+        package:
+          - name: "libusb"
+
+    env:
+      VCPKG_ROOT: C:\vcpkg
+
+    steps:
+      - name: Build ${{ matrix.package.name }}:${{ matrix.triplet }}
+        run: vcpkg install ${{ matrix.package.name }}:${{ matrix.triplet }}
+
+      - name: Upload vcpkg artifacts
+        uses: actions/upload-artifact@v2
+        if: always()
+        with:
+          name: ${{ matrix.package.name }}-${{ github.run_id }}
+          path: ${{ env.VCPKG_ROOT }}/installed/
+
+      - name: Upload vcpkg build tree
+        uses: actions/upload-artifact@v2
+        if: always()
+        with:
+          name: ${{ matrix.package.name }}-${{ github.run_id }}-buildtree
+          path: ${{ env.VCPKG_ROOT }}/buildtrees/${{ matrix.package.name }}/
+
+  libusb_osx:
+    runs-on: macos-10.15
+
+    strategy:
+      matrix:
+        triplet:
+          - "x64-osx-dynamic"
+          - "arm64-osx-dynamic"
+
+        package:
+          - name: "libusb"
+
+    env:
+      VCPKG_ROOT: /usr/local/share/vcpkg
+
+    steps:
+      - name: Install build dependencies
+        run: brew install autoconf automake libtool
+
+      - name: Build ${{ matrix.package.name }}:${{ matrix.triplet }}
+        run: vcpkg install ${{ matrix.package.name }}:${{ matrix.triplet }} --overlay-triplets=${{ env.VCPKG_ROOT }}/triplets/community/
+
+      - name: Upload vcpkg artifacts
+        uses: actions/upload-artifact@v2
+        if: always()
+        with:
+          name: ${{ matrix.package.name }}-${{ github.run_id }}
+          path: ${{ env.VCPKG_ROOT }}/installed/
+
+      - name: Upload vcpkg buildtree
+        uses: actions/upload-artifact@v2
+        if: always()
+        with:
+          name: ${{ matrix.package.name }}-${{ github.run_id }}-buildtree
+          path: ${{ env.VCPKG_ROOT }}/buildtrees/${{ matrix.package.name }}/
