@@ -77,6 +77,12 @@ namespace LibUsbDotNet.LibUsb
             NativeMethods.SetDebug(this.context, (int)level);
         }
 
+        /// <inheritdoc/>
+        public void EnableOption(Option option)
+        {
+            NativeMethods.SetOption(this.context, option).ThrowOnError();
+        }
+
         /// <summary>
         /// Returns a list of USB devices currently attached to the system.
         /// </summary>

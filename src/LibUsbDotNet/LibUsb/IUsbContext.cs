@@ -40,6 +40,17 @@ namespace LibUsbDotNet.LibUsb
         void SetDebugLevel(LogLevel level);
 
         /// <summary>
+        /// Enable the libusb option.
+        /// </summary>
+        /// <param name="option">
+        /// The option to enable.
+        /// </param>
+        /// <exception cref="UsbException">
+        /// If the option is invalid or unavailable.
+        /// </exception>
+        void EnableOption(Option option);
+
+        /// <summary>
         /// Returns a list of USB devices currently attached to the system.
         /// </summary>
         /// <returns>
