@@ -45,10 +45,24 @@ namespace LibUsbDotNet.LibUsb
         /// <param name="option">
         /// The option to enable.
         /// </param>
-        /// <exception cref="UsbException">
-        /// If the option is invalid or unavailable.
-        /// </exception>
-        void EnableOption(Option option);
+        /// <returns>
+        /// <see cref="Error.Success"/> if enabling the option succeeded.
+        /// <see cref="Error.InvalidParam"/> if the option was invalid.
+        /// <see cref="Error.NotSupported"/> if the option is valid but not supported on this platform.
+        /// <see cref="Error.NotFound"/> if <see cref="Option.UseUsbdk"/> is valid on this platform but UsbDk is not available.
+        /// </returns>
+        Error EnableOption(Option option);
+
+        /// <summary>
+        /// Checks at runtime of the loaded libusb library has the given capability.
+        /// </summary>
+        /// <param name="capability">
+        /// The capability to check for.
+        /// </param>
+        /// <returns>
+        /// <see cref="true"/> if the library has the capability.
+        /// </returns>
+        bool HasCapability(Capability capability);
 
         /// <summary>
         /// Returns a list of USB devices currently attached to the system.

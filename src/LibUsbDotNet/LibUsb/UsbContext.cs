@@ -78,9 +78,16 @@ namespace LibUsbDotNet.LibUsb
         }
 
         /// <inheritdoc/>
-        public void EnableOption(Option option)
+        public Error EnableOption(Option option)
         {
-            NativeMethods.SetOption(this.context, option).ThrowOnError();
+            return NativeMethods.SetOption(this.context, option);
+        }
+
+        /// <inheritdoc/>
+        public bool HasCapability(Capability capability)
+        {
+            // Doesn't need a context, but does need to be called after libusb_init so we make it a non-static method.
+            return NativeMethods.HasCapability((uint)capability) != 0;
         }
 
         /// <summary>
