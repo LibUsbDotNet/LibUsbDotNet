@@ -151,7 +151,7 @@ namespace LibUsbDotNet.Generator
                     case BlockCommandComment blockCommand when blockCommand.GetCommandName() == "note":
                         method.Remarks += blockCommand.GetCommentInnerText();
                         break;
-                    case BlockCommandComment blockCommand when blockCommand.GetCommandName() == "note":
+                    case BlockCommandComment blockCommand when blockCommand.GetCommandName() == "returns":
                         method.ReturnValueDocumentation += blockCommand.GetCommentInnerText();
                         break;
                     default:
