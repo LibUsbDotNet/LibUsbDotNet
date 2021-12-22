@@ -35,85 +35,93 @@ using System.Runtime.InteropServices;
 namespace LibUsbDotNet
 {
     /// <summary>
-    ///  The generic USB transfer structure. The user populates this structure and
-    ///  then submits it in order to request a transfer. After the transfer has
-    ///  completed, the library populates the transfer with the results and passes
-    ///  it back to the user.
+    /// The generic USB transfer structure. The user populates this structure and
+    /// then submits it in order to request a transfer. After the transfer has
+    /// completed, the library populates the transfer with the results and passes
+    /// it back to the user.
     /// </summary>
     [StructLayoutAttribute(LayoutKind.Sequential, Pack = NativeMethods.Pack)]
     public unsafe struct Transfer
     {
         /// <summary>
-        ///  Handle of the device that this transfer will be submitted to
+        /// Handle of the device that this transfer will be submitted to
         /// </summary>
         public IntPtr DevHandle;
 
         /// <summary>
-        ///  A bitwise OR combination of
+        /// A bitwise OR combination of
         /// </summary>
         public byte Flags;
 
         /// <summary>
-        ///  Address of the endpoint where this transfer will be sent.
+        /// Address of the endpoint where this transfer will be sent.
         /// </summary>
         public byte Endpoint;
 
         /// <summary>
-        ///  Type of the endpoint from
+        /// Type of the transfer from
         /// </summary>
         public byte Type;
 
         /// <summary>
-        ///  Timeout for this transfer in milliseconds. A value of 0 indicates no
-        ///  timeout.
+        /// Timeout for this transfer in milliseconds. A value of 0 indicates no
+        /// timeout.
         /// </summary>
         public uint Timeout;
 
         /// <summary>
-        ///  The status of the transfer. Read-only, and only for use within
-        ///  transfer callback function.
-        ///  If this is an isochronous transfer, this field may read COMPLETED even
-        ///  if there were errors in the frames. Use the
-        ///  to determine if errors occurred.
+        /// The status of the transfer. Read-only, and only for use within
+        /// transfer callback function.
+        /// If this is an isochronous transfer, this field may read COMPLETED even
+        /// if there were errors in the frames. Use the
+        /// to determine if errors occurred.
         /// </summary>
         public TransferStatus Status;
 
         /// <summary>
-        ///  Length of the data buffer
+        /// Length of the data buffer. Must be non-negative.
         /// </summary>
         public int Length;
 
         /// <summary>
-        ///  Actual length of data that was transferred. Read-only, and only for
-        ///  use within transfer callback function. Not valid for isochronous
-        ///  endpoint transfers.
+        /// Actual length of data that was transferred. Read-only, and only for
+        /// use within transfer callback function. Not valid for isochronous
+        /// endpoint transfers.
         /// </summary>
         public int ActualLength;
 
         /// <summary>
-        ///  Callback function. This will be invoked when the transfer completes,
-        ///  fails, or is cancelled.
+        /// Callback function. This will be invoked when the transfer completes,
+        /// fails, or is cancelled.
         /// </summary>
         public IntPtr Callback;
 
         /// <summary>
-        ///  User context data to pass to the callback function.
+        /// User context data. Useful for associating specific data to a transfer
+        /// that can be accessed from within the callback function.
+        /// This field may be set manually or is taken as the `user_data` parameter
+        /// of the following functions:
+        /// - libusb_fill_bulk_transfer()
+        /// - libusb_fill_bulk_stream_transfer()
+        /// - libusb_fill_control_transfer()
+        /// - libusb_fill_interrupt_transfer()
+        /// - libusb_fill_iso_transfer()
         /// </summary>
         public IntPtr UserData;
 
         /// <summary>
-        ///  Data buffer
+        /// Data buffer
         /// </summary>
         public byte* Buffer;
 
         /// <summary>
-        ///  Number of isochronous packets. Only used for I/O with isochronous
-        ///  endpoints.
+        /// Number of isochronous packets. Only used for I/O with isochronous
+        /// endpoints. Must be non-negative.
         /// </summary>
         public int NumIsoPackets;
 
         /// <summary>
-        ///  Isochronous packet descriptors, for isochronous transfers only.
+        /// Isochronous packet descriptors, for isochronous transfers only.
         /// </summary>
         public IntPtr IsoPacketDesc;
 

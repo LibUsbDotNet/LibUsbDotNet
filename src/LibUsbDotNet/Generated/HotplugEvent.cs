@@ -34,17 +34,22 @@ using System;
 namespace LibUsbDotNet
 {
     /// <summary>
-    ///  Since version 1.0.16, 
-    ///  Hotplug events 
+    /// Since version 1.0.16,
+    /// LIBUSB_API_VERSION >= 0x01000102 Hotplug events
     /// </summary>
     [Flags]
     public enum HotplugEvent : byte
     {
         /// <summary>
-        ///  A device has been plugged in and is ready to use 
+        /// A device has been plugged in and is ready to use
         /// </summary>
         DeviceArrived = 0x1,
 
+        /// <summary>
+        /// A device has left and is no longer available.
+        /// It is the user's responsibility to call libusb_close on any handle associated with a disconnected device.
+        /// It is safe to call libusb_get_device_descriptor on a device that has left
+        /// </summary>
         DeviceLeft = 0x2,
 
     }

@@ -34,35 +34,40 @@ using System;
 namespace LibUsbDotNet
 {
     /// <summary>
-    ///  Speed codes. Indicates the speed at which the device is operating.
+    /// Speed codes. Indicates the speed at which the device is operating.
     /// </summary>
     [Flags]
     public enum Speed : byte
     {
         /// <summary>
-        ///  The OS doesn't report or know the device speed. 
+        /// The OS doesn't report or know the device speed.
         /// </summary>
         Unknown = 0,
 
         /// <summary>
-        ///  The device is operating at low speed (1.5MBit/s). 
+        /// The device is operating at low speed (1.5MBit/s).
         /// </summary>
         Low = 0x1,
 
         /// <summary>
-        ///  The device is operating at full speed (12MBit/s). 
+        /// The device is operating at full speed (12MBit/s).
         /// </summary>
         Full = 0x2,
 
         /// <summary>
-        ///  The device is operating at high speed (480MBit/s). 
+        /// The device is operating at high speed (480MBit/s).
         /// </summary>
         High = 0x3,
 
         /// <summary>
-        ///  The device is operating at super speed (5000MBit/s). 
+        /// The device is operating at super speed (5000MBit/s).
         /// </summary>
         Super = 0x4,
+
+        /// <summary>
+        /// The device is operating at super speed plus (10000MBit/s).
+        /// </summary>
+        SuperPlus = 0x5,
 
     }
 }

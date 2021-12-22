@@ -2,10 +2,9 @@
 // Copyright (c) Quamotion. All rights reserved.
 // </copyright>
 
-using System;
-using System.Collections.Generic;
-using System.Text;
 using Core.Clang;
+using Core.Clang.Documentation.Doxygen;
+using System.Collections.Generic;
 using Enum = LibUsbDotNet.Generator.Primitives.Enum;
 using EnumValue = LibUsbDotNet.Generator.Primitives.EnumValue;
 
@@ -22,7 +21,7 @@ namespace LibUsbDotNet.Generator
 
         public ChildVisitResult Visit(Cursor cursor, Cursor parent)
         {
-            if (!cursor.GetLocation().IsFromMainFile())
+            if (cursor.GetLocation()?.IsFromMainFile() != true)
             {
                 return ChildVisitResult.Continue;
             }
@@ -32,7 +31,7 @@ namespace LibUsbDotNet.Generator
             if (curKind == CursorKind.EnumDecl)
             {
                 var nativeName = cursor.GetSpelling();
-                var enumComment = this.GetComment(cursor, forType: true);
+                var enumComment = this.GetComment(cursor);
 
                 // enumName can be empty because of typedef enum { .. } enumName;
                 // so we have to find the sibling, and this is the only way I've found
@@ -103,7 +102,7 @@ namespace LibUsbDotNet.Generator
                                 Value = value > 0 ? $"0x{(int)c.GetEnumConstantDeclValue():X}" : $"{value}"
                             };
 
-                        field.Description = this.GetComment(c, forType: true);
+                        field.Description = this.GetComment(c);
 
                         enumDeclaration.Values.Add(field);
                         return ChildVisitResult.Continue;
@@ -120,62 +119,32 @@ namespace LibUsbDotNet.Generator
                     });
                 }
 
+                // Add variants which were defined with #define
+                if (nativeName == "libusb_hotplug_flag")
+                {
+                    enumDeclaration.Values.Add(new EnumValue()
+                    {
+                        Name = "NoFlags",
+                        Value = "0x0",
+                        Description = "Default value when not using any flags.",
+                    });
+                    enumDeclaration.Values.Add(new EnumValue()
+                    {
+                        Name = "MatchAny",
+                        Value = "0xFF",
+                        Description = "Wildcard matching for hotplug events.",
+                    });
+                }
+
                 this.generator.AddType(nativeName, enumDeclaration);
             }
 
             return ChildVisitResult.Recurse;
         }
 
-        private string GetComment(Cursor cursor, bool forType)
+        private string GetComment(Cursor cursor)
         {
-            // Standard hierarchy:
-            // - Full Comment
-            // - Paragraph Comment
-            // - Text Comment
-            var fullComment = cursor.GetParsedComment();
-            var fullCommentKind = fullComment.Kind;
-            var fullCommentChildren = fullComment.GetNumChildren();
-
-            if (fullCommentKind != CommentKind.FullComment || fullCommentChildren < 1)
-            {
-                return null;
-            }
-
-            StringBuilder text = new StringBuilder();
-            bool hasComment = false;
-
-            for (int i = 0; i < fullCommentChildren; i++)
-            {
-                var paragraphComment = fullComment.GetChild(i);
-                var paragraphCommentKind = paragraphComment.Kind;
-                var paragraphCommentChildren = paragraphComment.GetNumChildren();
-
-                if (paragraphCommentKind != CommentKind.Paragraph || paragraphCommentChildren != 1)
-                {
-                    continue;
-                }
-
-                var textComment = paragraphComment.GetChild(0);
-                var textCommentKind = textComment.Kind;
-
-                if (textCommentKind == CommentKind.Text)
-                {
-                    var commentText = textComment.GetText();
-
-                    if (!string.IsNullOrWhiteSpace(commentText))
-                    {
-                        text.AppendLine(commentText);
-                        hasComment = true;
-                    }
-                }
-            }
-
-            if (!hasComment)
-            {
-                return null;
-            }
-
-            return text.ToString();
+            return Comment.FromCursor(cursor).GetCommentInnerText();
         }
     }
 }

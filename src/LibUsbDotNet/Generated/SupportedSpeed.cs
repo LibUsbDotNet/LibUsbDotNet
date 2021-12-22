@@ -33,26 +33,30 @@ using System;
 
 namespace LibUsbDotNet
 {
+    /// <summary>
+    /// Supported speeds (wSpeedSupported) bitfield. Indicates what
+    /// speeds the device supports.
+    /// </summary>
     [Flags]
     public enum SupportedSpeed : byte
     {
         /// <summary>
-        ///  Low speed operation supported (1.5MBit/s). 
+        /// Low speed operation supported (1.5MBit/s).
         /// </summary>
         LowSpeedOperation = 0x1,
 
         /// <summary>
-        ///  Full speed operation supported (12MBit/s). 
+        /// Full speed operation supported (12MBit/s).
         /// </summary>
         FullSpeedOperation = 0x2,
 
         /// <summary>
-        ///  High speed operation supported (480MBit/s). 
+        /// High speed operation supported (480MBit/s).
         /// </summary>
         HighSpeedOperation = 0x4,
 
         /// <summary>
-        ///  Superspeed operation supported (5000MBit/s). 
+        /// Superspeed operation supported (5000MBit/s).
         /// </summary>
         SuperSpeedOperation = 0x8,
 

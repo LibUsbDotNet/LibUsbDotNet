@@ -34,16 +34,31 @@ using System;
 namespace LibUsbDotNet
 {
     /// <summary>
-    /// Masks for the bits of the
-    /// libusb_usb_2_0_extension_descriptor::bmAttributes "bmAttributes" field of the USB 2.0 Extension descriptor.
+    /// Endpoint transfer type. Values for bits 0:1 of the
+    /// libusb_endpoint_descriptor::bmAttributes "endpoint attributes" field.
     /// </summary>
     [Flags]
-    public enum Usb20ExtensionAttributes : byte
+    public enum EndpointTransferType : byte
     {
         /// <summary>
-        /// Supports Link Power Management (LPM)
+        /// Control endpoint
         /// </summary>
-        BmLpmSupport = 0x2,
+        Control = 0,
+
+        /// <summary>
+        /// Isochronous endpoint
+        /// </summary>
+        Isochronous = 0x1,
+
+        /// <summary>
+        /// Bulk endpoint
+        /// </summary>
+        Bulk = 0x2,
+
+        /// <summary>
+        /// Interrupt endpoint
+        /// </summary>
+        Interrupt = 0x3,
 
     }
 }

@@ -3,10 +3,11 @@
 // </copyright>
 
 using Core.Clang;
+using Core.Clang.Documentation.Doxygen;
 using LibUsbDotNet.Generator.Primitives;
 using System;
 using System.Collections.Generic;
-using System.Diagnostics;
+using System.Linq;
 using System.Text;
 
 namespace LibUsbDotNet.Generator
@@ -24,7 +25,7 @@ namespace LibUsbDotNet.Generator
 
         public ChildVisitResult Visit(Cursor cursor, Cursor parent)
         {
-            if (!cursor.GetLocation().IsFromMainFile())
+            if (cursor.GetLocation()?.IsFromMainFile() != true)
             {
                 return ChildVisitResult.Continue;
             }
@@ -226,78 +227,20 @@ namespace LibUsbDotNet.Generator
             // - Full Comment
             // - Paragraph Comment or ParamCommand comment
             // - Text Comment
-            var fullComment = cursor.GetParsedComment();
-            var fullCommentKind = fullComment.Kind;
-            var fullCommentChildren = fullComment.GetNumChildren();
-
-            if (fullCommentKind != CommentKind.FullComment || fullCommentChildren < 1)
+            var fullComment = Comment.FromCursor(cursor);
+            if (fullComment == null || fullComment.GetNumChildren() < 1)
             {
                 return null;
             }
 
             StringBuilder comment = new StringBuilder();
 
-            for (int i = 0; i < fullCommentChildren; i++)
+            foreach (var paragraph in fullComment.GetCommentChildren().OfType<ParagraphComment>())
             {
-                var childComment = fullComment.GetChild(i);
-                var childCommentKind = childComment.Kind;
-
-                if (childCommentKind != CommentKind.Paragraph
-                    && childCommentKind != CommentKind.ParamCommand
-                    && childCommentKind != CommentKind.BlockCommand)
-                {
-                    continue;
-                }
-
-                StringBuilder textBuilder = new StringBuilder();
-                GetCommentInnerText(childComment, textBuilder);
-                string text = textBuilder.ToString();
-
-                if (string.IsNullOrWhiteSpace(text))
-                {
-                    continue;
-                }
-
-                if (childCommentKind == CommentKind.Paragraph)
-                {
-                    comment.Append(text);
-                }
-                else if (childCommentKind == CommentKind.BlockCommand)
-                {
-                    var name = childComment.GetCommandName();
-                    throw new NotImplementedException();
-                }
+                paragraph.AppendCommentInnerText(comment);
             }
 
             return comment.ToString();
-        }
-
-        private static void GetCommentInnerText(Comment comment, StringBuilder builder)
-        {
-            var commentKind = comment.Kind;
-
-            if (commentKind == CommentKind.Text)
-            {
-                var text = comment.GetText();
-                text = text.Trim();
-
-                if (!string.IsNullOrWhiteSpace(text))
-                {
-                    builder.Append(" ");
-                    builder.AppendLine(text);
-                }
-            }
-            else
-            {
-                // Recurse
-                var childCount = comment.GetNumChildren();
-
-                for (int i = 0; i < childCount; i++)
-                {
-                    var child = comment.GetChild(i);
-                    GetCommentInnerText(child, builder);
-                }
-            }
         }
     }
 }

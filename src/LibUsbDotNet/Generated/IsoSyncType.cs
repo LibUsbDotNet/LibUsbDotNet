@@ -34,28 +34,29 @@ using System;
 namespace LibUsbDotNet
 {
     /// <summary>
-    ///  libusb_endpoint_descriptor.
+    /// Synchronization type for isochronous endpoints. Values for bits 2:3 of the
+    /// libusb_endpoint_descriptor::bmAttributes "bmAttributes" field in libusb_endpoint_descriptor.
     /// </summary>
     [Flags]
     public enum IsoSyncType : byte
     {
         /// <summary>
-        ///  No synchronization 
+        /// No synchronization
         /// </summary>
         None = 0,
 
         /// <summary>
-        ///  Asynchronous 
+        /// Asynchronous
         /// </summary>
         Async = 0x1,
 
         /// <summary>
-        ///  Adaptive 
+        /// Adaptive
         /// </summary>
         Adaptive = 0x2,
 
         /// <summary>
-        ///  Synchronous 
+        /// Synchronous
         /// </summary>
         Sync = 0x3,
 

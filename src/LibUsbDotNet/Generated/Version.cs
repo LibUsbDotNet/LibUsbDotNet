@@ -35,38 +35,38 @@ using System.Runtime.InteropServices;
 namespace LibUsbDotNet
 {
     /// <summary>
-    ///  Structure providing the version of the libusb runtime
+    /// Structure providing the version of the libusb runtime
     /// </summary>
     [StructLayoutAttribute(LayoutKind.Sequential, Pack = NativeMethods.Pack)]
     public unsafe struct Version
     {
         /// <summary>
-        ///  Library major version.
+        /// Library major version.
         /// </summary>
         public ushort Major;
 
         /// <summary>
-        ///  Library minor version.
+        /// Library minor version.
         /// </summary>
         public ushort Minor;
 
         /// <summary>
-        ///  Library micro version.
+        /// Library micro version.
         /// </summary>
         public ushort Micro;
 
         /// <summary>
-        ///  Library nano version.
+        /// Library nano version.
         /// </summary>
         public ushort Nano;
 
         /// <summary>
-        ///  Library release candidate suffix string, e.g. "-rc4".
+        /// Library release candidate suffix string, e.g. "-rc4".
         /// </summary>
         public IntPtr Rc;
 
         /// <summary>
-        ///  For ABI compatibility only.
+        /// For ABI compatibility only.
         /// </summary>
         public IntPtr Describe;
 

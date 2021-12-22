@@ -33,76 +33,83 @@ using System;
 
 namespace LibUsbDotNet
 {
+    /// <summary>
+    /// Error codes. Most libusb functions return 0 on success or one of these
+    /// codes on failure.
+    /// You can call libusb_error_name() to retrieve a string representation of an
+    /// error code or libusb_strerror() to get an end-user suitable description of
+    /// an error code.
+    /// </summary>
     [Flags]
     public enum Error : int
     {
         /// <summary>
-        ///  Success (no error) 
+        /// Success (no error)
         /// </summary>
         Success = 0,
 
         /// <summary>
-        ///  Input/output error 
+        /// Input/output error
         /// </summary>
         Io = -1,
 
         /// <summary>
-        ///  Invalid parameter 
+        /// Invalid parameter
         /// </summary>
         InvalidParam = -2,
 
         /// <summary>
-        ///  Access denied (insufficient permissions) 
+        /// Access denied (insufficient permissions)
         /// </summary>
         Access = -3,
 
         /// <summary>
-        ///  No such device (it may have been disconnected) 
+        /// No such device (it may have been disconnected)
         /// </summary>
         NoDevice = -4,
 
         /// <summary>
-        ///  Entity not found 
+        /// Entity not found
         /// </summary>
         NotFound = -5,
 
         /// <summary>
-        ///  Resource busy 
+        /// Resource busy
         /// </summary>
         Busy = -6,
 
         /// <summary>
-        ///  Operation timed out 
+        /// Operation timed out
         /// </summary>
         Timeout = -7,
 
         /// <summary>
-        ///  Overflow 
+        /// Overflow
         /// </summary>
         Overflow = -8,
 
         /// <summary>
-        ///  Pipe error 
+        /// Pipe error
         /// </summary>
         Pipe = -9,
 
         /// <summary>
-        ///  System call interrupted (perhaps due to signal) 
+        /// System call interrupted (perhaps due to signal)
         /// </summary>
         Interrupted = -10,
 
         /// <summary>
-        ///  Insufficient memory 
+        /// Insufficient memory
         /// </summary>
         NoMem = -11,
 
         /// <summary>
-        ///  Operation not supported or unimplemented on this platform 
+        /// Operation not supported or unimplemented on this platform
         /// </summary>
         NotSupported = -12,
 
         /// <summary>
-        ///  Other error 
+        /// Other error
         /// </summary>
         Other = -99,
 

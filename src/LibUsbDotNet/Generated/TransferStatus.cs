@@ -34,37 +34,45 @@ using System;
 namespace LibUsbDotNet
 {
     /// <summary>
-    ///  Transfer status codes 
+    /// Transfer status codes
     /// </summary>
     [Flags]
     public enum TransferStatus : byte
     {
+        /// <summary>
+        /// Transfer completed without error. Note that this does not indicate
+        /// that the entire amount of requested data was transferred.
+        /// </summary>
         Completed = 0,
 
         /// <summary>
-        ///  Transfer failed 
+        /// Transfer failed
         /// </summary>
         Error = 0x1,
 
         /// <summary>
-        ///  Transfer timed out 
+        /// Transfer timed out
         /// </summary>
         TimedOut = 0x2,
 
         /// <summary>
-        ///  Transfer was cancelled 
+        /// Transfer was cancelled
         /// </summary>
         Cancelled = 0x3,
 
+        /// <summary>
+        /// For bulk/interrupt endpoints: halt condition detected (endpoint
+        /// stalled). For control endpoints: control request not supported.
+        /// </summary>
         Stall = 0x4,
 
         /// <summary>
-        ///  Device was disconnected 
+        /// Device was disconnected
         /// </summary>
         NoDevice = 0x5,
 
         /// <summary>
-        ///  Device sent more data than requested 
+        /// Device sent more data than requested
         /// </summary>
         Overflow = 0x6,
 

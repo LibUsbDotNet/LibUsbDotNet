@@ -34,37 +34,34 @@ using System.Runtime.InteropServices;
 
 namespace LibUsbDotNet
 {
-    /// <summary>
-    ///  Setup packet for control transfers.
-    /// </summary>
     [StructLayoutAttribute(LayoutKind.Sequential, Pack = NativeMethods.Pack)]
     public struct ControlSetup
     {
         /// <summary>
-        ///  Request type. Bits 0:4 determine recipient, see
+        /// Request type. Bits 0:4 determine recipient, see
         /// </summary>
         public byte RequestType;
 
         /// <summary>
-        ///  Request. If the type bits of bmRequestType are equal to
-        ///  "LIBUSB_REQUEST_TYPE_STANDARD" then this field refers to
-        ///  application-specific.
+        /// Request. If the type bits of bmRequestType are equal to
+        /// "LIBUSB_REQUEST_TYPE_STANDARD" then this field refers to
+        /// application-specific.
         /// </summary>
         public byte Request;
 
         /// <summary>
-        ///  Value. Varies according to request
+        /// Value. Varies according to request
         /// </summary>
         public ushort Value;
 
         /// <summary>
-        ///  Index. Varies according to request, typically used to pass an index
-        ///  or offset
+        /// Index. Varies according to request, typically used to pass an index
+        /// or offset
         /// </summary>
         public ushort Index;
 
         /// <summary>
-        ///  Number of bytes to transfer
+        /// Number of bytes to transfer
         /// </summary>
         public ushort Length;
 

@@ -34,28 +34,29 @@ using System;
 namespace LibUsbDotNet
 {
     /// <summary>
-    ///  transfers. Values 4 through 31 are reserved. 
+    /// Recipient bits of the
+    /// libusb_control_setup::bmRequestType "bmRequestType" field in control transfers. Values 4 through 31 are reserved.
     /// </summary>
     [Flags]
     public enum RequestRecipient : byte
     {
         /// <summary>
-        ///  Device 
+        /// Device
         /// </summary>
         Device = 0,
 
         /// <summary>
-        ///  Interface 
+        /// Interface
         /// </summary>
         Interface = 0x1,
 
         /// <summary>
-        ///  Endpoint 
+        /// Endpoint
         /// </summary>
         Endpoint = 0x2,
 
         /// <summary>
-        ///  Other 
+        /// Other
         /// </summary>
         Other = 0x3,
 

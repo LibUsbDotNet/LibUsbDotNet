@@ -34,71 +34,75 @@ using System;
 namespace LibUsbDotNet
 {
     /// <summary>
-    ///  Standard requests, as defined in table 9-5 of the USB 3.0 specifications 
+    /// Standard requests, as defined in table 9-5 of the USB 3.0 specifications
     /// </summary>
     [Flags]
     public enum StandardRequest : byte
     {
         /// <summary>
-        ///  Request status of the specific recipient 
+        /// Request status of the specific recipient
         /// </summary>
         GetStatus = 0,
 
         /// <summary>
-        ///  Clear or disable a specific feature 
+        /// Clear or disable a specific feature
         /// </summary>
         ClearFeature = 0x1,
 
         /// <summary>
-        ///  Set or enable a specific feature 
+        /// Set or enable a specific feature
         /// </summary>
         SetFeature = 0x3,
 
         /// <summary>
-        ///  Set device address for all future accesses 
+        /// Set device address for all future accesses
         /// </summary>
         SetAddress = 0x5,
 
         /// <summary>
-        ///  Get the specified descriptor 
+        /// Get the specified descriptor
         /// </summary>
         GetDescriptor = 0x6,
 
         /// <summary>
-        ///  Used to update existing descriptors or add new descriptors 
+        /// Used to update existing descriptors or add new descriptors
         /// </summary>
         SetDescriptor = 0x7,
 
         /// <summary>
-        ///  Get the current device configuration value 
+        /// Get the current device configuration value
         /// </summary>
         GetConfiguration = 0x8,
 
         /// <summary>
-        ///  Set device configuration 
+        /// Set device configuration
         /// </summary>
         SetConfiguration = 0x9,
 
         /// <summary>
-        ///  Return the selected alternate setting for the specified interface 
+        /// Return the selected alternate setting for the specified interface
         /// </summary>
         GetInterface = 0xA,
 
         /// <summary>
-        ///  Select an alternate interface for the specified interface 
+        /// Select an alternate interface for the specified interface
         /// </summary>
         SetInterface = 0xB,
 
         /// <summary>
-        ///  Set then report an endpoint's synchronization frame 
+        /// Set then report an endpoint's synchronization frame
         /// </summary>
         SynchFrame = 0xC,
 
         /// <summary>
-        ///  Sets both the U1 and U2 Exit Latency 
+        /// Sets both the U1 and U2 Exit Latency
         /// </summary>
         SetSel = 0x30,
 
+        /// <summary>
+        /// Delay from the time a host transmits a packet to the time it is
+        /// received by the device.
+        /// </summary>
         SetIsochDelay = 0x31,
 
     }

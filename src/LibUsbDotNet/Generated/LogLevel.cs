@@ -33,17 +33,35 @@ using System;
 
 namespace LibUsbDotNet
 {
+    /// <summary>
+    /// Log message levels.
+    /// </summary>
     [Flags]
     public enum LogLevel : byte
     {
+        /// <summary>
+        /// (0) : No messages ever emitted by the library (default)
+        /// </summary>
         None = 0,
 
+        /// <summary>
+        /// (1) : Error messages are emitted
+        /// </summary>
         Error = 0x1,
 
+        /// <summary>
+        /// (2) : Warning and error messages are emitted
+        /// </summary>
         Warning = 0x2,
 
+        /// <summary>
+        /// (3) : Informational, warning and error messages are emitted
+        /// </summary>
         Info = 0x3,
 
+        /// <summary>
+        /// (4) : All messages are emitted
+        /// </summary>
         Debug = 0x4,
 
     }

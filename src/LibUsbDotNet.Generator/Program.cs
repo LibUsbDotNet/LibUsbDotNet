@@ -11,7 +11,7 @@ namespace LibUsbDotNet.Generator
     {
         static void Main(string[] args)
         {
-            string targetDirectory = "../../../../LibUsbDotNet/Generated";
+            string targetDirectory = "../../../../../LibUsbDotNet/Generated";
 
             if (args.Length >= 1)
             {

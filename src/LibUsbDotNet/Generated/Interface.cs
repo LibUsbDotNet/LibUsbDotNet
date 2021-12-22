@@ -35,19 +35,20 @@ using System.Runtime.InteropServices;
 namespace LibUsbDotNet
 {
     /// <summary>
-    ///  A collection of alternate settings for a particular USB interface.
+    /// A collection of alternate settings for a particular USB interface.
     /// </summary>
     [StructLayoutAttribute(LayoutKind.Sequential, Pack = NativeMethods.Pack)]
     public unsafe struct Interface
     {
         /// <summary>
-        ///  Array of interface descriptors. The length of this array is determined
-        ///  by the num_altsetting field.
+        /// Array of interface descriptors. The length of this array is determined
+        /// by the num_altsetting field.
         /// </summary>
         public InterfaceDescriptor* Altsetting;
 
         /// <summary>
-        ///  The number of alternate settings that belong to this interface
+        /// The number of alternate settings that belong to this interface.
+        /// Must be non-negative.
         /// </summary>
         public int NumAltsetting;
 

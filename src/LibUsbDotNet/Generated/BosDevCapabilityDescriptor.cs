@@ -35,31 +35,31 @@ using System.Runtime.InteropServices;
 namespace LibUsbDotNet
 {
     /// <summary>
-    ///  A generic representation of a BOS Device Capability descriptor. It is
-    ///  advised to check bDevCapabilityType and call the matching
-    ///  libusb_get_*_descriptor function to get a structure fully matching the type.
+    /// A generic representation of a BOS Device Capability descriptor. It is
+    /// advised to check bDevCapabilityType and call the matching
+    /// libusb_get_*_descriptor function to get a structure fully matching the type.
     /// </summary>
     [StructLayoutAttribute(LayoutKind.Sequential, Pack = NativeMethods.Pack)]
     public struct BosDevCapabilityDescriptor
     {
         /// <summary>
-        ///  Size of this descriptor (in bytes)
+        /// Size of this descriptor (in bytes)
         /// </summary>
         public byte Length;
 
         /// <summary>
-        ///  Descriptor type. Will have value
-        ///  LIBUSB_DT_DEVICE_CAPABILITY in this context.
+        /// Descriptor type. Will have value
+        /// LIBUSB_DT_DEVICE_CAPABILITY in this context.
         /// </summary>
         public byte DescriptorType;
 
         /// <summary>
-        ///  Device Capability type
+        /// Device Capability type
         /// </summary>
         public byte DevCapabilityType;
 
         /// <summary>
-        ///  Device Capability data (bLength - 3 bytes)
+        /// Device Capability data (bLength - 3 bytes)
         /// </summary>
         public IntPtr DevCapabilityData;
 

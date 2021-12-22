@@ -34,21 +34,26 @@ using System;
 namespace LibUsbDotNet
 {
     /// <summary>
-    ///  Since version 1.0.16, 
-    ///  Flags for hotplug events 
+    /// Since version 1.0.16,
+    /// LIBUSB_API_VERSION >= 0x01000102 Hotplug flags
     /// </summary>
     [Flags]
     public enum HotplugFlag : byte
     {
         /// <summary>
-        ///  Default value when not using any flags. 
-        /// </summary>
-        NoFlags = 0,
-
-        /// <summary>
-        ///  Arm the callback and fire it for all matching currently attached devices. 
+        /// Arm the callback and fire it for all matching currently attached devices.
         /// </summary>
         Enumerate = 0x1,
+
+        /// <summary>
+        /// Default value when not using any flags.
+        /// </summary>
+        NoFlags = 0x0,
+
+        /// <summary>
+        /// Wildcard matching for hotplug events.
+        /// </summary>
+        MatchAny = 0xFF,
 
     }
 }

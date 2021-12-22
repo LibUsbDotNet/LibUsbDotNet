@@ -34,103 +34,110 @@ using System;
 namespace LibUsbDotNet
 {
     /// <summary>
-    ///  Device and/or Interface Class codes 
+    /// Device and/or Interface Class codes
     /// </summary>
     [Flags]
     public enum ClassCode : byte
     {
         /// <summary>
-        ///  In the context of a 
+        /// In the context of a
+        /// libusb_device_descriptor "device descriptor", this bDeviceClass value indicates that each interface specifies its
+        /// own class information and all interfaces operate independently.
         /// </summary>
         PerInterface = 0,
 
         /// <summary>
-        ///  Audio class 
+        /// Audio class
         /// </summary>
         Audio = 0x1,
 
         /// <summary>
-        ///  Communications class 
+        /// Communications class
         /// </summary>
         Comm = 0x2,
 
         /// <summary>
-        ///  Human Interface Device class 
+        /// Human Interface Device class
         /// </summary>
         Hid = 0x3,
 
         /// <summary>
-        ///  Physical 
+        /// Physical
         /// </summary>
         Physical = 0x5,
 
         /// <summary>
-        ///  Printer class 
-        /// </summary>
-        Printer = 0x7,
-
-        /// <summary>
-        ///  Image class 
-        /// </summary>
-        Ptp = 0x6,
-
-        /// <summary>
-        ///  Image class 
+        /// Image class
         /// </summary>
         Image = 0x6,
 
         /// <summary>
-        ///  Mass storage class 
+        /// Image class
+        /// </summary>
+        Ptp = 0x6,
+
+        /// <summary>
+        /// Printer class
+        /// </summary>
+        Printer = 0x7,
+
+        /// <summary>
+        /// Mass storage class
         /// </summary>
         MassStorage = 0x8,
 
         /// <summary>
-        ///  Hub class 
+        /// Hub class
         /// </summary>
         Hub = 0x9,
 
         /// <summary>
-        ///  Data class 
+        /// Data class
         /// </summary>
         Data = 0xA,
 
         /// <summary>
-        ///  Smart Card 
+        /// Smart Card
         /// </summary>
         SmartCard = 0xB,
 
         /// <summary>
-        ///  Content Security 
+        /// Content Security
         /// </summary>
         ContentSecurity = 0xD,
 
         /// <summary>
-        ///  Video 
+        /// Video
         /// </summary>
         Video = 0xE,
 
         /// <summary>
-        ///  Personal Healthcare 
+        /// Personal Healthcare
         /// </summary>
         PersonalHealthcare = 0xF,
 
         /// <summary>
-        ///  Diagnostic Device 
+        /// Diagnostic Device
         /// </summary>
         DiagnosticDevice = 0xDC,
 
         /// <summary>
-        ///  Wireless class 
+        /// Wireless class
         /// </summary>
         Wireless = 0xE0,
 
         /// <summary>
-        ///  Application class 
+        /// Miscellaneous class
+        /// </summary>
+        Miscellaneous = 0xEF,
+
+        /// <summary>
+        /// Application class
         /// </summary>
         Application = 0xFE,
 
         /// <summary>
-        ///  Class is vendor-specific 
+        /// Class is vendor-specific
         /// </summary>
         VendorSpec = 0xFF,
 

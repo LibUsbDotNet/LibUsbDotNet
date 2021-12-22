@@ -34,22 +34,52 @@ using System;
 namespace LibUsbDotNet
 {
     /// <summary>
-    ///  libusb_transfer.flags values 
+    /// libusb_transfer.flags values
     /// </summary>
     [Flags]
     public enum TransferFlags : byte
     {
         /// <summary>
-        ///  Report short frames as errors 
+        /// Report short frames as errors
         /// </summary>
         ShortNotOk = 0x1,
 
+        /// <summary>
+        /// Automatically free() transfer buffer during libusb_free_transfer().
+        /// Note that buffers allocated with libusb_dev_mem_alloc() should not
+        /// be attempted freed in this way, since free() is not an appropriate
+        /// way to release such memory.
+        /// </summary>
         FreeBuffer = 0x2,
 
+        /// <summary>
+        /// Automatically call libusb_free_transfer() after callback returns.
+        /// If this flag is set, it is illegal to call libusb_free_transfer()
+        /// from your transfer callback, as this will result in a double-free
+        /// when this flag is acted upon.
+        /// </summary>
         FreeTransfer = 0x4,
 
         /// <summary>
-        ///  Available since libusb-1.0.9.
+        /// Terminate transfers that are a multiple of the endpoint's
+        /// wMaxPacketSize with an extra zero length packet. This is useful
+        /// when a device protocol mandates that each logical request is
+        /// terminated by an incomplete packet (i.e. the logical requests are
+        /// not separated by other means).
+        /// This flag only affects host-to-device transfers to bulk and interrupt
+        /// endpoints. In other situations, it is ignored.
+        /// This flag only affects transfers with a length that is a multiple of
+        /// the endpoint's wMaxPacketSize. On transfers of other lengths, this
+        /// flag has no effect. Therefore, if you are working with a device that
+        /// needs a ZLP whenever the end of the logical request falls on a packet
+        /// boundary, then it is sensible to set this flag on
+        /// every
+        /// transfer (you do not have to worry about only setting it on transfers
+        /// that end on the boundary).
+        /// This flag is currently only supported on Linux.
+        /// On other systems, libusb_submit_transfer() will return
+        /// LIBUSB_ERROR_NOT_SUPPORTED for every transfer where this flag is set.
+        /// Available since libusb-1.0.9.
         /// </summary>
         AddZeroPacket = 0x8,
 

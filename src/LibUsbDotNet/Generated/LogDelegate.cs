@@ -30,20 +30,10 @@
 //
 
 using System;
+using System.Runtime.InteropServices;
 
 namespace LibUsbDotNet
 {
-    /// <summary>
-    /// Masks for the bits of the
-    /// libusb_usb_2_0_extension_descriptor::bmAttributes "bmAttributes" field of the USB 2.0 Extension descriptor.
-    /// </summary>
-    [Flags]
-    public enum Usb20ExtensionAttributes : byte
-    {
-        /// <summary>
-        /// Supports Link Power Management (LPM)
-        /// </summary>
-        BmLpmSupport = 0x2,
-
-    }
+    [UnmanagedFunctionPointer(NativeMethods.LibUsbCallingConvention)]
+    public unsafe delegate void LogDelegate(Context ctx, LogLevel level, IntPtr str);
 }

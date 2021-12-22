@@ -33,18 +33,22 @@ using System;
 
 namespace LibUsbDotNet
 {
+    /// <summary>
+    /// Endpoint direction. Values for bit 7 of the
+    /// libusb_endpoint_descriptor::bEndpointAddress "endpoint address" scheme.
+    /// </summary>
     [Flags]
     public enum EndpointDirection : byte
     {
         /// <summary>
-        ///  In: device-to-host 
-        /// </summary>
-        In = 0x80,
-
-        /// <summary>
-        ///  Out: host-to-device 
+        /// Out: host-to-device
         /// </summary>
         Out = 0,
+
+        /// <summary>
+        /// In: device-to-host
+        /// </summary>
+        In = 0x80,
 
     }
 }

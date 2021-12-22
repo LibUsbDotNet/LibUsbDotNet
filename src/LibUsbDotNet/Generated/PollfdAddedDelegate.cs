@@ -34,5 +34,6 @@ using System.Runtime.InteropServices;
 
 namespace LibUsbDotNet
 {
+    [UnmanagedFunctionPointer(NativeMethods.LibUsbCallingConvention)]
     public unsafe delegate void PollfdAddedDelegate(int fd, short events, IntPtr userData);
 }

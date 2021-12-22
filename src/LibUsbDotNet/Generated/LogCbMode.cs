@@ -34,16 +34,21 @@ using System;
 namespace LibUsbDotNet
 {
     /// <summary>
-    /// Masks for the bits of the
-    /// libusb_usb_2_0_extension_descriptor::bmAttributes "bmAttributes" field of the USB 2.0 Extension descriptor.
+    /// Log callback mode.
+    /// libusb_set_log_cb()
     /// </summary>
     [Flags]
-    public enum Usb20ExtensionAttributes : byte
+    public enum LogCbMode : byte
     {
         /// <summary>
-        /// Supports Link Power Management (LPM)
+        /// Callback function handling all log messages.
         /// </summary>
-        BmLpmSupport = 0x2,
+        LogCbGlobal = 0x1,
+
+        /// <summary>
+        /// Callback function handling context related log messages.
+        /// </summary>
+        LogCbContext = 0x2,
 
     }
 }

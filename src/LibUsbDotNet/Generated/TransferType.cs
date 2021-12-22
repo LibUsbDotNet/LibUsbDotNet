@@ -33,31 +33,34 @@ using System;
 
 namespace LibUsbDotNet
 {
+    /// <summary>
+    /// Transfer type
+    /// </summary>
     [Flags]
     public enum TransferType : byte
     {
         /// <summary>
-        ///  Control endpoint 
+        /// Control transfer
         /// </summary>
         Control = 0,
 
         /// <summary>
-        ///  Isochronous endpoint 
+        /// Isochronous transfer
         /// </summary>
         Isochronous = 0x1,
 
         /// <summary>
-        ///  Bulk endpoint 
+        /// Bulk transfer
         /// </summary>
         Bulk = 0x2,
 
         /// <summary>
-        ///  Interrupt endpoint 
+        /// Interrupt transfer
         /// </summary>
         Interrupt = 0x3,
 
         /// <summary>
-        ///  Stream endpoint 
+        /// Bulk stream transfer
         /// </summary>
         BulkStream = 0x4,
 

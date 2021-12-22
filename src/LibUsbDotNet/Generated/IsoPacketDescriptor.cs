@@ -35,23 +35,23 @@ using System.Runtime.InteropServices;
 namespace LibUsbDotNet
 {
     /// <summary>
-    ///  Isochronous packet descriptor.
+    /// Isochronous packet descriptor.
     /// </summary>
     [StructLayoutAttribute(LayoutKind.Sequential, Pack = NativeMethods.Pack)]
     public struct IsoPacketDescriptor
     {
         /// <summary>
-        ///  Length of data to request in this packet
+        /// Length of data to request in this packet
         /// </summary>
         public uint Length;
 
         /// <summary>
-        ///  Amount of data that was actually transferred
+        /// Amount of data that was actually transferred
         /// </summary>
         public uint ActualLength;
 
         /// <summary>
-        ///  Status code for this packet
+        /// Status code for this packet
         /// </summary>
         public TransferStatus Status;
 

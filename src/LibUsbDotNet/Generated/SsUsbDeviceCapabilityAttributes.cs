@@ -34,13 +34,14 @@ using System;
 namespace LibUsbDotNet
 {
     /// <summary>
-    ///  field of the SuperSpeed USB Device Capability descriptor.
+    /// Masks for the bits of the
+    /// libusb_ss_usb_device_capability_descriptor::bmAttributes "bmAttributes" field field of the SuperSpeed USB Device Capability descriptor.
     /// </summary>
     [Flags]
     public enum SsUsbDeviceCapabilityAttributes : byte
     {
         /// <summary>
-        ///  Supports Latency Tolerance Messages (LTM) 
+        /// Supports Latency Tolerance Messages (LTM)
         /// </summary>
         BmLtmSupport = 0x2,
 

@@ -34,23 +34,24 @@ using System;
 namespace LibUsbDotNet
 {
     /// <summary>
-    ///  libusb_endpoint_descriptor.
+    /// Usage type for isochronous endpoints. Values for bits 4:5 of the
+    /// libusb_endpoint_descriptor::bmAttributes "bmAttributes" field in libusb_endpoint_descriptor.
     /// </summary>
     [Flags]
     public enum IsoUsageType : byte
     {
         /// <summary>
-        ///  Data endpoint 
+        /// Data endpoint
         /// </summary>
         Data = 0,
 
         /// <summary>
-        ///  Feedback endpoint 
+        /// Feedback endpoint
         /// </summary>
         Feedback = 0x1,
 
         /// <summary>
-        ///  Implicit feedback Data endpoint 
+        /// Implicit feedback Data endpoint
         /// </summary>
         Implicit = 0x2,
 

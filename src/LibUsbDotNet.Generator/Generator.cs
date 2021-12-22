@@ -1,5 +1,4 @@
-﻿using Core.Clang;
-using Core.Clang.Diagnostics;
+﻿using Core.Clang.Diagnostics;
 using LibUsbDotNet.Generator.Primitives;
 using Nustache.Core;
 using System;
@@ -9,8 +8,6 @@ using System.IO;
 using System.Linq;
 using Delegate = LibUsbDotNet.Generator.Primitives.Delegate;
 using Enum = LibUsbDotNet.Generator.Primitives.Enum;
-using CSharpSyntaxTree = Microsoft.CodeAnalysis.CSharp.CSharpSyntaxTree;
-using SyntaxNodeExtensions = Microsoft.CodeAnalysis.SyntaxNodeExtensions;
 
 namespace LibUsbDotNet.Generator
 {
@@ -72,7 +69,7 @@ namespace LibUsbDotNet.Generator
 
             arguments = arguments.Concat(this.IncludeDirectories.Select(x => "-I" + x)).ToArray();
 
-            using (var createIndex = new Index(false, true))
+            using (var createIndex = new Core.Clang.Index(false, true))
             using (var translationUnit = createIndex.ParseTranslationUnit(this.InputFile, arguments))
             {
                 StringWriter errorWriter = new StringWriter();

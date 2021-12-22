@@ -2,11 +2,6 @@
 // Copyright (c) Quamotion. All rights reserved.
 // </copyright>
 
-using System;
-using System.CodeDom;
-using System.Diagnostics;
-using System.Linq;
-using System.Runtime.InteropServices;
 using Core.Clang;
 
 namespace LibUsbDotNet.Generator
@@ -23,7 +18,7 @@ namespace LibUsbDotNet.Generator
 
         public ChildVisitResult Visit(Cursor cursor, Cursor parent)
         {
-            if (!cursor.GetLocation().IsFromMainFile())
+            if (cursor.GetLocation()?.IsFromMainFile() != true)
             {
                 return ChildVisitResult.Continue;
             }

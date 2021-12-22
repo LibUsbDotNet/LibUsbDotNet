@@ -34,28 +34,28 @@ using System;
 namespace LibUsbDotNet
 {
     /// <summary>
-    ///  USB capability types
+    /// USB capability types
     /// </summary>
     [Flags]
     public enum BosType : byte
     {
         /// <summary>
-        ///  Wireless USB device capability 
+        /// Wireless USB device capability
         /// </summary>
         WirelessUsbDeviceCapability = 0x1,
 
         /// <summary>
-        ///  USB 2.0 extensions 
+        /// USB 2.0 extensions
         /// </summary>
         Usb20Extension = 0x2,
 
         /// <summary>
-        ///  SuperSpeed USB device capability 
+        /// SuperSpeed USB device capability
         /// </summary>
         SsUsbDeviceCapability = 0x3,
 
         /// <summary>
-        ///  Container ID type 
+        /// Container ID type
         /// </summary>
         ContainerId = 0x4,
 

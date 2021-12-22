@@ -34,73 +34,73 @@ using System;
 namespace LibUsbDotNet
 {
     /// <summary>
-    ///  Descriptor types as defined by the USB specification. 
+    /// Descriptor types as defined by the USB specification.
     /// </summary>
     [Flags]
     public enum DescriptorType : byte
     {
         /// <summary>
-        ///  Device descriptor. See libusb_device_descriptor. 
+        /// Device descriptor. See libusb_device_descriptor.
         /// </summary>
         Device = 0x1,
 
         /// <summary>
-        ///  Configuration descriptor. See libusb_config_descriptor. 
+        /// Configuration descriptor. See libusb_config_descriptor.
         /// </summary>
         Config = 0x2,
 
         /// <summary>
-        ///  String descriptor 
+        /// String descriptor
         /// </summary>
         String = 0x3,
 
         /// <summary>
-        ///  Interface descriptor. See libusb_interface_descriptor. 
+        /// Interface descriptor. See libusb_interface_descriptor.
         /// </summary>
         Interface = 0x4,
 
         /// <summary>
-        ///  Endpoint descriptor. See libusb_endpoint_descriptor. 
+        /// Endpoint descriptor. See libusb_endpoint_descriptor.
         /// </summary>
         Endpoint = 0x5,
 
         /// <summary>
-        ///  BOS descriptor 
+        /// BOS descriptor
         /// </summary>
         Bos = 0xF,
 
         /// <summary>
-        ///  Device Capability descriptor 
+        /// Device Capability descriptor
         /// </summary>
         DeviceCapability = 0x10,
 
         /// <summary>
-        ///  HID descriptor 
+        /// HID descriptor
         /// </summary>
         Hid = 0x21,
 
         /// <summary>
-        ///  HID report descriptor 
+        /// HID report descriptor
         /// </summary>
         Report = 0x22,
 
         /// <summary>
-        ///  Physical descriptor 
+        /// Physical descriptor
         /// </summary>
         Physical = 0x23,
 
         /// <summary>
-        ///  Hub descriptor 
+        /// Hub descriptor
         /// </summary>
         Hub = 0x29,
 
         /// <summary>
-        ///  SuperSpeed Hub descriptor 
+        /// SuperSpeed Hub descriptor
         /// </summary>
         SuperspeedHub = 0x2A,
 
         /// <summary>
-        ///  SuperSpeed Endpoint Companion descriptor 
+        /// SuperSpeed Endpoint Companion descriptor
         /// </summary>
         SsEndpointCompanion = 0x30,
 
