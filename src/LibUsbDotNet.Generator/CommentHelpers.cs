@@ -58,7 +58,7 @@ namespace LibUsbDotNet.Generator
         public static IEnumerable<Comment> GetCommentChildren(this FullComment fullComment)
         {
             uint fullCommentChildren = fullComment?.GetNumChildren() ?? 0;
-            for (uint i = 0;i < fullCommentChildren; i++)
+            for (uint i = 0; i < fullCommentChildren; i++)
             {
                 yield return fullComment.GetChild(i);
             }
