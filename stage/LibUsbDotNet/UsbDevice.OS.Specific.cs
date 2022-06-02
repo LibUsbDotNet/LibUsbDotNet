@@ -30,10 +30,8 @@ using LibUsbDotNet.LudnMonoLibUsb;
 using LibUsbDotNet.WinUsb;
 using MonoLibUsb;
 
-namespace LibUsbDotNet
-{
-    public abstract partial class UsbDevice
-    {
+namespace LibUsbDotNet {
+    public abstract partial class UsbDevice {
         /// <summary>
         /// 
         /// </summary>
@@ -46,7 +44,7 @@ namespace LibUsbDotNet
         /// If this is <see langword="true"/>, <see cref="AllDevices"/> will return only <see cref="MonoUsbDevice"/>s in the list.
         /// </remarks>
         public static bool ForceLibUsbWinBack = false;
-        
+
 
         /// <summary>
         /// Gets a list of all available WinUSB USB devices.
@@ -57,15 +55,12 @@ namespace LibUsbDotNet
         /// Using the <see cref="AllDevices"/> property instead will ensure your source code is platform-independent.
         /// </para>
         /// </remarks>
-        public static UsbRegDeviceList AllWinUsbDevices
-        {
-            get
-            {
+        public static UsbRegDeviceList AllWinUsbDevices {
+            get {
                 UsbRegDeviceList regDevList = new UsbRegDeviceList();
                 if (IsLinux || ForceLibUsbWinBack) return regDevList;
 
-                if (HasWinUsbDriver)
-                {
+                if (HasWinUsbDriver) {
                     List<WinUsbRegistry> winUsbRegistry = WinUsbRegistry.DeviceList;
                     foreach (WinUsbRegistry usbRegistry in winUsbRegistry)
                         regDevList.Add(usbRegistry);
@@ -76,13 +71,37 @@ namespace LibUsbDotNet
         }
 
         /// <summary>
+        /// Gets a list of all available LibusbK USB devices.
+        /// </summary>
+        /// <remarks>
+        /// On windows, gets a list of LibusbK devices. On linux always returns null.
+        /// <para>
+        /// Using the <see cref="AllDevices"/> property instead will ensure your source code is platform-independent.
+        /// </para>
+        /// </remarks>
+        public static UsbRegDeviceList AllLibusbKDevices {
+            get {
+                UsbRegDeviceList regDevList = new UsbRegDeviceList();
+                if (IsLinux || ForceLibUsbWinBack) return regDevList;
+
+                if (HasLibusbKDriver) {
+                    List<LibusbKRegistry> libusbKRegistry = LibusbKRegistry.DeviceList;
+                    foreach (LibusbKRegistry usbRegistry in libusbKRegistry)
+                        regDevList.Add(usbRegistry);
+                }
+
+                return regDevList;
+            }
+        }
+
+
+
+        /// <summary>
         /// True if the LibUsb driver is found on the system.
         /// </summary>
         [Obsolete("Always returns true")]
-        public static bool HasLibUsbDriver
-        {
-            get
-            {
+        public static bool HasLibUsbDriver {
+            get {
                 return true;
             }
         }
@@ -120,58 +139,65 @@ namespace LibUsbDotNet
         /// </summary>
         /// <remarks>
         /// </remarks>
-        public static bool HasWinUsbDriver
-        {
-            get
-            {
-                if (mHasWinUsbDriver == null)
-                {
-                    if (IsLinux)
-                    {
+        public static bool HasWinUsbDriver {
+            get {
+                if (mHasWinUsbDriver == null) {
+                    if (IsLinux) {
                         mHasWinUsbDriver = false;
-                    }
-                    else
-                    {
-                        try
-                        {
+                    } else {
+                        try {
                             WinUsb.Internal.WinUsbAPI.WinUsb_Free(IntPtr.Zero);
                             mHasWinUsbDriver = true;
-                        }
-                        catch (Exception)
-                        {
+                        } catch (Exception) {
                             mHasWinUsbDriver = false;
 
                         }
                     }
                 }
-                return (bool) mHasWinUsbDriver;
+                return (bool)mHasWinUsbDriver;
+            }
+        }
+
+
+        /// <summary>
+        /// True if the LibusbK API is available.
+        /// </summary>
+        /// <remarks>
+        /// </remarks>
+        public static bool HasLibusbKDriver {
+            get {
+                if (mHasLibusbKDriver == null) {
+                    if (IsLinux) {
+                        mHasLibusbKDriver = false;
+                    } else {
+                        try {
+                            WinUsb.Internal.LibusbKAPI.UsbK_Free(IntPtr.Zero);
+                            mHasLibusbKDriver = true;
+                        } catch (Exception) {
+                            mHasLibusbKDriver = false;
+
+                        }
+                    }
+                }
+                return (bool)mHasLibusbKDriver;
             }
         }
 
         /// <summary>
         /// True if the libusb-1.0 API is available.
         /// </summary>
-        public static bool HasLibUsbWinBackDriver
-        {
-            get
-            {
-                if (mHasLibUsbWinBackDriver == null)
-                {
-                    if (IsLinux)
-                    {
+        public static bool HasLibUsbWinBackDriver {
+            get {
+                if (mHasLibUsbWinBackDriver == null) {
+                    if (IsLinux) {
                         mHasLibUsbWinBackDriver = false;
-                    }
-                    else
-                    {
-                        try
-                        {
+                    } else {
+                        try {
                             MonoUsbApi.StrError(MonoUsbError.Success);
                             mHasLibUsbWinBackDriver = true;
-                        }
-                        catch(Exception)
-                        {
+                        } catch (Exception) {
                             mHasLibUsbWinBackDriver = false;
-                          
+
                         }
                     }
                 }
@@ -182,10 +208,8 @@ namespace LibUsbDotNet
         /// Returns true if the system is a linux/unix-like operating system. 
         ///</summary>
         ///<exception cref="NotSupportedException"></exception>
-        public static bool IsLinux
-        {
-            get
-            {
+        public static bool IsLinux {
+            get {
                 return Helper.IsLinux;
 
             }
@@ -201,21 +225,14 @@ namespace LibUsbDotNet
         /// is unavailable.
         /// Under linux, <see cref="LibUsbKernelType.MonoLibUsb"/> is always returned.
         /// </summary>
-        public static LibUsbKernelType KernelType
-        {
-            get
-            {
-                if (mLibUsbKernelType == LibUsbKernelType.Unknown)
-                {
-                    if (IsLinux)
-                    {
+        public static LibUsbKernelType KernelType {
+            get {
+                if (mLibUsbKernelType == LibUsbKernelType.Unknown) {
+                    if (IsLinux) {
                         mLibUsbKernelType = LibUsbKernelType.MonoLibUsb;
-                    }
-                    else
-                    {
+                    } else {
                         UsbKernelVersion libUsbVersion = KernelVersion;
-                        if (!libUsbVersion.IsEmpty)
-                        {
+                        if (!libUsbVersion.IsEmpty) {
                             mLibUsbKernelType = libUsbVersion.BcdLibUsbDotNetKernelMod != 0
                                                     ? LibUsbKernelType.NativeLibUsb
                                                     : LibUsbKernelType.LegacyLibUsb;
@@ -233,20 +250,13 @@ namespace LibUsbDotNet
         /// if <see cref="UsbKernelVersion.BcdLibUsbDotNetKernelMod"/> is non-zero then the kernel driver is native.
         /// </para></alert>
         /// </summary>
-        public static UsbKernelVersion KernelVersion
-        {
-            get
-            {
-                if (mUsbKernelVersion.IsEmpty)
-                {
-                    if (IsLinux)
-                    {
+        public static UsbKernelVersion KernelVersion {
+            get {
+                if (mUsbKernelVersion.IsEmpty) {
+                    if (IsLinux) {
                         mUsbKernelVersion = new UsbKernelVersion(1, 0, 0, 0, 0);
-                    }
-                    else
-                    {
-                        for (int i = 1; i < UsbConstants.MAX_DEVICES; i++)
-                        {
+                    } else {
+                        for (int i = 1; i < UsbConstants.MAX_DEVICES; i++) {
                             LibUsbDevice newLibUsbDevice;
                             string deviceFileName = LibUsbDriverIO.GetDeviceNameString(i);
                             if (!LibUsbDevice.Open(deviceFileName, out newLibUsbDevice)) continue;
@@ -263,8 +273,7 @@ namespace LibUsbDotNet
 
                             gcReq.Free();
                             newLibUsbDevice.Close();
-                            if (bSuccess && transferred == LibUsbRequest.Size)
-                            {
+                            if (bSuccess && transferred == LibUsbRequest.Size) {
                                 mUsbKernelVersion = request.Version;
                                 break;
                             }
@@ -280,10 +289,8 @@ namespace LibUsbDotNet
         ///<summary>
         /// Gets a <see cref="System.OperatingSystem"/> object that contains the current platform identifier and version number.
         ///</summary>
-        public static OperatingSystem OSVersion
-        {
-            get
-            {
+        public static OperatingSystem OSVersion {
+            get {
                 return Helper.OSVersion;
             }
         }

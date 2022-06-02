@@ -32,6 +32,7 @@ namespace LibUsbDotNet.Main
     {
         internal const string DEVICE_INTERFACE_GUIDS = "DeviceInterfaceGuids";
         internal const string LIBUSB_INTERFACE_GUIDS = "LibUsbInterfaceGUIDs";
+        internal const string LIBUSBK_DEVICE_CLASS = "libusbk devices";
 
         internal const string SYMBOLIC_NAME_KEY = "SymbolicName";
         internal const string DEVICE_ID_KEY = "DeviceID";
