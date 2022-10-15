@@ -1,4 +1,4 @@
-// Copyright © 2006-2010 Travis Robinson <libusbdotnet@gmail.com>
+﻿// Copyright © 2006-2010 Travis Robinson <libusbdotnet@gmail.com>
 // Copyright © 2017 Andras Fuchs <andras.fuchs@gmail.com>
 // 
 // Website: http://sourceforge.net/projects/libusbdotnet

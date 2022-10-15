@@ -1,4 +1,4 @@
-// Copyright � 2006-2009 Travis Robinson. All rights reserved.
+﻿// Copyright © 2006-2009 Travis Robinson. All rights reserved.
 // 
 // website: sourceforge.net/projects/libusbdotnet/
 // e-mail:  libusbdotnet@gmail.com

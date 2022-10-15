@@ -1,4 +1,4 @@
-// Copyright © 2006-2010 Travis Robinson. All rights reserved.
+ï»¿// Copyright Â© 2006-2010 Travis Robinson. All rights reserved.
 // 
 // website: http://sourceforge.net/projects/libusbdotnet
 // e-mail:  libusbdotnet@gmail.com
@@ -45,7 +45,7 @@ namespace LibUsbDotNet.Descriptors
 
         /// <summary>
         /// Class Code (Assigned by USB Org)
-        /// If equal to Zero, each interface specifies it’s own class code; If equal to 0xFF, the class code is vendor specified; Otherwise field is valid Class Code.
+        /// If equal to Zero, each interface specifies itâ€™s own class code; If equal to 0xFF, the class code is vendor specified; Otherwise field is valid Class Code.
         /// </summary>
         public ClassCodeType Class;
 

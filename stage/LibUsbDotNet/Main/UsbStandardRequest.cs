@@ -1,4 +1,4 @@
-// Copyright © 2006-2010 Travis Robinson. All rights reserved.
+ï»¿// Copyright Â© 2006-2010 Travis Robinson. All rights reserved.
 // 
 // website: http://sourceforge.net/projects/libusbdotnet
 // e-mail:  libusbdotnet@gmail.com
@@ -71,7 +71,7 @@ namespace LibUsbDotNet.Main
         /// </summary>
         SetInterface = 0x0B,
         /// <summary>
-        /// Used to set and then report an endpoint’s synchronization frame.
+        /// Used to set and then report an endpointâ€™s synchronization frame.
         /// </summary>
         SynchFrame = 0x0C,
     }
