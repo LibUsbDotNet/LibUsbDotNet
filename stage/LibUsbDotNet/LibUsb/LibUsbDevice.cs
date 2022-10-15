@@ -358,6 +358,16 @@ namespace LibUsbDotNet.LibUsb
 
         internal bool UsbIoSync(int controlCode, Object inBuffer, int inSize, IntPtr outBuffer, int outSize, out int ret) { return LibUsbDriverIO.UsbIOSync(mUsbHandle, controlCode, inBuffer, inSize, outBuffer, outSize, out ret); }
 
+        public bool DetachKernelDriver(int interfaceID)
+        {
+            throw new PlatformNotSupportedException();
+        }
+
+        public bool SetAutoDetachKernelDriver(bool autoDetach)
+        {
+            throw new PlatformNotSupportedException();
+        }
+
         /// <summary>
         /// Gets the device filename for this <see cref="LibUsbDevice"/>.
         /// </summary>
