@@ -1,4 +1,4 @@
-﻿ļ»æ// Copyright Ā© 2006-2009 Travis Robinson. All rights reserved.
+﻿// Copyright © 2006-2009 Travis Robinson. All rights reserved.
 // 
 // website: http://sourceforge.net/projects/libusbdotnet
 // e-mail:  libusbdotnet@gmail.com
