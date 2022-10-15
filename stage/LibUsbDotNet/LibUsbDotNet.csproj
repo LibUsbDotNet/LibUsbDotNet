@@ -22,7 +22,7 @@
     <AssemblyOriginatorKeyFile>LibUsbDotNet.snk</AssemblyOriginatorKeyFile>
     <GeneratePackageOnBuild>True</GeneratePackageOnBuild>
     <Title>LibUsbDotNet modified version</Title>
-    <PackageReleaseNotes>Upgrade the framework to .net6 .net45
+    <PackageReleaseNotes>Upgrade the framework to .net6 .net46
 Add the DetachKernelDriver call</PackageReleaseNotes>
   </PropertyGroup>
 
