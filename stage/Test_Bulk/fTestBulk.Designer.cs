@@ -1,4 +1,4 @@
-namespace Test_Bulk
+﻿namespace Test_Bulk
 {
     partial class fTestBulk
     {

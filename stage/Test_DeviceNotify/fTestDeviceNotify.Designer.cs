@@ -1,4 +1,4 @@
-namespace Test_DeviceNotify
+﻿namespace Test_DeviceNotify
 {
     partial class fTestDeviceNotify
     {
