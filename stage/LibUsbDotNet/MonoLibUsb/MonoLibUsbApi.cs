@@ -468,10 +468,13 @@ namespace MonoLibUsb
         [DllImport(LIBUSB_DLL, CallingConvention = CC, SetLastError = false, EntryPoint = "libusb_detach_kernel_driver")]
         public static extern int DetachKernelDriver([In] MonoUsbDeviceHandle deviceHandle, int interfaceNumber);
         /// <summary>
-        /// Automatic kernel driver detachment is disabled on newly opened device handles by default.
+        /// When this is enabled libusb will automatically detach the kernel driver on an interface when claiming the interface, and attach it when releasing the interface.
         /// </summary>
-        /// <param name="deviceHandle"></param>
-        /// <param name="enable">Enable/disable libusb's automatic kernel driver detachment.</param>
+        /// <remarks>
+        /// <note type="tip" title="Libusb-1.0 API:"><seelibusb10 group="dev"/></note>
+        /// </remarks>
+        /// <param name="deviceHandle">A device handle.</param>
+        /// <param name="enable"> If the enable argument is non-zero the feature is enabled. Else disabled. Returns 0 on success and a LIBUSB_ERROR code on failure.</param>
         /// <returns></returns>
 
         [DllImport(LIBUSB_DLL, CallingConvention = CC, SetLastError = false, EntryPoint = "libusb_set_auto_detach_kernel_driver")]

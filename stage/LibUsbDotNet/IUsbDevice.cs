@@ -42,14 +42,14 @@ namespace LibUsbDotNet
     public interface IUsbDevice : IUsbInterface
     {
         /// <summary>
-        /// Detach Kerne lDriver the specified interface of the device.
+        /// Detach Kernel Driver the specified interface of the device.
         /// </summary>
-        /// <param name="interfaceID">The interface to DetachKernelDriver.</param>
+        /// <param name="interfaceID">The interface to detach.</param>
         /// <returns>True on success.</returns>
         bool DetachKernelDriver(int interfaceID);
 
         /// <summary>
-        /// Set Auto Detach Kernel Driver
+        /// Enable/disable libusb's automatic kernel driver detachment.
         /// </summary>
         /// <param name="autoDetach"></param>
         /// <returns></returns>

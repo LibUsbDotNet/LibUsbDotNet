@@ -570,7 +570,7 @@ namespace LibUsbDotNet.LudnMonoLibUsb
             int ret = MonoUsbApi.SetAutoDetachKernelDriver((MonoUsbDeviceHandle)mUsbHandle, autoDetach ? 1 : 0);
             if (ret != 0)
             {
-                UsbError.Error(ErrorCode.MonoApiError, ret, "Set Auto DetachKernel Driver Failed", this);
+                UsbError.Error(ErrorCode.MonoApiError, ret, "Set Auto Detach Kernel Driver Failed", this);
                 return false;
             }
             return true;
