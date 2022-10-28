@@ -41,7 +41,7 @@ jobs:
           path: ${{ env.VCPKG_ROOT }}/buildtrees/${{ matrix.package.name }}/
 
   libusb_osx:
-    runs-on: macos-10.15
+    runs-on: macos-12
 
     strategy:
       matrix:
@@ -69,15 +69,8 @@ jobs:
           name: ${{ matrix.package.name }}-${{ github.run_id }}
           path: ${{ env.VCPKG_ROOT }}/installed/
 
-      - name: Upload vcpkg buildtree
-        uses: actions/upload-artifact@v2
-        if: always()
-        with:
-          name: ${{ matrix.package.name }}-${{ github.run_id }}-buildtree
-          path: ${{ env.VCPKG_ROOT }}/buildtrees/${{ matrix.package.name }}/
-
   libusbdotnet_windows:
-    runs-on: windows-2019
+    runs-on: windows-2022
 
     needs: [ libusb_windows, libusb_osx ]
 
@@ -107,11 +100,12 @@ jobs:
           dotnet test src\LibUsbDotNet.Tests\LibUsbDotNet.Tests.csproj -p:RuntimeIdentifier=win7-x64
         shell: cmd
 
-      - name: Test (x86)
-        run: |
-          set PATH=%PATH%;%VCPKG_ROOT%\installed\x86-windows\bin
-          dotnet test src\LibUsbDotNet.Tests\LibUsbDotNet.Tests.csproj -p:RuntimeIdentifier=win7-x86
-        shell: cmd
+      # Recent versions of GitHub actions no longer install a 32-bit .NET host
+      #- name: Test (x86)
+      #  run: |
+      #    set PATH=%PATH%;%VCPKG_ROOT%\installed\x86-windows\bin
+      #    dotnet test src\LibUsbDotNet.Tests\LibUsbDotNet.Tests.csproj -p:RuntimeIdentifier=win7-x86
+      #  shell: cmd
 
       - name: Upload LibUsbDotNet NuGet package
         uses: actions/upload-artifact@v2
@@ -121,7 +115,7 @@ jobs:
           path: '${{ github.workspace }}/nuget/' 
 
   libusbdotnet_macos:
-    runs-on: macos-10.15
+    runs-on: macos-12
 
     needs: [ libusb_windows, libusb_osx ]
 
@@ -148,7 +142,7 @@ jobs:
           dotnet test src/LibUsbDotNet.Tests/LibUsbDotNet.Tests.csproj
 
   libusbdotnet_ubuntu:
-    runs-on: ubuntu-20.04
+    runs-on: ubuntu-22.04
 
     steps:
       - uses: actions/checkout@v2
