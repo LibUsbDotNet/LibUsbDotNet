@@ -144,7 +144,7 @@ namespace LibUsbDotNet.WinUsb {
                 List<WinUsbRegistry> _deviceList = new List<WinUsbRegistry>();
                 SetupApi.EnumClassDevs(null, SetupApi.DICFG.ALLCLASSES | SetupApi.DICFG.PRESENT, WinUsbRegistryCallBack, _deviceList);
                 /// Removing libusbK devices (where the device Class is <see cref="UsbRegistry.LIBUSBK_DEVICE_CLASS"/>)
-                List<WinUsbRegistry> deviceList = _deviceList.Where(device => (string)device.DeviceProperties["Class"] != LIBUSBK_DEVICE_CLASS).ToList();
+                List<WinUsbRegistry> deviceList = _deviceList.Where(device => !((string)device.DeviceProperties["ClassGuid"]).Equals(LIBUSBK_DEVICE_CLASS_GUID)).ToList();
 
                 return deviceList;
             }
