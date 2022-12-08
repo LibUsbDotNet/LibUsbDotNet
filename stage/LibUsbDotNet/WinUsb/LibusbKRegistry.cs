@@ -143,7 +143,7 @@ namespace LibUsbDotNet.WinUsb {
             get {
                 List<LibusbKRegistry> _deviceList = new List<LibusbKRegistry>();
                 SetupApi.EnumClassDevs(null, SetupApi.DICFG.ALLCLASSES | SetupApi.DICFG.PRESENT, LibusbKRegistryCallBack, _deviceList);
-                /// Keep only the libusbK devices (where the device Class is <see cref="UsbRegistry.LIBUSBK_DEVICE_CLASS"/>)
+                /// Keep only the libusbK devices (where the device Class Guid equals <see cref="UsbRegistry.LIBUSBK_DEVICE_CLASS_GUID"/>)
                 List<LibusbKRegistry> deviceList = _deviceList.Where(device => ((string)device.DeviceProperties["ClassGuid"]).Equals(LIBUSBK_DEVICE_CLASS_GUID)).ToList();
 
                 return deviceList;

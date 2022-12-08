@@ -31,7 +31,7 @@ using Microsoft.Win32.SafeHandles;
 
 namespace LibUsbDotNet.WinUsb {
     /// <summary> 
-    /// Contains members specific to Microsofts WinUSB driver.
+    /// Contains members specific to Microsoft WinUSB driver.
     /// </summary> 
     /// <remarks>
     /// A <see cref="WinUsbDevice"/> should be thought of as a part of, or an interface of a USB device.
@@ -129,7 +129,6 @@ namespace LibUsbDotNet.WinUsb {
         /// Opens a WinUsb directly from the user supplied device path. 
         /// </summary>
         /// <param name="devicePath">Device path (symbolic link) of the WinUsb device to open.</param>
-        /// <param name="deviceClass">Device class of the device such a "libusbK devices" or "USB Devices" or something else</param>
         /// <param name="usbDevice">Returns an opened WinUsb device on success, null on failure.</param>
         /// <returns>True on success.</returns>
         public static bool Open(string devicePath, out WinUsbDevice usbDevice) {

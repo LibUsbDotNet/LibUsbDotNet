@@ -129,7 +129,6 @@ namespace LibUsbDotNet.WinUsb {
         /// Opens a LibusbK directly from the user supplied device path. 
         /// </summary>
         /// <param name="devicePath">Device path (symbolic link) of the LibusbK device to open.</param>
-        /// <param name="deviceClass">Device class of the device such a "libusbK devices" or "USB Devices" or something else</param>
         /// <param name="usbDevice">Returns an opened LibusbK device on success, null on failure.</param>
         /// <returns>True on success.</returns>
         public static bool Open(string devicePath, out LibusbKDevice usbDevice) {
