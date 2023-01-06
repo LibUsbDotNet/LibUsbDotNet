@@ -1,4 +1,4 @@
-// Copyright © 2006-2010 Travis Robinson. All rights reserved.
+ï»¿// Copyright Â© 2006-2010 Travis Robinson. All rights reserved.
 // 
 // website: http://sourceforge.net/projects/libusbdotnet
 // e-mail:  libusbdotnet@gmail.com
@@ -25,7 +25,7 @@ namespace LibUsbDotNet.Main
 {
     /// <summary> Transfers data to the main control endpoint (Endpoint 0).
     /// </summary> 
-    /// <remarks> All USB devices respond to requests from the host on the device’s Default Control Pipe. These requests are made using control transfers. The request and the request’s parameters are sent to the device in the Setup packet. The host is responsible for establishing the values passed in the fields. Every Setup packet has eight bytes.
+    /// <remarks> All USB devices respond to requests from the host on the deviceâ€™s Default Control Pipe. These requests are made using control transfers. The request and the requestâ€™s parameters are sent to the device in the Setup packet. The host is responsible for establishing the values passed in the fields. Every Setup packet has eight bytes.
     /// </remarks> 
     [StructLayout(LayoutKind.Sequential, Pack = 1)]
     public struct UsbSetupPacket

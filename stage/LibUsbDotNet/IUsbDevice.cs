@@ -1,4 +1,4 @@
-// Copyright � 2006-2010 Travis Robinson. All rights reserved.
+﻿// Copyright © 2006-2010 Travis Robinson. All rights reserved.
 // 
 // website: http://sourceforge.net/projects/libusbdotnet
 // e-mail:  libusbdotnet@gmail.com
@@ -41,6 +41,19 @@ namespace LibUsbDotNet
     /// </example>
     public interface IUsbDevice : IUsbInterface
     {
+        /// <summary>
+        /// Detach Kernel Driver the specified interface of the device.
+        /// </summary>
+        /// <param name="interfaceID">The interface to detach.</param>
+        /// <returns>True on success.</returns>
+        bool DetachKernelDriver(int interfaceID);
+
+        /// <summary>
+        /// Enable/disable libusb's automatic kernel driver detachment.
+        /// </summary>
+        /// <param name="autoDetach"></param>
+        /// <returns></returns>
+        bool SetAutoDetachKernelDriver(bool autoDetach);
         /// <summary>
         /// Sets the USB devices active configuration value. 
         /// </summary>

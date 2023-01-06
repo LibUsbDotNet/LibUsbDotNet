@@ -5,7 +5,7 @@
     <AssemblyTitle>LibUsbDotNet for .NET Core</AssemblyTitle>
     <VersionPrefix>2.2.9</VersionPrefix>
     <Authors>Travis Robinson;Stevie-O;Quamotion</Authors>
-    <TargetFrameworks>netstandard2.0;net45;net5.0</TargetFrameworks>
+    <TargetFrameworks>netstandard2.0;net46;net6.0</TargetFrameworks>
     <DefineConstants>$(DefineConstants);LIBUSBDOTNET</DefineConstants>
     <DebugType>portable</DebugType>
     <AssemblyName>LibUsbDotNet.LibUsbDotNet</AssemblyName>
@@ -20,15 +20,18 @@
     <AllowedOutputExtensionsInPackageBuildOutputFolder>$(AllowedOutputExtensionsInPackageBuildOutputFolder);.pdb</AllowedOutputExtensionsInPackageBuildOutputFolder>
     <SignAssembly>true</SignAssembly>
     <AssemblyOriginatorKeyFile>LibUsbDotNet.snk</AssemblyOriginatorKeyFile>
+    <GeneratePackageOnBuild>True</GeneratePackageOnBuild>
+    <Title></Title>
+    <PackageReleaseNotes></PackageReleaseNotes>
   </PropertyGroup>
 
-  <ItemGroup Condition=" '$(TargetFramework)' == 'net45' ">
+  <ItemGroup Condition=" '$(TargetFramework)' == 'net46' ">
     <Reference Include="System.Windows.Forms" />
     <Reference Include="System" />
     <Reference Include="Microsoft.CSharp" />
   </ItemGroup>
 
-  <ItemGroup Condition=" '$(TargetFramework)' != 'net45' ">
+  <ItemGroup Condition=" '$(TargetFramework)' != 'net46' ">
     <PackageReference Include="Microsoft.Win32.Registry" Version="5.0.0" />
   </ItemGroup>
   

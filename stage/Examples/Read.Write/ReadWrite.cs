@@ -38,6 +38,17 @@ namespace Examples
                     // This is a "whole" USB device. Before it can be used, 
                     // the desired configuration and interface must be selected.
 
+                    if (Helper.IsLinux)
+                    {
+                        //If it is a Linux environment
+                        //you can execute DetachKernelDriver or SetAutoDetachKernelDriver
+
+                        wholeUsbDevice.SetAutoDetachKernelDriver(true);
+
+                        // detach kernel driver #0.
+                        wholeUsbDevice.DetachKernelDriver(0);
+                    }
+
                     // Select config #1
                     wholeUsbDevice.SetConfiguration(1);
 

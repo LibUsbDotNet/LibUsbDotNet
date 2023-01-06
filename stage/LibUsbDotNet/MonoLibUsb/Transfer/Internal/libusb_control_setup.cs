@@ -1,4 +1,4 @@
-using System.Runtime.InteropServices;
+﻿using System.Runtime.InteropServices;
 using LibUsbDotNet.Main;
 
 namespace MonoLibUsb.Transfer.Internal

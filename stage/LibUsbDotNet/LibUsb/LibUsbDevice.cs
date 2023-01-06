@@ -1,4 +1,4 @@
-// Copyright � 2006-2010 Travis Robinson. All rights reserved.
+﻿// Copyright © 2006-2010 Travis Robinson. All rights reserved.
 // 
 // website: http://sourceforge.net/projects/libusbdotnet
 // e-mail:  libusbdotnet@gmail.com
@@ -357,6 +357,16 @@ namespace LibUsbDotNet.LibUsb
         }
 
         internal bool UsbIoSync(int controlCode, Object inBuffer, int inSize, IntPtr outBuffer, int outSize, out int ret) { return LibUsbDriverIO.UsbIOSync(mUsbHandle, controlCode, inBuffer, inSize, outBuffer, outSize, out ret); }
+
+        public bool DetachKernelDriver(int interfaceID)
+        {
+            throw new PlatformNotSupportedException();
+        }
+
+        public bool SetAutoDetachKernelDriver(bool autoDetach)
+        {
+            throw new PlatformNotSupportedException();
+        }
 
         /// <summary>
         /// Gets the device filename for this <see cref="LibUsbDevice"/>.

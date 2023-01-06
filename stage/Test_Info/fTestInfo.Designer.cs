@@ -1,4 +1,4 @@
-namespace Test_Info
+﻿namespace Test_Info
 {
     partial class fTestInfo
     {

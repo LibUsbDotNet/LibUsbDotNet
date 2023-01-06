@@ -1,4 +1,4 @@
-// Copyright © 2006-2010 Travis Robinson <libusbdotnet@gmail.com>
+﻿// Copyright © 2006-2010 Travis Robinson <libusbdotnet@gmail.com>
 // Copyright © 2017 Andras Fuchs <andras.fuchs@gmail.com>
 // 
 // Website: http://sourceforge.net/projects/libusbdotnet
@@ -467,7 +467,18 @@ namespace MonoLibUsb
         /// </returns>
         [DllImport(LIBUSB_DLL, CallingConvention = CC, SetLastError = false, EntryPoint = "libusb_detach_kernel_driver")]
         public static extern int DetachKernelDriver([In] MonoUsbDeviceHandle deviceHandle, int interfaceNumber);
+        /// <summary>
+        /// When this is enabled libusb will automatically detach the kernel driver on an interface when claiming the interface, and attach it when releasing the interface.
+        /// </summary>
+        /// <remarks>
+        /// <note type="tip" title="Libusb-1.0 API:"><seelibusb10 group="dev"/></note>
+        /// </remarks>
+        /// <param name="deviceHandle">A device handle.</param>
+        /// <param name="enable"> If the enable argument is non-zero the feature is enabled. Else disabled. Returns 0 on success and a LIBUSB_ERROR code on failure.</param>
+        /// <returns></returns>
 
+        [DllImport(LIBUSB_DLL, CallingConvention = CC, SetLastError = false, EntryPoint = "libusb_set_auto_detach_kernel_driver")]
+        public static extern int SetAutoDetachKernelDriver([In] MonoUsbDeviceHandle deviceHandle, int enable);
         /// <summary>
         /// Re-attach an interface's kernel driver, which was previously detached using <see cref="DetachKernelDriver"/>.
         /// </summary>
