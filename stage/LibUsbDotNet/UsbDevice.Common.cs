@@ -26,37 +26,40 @@ using LibUsbDotNet.LibUsb;
 using LibUsbDotNet.Main;
 using LibUsbDotNet.LudnMonoLibUsb;
 using LibUsbDotNet.WinUsb.Internal;
-using Debug=System.Diagnostics.Debug;
+using Debug = System.Diagnostics.Debug;
 
-namespace LibUsbDotNet
-{
-    public abstract partial class UsbDevice
-    {
+namespace LibUsbDotNet {
+    public abstract partial class UsbDevice {
         private static LibUsbAPI _libUsbApi;
         private static WinUsbAPI _winUsbApi;
+        private static LibusbKAPI _libusbKApi;
+
         private static object mHasWinUsbDriver;
+        private static object mHasLibusbKDriver;
         private static object mHasLibUsbWinBackDriver;
 
         private static LibUsbKernelType mLibUsbKernelType;
         private static UsbKernelVersion mUsbKernelVersion;
 
         /// <summary>
-        /// Gets a list of all available USB devices (WinUsb, LibUsb, Linux LibUsb v1.x).
+        /// Gets a list of all available USB devices (WinUsb, LibusbK, LibUsb, Linux LibUsb v1.x).
         /// </summary>
         /// <remarks>
         /// Use this property to get a list of USB device that can be accessed by LibUsbDotNet.
         /// Using this property as opposed to <see cref="AllLibUsbDevices"/> and <see cref="AllWinUsbDevices"/>
         /// will ensure your source code is platform-independent.
         /// </remarks>
-        public static UsbRegDeviceList AllDevices
-        {
-            get
-            {
+        public static UsbRegDeviceList AllDevices {
+            get {
                 UsbRegDeviceList regDevReturnList = new UsbRegDeviceList();
 
                 UsbRegDeviceList winUsbList = AllWinUsbDevices;
                 foreach (UsbRegistry winUsbRegistry in winUsbList)
                     regDevReturnList.Add(winUsbRegistry);
+
+                UsbRegDeviceList libusbKList = AllLibusbKDevices;
+                foreach (UsbRegistry libusbKRegistry in libusbKList)
+                    regDevReturnList.Add(libusbKRegistry);
 
                 UsbRegDeviceList libUsbList = AllLibUsbDevices;
                 foreach (UsbRegistry libUsbRegistry in libUsbList)
@@ -78,30 +81,21 @@ namespace LibUsbDotNet
         /// On linux/mac, gets a list of libusb-1.0 devices.
         /// </para>
         /// </remarks>
-        public static UsbRegDeviceList AllLibUsbDevices
-        {
-            get
-            {
+        public static UsbRegDeviceList AllLibUsbDevices {
+            get {
                 UsbRegDeviceList regDevList = new UsbRegDeviceList();
 
-                if (HasLibUsbWinBackDriver && ForceLibUsbWinBack)
-                {
+                if (HasLibUsbWinBackDriver && ForceLibUsbWinBack) {
                     List<MonoUsbDevice> deviceList = MonoUsbDevice.MonoUsbDeviceList;
-                    foreach (MonoUsbDevice usbDevice in deviceList)
-                    {
+                    foreach (MonoUsbDevice usbDevice in deviceList) {
                         regDevList.Add(new LegacyUsbRegistry(usbDevice));
                     }
-                }
-                else
-                {
-                    if (!ForceLegacyLibUsb && KernelType == LibUsbKernelType.NativeLibUsb)
-                    {
+                } else {
+                    if (!ForceLegacyLibUsb && KernelType == LibUsbKernelType.NativeLibUsb) {
                         List<LibUsbRegistry> libUsbRegistry = LibUsbRegistry.DeviceList;
                         foreach (LibUsbRegistry usbRegistry in libUsbRegistry)
                             regDevList.Add(usbRegistry);
-                    }
-                    else 
-                    {
+                    } else {
                         List<LegacyUsbRegistry> libUsbRegistry = LegacyUsbRegistry.DeviceList;
                         foreach (LegacyUsbRegistry usbRegistry in libUsbRegistry)
                             regDevList.Add(usbRegistry);
@@ -115,36 +109,38 @@ namespace LibUsbDotNet
         /// <summary>
         /// Returns the last error number reported by LibUsbDotNet.
         /// </summary>
-        public static int LastErrorNumber
-        {
+        public static int LastErrorNumber {
             get { return UsbError.mLastErrorNumber; }
         }
 
         /// <summary>
         /// Returns the last error string reported by LibUsbDotNet.
         /// </summary>
-        public static string LastErrorString
-        {
+        public static string LastErrorString {
             get { return UsbError.mLastErrorString; }
         }
 
-        internal static LibUsbAPI LibUsbApi
-        {
-            get
-            {
+        internal static LibUsbAPI LibUsbApi {
+            get {
                 if (ReferenceEquals(_libUsbApi, null))
                     _libUsbApi = new LibUsbAPI();
                 return _libUsbApi;
             }
         }
 
-        internal static WinUsbAPI WinUsbApi
-        {
-            get
-            {
+        internal static WinUsbAPI WinUsbApi {
+            get {
                 if (ReferenceEquals(_winUsbApi, null))
                     _winUsbApi = new WinUsbAPI();
                 return _winUsbApi;
+            }
+        }
+
+        internal static LibusbKAPI LibusbKApi {
+            get {
+                if (ReferenceEquals(_libusbKApi, null))
+                    _libusbKApi = new LibusbKAPI();
+                return _libusbKApi;
             }
         }
 
@@ -155,9 +151,8 @@ namespace LibUsbDotNet
         /// </summary>
         /// <param name="usbDeviceFinder">The <see cref="UsbDeviceFinder"/> class used to find the usb device.</param>
         /// <returns>An valid/open usb device class if the device was found or Null if the device was not found.</returns>
-        public static UsbDevice OpenUsbDevice(UsbDeviceFinder usbDeviceFinder) 
-        {
-            return OpenUsbDevice((Predicate<UsbRegistry>) usbDeviceFinder.Check);
+        public static UsbDevice OpenUsbDevice(UsbDeviceFinder usbDeviceFinder) {
+            return OpenUsbDevice((Predicate<UsbRegistry>)usbDeviceFinder.Check);
         }
 
         /// <summary>
@@ -165,13 +160,11 @@ namespace LibUsbDotNet
         /// </summary>
         /// <param name="findDevicePredicate">The predicate function used to find the usb device.</param>
         /// <returns>An valid/open usb device class if the device was found or Null if the device was not found.</returns>
-        public static UsbDevice OpenUsbDevice(Predicate<UsbRegistry> findDevicePredicate)
-        {
+        public static UsbDevice OpenUsbDevice(Predicate<UsbRegistry> findDevicePredicate) {
             UsbDevice usbDeviceFound;
 
             UsbRegDeviceList allDevices = AllDevices;
             UsbRegistry regDeviceFound = allDevices.Find(findDevicePredicate);
-
             if (ReferenceEquals(regDeviceFound, null)) return null;
 
             usbDeviceFound = regDeviceFound.Device;
@@ -195,16 +188,12 @@ namespace LibUsbDotNet
         /// <param name="devInterfaceGuid">Device Interface GUID of the usb device to open.</param>
         /// <param name="usbDevice">On success, a new <see cref="UsbDevice"/> instance.</param>
         /// <returns>True on success.</returns>
-        public static bool OpenUsbDevice(ref Guid devInterfaceGuid, out UsbDevice usbDevice)
-        {
+        public static bool OpenUsbDevice(ref Guid devInterfaceGuid, out UsbDevice usbDevice) {
             usbDevice = null;
             UsbRegDeviceList usbRegDevices = AllDevices;
-            foreach (UsbRegistry usbRegistry in usbRegDevices)
-            {
-                foreach (Guid guid in usbRegistry.DeviceInterfaceGuids)
-                {
-                    if (guid == devInterfaceGuid)
-                    {
+            foreach (UsbRegistry usbRegistry in usbRegDevices) {
+                foreach (Guid guid in usbRegistry.DeviceInterfaceGuids) {
+                    if (guid == devInterfaceGuid) {
                         usbDevice = usbRegistry.Device;
                         if (usbDevice != null) return true;
                     }

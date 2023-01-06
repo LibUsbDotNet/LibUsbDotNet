@@ -21,8 +21,8 @@
 // 
 using System;
 using System.Collections.Generic;
-using System.Diagnostics;
 using System.Globalization;
+using System.Linq;
 using System.Runtime.InteropServices;
 using System.Text;
 using System.Text.RegularExpressions;
@@ -31,12 +31,10 @@ using LibUsbDotNet.Internal.UsbRegex;
 using LibUsbDotNet.Main;
 using Microsoft.Win32;
 
-namespace LibUsbDotNet.WinUsb
-{
+namespace LibUsbDotNet.WinUsb {
     /// <summary> WinUsb specific members for device registry settings.
     /// </summary> 
-    public class WinUsbRegistry : UsbRegistry
-    {
+    public class WinUsbRegistry : UsbRegistry {
         private bool mIsDeviceIDParsed;
 
         private string mDeviceID;
@@ -56,18 +54,15 @@ namespace LibUsbDotNet.WinUsb
         /// Each device path string in the <paramref name="devicePathList"/> represents a seperate WinUSB device (interface).
         /// </remarks>
         /// <seealso cref="GetWinUsbRegistryList"/>
-        public static bool GetDevicePathList(Guid deviceInterfaceGuid, out List<String> devicePathList)
-        {
+        public static bool GetDevicePathList(Guid deviceInterfaceGuid, out List<String> devicePathList) {
             devicePathList = new List<string>();
             int devicePathIndex = 0;
             SetupApi.SP_DEVICE_INTERFACE_DATA interfaceData = SetupApi.SP_DEVICE_INTERFACE_DATA.Empty;
             SetupApi.DeviceInterfaceDetailHelper detailHelper;
 
             IntPtr deviceInfo = SetupApi.SetupDiGetClassDevs(ref deviceInterfaceGuid, null, IntPtr.Zero, SetupApi.DICFG.PRESENT | SetupApi.DICFG.DEVICEINTERFACE);
-            if (deviceInfo != IntPtr.Zero)
-            {
-                while ((SetupApi.SetupDiEnumDeviceInterfaces(deviceInfo, null, ref deviceInterfaceGuid, devicePathIndex, ref interfaceData)))
-                {
+            if (deviceInfo != IntPtr.Zero) {
+                while ((SetupApi.SetupDiEnumDeviceInterfaces(deviceInfo, null, ref deviceInterfaceGuid, devicePathIndex, ref interfaceData))) {
                     int length = 1024;
                     detailHelper = new SetupApi.DeviceInterfaceDetailHelper(length);
                     bool bResult = SetupApi.SetupDiGetDeviceInterfaceDetail(deviceInfo, ref interfaceData, detailHelper.Handle, length, out length, null);
@@ -94,8 +89,7 @@ namespace LibUsbDotNet.WinUsb
         /// <remarks>
         /// Each <see cref="WinUsbRegistry"/> in the <paramref name="deviceRegistryList"/> represents a seperate WinUSB device (interface).
         /// </remarks>
-        public static bool GetWinUsbRegistryList(Guid deviceInterfaceGuid, out List<WinUsbRegistry> deviceRegistryList)
-        {
+        public static bool GetWinUsbRegistryList(Guid deviceInterfaceGuid, out List<WinUsbRegistry> deviceRegistryList) {
             deviceRegistryList = new List<WinUsbRegistry>();
 
             int devicePathIndex = 0;
@@ -106,15 +100,12 @@ namespace LibUsbDotNet.WinUsb
 
             // [1]
             IntPtr deviceInfo = SetupApi.SetupDiGetClassDevs(ref deviceInterfaceGuid, null, IntPtr.Zero, SetupApi.DICFG.PRESENT | SetupApi.DICFG.DEVICEINTERFACE);
-            if (deviceInfo != IntPtr.Zero)
-            {
-                while ((SetupApi.SetupDiEnumDeviceInterfaces(deviceInfo, null, ref deviceInterfaceGuid, devicePathIndex, ref interfaceData)))
-                {
+            if (deviceInfo != IntPtr.Zero) {
+                while ((SetupApi.SetupDiEnumDeviceInterfaces(deviceInfo, null, ref deviceInterfaceGuid, devicePathIndex, ref interfaceData))) {
                     int length = 1024;
                     detailHelper = new SetupApi.DeviceInterfaceDetailHelper(length);
                     bool bResult = SetupApi.SetupDiGetDeviceInterfaceDetail(deviceInfo, ref interfaceData, detailHelper.Handle, length, out length, ref devInfoData);
-                    if (bResult)
-                    {
+                    if (bResult) {
                         WinUsbRegistry regInfo = new WinUsbRegistry();
 
                         SetupApi.getSPDRPProperties(deviceInfo, ref devInfoData, regInfo.mDeviceProperties);
@@ -122,13 +113,10 @@ namespace LibUsbDotNet.WinUsb
                         // Use the actual winusb device path for SYMBOLIC_NAME_KEY. This will be used to open the device.
                         regInfo.mDeviceProperties.Add(SYMBOLIC_NAME_KEY, detailHelper.DevicePath);
 
-                        Debug.WriteLine(detailHelper.DevicePath);
-
                         regInfo.mDeviceInterfaceGuids = new Guid[] { deviceInterfaceGuid };
 
-                        StringBuilder sbDeviceID=new StringBuilder(1024);
-                        if (SetupApi.CM_Get_Device_ID(devInfoData.DevInst,sbDeviceID,sbDeviceID.Capacity,0)==SetupApi.CR.SUCCESS)
-                        {
+                        StringBuilder sbDeviceID = new StringBuilder(1024);
+                        if (SetupApi.CM_Get_Device_ID(devInfoData.DevInst, sbDeviceID, sbDeviceID.Capacity, 0) == SetupApi.CR.SUCCESS) {
                             regInfo.mDeviceProperties[DEVICE_ID_KEY] = sbDeviceID.ToString();
                         }
                         deviceRegistryList.Add(regInfo);
@@ -149,14 +137,15 @@ namespace LibUsbDotNet.WinUsb
         internal WinUsbRegistry() { }
 
         /// <summary>
-        /// Gets a list of available LibUsb devices.
+        /// Gets a list of available WinUSB devices.
         /// </summary>
-        public static List<WinUsbRegistry> DeviceList
-        {
-            get
-            {
-                List<WinUsbRegistry> deviceList = new List<WinUsbRegistry>();
-                SetupApi.EnumClassDevs(null, SetupApi.DICFG.ALLCLASSES | SetupApi.DICFG.PRESENT, WinUsbRegistryCallBack, deviceList);
+        public static List<WinUsbRegistry> DeviceList {
+            get {
+                List<WinUsbRegistry> _deviceList = new List<WinUsbRegistry>();
+                SetupApi.EnumClassDevs(null, SetupApi.DICFG.ALLCLASSES | SetupApi.DICFG.PRESENT, WinUsbRegistryCallBack, _deviceList);
+                /// Removing libusbK devices (where the device Class Guid equals <see cref="UsbRegistry.LIBUSBK_DEVICE_CLASS_GUID"/>)
+                List<WinUsbRegistry> deviceList = _deviceList.Where(device => !((string)device.DeviceProperties["ClassGuid"]).Equals(LIBUSBK_DEVICE_CLASS_GUID)).ToList();
+
                 return deviceList;
             }
         }
@@ -164,10 +153,8 @@ namespace LibUsbDotNet.WinUsb
         /// <summary>
         /// Gets a collection of DeviceInterfaceGuids that are associated with this WinUSB device.
         /// </summary>
-        public override Guid[] DeviceInterfaceGuids
-        {
-            get
-            {
+        public override Guid[] DeviceInterfaceGuids {
+            get {
                 return mDeviceInterfaceGuids;
             }
         }
@@ -179,15 +166,12 @@ namespace LibUsbDotNet.WinUsb
         /// Uses the symbolic name as a unique id to determine if this device instance is still attached.
         /// </remarks>
         /// <exception cref="UsbException">An exception is thrown if the <see cref="UsbRegistry.SymbolicName"/> property is null or empty.</exception>
-        public override bool IsAlive
-        {
-            get
-            {
+        public override bool IsAlive {
+            get {
                 if (String.IsNullOrEmpty(SymbolicName)) throw new UsbException(this, "A symbolic name is required for this property.");
 
                 List<WinUsbRegistry> deviceList = DeviceList;
-                foreach (WinUsbRegistry registry in deviceList)
-                {
+                foreach (WinUsbRegistry registry in deviceList) {
                     if (String.IsNullOrEmpty(registry.SymbolicName)) continue;
 
                     if (registry.SymbolicName == SymbolicName)
@@ -204,10 +188,8 @@ namespace LibUsbDotNet.WinUsb
         /// If the device fails to open a null refrence is return. For extended error
         /// information use the <see cref="UsbDevice.UsbErrorEvent"/>.
         ///  </returns>
-        public override UsbDevice Device
-        {
-            get
-            {
+        public override UsbDevice Device {
+            get {
                 WinUsbDevice winUsbDevice;
                 Open(out winUsbDevice);
                 return winUsbDevice;
@@ -215,52 +197,44 @@ namespace LibUsbDotNet.WinUsb
         }
 
 
-        private void parseDeviceID()
-        {
+        private void parseDeviceID() {
             if (mIsDeviceIDParsed) return;
-            
+
             mIsDeviceIDParsed = true;
 
             byte bTemp;
             ushort uTemp;
 
             MatchCollection matches = RegHardwareID.GlobalInstance.Matches(DeviceID);
-            foreach (Match match in matches)
-            {
-                foreach (NamedGroup namedGroup in RegHardwareID.NAMED_GROUPS)
-                {
+            foreach (Match match in matches) {
+                foreach (NamedGroup namedGroup in RegHardwareID.NAMED_GROUPS) {
                     Group g = match.Groups[namedGroup.GroupNumber];
-                   if (g.Success)
-                   {
-                       switch ((RegHardwareID.ENamedGroups)namedGroup.GroupNumber)
-                       {
-                           case RegHardwareID.ENamedGroups.Vid:
-                               if (ushort.TryParse(g.Value, NumberStyles.HexNumber, null, out uTemp))
-                               {
-                                   mVid = uTemp;
-                                   break;
-                               }
-                               break;
-                           case RegHardwareID.ENamedGroups.Pid:
-                               if (ushort.TryParse(g.Value, NumberStyles.HexNumber, null, out uTemp))
-                               {
-                                   mPid = uTemp;
-                                   break;
-                               } 
-                               break;
-                           case RegHardwareID.ENamedGroups.Rev:
-                               break;
-                           case RegHardwareID.ENamedGroups.MI:
-                               if (Byte.TryParse(g.Value, NumberStyles.HexNumber, null, out bTemp))
-                               {
-                                   mInterfaceID = bTemp;
-                                   break;
-                               }
-                               break;
-                           default:
-                               throw new ArgumentOutOfRangeException();
-                       }
-                   }
+                    if (g.Success) {
+                        switch ((RegHardwareID.ENamedGroups)namedGroup.GroupNumber) {
+                            case RegHardwareID.ENamedGroups.Vid:
+                                if (ushort.TryParse(g.Value, NumberStyles.HexNumber, null, out uTemp)) {
+                                    mVid = uTemp;
+                                    break;
+                                }
+                                break;
+                            case RegHardwareID.ENamedGroups.Pid:
+                                if (ushort.TryParse(g.Value, NumberStyles.HexNumber, null, out uTemp)) {
+                                    mPid = uTemp;
+                                    break;
+                                }
+                                break;
+                            case RegHardwareID.ENamedGroups.Rev:
+                                break;
+                            case RegHardwareID.ENamedGroups.MI:
+                                if (Byte.TryParse(g.Value, NumberStyles.HexNumber, null, out bTemp)) {
+                                    mInterfaceID = bTemp;
+                                    break;
+                                }
+                                break;
+                            default:
+                                throw new ArgumentOutOfRangeException();
+                        }
+                    }
                 }
 
             }
@@ -272,19 +246,13 @@ namespace LibUsbDotNet.WinUsb
         /// <remarks>
         /// For more information on device instance ids, see the <a href="http://msdn.microsoft.com/en-us/library/ff538405%28v=VS.85%29.aspx">CM_Get_Device_ID Function</a> at MSDN.
         /// </remarks>
-        public string DeviceID
-        {
-            get
-            {
-                if (ReferenceEquals(mDeviceID,null))
-                {
+        public string DeviceID {
+            get {
+                if (ReferenceEquals(mDeviceID, null)) {
                     object oDeviceID;
-                    if (mDeviceProperties.TryGetValue(DEVICE_ID_KEY, out oDeviceID))
-                    {
+                    if (mDeviceProperties.TryGetValue(DEVICE_ID_KEY, out oDeviceID)) {
                         mDeviceID = oDeviceID.ToString();
-                    }
-                    else
-                    {
+                    } else {
                         mDeviceID = string.Empty;
                     }
                 }
@@ -296,10 +264,8 @@ namespace LibUsbDotNet.WinUsb
         /// VendorID
         /// </summary>
         /// <remarks>This value is parsed out of the <see cref="DeviceID"/> field.</remarks>
-        public override int Vid
-        {
-            get
-            {
+        public override int Vid {
+            get {
                 parseDeviceID();
                 return mVid;
             }
@@ -309,10 +275,8 @@ namespace LibUsbDotNet.WinUsb
         /// ProductID
         /// </summary>
         /// <remarks>This value is parsed out of the <see cref="DeviceID"/> field.</remarks>
-        public override int Pid
-        {
-            get
-            {
+        public override int Pid {
+            get {
                 parseDeviceID();
                 return mPid;
             }
@@ -323,12 +287,10 @@ namespace LibUsbDotNet.WinUsb
         /// Gets the interface ID this WinUSB device (interface) is associated with.
         ///</summary>
         /// <remarks>This value is parsed out of the <see cref="DeviceID"/> field.</remarks>
-        public byte InterfaceID
-        {
-            get
-            {
+        public byte InterfaceID {
+            get {
                 parseDeviceID();
-                return (byte) mInterfaceID;
+                return (byte)mInterfaceID;
             }
         }
 
@@ -337,8 +299,7 @@ namespace LibUsbDotNet.WinUsb
         /// </summary>
         /// <param name="usbDevice">The newly created UsbDevice.</param>
         /// <returns>True on success.</returns>
-        public override bool Open(out UsbDevice usbDevice)
-        {
+        public override bool Open(out UsbDevice usbDevice) {
             usbDevice = null;
             WinUsbDevice winUsbDevice;
             bool bSuccess = Open(out winUsbDevice);
@@ -352,13 +313,12 @@ namespace LibUsbDotNet.WinUsb
         /// </summary>
         /// <param name="usbDevice">Returns an opened WinUsb device on success, null on failure.</param>
         /// <returns>True on success.</returns>
-        public bool Open(out WinUsbDevice usbDevice)
-        {
+        public bool Open(out WinUsbDevice usbDevice) {
             usbDevice = null;
 
             if (String.IsNullOrEmpty(SymbolicName)) return false;
-            if (WinUsbDevice.Open(SymbolicName, out usbDevice))
-            {
+
+            if (WinUsbDevice.Open(SymbolicName, out usbDevice)) {
                 usbDevice.mUsbRegistry = this;
                 return true;
             }
@@ -453,8 +413,7 @@ namespace LibUsbDotNet.WinUsb
         private static bool WinUsbRegistryCallBack(IntPtr deviceInfoSet,
                                            int deviceIndex,
                                            ref SetupApi.SP_DEVINFO_DATA deviceInfoData,
-                                           object classEnumeratorCallbackParam1)
-        {
+                                           object classEnumeratorCallbackParam1) {
 
             List<WinUsbRegistry> deviceList = (List<WinUsbRegistry>)classEnumeratorCallbackParam1;
 
@@ -471,37 +430,29 @@ namespace LibUsbDotNet.WinUsb
                                                                     propBuffer,
                                                                     propBuffer.Length,
                                                                     out requiredSize);
-            if (bSuccess)
-            {
+            if (bSuccess) {
                 string[] devInterfaceGuids = GetAsStringArray(propBuffer, requiredSize);
 
-                foreach (String devInterfaceGuid in devInterfaceGuids)
-                {
+                foreach (String devInterfaceGuid in devInterfaceGuids) {
                     Guid g = new Guid(devInterfaceGuid);
                     List<WinUsbRegistry> tempList;
-                    if (GetWinUsbRegistryList(g, out tempList))
-                    {
-                        foreach (WinUsbRegistry regInfo in tempList)
-                        {
+                    if (GetWinUsbRegistryList(g, out tempList)) {
+                        foreach (WinUsbRegistry regInfo in tempList) {
                             // Don't add duplicate devices (with the same device path)
                             WinUsbRegistry foundRegistry = null;
-                            foreach (WinUsbRegistry usbRegistry in deviceList)
-                            {
-                                if (usbRegistry.SymbolicName == regInfo.SymbolicName)
-                                {
+                            foreach (WinUsbRegistry usbRegistry in deviceList) {
+                                if (usbRegistry.SymbolicName == regInfo.SymbolicName) {
                                     foundRegistry = usbRegistry;
                                     break;
                                 }
                             }
                             if (foundRegistry == null)
                                 deviceList.Add(regInfo);
-                            else
-                            {
+                            else {
                                 // If the device path already exists, add this compatible guid 
                                 // to the foundRegstry guid list.
                                 List<Guid> newGuidList = new List<Guid>(foundRegistry.mDeviceInterfaceGuids);
-                                if (!newGuidList.Contains(g))
-                                {
+                                if (!newGuidList.Contains(g)) {
                                     newGuidList.Add(g);
                                     foundRegistry.mDeviceInterfaceGuids = newGuidList.ToArray();
                                 }
@@ -517,8 +468,7 @@ namespace LibUsbDotNet.WinUsb
         /// <summary>
         /// For WinUsbRegistry objects, this always returns <see cref='SymbolicName' />.
         /// </summary>
-        public override string DevicePath
-        {
+        public override string DevicePath {
             get { return SymbolicName; }
         }
     }

@@ -30,25 +30,18 @@ using Microsoft.Win32.SafeHandles;
 
 // ReSharper disable InconsistentNaming
 
-namespace LibUsbDotNet.WinUsb.Internal
-{
+namespace LibUsbDotNet.WinUsb.Internal {
 #if !NETSTANDARD1_5 && !NETSTANDARD1_6
     [SuppressUnmanagedCodeSecurity]
 #endif
-    internal class WinUsbAPI : UsbApiBase
-    {
-#if USE_LUSBW_FOR_WINUSB
-        public const string WIN_USB_DLL = "libusbK.dll";
-        public const string WIN_USB_PRE = "LUsbK_";
-#else
+    internal class WinUsbAPI : UsbApiBase {
         public const string WIN_USB_DLL = "winusb.dll";
         public const string WIN_USB_PRE = "WinUsb_";
-#endif
 
-        [DllImport(WIN_USB_DLL, EntryPoint = WIN_USB_PRE+"AbortPipe", SetLastError = true)]
+        [DllImport(WIN_USB_DLL, EntryPoint = WIN_USB_PRE + "AbortPipe", SetLastError = true)]
         private static extern bool WinUsb_AbortPipe([In] SafeHandle InterfaceHandle, byte PipeID);
 
-        [DllImport(WIN_USB_DLL, EntryPoint = WIN_USB_PRE+"ControlTransfer", SetLastError = true)]
+        [DllImport(WIN_USB_DLL, EntryPoint = WIN_USB_PRE + "ControlTransfer", SetLastError = true)]
         private static extern bool WinUsb_ControlTransfer([In] SafeHandle InterfaceHandle,
                                                           [In] UsbSetupPacket SetupPacket,
                                                           IntPtr Buffer,
@@ -56,24 +49,24 @@ namespace LibUsbDotNet.WinUsb.Internal
                                                           out int LengthTransferred,
                                                           IntPtr pOVERLAPPED);
 
-        [DllImport(WIN_USB_DLL, EntryPoint = WIN_USB_PRE+"FlushPipe", SetLastError = true)]
+        [DllImport(WIN_USB_DLL, EntryPoint = WIN_USB_PRE + "FlushPipe", SetLastError = true)]
         private static extern bool WinUsb_FlushPipe([In] SafeHandle InterfaceHandle, byte PipeID);
 
-        [DllImport(WIN_USB_DLL, EntryPoint = WIN_USB_PRE+"Free", SetLastError = true)]
+        [DllImport(WIN_USB_DLL, EntryPoint = WIN_USB_PRE + "Free", SetLastError = true)]
         internal static extern bool WinUsb_Free([In] IntPtr InterfaceHandle);
 
-        [DllImport(WIN_USB_DLL, EntryPoint = WIN_USB_PRE+"GetAssociatedInterface", SetLastError = true)]
+        [DllImport(WIN_USB_DLL, EntryPoint = WIN_USB_PRE + "GetAssociatedInterface", SetLastError = true)]
         internal static extern bool WinUsb_GetAssociatedInterface([In] SafeHandle InterfaceHandle,
                                                                   byte AssociatedInterfaceIndex,
                                                                   ref IntPtr AssociatedInterfaceHandle);
 
-        [DllImport(WIN_USB_DLL, EntryPoint = WIN_USB_PRE+"GetCurrentAlternateSetting", SetLastError = true)]
+        [DllImport(WIN_USB_DLL, EntryPoint = WIN_USB_PRE + "GetCurrentAlternateSetting", SetLastError = true)]
         internal static extern bool WinUsb_GetCurrentAlternateSetting([In] SafeHandle InterfaceHandle, out byte SettingNumber);
 
         [DllImport(WIN_USB_DLL, EntryPoint = WIN_USB_PRE + "SetCurrentAlternateSetting", SetLastError = true)]
         internal static extern bool WinUsb_SetCurrentAlternateSetting([In] SafeHandle InterfaceHandle, byte SettingNumber);
 
-        [DllImport(WIN_USB_DLL, EntryPoint = WIN_USB_PRE+"GetDescriptor", SetLastError = true)]
+        [DllImport(WIN_USB_DLL, EntryPoint = WIN_USB_PRE + "GetDescriptor", SetLastError = true)]
         private static extern bool WinUsb_GetDescriptor([In] SafeHandle InterfaceHandle,
                                                         byte DescriptorType,
                                                         byte Index,
@@ -82,47 +75,47 @@ namespace LibUsbDotNet.WinUsb.Internal
                                                         int BufferLength,
                                                         out int LengthTransferred);
 
-        [DllImport(WIN_USB_DLL, EntryPoint = WIN_USB_PRE+"GetOverlappedResult", SetLastError = true)]
+        [DllImport(WIN_USB_DLL, EntryPoint = WIN_USB_PRE + "GetOverlappedResult", SetLastError = true)]
         private static extern bool WinUsb_GetOverlappedResult([In] SafeHandle InterfaceHandle,
                                                               IntPtr pOVERLAPPED,
                                                               out int lpNumberOfBytesTransferred,
                                                               bool Wait);
 
-        [DllImport(WIN_USB_DLL, EntryPoint = WIN_USB_PRE+"GetPipePolicy", SetLastError = true)]
+        [DllImport(WIN_USB_DLL, EntryPoint = WIN_USB_PRE + "GetPipePolicy", SetLastError = true)]
         internal static extern bool WinUsb_GetPipePolicy([In] SafeHandle InterfaceHandle,
                                                          byte PipeID,
                                                          PipePolicyType policyType,
                                                          ref int ValueLength,
                                                          IntPtr Value);
 
-        [DllImport(WIN_USB_DLL, EntryPoint = WIN_USB_PRE+"GetPowerPolicy", SetLastError = true)]
+        [DllImport(WIN_USB_DLL, EntryPoint = WIN_USB_PRE + "GetPowerPolicy", SetLastError = true)]
         internal static extern bool WinUsb_GetPowerPolicy([In] SafeHandle InterfaceHandle,
                                                           PowerPolicyType policyType,
                                                           ref int ValueLength,
                                                           IntPtr Value);
 
-        [DllImport(WIN_USB_DLL, EntryPoint = WIN_USB_PRE+"Initialize", SetLastError = true)]
+        [DllImport(WIN_USB_DLL, EntryPoint = WIN_USB_PRE + "Initialize", SetLastError = true)]
         internal static extern bool WinUsb_Initialize([In] SafeHandle DeviceHandle, [Out, In] ref SafeWinUsbInterfaceHandle InterfaceHandle);
 
-        [DllImport(WIN_USB_DLL, EntryPoint = WIN_USB_PRE+"QueryDeviceInformation", SetLastError = true)]
+        [DllImport(WIN_USB_DLL, EntryPoint = WIN_USB_PRE + "QueryDeviceInformation", SetLastError = true)]
         internal static extern bool WinUsb_QueryDeviceInformation([In] SafeHandle InterfaceHandle,
                                                                   DeviceInformationTypes InformationType,
                                                                   ref int BufferLength,
                                                                   [MarshalAs(UnmanagedType.AsAny), In, Out] object Buffer);
 
-        [DllImport(WIN_USB_DLL, EntryPoint = WIN_USB_PRE+"QueryInterfaceSettings", SetLastError = true)]
+        [DllImport(WIN_USB_DLL, EntryPoint = WIN_USB_PRE + "QueryInterfaceSettings", SetLastError = true)]
         internal static extern bool WinUsb_QueryInterfaceSettings([In] SafeHandle InterfaceHandle,
                                                                   byte AlternateInterfaceNumber,
                                                                   [MarshalAs(UnmanagedType.LPStruct), In, Out] UsbInterfaceDescriptor
                                                                       UsbAltInterfaceDescriptor);
 
-        [DllImport(WIN_USB_DLL, EntryPoint = WIN_USB_PRE+"QueryPipe", SetLastError = true)]
+        [DllImport(WIN_USB_DLL, EntryPoint = WIN_USB_PRE + "QueryPipe", SetLastError = true)]
         internal static extern bool WinUsb_QueryPipe([In] SafeHandle InterfaceHandle,
                                                      byte AlternateInterfaceNumber,
                                                      byte PipeIndex,
                                                      [MarshalAs(UnmanagedType.LPStruct), In, Out] PipeInformation PipeInformation);
 
-        [DllImport(WIN_USB_DLL, EntryPoint = WIN_USB_PRE+"ReadPipe", SetLastError = true)]
+        [DllImport(WIN_USB_DLL, EntryPoint = WIN_USB_PRE + "ReadPipe", SetLastError = true)]
         private static extern bool WinUsb_ReadPipe([In] SafeHandle InterfaceHandle,
                                                    byte PipeID,
                                                    Byte[] Buffer,
@@ -130,7 +123,7 @@ namespace LibUsbDotNet.WinUsb.Internal
                                                    out int LengthTransferred,
                                                    IntPtr pOVERLAPPED);
 
-        [DllImport(WIN_USB_DLL, EntryPoint = WIN_USB_PRE+"ReadPipe", SetLastError = true)]
+        [DllImport(WIN_USB_DLL, EntryPoint = WIN_USB_PRE + "ReadPipe", SetLastError = true)]
         private static extern bool WinUsb_ReadPipe([In] SafeHandle InterfaceHandle,
                                                    byte PipeID,
                                                    IntPtr pBuffer,
@@ -138,20 +131,20 @@ namespace LibUsbDotNet.WinUsb.Internal
                                                    out int LengthTransferred,
                                                    IntPtr pOVERLAPPED);
 
-        [DllImport(WIN_USB_DLL, EntryPoint = WIN_USB_PRE+"ResetPipe", SetLastError = true)]
+        [DllImport(WIN_USB_DLL, EntryPoint = WIN_USB_PRE + "ResetPipe", SetLastError = true)]
         private static extern bool WinUsb_ResetPipe([In] SafeHandle InterfaceHandle, byte PipeID);
 
-        [DllImport(WIN_USB_DLL, EntryPoint = WIN_USB_PRE+"SetPipePolicy", SetLastError = true)]
+        [DllImport(WIN_USB_DLL, EntryPoint = WIN_USB_PRE + "SetPipePolicy", SetLastError = true)]
         internal static extern bool WinUsb_SetPipePolicy([In] SafeHandle InterfaceHandle,
                                                          byte PipeID,
                                                          PipePolicyType policyType,
                                                          int ValueLength,
                                                          IntPtr Value);
 
-        [DllImport(WIN_USB_DLL, EntryPoint = WIN_USB_PRE+"SetPowerPolicy", SetLastError = true)]
+        [DllImport(WIN_USB_DLL, EntryPoint = WIN_USB_PRE + "SetPowerPolicy", SetLastError = true)]
         internal static extern bool WinUsb_SetPowerPolicy([In] SafeHandle InterfaceHandle, PowerPolicyType policyType, int ValueLength, IntPtr Value);
 
-        [DllImport(WIN_USB_DLL, EntryPoint = WIN_USB_PRE+"WritePipe", SetLastError = true)]
+        [DllImport(WIN_USB_DLL, EntryPoint = WIN_USB_PRE + "WritePipe", SetLastError = true)]
         private static extern bool WinUsb_WritePipe([In] SafeHandle InterfaceHandle,
                                                     byte PipeID,
                                                     Byte[] Buffer,
@@ -159,7 +152,7 @@ namespace LibUsbDotNet.WinUsb.Internal
                                                     out int LengthTransferred,
                                                     IntPtr pOVERLAPPED);
 
-        [DllImport(WIN_USB_DLL, EntryPoint = WIN_USB_PRE+"WritePipe", SetLastError = true)]
+        [DllImport(WIN_USB_DLL, EntryPoint = WIN_USB_PRE + "WritePipe", SetLastError = true)]
         private static extern bool WinUsb_WritePipe([In] SafeHandle InterfaceHandle,
                                                     byte PipeID,
                                                     IntPtr pBuffer,
@@ -186,14 +179,10 @@ namespace LibUsbDotNet.WinUsb.Internal
                                            int BufferLength,
                                            out int LengthTransferred) { return WinUsb_GetDescriptor(InterfaceHandle, DescriptorType, Index, LanguageID, Buffer, BufferLength, out LengthTransferred); }
 
-        public override bool GetOverlappedResult(SafeHandle InterfaceHandle, IntPtr pOVERLAPPED, out int numberOfBytesTransferred, bool Wait) 
-        {
-            if (!InterfaceHandle.IsClosed) 
-            {
+        public override bool GetOverlappedResult(SafeHandle InterfaceHandle, IntPtr pOVERLAPPED, out int numberOfBytesTransferred, bool Wait) {
+            if (!InterfaceHandle.IsClosed) {
                 return WinUsb_GetOverlappedResult(InterfaceHandle, pOVERLAPPED, out numberOfBytesTransferred, Wait);
-            }
-            else
-            {
+            } else {
                 numberOfBytesTransferred = 0;
                 return true;
             }
@@ -228,8 +217,7 @@ namespace LibUsbDotNet.WinUsb.Internal
                                        int isoPacketSize,
                                        IntPtr pOVERLAPPED) { return WinUsb_WritePipe(endPointBase.Device.Handle, endPointBase.EpNum, pBuffer, BufferLength, out LengthTransferred, pOVERLAPPED); }
 
-        internal static bool OpenDevice(out SafeFileHandle sfhDevice, string DevicePath)
-        {
+        internal static bool OpenDevice(out SafeFileHandle sfhDevice, string DevicePath) {
             sfhDevice =
                 Kernel32.CreateFile(DevicePath,
                                     NativeFileAccess.FILE_GENERIC_WRITE | NativeFileAccess.FILE_GENERIC_READ,

@@ -22,19 +22,16 @@
 using System;
 using System.Runtime.InteropServices;
 
-namespace LibUsbDotNet.WinUsb
-{
+namespace LibUsbDotNet.WinUsb {
     /// <summary> 
-    /// power policy for a <see cref="WinUsbDevice"/>.
+    /// power policy for a <see cref="WindowsDevice"/>.
     /// </summary> 
-    public class PowerPolicies
-    {
+    public class PowerPolicies {
         private const int MAX_SIZE = 4;
-        private readonly WinUsbDevice mUsbDevice;
+        private readonly WindowsDevice mUsbDevice;
         private IntPtr mBufferPtr = IntPtr.Zero;
 
-        internal PowerPolicies(WinUsbDevice usbDevice)
-        {
+        internal PowerPolicies(WindowsDevice usbDevice) {
             mBufferPtr = Marshal.AllocCoTaskMem(MAX_SIZE);
             mUsbDevice = usbDevice;
         }
@@ -42,10 +39,8 @@ namespace LibUsbDotNet.WinUsb
         /// <summary>
         /// If the auto suspend policy parameter is TRUE (that is, nonzero), the USB stack suspends the device when no transfers are pending. The default value for the AutoSuspend policy parameter is TRUE.
         /// </summary>
-        public bool AutoSuspend
-        {
-            get
-            {
+        public bool AutoSuspend {
+            get {
                 int iValueLength = 1;
                 Marshal.WriteByte(mBufferPtr, 0);
                 bool bSuccess = mUsbDevice.GetPowerPolicy(PowerPolicyType.AutoSuspend, ref iValueLength, mBufferPtr);
@@ -53,10 +48,9 @@ namespace LibUsbDotNet.WinUsb
                     return Marshal.ReadByte(mBufferPtr) == 0 ? false : true;
                 return false;
             }
-            set
-            {
+            set {
                 int iValueLength = 1;
-                byte bPowerPolicyValue = (value) ? (byte) 1 : (byte) 0;
+                byte bPowerPolicyValue = (value) ? (byte)1 : (byte)0;
                 Marshal.WriteByte(mBufferPtr, bPowerPolicyValue);
                 mUsbDevice.SetPowerPolicy(PowerPolicyType.AutoSuspend, iValueLength, mBufferPtr);
             }
@@ -65,20 +59,17 @@ namespace LibUsbDotNet.WinUsb
         /// <summary>
         /// The suspend delay policy parameter specifies the minimum amount of time, in milliseconds, that the WinUSB driver must wait after any transfer before it can suspend the device. 
         /// </summary>
-        public int SuspendDelay
-        {
-            get
-            {
-                int iValueLength = Marshal.SizeOf(typeof (int));
+        public int SuspendDelay {
+            get {
+                int iValueLength = Marshal.SizeOf(typeof(int));
                 Marshal.WriteInt32(mBufferPtr, 0);
                 bool bSuccess = mUsbDevice.GetPowerPolicy(PowerPolicyType.SuspendDelay, ref iValueLength, mBufferPtr);
                 if (bSuccess)
                     return Marshal.ReadInt32(mBufferPtr);
                 return -1;
             }
-            set
-            {
-                int iValueLength = Marshal.SizeOf(typeof (int));
+            set {
+                int iValueLength = Marshal.SizeOf(typeof(int));
                 Marshal.WriteInt32(mBufferPtr, value);
                 mUsbDevice.SetPowerPolicy(PowerPolicyType.SuspendDelay, iValueLength, mBufferPtr);
             }
@@ -87,8 +78,7 @@ namespace LibUsbDotNet.WinUsb
         /// <summary>
         /// Frees instance resources.
         /// </summary>
-        ~PowerPolicies()
-        {
+        ~PowerPolicies() {
             if (mBufferPtr != IntPtr.Zero)
                 Marshal.FreeCoTaskMem(mBufferPtr);
 

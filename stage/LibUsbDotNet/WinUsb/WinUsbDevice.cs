@@ -29,10 +29,9 @@ using LibUsbDotNet.Main;
 using LibUsbDotNet.WinUsb.Internal;
 using Microsoft.Win32.SafeHandles;
 
-namespace LibUsbDotNet.WinUsb
-{
+namespace LibUsbDotNet.WinUsb {
     /// <summary> 
-    /// Contains members specific to Microsofts WinUSB driver.
+    /// Contains members specific to Microsoft WinUSB driver.
     /// </summary> 
     /// <remarks>
     /// A <see cref="WinUsbDevice"/> should be thought of as a part of, or an interface of a USB device.
@@ -40,65 +39,21 @@ namespace LibUsbDotNet.WinUsb
     /// intefaces.  This is done at a lower level by the winusb driver depending on which interface the
     /// <see cref="WinUsbDevice"/> belongs to.
     /// </remarks> 
-    public class WinUsbDevice : UsbDevice, IUsbInterface
-    {
-        private readonly string mDevicePath;
-        private PowerPolicies mPowerPolicies;
-        private SafeFileHandle mSafeDevHandle;
+    public class WinUsbDevice : WindowsDevice {
 
         internal WinUsbDevice(UsbApiBase usbApi,
                               SafeFileHandle usbHandle,
                               SafeHandle handle,
                               string devicePath)
-            : base(usbApi, handle)
-        {
-            mDevicePath = devicePath;
-            mSafeDevHandle = usbHandle;
-            mPowerPolicies = new PowerPolicies(this);
-        }
-
-        /// <summary>
-        /// Gets the power policies for this <see cref="WinUsbDevice"/>.
-        /// </summary>
-        public PowerPolicies PowerPolicy
-        {
-            get { return mPowerPolicies; }
-        }
-
-        /// <summary>
-        /// Gets the device path used to open this <see cref="WinUsbDevice"/>.
-        /// </summary>
-        public override string DevicePath
-        {
-            get { return mDevicePath; }
-        }
+            : base(usbApi, usbHandle, handle, devicePath) { }
 
         #region IUsbInterface Members
 
         /// <summary>
         /// Returns the DriverMode this USB device is using.
         /// </summary>
-        public override DriverModeType DriverMode
-        {
+        public override DriverModeType DriverMode {
             get { return DriverModeType.WinUsb; }
-        }
-
-        /// <summary>
-        /// Closes the <see cref="UsbDevice"/> and disposes any <see cref="UsbDevice.ActiveEndpoints"/>.
-        /// </summary>
-        /// <returns>True on success.</returns>
-        public override bool Close()
-        {
-            if (IsOpen)
-            {
-                ActiveEndpoints.Clear();
-                mUsbHandle.Dispose();
-
-                if (mSafeDevHandle != null)
-                    if (!mSafeDevHandle.IsClosed)
-                        mSafeDevHandle.Dispose();
-            }
-            return true;
         }
 
         /// <summary>
@@ -106,17 +61,15 @@ namespace LibUsbDotNet.WinUsb
         /// </summary>
         /// <param name="alternateID">The alternate interface number.</param>
         /// <returns>True on success.</returns>
-        public bool SetAltInterface(int alternateID)
-        {
+        public override bool SetAltInterface(int alternateID) {
             bool bSuccess;
 
-            bSuccess = WinUsbAPI.WinUsb_SetCurrentAlternateSetting(mUsbHandle, (byte) alternateID);
+            bSuccess = WinUsbAPI.WinUsb_SetCurrentAlternateSetting(mUsbHandle, (byte)alternateID);
 
             if (!bSuccess)
                 UsbError.Error(ErrorCode.Win32Error, Marshal.GetLastWin32Error(), "SetCurrentAlternateSetting", this);
-            else
-            {
-                UsbAltInterfaceSettings[0] = (byte) alternateID;
+            else {
+                UsbAltInterfaceSettings[0] = (byte)alternateID;
             }
             return bSuccess;
         }
@@ -126,8 +79,7 @@ namespace LibUsbDotNet.WinUsb
         /// </summary>
         /// <param name="alternateID">The alternate interface number.</param>
         /// <returns>True on success.</returns>
-        public bool GetAltInterface(out int alternateID)
-        {
+        public override bool GetAltInterface(out int alternateID) {
             bool bSuccess;
             byte settingNumber;
             alternateID = -1;
@@ -135,8 +87,7 @@ namespace LibUsbDotNet.WinUsb
 
             if (!bSuccess)
                 UsbError.Error(ErrorCode.Win32Error, Marshal.GetLastWin32Error(), "GetCurrentAlternateSetting", this);
-            else
-            {
+            else {
                 alternateID = settingNumber;
                 UsbAltInterfaceSettings[0] = settingNumber;
             }
@@ -151,26 +102,21 @@ namespace LibUsbDotNet.WinUsb
         ///True if the device is already opened or was opened successfully.
         ///False if the device does not exists or is no longer valid.  
         ///</returns>
-        public override bool Open()
-        {
+        public override bool Open() {
             if (IsOpen) return true;
 
             SafeFileHandle sfhDev;
 
             bool bSuccess = WinUsbAPI.OpenDevice(out sfhDev, mDevicePath);
-            if (bSuccess)
-            {
+            if (bSuccess) {
                 SafeWinUsbInterfaceHandle handle = new SafeWinUsbInterfaceHandle();
-                if ((bSuccess = WinUsbAPI.WinUsb_Initialize(sfhDev, ref handle)))
-                {
+                if ((bSuccess = WinUsbAPI.WinUsb_Initialize(sfhDev, ref handle))) {
                     mSafeDevHandle = sfhDev;
                     mUsbHandle = handle;
                     mPowerPolicies = new PowerPolicies(this);
-                }
-                else
-                    UsbError.Error(ErrorCode.Win32Error, Marshal.GetLastWin32Error(), "Open:Initialize", typeof (UsbDevice));
-            }
-            else
+                } else
+                    UsbError.Error(ErrorCode.Win32Error, Marshal.GetLastWin32Error(), "Open:Initialize", typeof(UsbDevice));
+            } else
                 UsbError.Error(ErrorCode.Win32Error, Marshal.GetLastWin32Error(), "Open", typeof(UsbDevice));
 
 
@@ -185,25 +131,21 @@ namespace LibUsbDotNet.WinUsb
         /// <param name="devicePath">Device path (symbolic link) of the WinUsb device to open.</param>
         /// <param name="usbDevice">Returns an opened WinUsb device on success, null on failure.</param>
         /// <returns>True on success.</returns>
-        public static bool Open(string devicePath, out WinUsbDevice usbDevice)
-        {
+        public static bool Open(string devicePath, out WinUsbDevice usbDevice) {
             usbDevice = null;
 
             SafeFileHandle sfhDev;
 
             bool bSuccess = WinUsbAPI.OpenDevice(out sfhDev, devicePath);
-            if (bSuccess)
-            {
+            if (bSuccess) {
                 SafeWinUsbInterfaceHandle handle = new SafeWinUsbInterfaceHandle();
                 bSuccess = WinUsbAPI.WinUsb_Initialize(sfhDev, ref handle);
+
                 if (bSuccess)
-                {
                     usbDevice = new WinUsbDevice(WinUsbApi, sfhDev, handle, devicePath);
-                }
                 else
                     UsbError.Error(ErrorCode.Win32Error, Marshal.GetLastWin32Error(), "Open:Initialize", typeof(UsbDevice));
-            }
-            else
+            } else
                 UsbError.Error(ErrorCode.Win32Error, Marshal.GetLastWin32Error(), "Open", typeof(UsbDevice));
 
 
@@ -211,32 +153,16 @@ namespace LibUsbDotNet.WinUsb
         }
 
         /// <summary>
-        /// Gets endpoint policies for the specified endpoint id.
-        /// </summary>
-        /// <param name="epNum">The endpoint ID to retrieve <see cref="PipePolicies"/> for.</param>
-        /// <returns>A <see cref="PipePolicies"/> class.</returns>
-        public PipePolicies EndpointPolicies(ReadEndpointID epNum) { return new PipePolicies(mUsbHandle, (byte) epNum); }
-
-        /// <summary>
-        /// Gets endpoint policies for the specified endpoint id.
-        /// </summary>
-        /// <param name="epNum">The endpoint ID to retrieve <see cref="PipePolicies"/> for.</param>
-        /// <returns>A <see cref="PipePolicies"/> class.</returns>
-        public PipePolicies EndpointPolicies(WriteEndpointID epNum) { return new PipePolicies(mUsbHandle, (byte) epNum); }
-
-        /// <summary>
         /// Gets an interface associated with this <see cref="WinUsbDevice"/>.
         /// </summary>
         /// <param name="associatedInterfaceIndex">The index to retrieve. (0 = next interface, 1= interface after next, etc.).</param>
         /// <param name="usbDevice">A new <see cref="WinUsbDevice"/> class for the specified AssociatedInterfaceIndex.</param>
         /// <returns>True on success.</returns>
-        public bool GetAssociatedInterface(byte associatedInterfaceIndex, out WinUsbDevice usbDevice)
-        {
+        public override bool GetAssociatedInterface(byte associatedInterfaceIndex, out WindowsDevice usbDevice) {
             usbDevice = null;
             IntPtr pHandle = IntPtr.Zero;
             bool bSuccess = WinUsbAPI.WinUsb_GetAssociatedInterface(mUsbHandle, associatedInterfaceIndex, ref pHandle);
-            if (bSuccess)
-            {
+            if (bSuccess) {
                 SafeWinUsbInterfaceHandle tempHandle = new SafeWinUsbInterfaceHandle(pHandle);
 
                 usbDevice = new WinUsbDevice(mUsbApi, null, tempHandle, mDevicePath);
@@ -252,18 +178,15 @@ namespace LibUsbDotNet.WinUsb
         /// </summary>
         /// <param name="deviceSpeed">The device speed.</param>
         /// <returns>True on success.</returns>
-        public bool QueryDeviceSpeed(out DeviceSpeedTypes deviceSpeed)
-        {
+        public override bool QueryDeviceSpeed(out DeviceSpeedTypes deviceSpeed) {
             deviceSpeed = DeviceSpeedTypes.Undefined;
             byte[] buf = new byte[1];
             int uTransferLength = 1;
             bool bSuccess = WinUsbAPI.WinUsb_QueryDeviceInformation(mUsbHandle, DeviceInformationTypes.DeviceSpeed, ref uTransferLength, buf);
 
-            if (bSuccess)
-            {
-                deviceSpeed = (DeviceSpeedTypes) buf[0];
-            }
-            else
+            if (bSuccess) {
+                deviceSpeed = (DeviceSpeedTypes)buf[0];
+            } else
                 UsbError.Error(ErrorCode.Win32Error, Marshal.GetLastWin32Error(), "QueryDeviceInformation:QueryDeviceSpeed", this);
 
             return bSuccess;
@@ -275,8 +198,7 @@ namespace LibUsbDotNet.WinUsb
         /// <param name="alternateInterfaceNumber">The alternate interface index for the <see cref="UsbInterfaceDescriptor"/> to retrieve. </param>
         /// <param name="usbAltInterfaceDescriptor">The <see cref="UsbInterfaceDescriptor"/> for the specified AlternateInterfaceNumber.</param>
         /// <returns>True on success.</returns>
-        public bool QueryInterfaceSettings(byte alternateInterfaceNumber, ref UsbInterfaceDescriptor usbAltInterfaceDescriptor)
-        {
+        public override bool QueryInterfaceSettings(byte alternateInterfaceNumber, ref UsbInterfaceDescriptor usbAltInterfaceDescriptor) {
             bool bSuccess;
             //if (mSemDeviceLock != null)
             //{
@@ -297,8 +219,7 @@ namespace LibUsbDotNet.WinUsb
             return bSuccess;
         }
 
-        internal bool GetPowerPolicy(PowerPolicyType policyType, ref int valueLength, IntPtr pBuffer)
-        {
+        internal override bool GetPowerPolicy(PowerPolicyType policyType, ref int valueLength, IntPtr pBuffer) {
             bool bSuccess = WinUsbAPI.WinUsb_GetPowerPolicy(mUsbHandle, policyType, ref valueLength, pBuffer);
 
             if (!bSuccess)
@@ -315,8 +236,7 @@ namespace LibUsbDotNet.WinUsb
         /// <returns>True if one or more device paths were found.  False if no devices are found or an error occured. <see cref="UsbDevice.UsbErrorEvent"/> </returns>
         public static bool GetDevicePathList(Guid interfaceGuid, out List<String> devicePathList) { return WinUsbRegistry.GetDevicePathList(interfaceGuid, out devicePathList); }
 
-        internal bool SetPowerPolicy(PowerPolicyType policyType, int valueLength, IntPtr pBuffer)
-        {
+        internal override bool SetPowerPolicy(PowerPolicyType policyType, int valueLength, IntPtr pBuffer) {
             bool bSuccess = WinUsbAPI.WinUsb_SetPowerPolicy(mUsbHandle, policyType, valueLength, pBuffer);
 
             if (!bSuccess)
