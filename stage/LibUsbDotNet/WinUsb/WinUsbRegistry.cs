@@ -35,6 +35,9 @@ namespace LibUsbDotNet.WinUsb {
     /// <summary> WinUsb specific members for device registry settings.
     /// </summary> 
     public class WinUsbRegistry : UsbRegistry {
+
+        internal const string DEVICE_INTERFACE_GUID = "DeviceInterfaceGuid";
+
         private bool mIsDeviceIDParsed;
 
         private string mDeviceID;
@@ -430,6 +433,17 @@ namespace LibUsbDotNet.WinUsb {
                                                                     propBuffer,
                                                                     propBuffer.Length,
                                                                     out requiredSize);
+            if (!bSuccess) {
+                bSuccess = SetupApi.SetupDiGetCustomDeviceProperty(deviceInfoSet,
+                                                                    ref deviceInfoData,
+                                                                    DEVICE_INTERFACE_GUID,
+                                                                    SetupApi.DICUSTOMDEVPROP.NONE,
+                                                                    out propertyType,
+                                                                    propBuffer,
+                                                                    propBuffer.Length,
+                                                                    out requiredSize);
+            }
+
             if (bSuccess) {
                 string[] devInterfaceGuids = GetAsStringArray(propBuffer, requiredSize);
 
