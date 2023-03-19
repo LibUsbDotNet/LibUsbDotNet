@@ -22,6 +22,7 @@
 using LibUsbDotNet.Info;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.Linq;
 
 namespace LibUsbDotNet.LibUsb
 {
@@ -138,13 +139,14 @@ namespace LibUsbDotNet.LibUsb
             get
             {
                 byte[] portNumbers = new byte[8];
-
+                int numPorts;
+                
                 fixed (byte* ptr = portNumbers)
                 {
-                    NativeMethods.GetPortNumbers(this.device, ptr, portNumbers.Length).ThrowOnError();
+                    numPorts = NativeMethods.GetPortNumbers(this.device, ptr, portNumbers.Length).GetValueOrThrow();
                 }
 
-                return new List<byte>(portNumbers);
+                return portNumbers.Take(numPorts).ToList();
             }
         }
 
