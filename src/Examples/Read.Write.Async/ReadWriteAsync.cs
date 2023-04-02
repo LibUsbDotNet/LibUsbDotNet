@@ -1,12 +1,8 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Text;
-using System.Text.RegularExpressions;
-using System.Threading;
+using System.Threading.Tasks;
 using LibUsbDotNet;
-using LibUsbDotNet.Internal;
 using LibUsbDotNet.Main;
-using LibUsbDotNet.LudnMonoLibUsb;
 using LibUsbDotNet.LibUsb;
 
 namespace Examples;
@@ -21,7 +17,7 @@ internal class ReadWriteAsync
 
     #endregion
 
-    public static void Main(string[] args)
+    public static async Task Main(string[] args)
     {
         Error ec = Error.Success;
 
@@ -31,6 +27,7 @@ internal class ReadWriteAsync
             {
                 // Find and open the usb device.
                 MyUsbDevice = context.Find(MyUsbFinder);
+                MyUsbDevice.Open();
 
                 // If the device is open and ready
                 if (MyUsbDevice == null) throw new Exception("Device Not Found.");
@@ -61,41 +58,25 @@ internal class ReadWriteAsync
                 // the write test data.
                 string testWriteString = "ABCDEFGH";
 
-                Error ecWrite;
-                Error ecRead;
-                int transferredOut;
-                int transferredIn;
-                UsbTransfer usbWriteTransfer;
-                UsbTransfer usbReadTransfer;
                 byte[] bytesToSend = Encoding.Default.GetBytes(testWriteString);
                 byte[] readBuffer = new byte[1024];
                 int testCount = 0;
                 do
                 {
                     // Create and submit transfer
-                    ecRead = reader.SubmitAsyncTransfer(readBuffer, 0, readBuffer.Length, 100, out usbReadTransfer);
-                    if (ecRead != Error.Success) throw new Exception("Submit Async Read Failed.");
+                    var usbReadTransfer = reader.ReadAsync(readBuffer, 0, readBuffer.Length, 100);
+                    var usbWriteTransfer = writer.WriteAsync(bytesToSend, 0, bytesToSend.Length, 100);
+                        
+                    // Await both transfers
+                    var transfers = await Task.WhenAll(usbReadTransfer, usbWriteTransfer);
+                        
+                    // TODO: Cancellation not supported yet
+                    // if (!usbWriteTransfer.IsCompleted) usbWriteTransfer.Cancel();
+                    // if (!usbReadTransfer.IsCompleted) usbReadTransfer.Cancel();
 
-                    ecWrite = writer.SubmitAsyncTransfer(bytesToSend, 0, bytesToSend.Length, 100, out usbWriteTransfer);
-                    if (ecWrite != Error.Success)
-                    {
-                        usbReadTransfer.Dispose();
-                        throw new Exception("Submit Async Write Failed.");
-                    }
-
-                    WaitHandle.WaitAll(new WaitHandle[] { usbWriteTransfer.AsyncWaitHandle, usbReadTransfer.AsyncWaitHandle }, 200, false);
-                    if (!usbWriteTransfer.IsCompleted) usbWriteTransfer.Cancel();
-                    if (!usbReadTransfer.IsCompleted) usbReadTransfer.Cancel();
-
-                    ecWrite = usbWriteTransfer.Wait(out transferredOut);
-                    ecRead = usbReadTransfer.Wait(out transferredIn);
-
-                    usbWriteTransfer.Dispose();
-                    usbReadTransfer.Dispose();
-
-                    Console.WriteLine("Read  :{0} Error:{1}", transferredIn, ecRead);
-                    Console.WriteLine("Write :{0} Error:{1}", transferredOut, ecWrite);
-                    Console.WriteLine("Data  :" + Encoding.Default.GetString(readBuffer, 0, transferredIn));
+                    Console.WriteLine("Read  :{0} Error:{1}", transfers[0].transferLength, transfers[0].error);
+                    Console.WriteLine("Write :{0} Error:{1}", transfers[1].transferLength, transfers[1].error);
+                    Console.WriteLine("Data  :" + Encoding.Default.GetString(readBuffer, 0, transfers[0].transferLength));
                     testCount++;
                 } while (testCount < 5);
                 Console.WriteLine("\r\nDone!\r\n");
