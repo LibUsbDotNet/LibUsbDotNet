@@ -19,8 +19,6 @@
 // visit www.gnu.org.
 // 
 //
-//
-//
 
 using LibUsbDotNet.Descriptors;
 using LibUsbDotNet.Main;
@@ -296,12 +294,21 @@ public partial class UsbDevice
         this.EnsureNotDisposed();
 
         if (!this.IsOpen)
-        {
             return;
-        }
 
+        bool oneOpenDeviceLeft = originatingContext.OpenDevices.Count == 1;
+            
+        if (oneOpenDeviceLeft)
+            originatingContext.ShouldHandleEvents = false;
+            
         this.deviceHandle.Dispose();
         this.deviceHandle = null;
+
+        if (oneOpenDeviceLeft) 
+            originatingContext.StopHandlingEvents();
+            
+        if (!originatingContext.IsDisposing)
+            originatingContext.OpenDevices.Remove(this);
     }
 
     /// <summary>
@@ -331,6 +338,10 @@ public partial class UsbDevice
         {
             this.deviceHandle = DeviceHandle.DangerousCreate(deviceHandle);
             this.descriptor = null;
+            if (originatingContext.OpenDevices.Count == 0)
+                originatingContext.StartHandlingEvents();
+            if (!originatingContext.IsDisposing)
+                originatingContext.OpenDevices.Add(this);
         }
 
         return ret;
