@@ -122,7 +122,7 @@ public abstract class UsbEndpointBase
             case EndpointType.Isochronous:
             case EndpointType.Control:
             default:
-                return AsyncTransfer.TransferAsync(this.Device.DeviceHandle, this.mEpNum, this.mEndpointType, buffer, offset, length, timeout, out transferLength);
+                return SyncTransfer.TransferSync(this.Device.DeviceHandle, this.mEpNum, this.mEndpointType, buffer, offset, length, timeout, out transferLength);
         }
     }
 
