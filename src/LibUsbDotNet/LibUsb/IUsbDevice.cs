@@ -17,13 +17,14 @@
 // with this program; if not, write to the Free Software Foundation, Inc.,
 // 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA. or 
 // visit www.gnu.org.
-// 
+//
 //
 
 using LibUsbDotNet.Info;
 using LibUsbDotNet.Main;
 using System;
 using System.Collections.ObjectModel;
+using System.Threading.Tasks;
 
 namespace LibUsbDotNet.LibUsb;
 
@@ -33,7 +34,7 @@ namespace LibUsbDotNet.LibUsb;
 /// <example>
 /// This example uses the <see cref="IUsbDevice"/> interface to select the desired configuration and interface
 /// for usb devices that require it.
-/// <code source="../../Examples/Read.Write/ReadWrite.cs" lang="cs"/>
+/// <code source="..\Examples\Read.Write\ReadWrite.cs" lang="cs"/>
 /// </example>
 public interface IUsbDevice : IDisposable
 {
@@ -64,7 +65,7 @@ public interface IUsbDevice : IDisposable
     /// <summary>
     /// Gets the USB devices active configuration value.
     /// </summary>
-    /// <returns>
+    /// <returs>
     /// The active configuration value. A zero value means the device is not configured and a non-zero value indicates the device is configured.
     /// </returns>
     int Configuration { get; }
@@ -154,7 +155,7 @@ public interface IUsbDevice : IDisposable
     /// </param>
     /// <returns>
     /// <see langword="true"/> if the descriptor could be loaded correctly; otherwise,
-    /// <see langword="false"/>.
+    /// <see langword="false">.
     /// </returns>
     bool TryGetConfigDescriptor(byte configIndex, out UsbConfigInfo descriptor);
 
@@ -190,7 +191,7 @@ public interface IUsbDevice : IDisposable
     /// Opens a <see cref="EndpointType.Bulk"/> endpoint for reading
     /// </summary>
     /// <param name="readEndpointID">Endpoint number for read operations.</param>
-    /// <param name="readBufferSize">TODO: Remove this parameter.</param>
+    /// <param name="readBufferSize">Size of the read buffer allocated for the <see cref="UsbEndpointReader.DataReceived"/> event.</param>
     /// <returns>A <see cref="UsbEndpointReader"/> class ready for reading. If the specified endpoint is already been opened, the original <see cref="UsbEndpointReader"/> class is returned.</returns>
     UsbEndpointReader OpenEndpointReader(ReadEndpointID readEndpointID, int readBufferSize);
 
@@ -198,7 +199,7 @@ public interface IUsbDevice : IDisposable
     /// Opens an endpoint for reading
     /// </summary>
     /// <param name="readEndpointID">Endpoint number for read operations.</param>
-    /// <param name="readBufferSize">TODO: Remove this parameter.</param>
+    /// <param name="readBufferSize">Size of the read buffer allocated for the <see cref="UsbEndpointReader.DataReceived"/> event.</param>
     /// <param name="endpointType">The type of endpoint to open.</param>
     /// <returns>A <see cref="UsbEndpointReader"/> class ready for reading. If the specified endpoint is already been opened, the original <see cref="UsbEndpointReader"/> class is returned.</returns>
     UsbEndpointReader OpenEndpointReader(ReadEndpointID readEndpointID, int readBufferSize, EndpointType endpointType);
@@ -261,7 +262,6 @@ public interface IUsbDevice : IDisposable
     /// <remarks>
     /// After calling <see cref="ResetDevice"/>, the <see cref="UsbDevice"/> instance is disposed and
     /// no longer usable.  A new <see cref="UsbDevice"/> instance must be obtained from the device list.
-    /// </remarks>
     void ResetDevice();
 
     /// <summary>
@@ -275,6 +275,18 @@ public interface IUsbDevice : IDisposable
     /// The number of bytes sent or received (depends on the direction of the control transfer).
     /// </returns>
     int ControlTransfer(UsbSetupPacket setupPacket);
+        
+    /// <summary>
+    /// Asynchronously transmits control data over a default control endpoint.
+    /// </summary>
+    /// <param name="setupPacket">
+    /// An 8-byte setup packet which contains parameters for the control request.
+    /// See section 9.3 USB Device Requests of the Universal Serial Bus Specification Revision 2.0 for more information.
+    /// </param>
+    /// <returns>
+    /// The number of bytes sent or received (depends on the direction of the control transfer).
+    /// </returns>
+    Task<int> ControlTransferAsync(UsbSetupPacket setupPacket);
 
     /// <summary>
     /// Transmits control data over a default control endpoint.
@@ -295,6 +307,26 @@ public interface IUsbDevice : IDisposable
     /// <returns>The number of bytes sent or received (depends on the direction of the control transfer).
     /// </returns>
     int ControlTransfer(UsbSetupPacket setupPacket, byte[] buffer, int offset, int length);
+        
+    /// <summary>
+    /// Asynchronously transmits control data over a default control endpoint.
+    /// </summary>
+    /// <param name="setupPacket">
+    /// An 8-byte setup packet which contains parameters for the control request.
+    /// See section 9.3 USB Device Requests of the Universal Serial Bus Specification Revision 2.0 for more information.
+    /// </param>
+    /// <param name="buffer">
+    /// Data to be sent/received from the device.
+    /// </param>
+    /// <param name="offset">
+    /// The offset of the first byte of the data to send.
+    /// </param>
+    /// <param name="length">
+    /// Length of the buffer param.
+    /// </param>
+    /// <returns>The number of bytes sent or received (depends on the direction of the control transfer).
+    /// </returns>
+    Task<int> ControlTransferAsync(UsbSetupPacket setupPacket, byte[] buffer, int offset, int length);
 
     /// <summary>
     /// Creates a clone of this device.
