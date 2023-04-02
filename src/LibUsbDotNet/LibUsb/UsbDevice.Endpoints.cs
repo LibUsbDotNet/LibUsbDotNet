@@ -19,8 +19,6 @@
 // visit www.gnu.org.
 // 
 //
-//
-//
 
 using LibUsbDotNet.Main;
 
@@ -43,7 +41,7 @@ public partial class UsbDevice
     /// Opens a <see cref="EndpointType.Bulk"/> endpoint for reading
     /// </summary>
     /// <param name="readEndpointID">Endpoint number for read operations.</param>
-    /// <param name="readBufferSize">TODO: Remove this parameter</param>
+    /// <param name="readBufferSize">Size of the read buffer allocated for the <see cref="UsbEndpointReader.DataReceived"/> event.</param>
     /// <returns>A <see cref="UsbEndpointReader"/> class ready for reading. If the specified endpoint is already been opened, the original <see cref="UsbEndpointReader"/> class is returned.</returns>
     public UsbEndpointReader OpenEndpointReader(ReadEndpointID readEndpointID, int readBufferSize)
     {
@@ -54,11 +52,12 @@ public partial class UsbDevice
     /// Opens an endpoint for reading
     /// </summary>
     /// <param name="readEndpointID">Endpoint number for read operations.</param>
-    /// <param name="readBufferSize">TODO: Remove this parameter.</param>
+    /// <param name="readBufferSize">Size of the read buffer allocated for the <see cref="UsbEndpointReader.DataReceived"/> event.</param>
     /// <param name="endpointType">The type of endpoint to open.</param>
     /// <returns>A <see cref="UsbEndpointReader"/> class ready for reading. If the specified endpoint is already been opened, the original <see cref="UsbEndpointReader"/> class is returned.</returns>
     public UsbEndpointReader OpenEndpointReader(ReadEndpointID readEndpointID, int readBufferSize, EndpointType endpointType)
     {
+        EnsureNotDisposed();
         byte altIntefaceID = this.mClaimedInterfaces.Count == 0 ? this.usbAltInterfaceSettings[0] : this.usbAltInterfaceSettings[this.mClaimedInterfaces[this.mClaimedInterfaces.Count - 1]];
 
         return new UsbEndpointReader(this, readBufferSize, altIntefaceID, readEndpointID, endpointType);
@@ -82,6 +81,7 @@ public partial class UsbDevice
     /// <returns>A <see cref="UsbEndpointWriter"/> class ready for writing. If the specified endpoint is already been opened, the original <see cref="UsbEndpointWriter"/> class is returned.</returns>
     public UsbEndpointWriter OpenEndpointWriter(WriteEndpointID writeEndpointID, EndpointType endpointType)
     {
+        EnsureNotDisposed();
         byte altIntefaceID = this.mClaimedInterfaces.Count == 0 ? this.usbAltInterfaceSettings[0] : this.usbAltInterfaceSettings[this.mClaimedInterfaces[this.mClaimedInterfaces.Count - 1]];
 
         return new UsbEndpointWriter(this, altIntefaceID, writeEndpointID, endpointType);

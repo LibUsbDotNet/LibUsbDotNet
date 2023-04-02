@@ -23,13 +23,14 @@
 using LibUsbDotNet.Info;
 using LibUsbDotNet.Main;
 using System;
+using System.Threading.Tasks;
 
 namespace LibUsbDotNet.LibUsb;
 
 /// <summary>
 /// Endpoint members common to Read, Write, Bulk, and Interrupt <see cref="T:LibUsbDotNet.Main.EndpointType"/>.
 /// </summary>
-public abstract class UsbEndpointBase
+public abstract partial class UsbEndpointBase
 {
     private readonly byte mEpNum;
     private readonly IUsbDevice mUsbDevice;
@@ -125,6 +126,17 @@ public abstract class UsbEndpointBase
                 return SyncTransfer.TransferSync(this.Device.DeviceHandle, this.mEpNum, this.mEndpointType, buffer, offset, length, timeout, out transferLength);
         }
     }
+        
+    /// <summary>
+    /// Asynchronous bulk/interrupt transfer function.
+    /// </summary>
+    /// <param name="buffer">An <see cref="IntPtr"/> to a caller-allocated buffer.</param>
+    /// <param name="offset">Position in buffer that transferring begins.</param>
+    /// <param name="length">Number of bytes, starting from thr offset parameter to transfer.</param>
+    /// <param name="timeout">Maximum time to wait for the transfer to complete.</param>
+    /// <returns>Named tuple of <see cref="Error"/> and transferLength</returns>
+    protected Task<(Error error, int transferLength)> TransferAsync(IntPtr buffer, int offset, int length, int timeout) => 
+        AsyncTransfer.TransferAsync(this.Device.DeviceHandle, this.mEpNum, this.mEndpointType, buffer, offset, length, timeout);
 
     /// <summary>
     /// Looks up endpoint/interface information in a configuration.
@@ -212,6 +224,22 @@ public abstract class UsbEndpointBase
         return eReturn;
     }
 
+    /// <summary>
+    /// Synchronous bulk/interrupt transfer function.
+    /// </summary>
+    /// <param name="buffer">A caller-allocated buffer for the transfer data. This object is pinned using <see cref="PinnedHandle"/>.</param>
+    /// <param name="offset">Position in buffer that transferring begins.</param>
+    /// <param name="length">Number of bytes, starting from thr offset parameter to transfer.</param>
+    /// <param name="timeout">Maximum time to wait for the transfer to complete.</param>
+    /// <param name="transferLength">Number of bytes actually transferred.</param>
+    /// Tuple of (<see cref="Error"/> error, <see cref="int"/> transferLength). error is <see cref="Error.Success"/> on success.
+    protected async Task<(Error error, int transferLength)> TransferAsync(object buffer, int offset, int length, int timeout)
+    {
+        PinnedHandle pinned = new PinnedHandle(buffer);
+        var (eReturn, transferLength) = await this.TransferAsync(pinned.Handle, offset, length, timeout).ConfigureAwait(false);
+        pinned.Dispose();
+        return (eReturn, transferLength);
+    }
     #region Nested type: TransferDelegate
 
     internal delegate int TransferDelegate(IntPtr pBuffer, int bufferLength, out int lengthTransferred, int isoPacketSize, IntPtr pOverlapped);
