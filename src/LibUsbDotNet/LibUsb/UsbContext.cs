@@ -72,11 +72,11 @@ public class UsbContext : IUsbContext
     /// </remarks>
     /// </summary>
     internal bool IsDisposing { get; private set; }
-        
+
     /// <summary>
-    /// Allows the event handling thread to return when set to false.
+    /// Allows the event handling thread to return when set to 1.
     /// </summary>
-    internal bool ShouldHandleEvents { get; set; }
+    internal int stopHandlingEvents;
 
     /// <summary>
     /// Initializes a new instance of the <see cref="UsbContext"/> class.
@@ -218,8 +218,12 @@ public class UsbContext : IUsbContext
     /// </summary>
     public void StartHandlingEvents()
     {
-        this.eventHandlingThread = new Thread(this.HandleEvents);
-        this.ShouldHandleEvents = true;
+        this.eventHandlingThread = new Thread(this.HandleEvents)
+        {
+            IsBackground = true
+        };
+
+        this.stopHandlingEvents = 0;
         this.eventHandlingThread.Start();
     }
 
@@ -236,7 +240,6 @@ public class UsbContext : IUsbContext
         if (this.eventHandlingThread == null)
             throw new InvalidOperationException($"{nameof(eventHandlingThread)} cannot be null here.");
             
-        this.ShouldHandleEvents = false;
         this.eventHandlingThread.Join();
         this.eventHandlingThread = null;
     }
@@ -263,7 +266,7 @@ public class UsbContext : IUsbContext
         OpenDevices.Clear();
 
         // Ideally this shouldn't be necessary, as StopHandlingEvents should be called when the last open device is closed.
-        if (this.ShouldHandleEvents) 
+        if (this.stopHandlingEvents == 0) 
             StopHandlingEvents();
             
         // Dispose of underlying context handle.
@@ -274,10 +277,9 @@ public class UsbContext : IUsbContext
 
     private void HandleEvents()
     {
-        while (this.ShouldHandleEvents)
+        while (this.stopHandlingEvents == 0)
         {
-            int completed = this.ShouldHandleEvents ? 0 : 1;
-            NativeMethods.HandleEventsCompleted(this.context, ref completed).ThrowOnError();
+            NativeMethods.HandleEventsCompleted(this.context, ref stopHandlingEvents).ThrowOnError();
         }
     }
 }

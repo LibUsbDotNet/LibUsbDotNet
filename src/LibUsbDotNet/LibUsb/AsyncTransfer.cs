@@ -67,7 +67,9 @@ internal static class AsyncTransfer
         if (offset < 0)
             throw new ArgumentOutOfRangeException(nameof(offset));
 
-        var transferCompletion = new TaskCompletionSource<(Error error, int transferLength)>();
+        var transferCompletion =
+            new TaskCompletionSource<(Error error, int transferLength)>(TaskCreationOptions.RunContinuationsAsynchronously);
+            
         int transferId;
         lock (TransferLock)
         {
