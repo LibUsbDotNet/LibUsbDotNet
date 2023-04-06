@@ -24,6 +24,7 @@ using LibUsbDotNet.Descriptors;
 using LibUsbDotNet.Main;
 using System;
 using System.Text;
+using System.Threading;
 
 namespace LibUsbDotNet.LibUsb;
 
@@ -297,9 +298,9 @@ public partial class UsbDevice
             return;
 
         bool oneOpenDeviceLeft = originatingContext.OpenDevices.Count == 1;
-            
+
         if (oneOpenDeviceLeft)
-            originatingContext.ShouldHandleEvents = false;
+            Interlocked.Exchange(ref originatingContext.stopHandlingEvents, 1);
             
         this.deviceHandle.Dispose();
         this.deviceHandle = null;

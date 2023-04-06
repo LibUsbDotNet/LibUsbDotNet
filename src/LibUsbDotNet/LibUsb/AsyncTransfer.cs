@@ -36,8 +36,9 @@ internal static class AsyncTransfer
     private static readonly object TransferLock = new object();
     private static int _transferIndex;
 
-    private static readonly unsafe IntPtr TransferDelegatePtr =
-        Marshal.GetFunctionPointerForDelegate(new TransferDelegate(Callback));
+    private static readonly unsafe TransferDelegate TransferCallback = new TransferDelegate(Callback);
+    private static readonly IntPtr TransferDelegatePtr = 
+        Marshal.GetFunctionPointerForDelegate(TransferCallback);
     private static readonly ConcurrentDictionary<int, TaskCompletionSource<(Error error, int transferLength)>>
         TransferDictionary = new ConcurrentDictionary<int, TaskCompletionSource<(Error error, int transferLength)>>();
 
