@@ -203,7 +203,7 @@ namespace LibUsbDotNet
         public static extern Error DevMemFree(DeviceHandle devHandle, byte* buffer, UIntPtr length);
 
         [DllImport(LibUsbNativeLibrary, EntryPoint = "libusb_kernel_driver_active")]
-        public static extern int KernelDriverActive(DeviceHandle devHandle, int interfaceNumber);
+        public static extern Error KernelDriverActive(DeviceHandle devHandle, int interfaceNumber);
 
         [DllImport(LibUsbNativeLibrary, EntryPoint = "libusb_detach_kernel_driver")]
         public static extern Error DetachKernelDriver(DeviceHandle devHandle, int interfaceNumber);

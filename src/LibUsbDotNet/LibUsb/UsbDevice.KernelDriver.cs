@@ -19,46 +19,76 @@
 // visit www.gnu.org.
 //
 //
-using LibUsbDotNet.Info;
-using System.Collections.Generic;
-using System.Collections.ObjectModel;
 
 namespace LibUsbDotNet.LibUsb
 {
     // Contains the functionality related to kernel driver support.
     public partial class UsbDevice
     {
-        public unsafe bool SupportsDetachKernelDriver()
-        {
-            int result = NativeMethods.HasCapability((uint)Capability.SupportsDetachKernelDriver);
-            return result == 1;
-        }
-        public unsafe bool IsKernelDriverActive(int interfaceNumber)
+        /// <summary>
+        /// Determine if this platform supports detaching the kernel driver.
+        /// </summary>
+        /// <returns>True if kernel driver detach supported, false otherwise.</returns>
+        public bool SupportsDetachKernelDriver() => 
+            NativeMethods.HasCapability((uint)Capability.SupportsDetachKernelDriver) != 0;
+
+        /// <summary>
+        /// Determine if a kernel driver is active on an interface.
+        /// </summary>
+        /// <remarks>
+        /// If a kernel driver is active, you cannot claim the interface, and libusb will be unable to perform I/O.
+        /// This functionality is not available on Windows.
+        /// </remarks>
+        /// <param name="interfaceNumber">The interface to check.</param>
+        /// <returns>True if kernel driver active, false otherwise.</returns>
+        public bool IsKernelDriverActive(int interfaceNumber)
         {
             EnsureOpen();
-            int result = NativeMethods.KernelDriverActive(this.DeviceHandle, interfaceNumber);
-            return result == 1;
+            return NativeMethods.KernelDriverActive(DeviceHandle, interfaceNumber).GetValueOrThrow() == 1;
          }
 
-        public unsafe bool DetachKernelDriver(int interfaceNumber)
+        /// <summary>
+        /// Detach a kernel driver from an interface.
+        /// </summary>
+        /// <remarks>
+        /// If successful, you will then be able to claim the interface and perform I/O.
+        /// This functionality is not available on Windows.
+        /// Note that libusb itself also talks to the device through a special kernel driver,
+        /// if this driver is already attached to the device, this call will not detach it and throw a
+        /// <see cref="Error.NotFound"/> <see cref="UsbException"/>
+        /// </remarks>
+        /// <param name="interfaceNumber">The interface to detach the driver from.</param>
+        public void DetachKernelDriver(int interfaceNumber)
         {
             EnsureOpen();
-            var result = NativeMethods.DetachKernelDriver(this.DeviceHandle, interfaceNumber);
-            return result == Error.Success;
+            NativeMethods.DetachKernelDriver(DeviceHandle, interfaceNumber).ThrowOnError();
         }
 
-        public unsafe bool AttachKernelDriver(int interfaceNumber)
+        /// <summary>
+        /// Re-attach an interface's kernel driver, which was previously detached using <see cref="DetachKernelDriver"/>.
+        /// </summary>
+        /// <remarks>This functionality is not available on Windows.</remarks>
+        /// <param name="interfaceNumber">The interface to attach the driver from.</param>
+        public void AttachKernelDriver(int interfaceNumber)
         {
             EnsureOpen();
-            var result = NativeMethods.AttachKernelDriver(this.DeviceHandle, interfaceNumber);
-            return result == Error.Success;
+            NativeMethods.AttachKernelDriver(DeviceHandle, interfaceNumber).ThrowOnError();
         }
 
-        public unsafe bool SetAutoDetachKernelDriver(bool autoDetach)
+        /// <summary>
+        /// Enable/disable libusb's automatic kernel driver detachment.
+        /// </summary>
+        /// <remarks>
+        /// When this is enabled libusb will automatically detach the kernel driver on an interface when claiming the
+        /// interface, and attach it when releasing the interface.
+        /// Automatic kernel driver detachment is disabled on newly opened device handles by default.
+        /// </remarks>
+        /// <param name="autoDetach">Whether to enable or disable auto kernel driver detachment.</param>
+        /// <returns>True if the current platform supports kernel driver detachment, false otherwise.</returns>
+        public bool SetAutoDetachKernelDriver(bool autoDetach)
         {
             EnsureOpen();
-            var result = NativeMethods.SetAutoDetachKernelDriver(this.DeviceHandle, autoDetach ? 1 : 0);
-            return result == Error.Success;
+            return NativeMethods.SetAutoDetachKernelDriver(DeviceHandle, autoDetach ? 1 : 0) == Error.Success;
         }
     }
 }
