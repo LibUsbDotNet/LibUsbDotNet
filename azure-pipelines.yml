@@ -1,3 +1,10 @@
+name: build
+on:
+  push:
+    branches:
+      - v2
+  pull_request:
+
 jobs:
 - job: windows
   pool:
