@@ -226,7 +226,7 @@ namespace LibUsbDotNet.LudnMonoLibUsb
             if (!wasOpen) Open();
             if (!IsOpen) return false;
 
-            int ret = MonoUsbApi.GetDescriptor((MonoUsbDeviceHandle)mUsbHandle, descriptorType, index, buffer, (ushort)bufferLength);
+            int ret = MonoUsbApi.GetDescriptor((MonoUsbDeviceHandle)mUsbHandle, descriptorType, index, langId, buffer, (ushort)bufferLength);
 
             if (ret < 0)
             {

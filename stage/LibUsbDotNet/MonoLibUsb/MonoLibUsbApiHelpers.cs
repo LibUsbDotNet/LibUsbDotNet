@@ -80,13 +80,13 @@ namespace MonoLibUsb
         /// <param name="pData">Output buffer for descriptor.</param>
         /// <param name="length">Size of data buffer.</param>
         /// <returns>Number of bytes returned in data, or a <see cref="MonoUsbError"/> code on failure.</returns>
-        public static int GetDescriptor(MonoUsbDeviceHandle deviceHandle, byte descType, byte descIndex, IntPtr pData, int length)
+        public static int GetDescriptor(MonoUsbDeviceHandle deviceHandle, byte descType, byte descIndex, short langId, IntPtr pData, int length)
         {
             return ControlTransfer(deviceHandle,
                                            (byte)UsbEndpointDirection.EndpointIn,
                                            (byte)UsbStandardRequest.GetDescriptor,
                                            (short)((descType << 8) | descIndex),
-                                           0,
+                                           langId,
                                            pData,
                                            (short)length,
                                            1000);
