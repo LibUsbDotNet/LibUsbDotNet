@@ -77,6 +77,7 @@ namespace MonoLibUsb
         /// <param name="deviceHandle">Retrieve a descriptor from the default control pipe.</param>
         /// <param name="descType">The descriptor type, <see cref="DescriptorType"/></param>
         /// <param name="descIndex">The index of the descriptor to retrieve.</param>
+        /// <param name="langId">Descriptor language id.</param>
         /// <param name="pData">Output buffer for descriptor.</param>
         /// <param name="length">Size of data buffer.</param>
         /// <returns>Number of bytes returned in data, or a <see cref="MonoUsbError"/> code on failure.</returns>
