@@ -297,15 +297,15 @@ public partial class UsbDevice
         if (!this.IsOpen)
             return;
 
-        bool oneOpenDeviceLeft = originatingContext.OpenDevices.Count == 1;
+        bool shouldStopHandlingEvents = originatingContext.OpenDevices.Count == 1;
 
-        if (oneOpenDeviceLeft)
+        if (shouldStopHandlingEvents)
             Interlocked.Exchange(ref originatingContext.stopHandlingEvents, 1);
             
         this.deviceHandle.Dispose();
         this.deviceHandle = null;
 
-        if (oneOpenDeviceLeft) 
+        if (shouldStopHandlingEvents) 
             originatingContext.StopHandlingEvents();
             
         if (!originatingContext.IsDisposing)

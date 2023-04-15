@@ -70,6 +70,13 @@ internal static class ReadWriteAsync
             {
                 // Find and open the usb device.
                 MyUsbDevice = context.Find(MyUsbFinder);
+
+                if (MyUsbDevice is null)
+                {
+                    Console.WriteLine("Can't find device.");
+                    return;
+                }
+                    
                 MyUsbDevice.Open();
 
                 // If the device is open and ready

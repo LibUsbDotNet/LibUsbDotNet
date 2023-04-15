@@ -218,6 +218,9 @@ public class UsbContext : IUsbContext
     /// </summary>
     public void StartHandlingEvents()
     {
+        if (this.eventHandlingThread != null)
+            return;
+            
         this.eventHandlingThread = new Thread(this.HandleEvents)
         {
             IsBackground = true
@@ -234,11 +237,10 @@ public class UsbContext : IUsbContext
     /// Note that <see cref="NativeMethods.HandleEventsCompleted"/> must be woken up an event in order for this method to return.
     /// Ideally this will happen when the last device in <see cref="OpenDevices"/> is closed.
     /// </remarks>
-    /// <exception cref="InvalidOperationException"><see cref="eventHandlingThread"/> was null.</exception>
     public void StopHandlingEvents()
     {
         if (this.eventHandlingThread == null)
-            throw new InvalidOperationException($"{nameof(eventHandlingThread)} cannot be null here.");
+            return;
             
         this.eventHandlingThread.Join();
         this.eventHandlingThread = null;
