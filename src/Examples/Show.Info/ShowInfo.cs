@@ -22,7 +22,8 @@ namespace Examples
                     Console.Write($"LocationId: {device.BusNumber}");
                     for (int i = 0; i < device.PortNumbers.Count; i++)
                     {
-                        Console.Write('-');
+                        if (i == 0)
+                            Console.Write('-');
                         Console.Write(device.PortNumbers[i]);
                         if (i != device.PortNumbers.Count - 1)
                             Console.Write('.');
@@ -52,6 +53,7 @@ namespace Examples
                     }
 
                     device.Close();
+                    Console.WriteLine(new string ('-', 50));
                 }
             }
 
