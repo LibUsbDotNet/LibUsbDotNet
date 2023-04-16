@@ -19,6 +19,16 @@ namespace Examples
 
                     Console.WriteLine(device.Info.ToString());
                     
+                    Console.Write($"LocationId: {device.BusNumber}");
+                    for (int i = 0; i < device.PortNumbers.Count; i++)
+                    {
+                        Console.Write('-');
+                        Console.Write(device.PortNumbers[i]);
+                        if (i != device.PortNumbers.Count - 1)
+                            Console.Write('.');
+                    }
+                    Console.WriteLine();
+                    
                     if (!openedDevice)
                         continue;
                     
