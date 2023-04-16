@@ -12,7 +12,7 @@ namespace LibUsbDotNet.LibUsb
     {
         static NativeLibraryResolver()
         {
-#if !NET45
+#if !NETSTANDARD2_0
             NativeLibrary.SetDllImportResolver(typeof(NativeLibraryResolver).Assembly, DllImportResolver);
 #endif
         }
@@ -25,7 +25,7 @@ namespace LibUsbDotNet.LibUsb
             // Dummy method to trigger the static constructor.
         }
 
-#if !NET45
+#if !NETSTANDARD2_0
         private static IntPtr DllImportResolver(string libraryName, Assembly assembly, DllImportSearchPath? searchPath)
         {
             if (libraryName != NativeMethods.LibUsbNativeLibrary)

@@ -1,4 +1,4 @@
-// Copyright © 2006-2010 Travis Robinson. All rights reserved.
+// Copyright Â© 2006-2010 Travis Robinson. All rights reserved.
 //
 // website: http://sourceforge.net/projects/libusbdotnet
 // e-mail:  libusbdotnet@gmail.com
@@ -33,7 +33,7 @@ namespace LibUsbDotNet.Info
     public abstract class UsbBaseInfo
     {
         protected byte[] RawDescriptors { get; set; }
-#if NET45
+#if NETSTANDARD2_0
             = new byte[] { };
 #else
             = Array.Empty<byte>();
