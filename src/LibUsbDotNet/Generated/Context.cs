@@ -38,8 +38,6 @@ namespace LibUsbDotNet
     /// <summary>
     /// Represents a wrapper class for <c>libusb_context</c> handles.
     /// </summary>
-    [SecurityPermission(SecurityAction.InheritanceDemand, UnmanagedCode=true)]
-    [SecurityPermission(SecurityAction.Demand, UnmanagedCode=true)]
     public partial class Context : SafeHandleZeroOrMinusOneIsInvalid
     {
         private string creationStackTrace;
