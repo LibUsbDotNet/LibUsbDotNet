@@ -1,4 +1,4 @@
-// Copyright © 2006-2010 Travis Robinson. All rights reserved.
+// Copyright ï¿½ 2006-2010 Travis Robinson. All rights reserved.
 //
 // website: http://sourceforge.net/projects/libusbdotnet
 // e-mail:  libusbdotnet@gmail.com
@@ -49,10 +49,18 @@ namespace LibUsbDotNet.Info
         {
             Debug.Assert(descriptor.DescriptorType == (int)DescriptorType.Interface, "A config descriptor was expected");
 
-            UsbInterfaceInfo value = new UsbInterfaceInfo();
-            value.AlternateSetting = descriptor.AlternateSetting;
-
-            var endpoints = (EndpointDescriptor*)descriptor.Endpoint;
+            var value = new UsbInterfaceInfo
+            {
+                AlternateSetting = descriptor.AlternateSetting,
+                Interface = device.GetStringDescriptor(descriptor.Interface, failSilently: true),
+                Class = (ClassCode)descriptor.InterfaceClass,
+                Number = descriptor.InterfaceNumber,
+                Protocol = descriptor.InterfaceProtocol,
+                SubClass = descriptor.InterfaceSubClass,
+                RawDescriptors = new byte[descriptor.ExtraLength]
+            };
+            
+            var endpoints = descriptor.Endpoint;
 
             for (int i = 0; i < descriptor.NumEndpoints; i++)
             {
@@ -61,19 +69,12 @@ namespace LibUsbDotNet.Info
                     value.endpoints.Add(UsbEndpointInfo.FromUsbEndpointDescriptor(endpoints[i]));
                 }
             }
-
-            value.RawDescriptors = new byte[descriptor.ExtraLength];
+            
             if (descriptor.ExtraLength > 0)
             {
                 Span<byte> extra = new Span<byte>(descriptor.Extra, descriptor.ExtraLength);
                 extra.CopyTo(value.RawDescriptors);
             }
-
-            value.Interface = device.GetStringDescriptor(descriptor.Interface, failSilently: true);
-            value.Class = (ClassCode)descriptor.InterfaceClass;
-            value.Number = descriptor.InterfaceNumber;
-            value.Protocol = descriptor.InterfaceProtocol;
-            value.SubClass = descriptor.InterfaceSubClass;
 
             return value;
         }
@@ -98,9 +99,12 @@ namespace LibUsbDotNet.Info
             get { return this.endpoints.AsReadOnly(); }
         }
 
-        public override string ToString()
-        {
-            return this.Interface;
-        }
+        public override string ToString() =>
+            $"Interface: {Interface}\n" +
+            $"InterfaceId: {Number}\n" +
+            $"AlternateId: {AlternateSetting}\n" +
+            $"Class: {Class}\n" +
+            $"Protocol: 0x{Protocol:X2}\n" +
+            $"SubClass: 0x{SubClass:X2}";
     }
 }

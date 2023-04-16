@@ -1,4 +1,4 @@
-// Copyright © 2006-2010 Travis Robinson. All rights reserved.
+// Copyright ï¿½ 2006-2010 Travis Robinson. All rights reserved.
 //
 // website: http://sourceforge.net/projects/libusbdotnet
 // e-mail:  libusbdotnet@gmail.com
@@ -36,26 +36,27 @@ namespace LibUsbDotNet.Info
         {
             Debug.Assert(descriptor.DescriptorType == (int)DescriptorType.Config, "A config descriptor was expected");
 
-            UsbConfigInfo value = new UsbConfigInfo();
-            value.Attributes = descriptor.Attributes;
-            value.Configuration = device.GetStringDescriptor(descriptor.Configuration, failSilently: true);
-            value.ConfigurationValue = descriptor.ConfigurationValue;
+            var value = new UsbConfigInfo
+            {
+                Attributes = descriptor.Attributes,
+                Configuration = device.GetStringDescriptor(descriptor.Configuration, failSilently: true),
+                ConfigurationValue = descriptor.ConfigurationValue,
+                MaxPower = descriptor.MaxPower,
+                RawDescriptors = new byte[descriptor.ExtraLength]
+            };
 
-            value.RawDescriptors = new byte[descriptor.ExtraLength];
             if (descriptor.ExtraLength > 0)
             {
                 Span<byte> extra = new Span<byte>(descriptor.Extra, descriptor.ExtraLength);
                 extra.CopyTo(value.RawDescriptors);
             }
-
-            var interfaces = (Interface*)descriptor.Interface;
+            
+            var interfaces = descriptor.Interface;
             for (int i = 0; i < descriptor.NumInterfaces; i++)
             {
                 var values = UsbInterfaceInfo.FromUsbInterface(device, interfaces[i]);
                 value.interfaces.AddRange(values);
             }
-
-            value.MaxPower = descriptor.MaxPower;
 
             return value;
         }
@@ -77,9 +78,10 @@ namespace LibUsbDotNet.Info
         }
 
         /// <inheritdoc/>
-        public override string ToString()
-        {
-            return this.Configuration;
-        }
+        public override string ToString() =>
+            $"Configuration: {Configuration}\n" +
+            $"Attributes: 0x{Attributes:X2}\n" +
+            $"ConfigurationValue: {ConfigurationValue}\n" +
+            $"MaxPower: {MaxPower}";
     }
 }
