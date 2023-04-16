@@ -2,10 +2,10 @@
 // Copyright (c) Quamotion. All rights reserved.
 // </copyright>
 
-using System;
 using System.Collections.Generic;
 using System.Text;
 using Core.Clang;
+using Core.Clang.Documentation.Doxygen;
 using Enum = LibUsbDotNet.Generator.Primitives.Enum;
 using EnumValue = LibUsbDotNet.Generator.Primitives.EnumValue;
 
@@ -132,8 +132,8 @@ namespace LibUsbDotNet.Generator
             // - Full Comment
             // - Paragraph Comment
             // - Text Comment
-            var fullComment = cursor.GetParsedComment();
-            var fullCommentKind = fullComment.Kind;
+            var fullComment = Comment.FromCursor(cursor);
+            var fullCommentKind = fullComment.GetKind();
             var fullCommentChildren = fullComment.GetNumChildren();
 
             if (fullCommentKind != CommentKind.FullComment || fullCommentChildren < 1)
@@ -144,10 +144,10 @@ namespace LibUsbDotNet.Generator
             StringBuilder text = new StringBuilder();
             bool hasComment = false;
 
-            for (int i = 0; i < fullCommentChildren; i++)
+            for (uint i = 0; i < fullCommentChildren; i++)
             {
                 var paragraphComment = fullComment.GetChild(i);
-                var paragraphCommentKind = paragraphComment.Kind;
+                var paragraphCommentKind = paragraphComment.GetKind();
                 var paragraphCommentChildren = paragraphComment.GetNumChildren();
 
                 if (paragraphCommentKind != CommentKind.Paragraph || paragraphCommentChildren != 1)
@@ -156,11 +156,11 @@ namespace LibUsbDotNet.Generator
                 }
 
                 var textComment = paragraphComment.GetChild(0);
-                var textCommentKind = textComment.Kind;
+                var textCommentKind = textComment.GetKind();
 
                 if (textCommentKind == CommentKind.Text)
                 {
-                    var commentText = textComment.GetText();
+                    var commentText = textComment.GetNormalizedText();
 
                     if (!string.IsNullOrWhiteSpace(commentText))
                     {
