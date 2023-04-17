@@ -31,7 +31,10 @@ namespace Examples
                     Console.WriteLine();
                     
                     if (!openedDevice)
+                    {
+                        Console.WriteLine(new string ('-', 50));
                         continue;
+                    }
                     
                     foreach (var configInfo in device.Configs)
                     {
