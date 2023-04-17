@@ -1,4 +1,4 @@
-// Copyright © 2006-2010 Travis Robinson. All rights reserved.
+// Copyright ï¿½ 2006-2010 Travis Robinson. All rights reserved.
 //
 // website: http://sourceforge.net/projects/libusbdotnet
 // e-mail:  libusbdotnet@gmail.com
@@ -32,21 +32,22 @@ namespace LibUsbDotNet.Info
         {
             Debug.Assert(descriptor.DescriptorType == (int)DescriptorType.Endpoint, "An endpoint descriptor was expected");
 
-            var value = new UsbEndpointInfo();
-            value.Attributes = descriptor.Attributes;
-            value.EndpointAddress = descriptor.EndpointAddress;
+            var value = new UsbEndpointInfo
+            {
+                Attributes = descriptor.Attributes,
+                EndpointAddress = descriptor.EndpointAddress,
+                RawDescriptors = new byte[descriptor.ExtraLength],
+                Interval = descriptor.Interval,
+                MaxPacketSize = descriptor.MaxPacketSize,
+                Refresh = descriptor.Refresh,
+                SyncAddress = descriptor.SynchAddress
+            };
 
-            value.RawDescriptors = new byte[descriptor.ExtraLength];
             if (descriptor.ExtraLength > 0)
             {
                 Span<byte> extra = new Span<byte>(descriptor.Extra, descriptor.ExtraLength);
                 extra.CopyTo(value.RawDescriptors);
             }
-
-            value.Interval = descriptor.Interval;
-            value.MaxPacketSize = descriptor.MaxPacketSize;
-            value.Refresh = descriptor.Refresh;
-            value.SyncAddress = descriptor.SynchAddress;
 
             return value;
         }
@@ -63,9 +64,11 @@ namespace LibUsbDotNet.Info
 
         public virtual byte SyncAddress { get; private set; }
 
-        public override string ToString()
-        {
-            return $"{this.EndpointAddress}";
-        }
+        public override string ToString() =>
+            $"Address: 0x{EndpointAddress:X2}\n" +
+            $"Interval: {Interval}\n" +
+            $"MaxPacketSize: {MaxPacketSize}\n" +
+            $"Refresh: {Refresh}\n" +
+            $"SyncAddress: 0x{SyncAddress:X2}";
     }
 }

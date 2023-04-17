@@ -13,33 +13,50 @@ namespace Examples
             using (UsbContext context = new UsbContext())
             {
                 var allDevices = context.List();
-                foreach (var usbRegistry in allDevices)
+                foreach (UsbDevice device in allDevices)
                 {
-                    Console.WriteLine(usbRegistry.Info.ToString());
+                    bool openedDevice = device.TryOpen();
 
-                    if (usbRegistry.TryOpen())
+                    Console.WriteLine(device.Info.ToString());
+                    
+                    Console.Write($"LocationId: {device.BusNumber}");
+                    for (int i = 0; i < device.PortNumbers.Count; i++)
                     {
-                        for (int iConfig = 0; iConfig < usbRegistry.Configs.Count; iConfig++)
+                        if (i == 0)
+                            Console.Write('-');
+                        Console.Write(device.PortNumbers[i]);
+                        if (i != device.PortNumbers.Count - 1)
+                            Console.Write('.');
+                    }
+                    Console.WriteLine();
+                    
+                    if (!openedDevice)
+                    {
+                        Console.WriteLine(new string ('-', 50));
+                        continue;
+                    }
+                    
+                    foreach (var configInfo in device.Configs)
+                    {
+                        Console.WriteLine($"\t{configInfo.ToString().ReplaceLineEndings("\n\t")}");
+
+                        ReadOnlyCollection<UsbInterfaceInfo> interfaceList = configInfo.Interfaces;
+                        for (int iInterface = 0; iInterface < interfaceList.Count; iInterface++)
                         {
-                            UsbConfigInfo configInfo = usbRegistry.Configs[iConfig];
-                            Console.WriteLine(configInfo.ToString());
+                            UsbInterfaceInfo interfaceInfo = interfaceList[iInterface];
+                            Console.WriteLine($"\t\t{interfaceInfo.ToString().ReplaceLineEndings("\n\t\t")}");
 
-                            ReadOnlyCollection<UsbInterfaceInfo> interfaceList = configInfo.Interfaces;
-                            for (int iInterface = 0; iInterface < interfaceList.Count; iInterface++)
+                            ReadOnlyCollection<UsbEndpointInfo> endpointList = interfaceInfo.Endpoints;
+                            for (int iEndpoint = 0; iEndpoint < endpointList.Count; iEndpoint++)
                             {
-                                UsbInterfaceInfo interfaceInfo = interfaceList[iInterface];
-                                Console.WriteLine(interfaceInfo.ToString());
-
-                                ReadOnlyCollection<UsbEndpointInfo> endpointList = interfaceInfo.Endpoints;
-                                for (int iEndpoint = 0; iEndpoint < endpointList.Count; iEndpoint++)
-                                {
-                                    Console.WriteLine(endpointList[iEndpoint].ToString());
-                                }
+                                Console.WriteLine($"\t\t\tEndpoint: {iEndpoint}");
+                                Console.WriteLine($"\t\t\t{endpointList[iEndpoint].ToString().ReplaceLineEndings("\n\t\t\t")}");
                             }
                         }
-
-                        usbRegistry.Close();
                     }
+
+                    device.Close();
+                    Console.WriteLine(new string ('-', 50));
                 }
             }
 

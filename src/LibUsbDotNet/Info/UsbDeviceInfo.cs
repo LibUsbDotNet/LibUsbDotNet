@@ -1,4 +1,4 @@
-// Copyright © 2006-2010 Travis Robinson. All rights reserved.
+// Copyright ï¿½ 2006-2010 Travis Robinson. All rights reserved.
 //
 // website: http://sourceforge.net/projects/libusbdotnet
 // e-mail:  libusbdotnet@gmail.com
@@ -40,15 +40,21 @@ namespace LibUsbDotNet.Info
         {
             Debug.Assert(descriptor.DescriptorType == (int)DescriptorType.Device, "A config descriptor was expected");
 
-            var value = new UsbDeviceInfo();
-            value.Device = descriptor.Device;
-            value.DeviceClass = descriptor.DeviceClass;
-            value.DeviceProtocol = descriptor.DeviceProtocol;
-            value.DeviceSubClass = descriptor.DeviceSubClass;
-            value.ProductId = descriptor.IdProduct;
-            value.VendorId = descriptor.IdVendor;
-            value.Manufacturer = device.GetStringDescriptor(descriptor.Manufacturer, failSilently: true);
-            value.MaxPacketSize0 = descriptor.MaxPacketSize0;
+            var value = new UsbDeviceInfo
+            {
+                Device = descriptor.Device,
+                DeviceClass = descriptor.DeviceClass,
+                DeviceProtocol = descriptor.DeviceProtocol,
+                DeviceSubClass = descriptor.DeviceSubClass,
+                ProductId = descriptor.IdProduct,
+                VendorId = descriptor.IdVendor,
+                Manufacturer = device.GetStringDescriptor(descriptor.Manufacturer, failSilently: true),
+                MaxPacketSize0 = descriptor.MaxPacketSize0,
+                NumConfigurations = descriptor.NumConfigurations,
+                Product = device.GetStringDescriptor(descriptor.Product, failSilently: true),
+                SerialNumber = device.GetStringDescriptor(descriptor.SerialNumber, failSilently: true),
+                Usb = descriptor.USB
+            };
 
             for (byte i = 0; i < descriptor.NumConfigurations; i++)
             {
@@ -57,10 +63,7 @@ namespace LibUsbDotNet.Info
                     value.configurations.Add(configDescriptor);
                 }
             }
-
-            value.Product = device.GetStringDescriptor(descriptor.Product, failSilently: true);
-            value.SerialNumber = device.GetStringDescriptor(descriptor.SerialNumber, failSilently: true);
-            value.Usb = descriptor.USB;
+            
             return value;
         }
 
@@ -84,25 +87,23 @@ namespace LibUsbDotNet.Info
 
         public virtual string Product { get; protected set; }
 
-        public virtual string SerialNumber { get; protected set; }
+        public virtual string SerialNumber { get; protected set; } = string.Empty;
 
         public virtual ushort Usb { get; protected set; }
 
-        public virtual ReadOnlyCollection<UsbConfigInfo> Configurations
-        {
-            get { return new ReadOnlyCollection<UsbConfigInfo>(this.configurations); }
-        }
+        public virtual ReadOnlyCollection<UsbConfigInfo> Configurations => new(this.configurations);
 
-        public override string ToString()
-        {
-            if (!string.IsNullOrEmpty(this.SerialNumber))
-            {
-                return $"{this.Manufacturer} {this.Product} ({this.SerialNumber})";
-            }
-            else
-            {
-                return $"{this.Manufacturer} {this.Product}";
-            }
-        }
+        public override string ToString() =>
+            $"Device: 0x{Device:X4}\n" +
+            $"DeviceClass: {DeviceClass}\n" +
+            $"DeviceSubClass: 0x{DeviceSubClass:X2}\n" +
+            $"VendorId: 0x{VendorId:X4}\n" +
+            $"ProductId: 0x{ProductId:X4}\n" +
+            $"Manufacturer: {Manufacturer}\n" +
+            $"Product: {Product}\n" +
+            $"SerialNumber: {SerialNumber}\n" +
+            $"USB: 0x{Usb:X4}\n" +
+            $"MaxPacketSize: {MaxPacketSize0}\n" +
+            $"NumConfigurations: {NumConfigurations}";
     }
 }
