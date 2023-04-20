@@ -41,7 +41,7 @@ public partial class UsbDevice
     /// Opens a <see cref="EndpointType.Bulk"/> endpoint for reading
     /// </summary>
     /// <param name="readEndpointID">Endpoint number for read operations.</param>
-    /// <param name="readBufferSize">Size of the read buffer allocated for the <see cref="UsbEndpointReader.DataReceived"/> event.</param>
+    /// <param name="readBufferSize">TODO: Remove this parameter</param>
     /// <returns>A <see cref="UsbEndpointReader"/> class ready for reading. If the specified endpoint is already been opened, the original <see cref="UsbEndpointReader"/> class is returned.</returns>
     public UsbEndpointReader OpenEndpointReader(ReadEndpointID readEndpointID, int readBufferSize)
     {
@@ -52,7 +52,7 @@ public partial class UsbDevice
     /// Opens an endpoint for reading
     /// </summary>
     /// <param name="readEndpointID">Endpoint number for read operations.</param>
-    /// <param name="readBufferSize">Size of the read buffer allocated for the <see cref="UsbEndpointReader.DataReceived"/> event.</param>
+    /// <param name="readBufferSize">TODO: Remove this parameter.</param>
     /// <param name="endpointType">The type of endpoint to open.</param>
     /// <returns>A <see cref="UsbEndpointReader"/> class ready for reading. If the specified endpoint is already been opened, the original <see cref="UsbEndpointReader"/> class is returned.</returns>
     public UsbEndpointReader OpenEndpointReader(ReadEndpointID readEndpointID, int readBufferSize, EndpointType endpointType)

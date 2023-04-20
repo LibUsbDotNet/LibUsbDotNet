@@ -30,7 +30,7 @@ namespace LibUsbDotNet.LibUsb;
 /// <summary>
 /// Endpoint members common to Read, Write, Bulk, and Interrupt <see cref="T:LibUsbDotNet.Main.EndpointType"/>.
 /// </summary>
-public abstract partial class UsbEndpointBase
+public abstract class UsbEndpointBase
 {
     private readonly byte mEpNum;
     private readonly IUsbDevice mUsbDevice;
@@ -121,9 +121,12 @@ public abstract partial class UsbEndpointBase
                 return returnValue;
 
             case EndpointType.Isochronous:
+                throw new NotSupportedException($"{EndpointType.Isochronous} not supported yet.");
             case EndpointType.Control:
+                throw new NotSupportedException(
+                    $"Do not use {nameof(UsbEndpointBase.Transfer)} for synchronous control transfers, use {nameof(UsbDevice.ControlTransfer)}");
             default:
-                return SyncTransfer.TransferSync(this.Device.DeviceHandle, this.mEpNum, this.mEndpointType, buffer, offset, length, timeout, out transferLength);
+                throw new ArgumentOutOfRangeException();
         }
     }
         
@@ -231,7 +234,6 @@ public abstract partial class UsbEndpointBase
     /// <param name="offset">Position in buffer that transferring begins.</param>
     /// <param name="length">Number of bytes, starting from thr offset parameter to transfer.</param>
     /// <param name="timeout">Maximum time to wait for the transfer to complete.</param>
-    /// <param name="transferLength">Number of bytes actually transferred.</param>
     /// Tuple of (<see cref="Error"/> error, <see cref="int"/> transferLength). error is <see cref="Error.Success"/> on success.
     protected async Task<(Error error, int transferLength)> TransferAsync(object buffer, int offset, int length, int timeout)
     {

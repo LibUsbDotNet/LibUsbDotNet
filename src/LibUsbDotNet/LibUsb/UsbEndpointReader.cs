@@ -27,18 +27,20 @@ using LibUsbDotNet.Main;
 namespace LibUsbDotNet.LibUsb;
 
 /// <summary>
-/// Contains methods for retrieving data from a <see cref="EndpointType.Bulk"/> or <see cref="EndpointType.Interrupt"/> endpoint using the overloaded <see cref="Read(byte[],int,out int)"/> functions or a <see cref="DataReceived"/> event.
+/// Contains methods for retrieving data from a <see cref="EndpointType.Bulk"/> or <see cref="EndpointType.Interrupt"/> endpoint using the overloaded <see cref="Read(byte[],int,out int)"/> functions.
 /// </summary>
-/// <remarks>
-/// <list type="bullet">
-/// <item>Before using the <see cref="DataReceived"/> event, the <see cref="DataReceivedEnabled"/> property must be set to true.</item>
-/// <item>While the <see cref="DataReceivedEnabled"/> property is True, the overloaded <see cref="Read(byte[],int,out int)"/> functions cannot be used.</item>
-/// </list>
-/// </remarks>
 public partial class UsbEndpointReader : UsbEndpointBase
 {
     private int mReadBufferSize;
 
+    /// <summary>
+    /// Class for reading data from a USB endpoint.
+    /// </summary>
+    /// <param name="usbDevice">Device the endpoint belongs to.</param>
+    /// <param name="readBufferSize">TODO: Remove this parameter.</param>
+    /// <param name="alternateInterfaceID">The alternate interface to read from.</param>
+    /// <param name="readEndpointID">The endpoint id to read from.</param>
+    /// <param name="endpointType">The <see cref="EndpointType"/> of the endpoint.</param>
     public UsbEndpointReader(IUsbDevice usbDevice, int readBufferSize, byte alternateInterfaceID, ReadEndpointID readEndpointID, EndpointType endpointType)
         : base(usbDevice, alternateInterfaceID, (byte)readEndpointID, endpointType)
     {
@@ -46,7 +48,7 @@ public partial class UsbEndpointReader : UsbEndpointBase
     }
 
     /// <summary>
-    /// Default read buffer size when using the <see cref="DataReceived"/> event.
+    /// TODO: Remove this property.
     /// </summary>
     /// <remarks>
     /// This value can be bypassed using the second parameter of the <see cref="UsbDevice.OpenEndpointReader(LibUsbDotNet.Main.ReadEndpointID,int)"/> method.

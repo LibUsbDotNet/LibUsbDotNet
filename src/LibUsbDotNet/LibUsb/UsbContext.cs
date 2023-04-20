@@ -68,7 +68,7 @@ public class UsbContext : IUsbContext
     /// <summary>
     /// Tracks when the context is currently being disposed.
     /// <remarks>
-    /// Used for preventing the devices in <see cref="OpenDevices"/> from modifying the list when they are closed in <see cref="Dispose"/>.
+    /// Used for preventing the devices in <see cref="OpenDevices"/> from modifying the list when they are closed in <see cref="Dispose()"/>.
     /// </remarks>
     /// </summary>
     internal bool IsDisposing { get; private set; }

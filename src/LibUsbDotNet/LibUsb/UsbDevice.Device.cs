@@ -19,8 +19,6 @@
 // visit www.gnu.org.
 // 
 //
-//
-//
 
 using LibUsbDotNet.Info;
 using System.Collections.Generic;
@@ -172,7 +170,7 @@ public partial class UsbDevice
         }
         else
         {
-            return new UsbDevice(parent);
+            return new UsbDevice(parent, originatingContext);
         }
     }
 

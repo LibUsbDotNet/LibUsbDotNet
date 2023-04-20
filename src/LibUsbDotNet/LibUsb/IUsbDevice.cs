@@ -34,7 +34,7 @@ namespace LibUsbDotNet.LibUsb;
 /// <example>
 /// This example uses the <see cref="IUsbDevice"/> interface to select the desired configuration and interface
 /// for usb devices that require it.
-/// <code source="..\Examples\Read.Write\ReadWrite.cs" lang="cs"/>
+/// <code source="../../Examples/Read.Write/ReadWrite.cs" lang="cs"/>
 /// </example>
 public interface IUsbDevice : IDisposable
 {
@@ -65,7 +65,7 @@ public interface IUsbDevice : IDisposable
     /// <summary>
     /// Gets the USB devices active configuration value.
     /// </summary>
-    /// <returs>
+    /// <returns>
     /// The active configuration value. A zero value means the device is not configured and a non-zero value indicates the device is configured.
     /// </returns>
     int Configuration { get; }
@@ -155,7 +155,7 @@ public interface IUsbDevice : IDisposable
     /// </param>
     /// <returns>
     /// <see langword="true"/> if the descriptor could be loaded correctly; otherwise,
-    /// <see langword="false">.
+    /// <see langword="false"/>.
     /// </returns>
     bool TryGetConfigDescriptor(byte configIndex, out UsbConfigInfo descriptor);
 
@@ -191,7 +191,7 @@ public interface IUsbDevice : IDisposable
     /// Opens a <see cref="EndpointType.Bulk"/> endpoint for reading
     /// </summary>
     /// <param name="readEndpointID">Endpoint number for read operations.</param>
-    /// <param name="readBufferSize">Size of the read buffer allocated for the <see cref="UsbEndpointReader.DataReceived"/> event.</param>
+    /// <param name="readBufferSize">TODO: Remove this parameter.</param>
     /// <returns>A <see cref="UsbEndpointReader"/> class ready for reading. If the specified endpoint is already been opened, the original <see cref="UsbEndpointReader"/> class is returned.</returns>
     UsbEndpointReader OpenEndpointReader(ReadEndpointID readEndpointID, int readBufferSize);
 
@@ -199,7 +199,7 @@ public interface IUsbDevice : IDisposable
     /// Opens an endpoint for reading
     /// </summary>
     /// <param name="readEndpointID">Endpoint number for read operations.</param>
-    /// <param name="readBufferSize">Size of the read buffer allocated for the <see cref="UsbEndpointReader.DataReceived"/> event.</param>
+    /// <param name="readBufferSize">TODO: Remove this parameter.</param>
     /// <param name="endpointType">The type of endpoint to open.</param>
     /// <returns>A <see cref="UsbEndpointReader"/> class ready for reading. If the specified endpoint is already been opened, the original <see cref="UsbEndpointReader"/> class is returned.</returns>
     UsbEndpointReader OpenEndpointReader(ReadEndpointID readEndpointID, int readBufferSize, EndpointType endpointType);
@@ -262,6 +262,7 @@ public interface IUsbDevice : IDisposable
     /// <remarks>
     /// After calling <see cref="ResetDevice"/>, the <see cref="UsbDevice"/> instance is disposed and
     /// no longer usable.  A new <see cref="UsbDevice"/> instance must be obtained from the device list.
+    /// </remarks>
     void ResetDevice();
 
     /// <summary>
