@@ -23,6 +23,7 @@
 using System;
 using LibUsbDotNet.Info;
 using System.Collections.ObjectModel;
+using System.Linq;
 using System.Runtime.InteropServices;
 
 namespace LibUsbDotNet.LibUsb;
@@ -63,9 +64,6 @@ public partial class UsbDevice
     /// <inheritdoc/>
     public ushort ProductId => this.Descriptor.ProductId;
 
-    /// <summary>
-    /// Configurations of the device.
-    /// </summary>
     public ReadOnlyCollection<UsbConfigInfo> Configs
     {
         get
@@ -141,6 +139,11 @@ public partial class UsbDevice
     }
 
     /// <summary>
+    /// The <see cref="LocationId"/> of the device.
+    /// </summary>
+    public LocationId LocationId => new LocationId(BusNumber, PortNumbers.ToArray());
+
+    /// <summary>
     /// Get the the parent from the specified device.
     /// </summary>
     /// <returns>
@@ -174,7 +177,7 @@ public partial class UsbDevice
     /// <summary>
     /// Get the negotiated connection speed for a device.
     /// </summary>
-    public int Speed
+    public Speed Speed
     {
         get
         {

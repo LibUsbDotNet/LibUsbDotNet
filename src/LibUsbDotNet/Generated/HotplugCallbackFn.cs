@@ -37,5 +37,5 @@ namespace LibUsbDotNet
     /// <summary>
     /// Hotplug callback function type.
     /// </summary>
-    public unsafe delegate int HotplugCallbackFn(Context ctx, Device device, HotplugEvent @event, IntPtr userData);
+    public unsafe delegate int HotplugCallbackFn(IntPtr ctx, IntPtr device, HotplugEvent hotplugEvent, IntPtr userData);
 }

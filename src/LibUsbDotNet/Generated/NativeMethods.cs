@@ -152,7 +152,7 @@ namespace LibUsbDotNet
         public static extern byte GetDeviceAddress(Device dev);
 
         [DllImport(LibUsbNativeLibrary, EntryPoint = "libusb_get_device_speed")]
-        public static extern int GetDeviceSpeed(Device dev);
+        public static extern Speed GetDeviceSpeed(Device dev);
 
         [DllImport(LibUsbNativeLibrary, EntryPoint = "libusb_get_max_packet_size")]
         public static extern int GetMaxPacketSize(Device dev, byte endpoint);

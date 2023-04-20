@@ -105,7 +105,17 @@ public partial class UsbDevice : IUsbDevice, IDisposable, ICloneable
             return $"PID 0x{this.ProductId:X} - VID: 0x{this.VendorId:X}";
         }
     }
+    
+    public override int GetHashCode() => device.GetHashCode();
 
+    public override bool Equals(object obj)
+    {
+        if (obj is not UsbDevice usbDevice)
+            return false;
+            
+        return GetHashCode() == usbDevice.GetHashCode();
+    }
+    
     /// <summary>
     /// Throws a <see cref="ObjectDisposedException"/> if this device or the <see cref="originatingContext"/> of the device has been disposed of.
     /// </summary>

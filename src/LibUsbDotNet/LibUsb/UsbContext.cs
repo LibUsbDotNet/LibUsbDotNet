@@ -24,6 +24,7 @@ using LibUsbDotNet.Main;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.Runtime.InteropServices;
 using System.Threading;
 
 namespace LibUsbDotNet.LibUsb;
@@ -54,6 +55,8 @@ public class UsbContext : IUsbContext
     /// </summary>
     public bool IsDisposed { get; private set; }
 
+    public bool IsUsingHotplug { get; private set; }
+    
     /// <summary>
     /// Tracking list of all devices that are open on this context.
     /// </summary>
@@ -78,6 +81,11 @@ public class UsbContext : IUsbContext
     /// </summary>
     internal int stopHandlingEvents;
 
+    private readonly IntPtr hotplugDelegatePtr;
+    private readonly HotplugCallbackFn hotplugCallback;
+    public delegate void DeviceEventHandler(object sender, DeviceEventArgs e);
+    public event EventHandler<DeviceEventArgs> DeviceEvent;
+    
     /// <summary>
     /// Initializes a new instance of the <see cref="UsbContext"/> class.
     /// </summary>
@@ -87,6 +95,8 @@ public class UsbContext : IUsbContext
         NativeMethods.Init(ref contextHandle).ThrowOnError();
         this.context = Context.DangerousCreate(contextHandle);
         OpenDevices = new List<UsbDevice>();
+        hotplugCallback = new HotplugCallbackFn(HotplugCallback);
+        hotplugDelegatePtr = Marshal.GetFunctionPointerForDelegate(hotplugCallback);
     }
 
     ~UsbContext()
@@ -110,6 +120,44 @@ public class UsbContext : IUsbContext
         NativeMethods.SetDebug(this.context, (int)level);
     }
 
+    private int HotplugCallback(IntPtr ctx, IntPtr device, HotplugEvent hotplugEvent, IntPtr userData)
+    {
+        UsbDevice usbDevice = new UsbDevice(Device.DangerousCreate(device, true), this);
+        DeviceEventArgs deviceEventArgs;
+        if (hotplugEvent == HotplugEvent.DeviceArrived)
+            deviceEventArgs = new DeviceArrivedEventArgs(usbDevice);
+        else
+            deviceEventArgs = new DeviceLeftEventArgs(usbDevice);
+
+        DeviceEvent?.Invoke(this, deviceEventArgs);
+
+        return 0;
+    }
+        
+    public void RegisterHotPlug(HotplugOptions hotplugOptions)
+    {
+        if (IsUsingHotplug)
+            return;
+        if (NativeMethods.HasCapability((uint)Capability.HasHotplug) == 0)
+            throw new PlatformNotSupportedException("This platform does not support hotplug.");
+            
+        NativeMethods.HotplugRegisterCallback(context, hotplugOptions.HotplugEventFlags,
+            HotplugFlag.Enumerate, hotplugOptions.VendorId, hotplugOptions.ProductId, hotplugOptions.DeviceClass, hotplugDelegatePtr, IntPtr.Zero, ref hotplugOptions.Handle);
+        StartHandlingEvents();
+        IsUsingHotplug = true;
+    }
+        
+    public void UnregisterHotPlug(HotplugOptions hotplugOptions)
+    {
+        if (!IsUsingHotplug)
+            return;
+            
+        Interlocked.Exchange(ref stopHandlingEvents, 1);
+        NativeMethods.HotplugDeregisterCallback(context, hotplugOptions.Handle);
+        StopHandlingEvents();
+        IsUsingHotplug = false;
+    }
+    
     /// <summary>
     /// Returns a list of USB devices currently attached to the system.
     /// </summary>
@@ -135,7 +183,7 @@ public class UsbContext : IUsbContext
 
         for (int i = 0; i < deviceCount.ToInt32(); i++)
         {
-            Device device = Device.DangerousCreate(list[i]);
+            Device device = Device.DangerousCreate(list[i], false);
             devices.Add(new UsbDevice(device, this));
         }
 

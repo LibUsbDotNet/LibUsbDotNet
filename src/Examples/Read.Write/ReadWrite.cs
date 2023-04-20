@@ -8,10 +8,10 @@ namespace Examples;
 internal class ReadWrite
 {
     //Put your Product Id Here
-    private const int ProductId = 0x0001;
+    private const int ProductId = 0x00f0;
 
     //Put your Vendor Id Here
-    private const int VendorId = 0x0001;
+    private const int VendorId = 0x04b4;
 
     public static void Main(string[] args)
     {
@@ -20,7 +20,7 @@ internal class ReadWrite
             context.SetDebugLevel(LogLevel.Info);
 
             //Get a list of all connected devices
-            var usbDeviceCollection = context.List();
+            using var usbDeviceCollection = context.List();
 
             //Narrow down the device by vendor and pid
             var selectedDevice = usbDeviceCollection.FirstOrDefault(d => d.ProductId == ProductId && d.VendorId == VendorId);
