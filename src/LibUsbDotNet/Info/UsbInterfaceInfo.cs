@@ -25,87 +25,86 @@ using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Diagnostics;
 
-namespace LibUsbDotNet.Info
+namespace LibUsbDotNet.Info;
+
+/// <summary> Describes a USB device interface.
+/// </summary>
+public class UsbInterfaceInfo : UsbBaseInfo
 {
-    /// <summary> Describes a USB device interface.
-    /// </summary>
-    public class UsbInterfaceInfo : UsbBaseInfo
+    private List<UsbEndpointInfo> endpoints = new List<UsbEndpointInfo>();
+
+    public static unsafe Collection<UsbInterfaceInfo> FromUsbInterface(LibUsb.UsbDevice device, Interface @interface)
     {
-        private List<UsbEndpointInfo> endpoints = new List<UsbEndpointInfo>();
+        var interfaces = (InterfaceDescriptor*)@interface.Altsetting;
+        Collection<UsbInterfaceInfo> value = new Collection<UsbInterfaceInfo>();
 
-        public static unsafe Collection<UsbInterfaceInfo> FromUsbInterface(LibUsb.UsbDevice device, Interface @interface)
+        for (int i = 0; i < @interface.NumAltsetting; i++)
         {
-            var interfaces = (InterfaceDescriptor*)@interface.Altsetting;
-            Collection<UsbInterfaceInfo> value = new Collection<UsbInterfaceInfo>();
-
-            for (int i = 0; i < @interface.NumAltsetting; i++)
-            {
-                value.Add(FromUsbInterfaceDescriptor(device, interfaces[i]));
-            }
-
-            return value;
+            value.Add(FromUsbInterfaceDescriptor(device, interfaces[i]));
         }
 
-        public static unsafe UsbInterfaceInfo FromUsbInterfaceDescriptor(LibUsb.UsbDevice device, InterfaceDescriptor descriptor)
-        {
-            Debug.Assert(descriptor.DescriptorType == (int)DescriptorType.Interface, "A config descriptor was expected");
-
-            var value = new UsbInterfaceInfo
-            {
-                AlternateSetting = descriptor.AlternateSetting,
-                Interface = device.GetStringDescriptor(descriptor.Interface, failSilently: true),
-                Class = (ClassCode)descriptor.InterfaceClass,
-                Number = descriptor.InterfaceNumber,
-                Protocol = descriptor.InterfaceProtocol,
-                SubClass = descriptor.InterfaceSubClass,
-                RawDescriptors = new byte[descriptor.ExtraLength]
-            };
-            
-            var endpoints = descriptor.Endpoint;
-
-            for (int i = 0; i < descriptor.NumEndpoints; i++)
-            {
-                if (endpoints[i].DescriptorType != 0)
-                {
-                    value.endpoints.Add(UsbEndpointInfo.FromUsbEndpointDescriptor(endpoints[i]));
-                }
-            }
-            
-            if (descriptor.ExtraLength > 0)
-            {
-                Span<byte> extra = new Span<byte>(descriptor.Extra, descriptor.ExtraLength);
-                extra.CopyTo(value.RawDescriptors);
-            }
-
-            return value;
-        }
-
-        public virtual byte AlternateSetting { get; private set; }
-
-        public virtual ClassCode Class { get; private set; }
-
-        public virtual int Number { get; private set; }
-
-        public virtual byte Protocol { get; private set; }
-
-        public virtual string Interface { get; private set; }
-
-        public virtual byte SubClass { get; private set; }
-
-        /// <summary>
-        /// Gets the collection of endpoint descriptors associated with this interface.
-        /// </summary>
-        public virtual ReadOnlyCollection<UsbEndpointInfo> Endpoints
-        {
-            get { return this.endpoints.AsReadOnly(); }
-        }
-
-        public override string ToString() =>
-            $"Interface: {Interface}\n" +
-            $"InterfaceId: {Number}\n" +
-            $"AlternateId: {AlternateSetting}\n" +
-            $"Class: {Class}\n" +
-            $"Protocol: 0x{Protocol:X2}\n" +
-            $"SubClass: 0x{SubClass:X2}";
+        return value;
     }
+
+    public static unsafe UsbInterfaceInfo FromUsbInterfaceDescriptor(LibUsb.UsbDevice device, InterfaceDescriptor descriptor)
+    {
+        Debug.Assert(descriptor.DescriptorType == (int)DescriptorType.Interface, "A config descriptor was expected");
+
+        var value = new UsbInterfaceInfo
+        {
+            AlternateSetting = descriptor.AlternateSetting,
+            Interface = device.GetStringDescriptor(descriptor.Interface, failSilently: true),
+            Class = (ClassCode)descriptor.InterfaceClass,
+            Number = descriptor.InterfaceNumber,
+            Protocol = descriptor.InterfaceProtocol,
+            SubClass = descriptor.InterfaceSubClass,
+            RawDescriptors = new byte[descriptor.ExtraLength]
+        };
+            
+        var endpoints = descriptor.Endpoint;
+
+        for (int i = 0; i < descriptor.NumEndpoints; i++)
+        {
+            if (endpoints[i].DescriptorType != 0)
+            {
+                value.endpoints.Add(UsbEndpointInfo.FromUsbEndpointDescriptor(endpoints[i]));
+            }
+        }
+            
+        if (descriptor.ExtraLength > 0)
+        {
+            Span<byte> extra = new Span<byte>(descriptor.Extra, descriptor.ExtraLength);
+            extra.CopyTo(value.RawDescriptors);
+        }
+
+        return value;
+    }
+
+    public virtual byte AlternateSetting { get; private set; }
+
+    public virtual ClassCode Class { get; private set; }
+
+    public virtual int Number { get; private set; }
+
+    public virtual byte Protocol { get; private set; }
+
+    public virtual string Interface { get; private set; }
+
+    public virtual byte SubClass { get; private set; }
+
+    /// <summary>
+    /// Gets the collection of endpoint descriptors associated with this interface.
+    /// </summary>
+    public virtual ReadOnlyCollection<UsbEndpointInfo> Endpoints
+    {
+        get { return this.endpoints.AsReadOnly(); }
+    }
+
+    public override string ToString() =>
+        $"Interface: {Interface}\n" +
+        $"InterfaceId: {Number}\n" +
+        $"AlternateId: {AlternateSetting}\n" +
+        $"Class: {Class}\n" +
+        $"Protocol: 0x{Protocol:X2}\n" +
+        $"SubClass: 0x{SubClass:X2}";
 }

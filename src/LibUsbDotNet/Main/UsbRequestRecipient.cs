@@ -22,31 +22,30 @@
 
 using System;
 
-namespace LibUsbDotNet.Main
+namespace LibUsbDotNet.Main;
+
+///<summary>Recipient of the request.</summary>
+/// <seealso cref="UsbCtrlFlags"/>
+[Flags]
+public enum UsbRequestRecipient : byte
 {
-    ///<summary>Recipient of the request.</summary>
-    /// <seealso cref="UsbCtrlFlags"/>
-    [Flags]
-    public enum UsbRequestRecipient : byte
-    {
-        /// <summary>
-        /// Device is recipient.
-        /// </summary>
-        RecipDevice = 0x00,
+    /// <summary>
+    /// Device is recipient.
+    /// </summary>
+    RecipDevice = 0x00,
 
-        /// <summary>
-        /// Endpoint is recipient.
-        /// </summary>
-        RecipEndpoint = 0x02,
+    /// <summary>
+    /// Endpoint is recipient.
+    /// </summary>
+    RecipEndpoint = 0x02,
 
-        /// <summary>
-        /// Interface is recipient.
-        /// </summary>
-        RecipInterface = 0x01,
+    /// <summary>
+    /// Interface is recipient.
+    /// </summary>
+    RecipInterface = 0x01,
 
-        /// <summary>
-        /// Other is recipient.
-        /// </summary>
-        RecipOther = 0x03,
-    }
+    /// <summary>
+    /// Other is recipient.
+    /// </summary>
+    RecipOther = 0x03,
 }

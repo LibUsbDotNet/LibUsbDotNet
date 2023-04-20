@@ -22,33 +22,32 @@
 
 using System;
 
-namespace LibUsbDotNet.Main
+namespace LibUsbDotNet.Main;
+
+/// <summary>
+/// Standard USB requests.
+/// </summary>
+/// <seealso cref="UsbCtrlFlags"/>
+[Flags]
+public enum UsbRequestType : byte
 {
     /// <summary>
-    /// Standard USB requests.
+    /// Class specific request.
     /// </summary>
-    /// <seealso cref="UsbCtrlFlags"/>
-    [Flags]
-    public enum UsbRequestType : byte
-    {
-        /// <summary>
-        /// Class specific request.
-        /// </summary>
-        TypeClass = 0x01 << 5,
+    TypeClass = 0x01 << 5,
 
-        /// <summary>
-        /// RESERVED.
-        /// </summary>
-        TypeReserved = 0x03 << 5,
+    /// <summary>
+    /// RESERVED.
+    /// </summary>
+    TypeReserved = 0x03 << 5,
 
-        /// <summary>
-        /// Standard request.
-        /// </summary>
-        TypeStandard = 0x00 << 5,
+    /// <summary>
+    /// Standard request.
+    /// </summary>
+    TypeStandard = 0x00 << 5,
 
-        /// <summary>
-        /// Vendor specific request.
-        /// </summary>
-        TypeVendor = 0x02 << 5,
-    }
+    /// <summary>
+    /// Vendor specific request.
+    /// </summary>
+    TypeVendor = 0x02 << 5,
 }

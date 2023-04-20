@@ -26,32 +26,31 @@ using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 
-namespace LibUsbDotNet.LibUsb
+namespace LibUsbDotNet.LibUsb;
+
+/// <summary>
+/// A collection of <see cref="UsbDevice"/> objects. All devices in this collection are disposed
+/// of when youd dispose the collection.
+/// </summary>
+public class UsbDeviceCollection : ReadOnlyCollection<IUsbDevice>, IDisposable
 {
     /// <summary>
-    /// A collection of <see cref="UsbDevice"/> objects. All devices in this collection are disposed
-    /// of when youd dispose the collection.
+    /// Initializes a new instance of the <see cref="UsbDeviceCollection"/> class.
     /// </summary>
-    public class UsbDeviceCollection : ReadOnlyCollection<IUsbDevice>, IDisposable
+    /// <param name="list">
+    /// The underlying list of devices.
+    /// </param>
+    public UsbDeviceCollection(IList<IUsbDevice> list)
+        : base(list)
     {
-        /// <summary>
-        /// Initializes a new instance of the <see cref="UsbDeviceCollection"/> class.
-        /// </summary>
-        /// <param name="list">
-        /// The underlying list of devices.
-        /// </param>
-        public UsbDeviceCollection(IList<IUsbDevice> list)
-            : base(list)
-        {
-        }
+    }
 
-        /// <inheritdoc/>
-        public void Dispose()
+    /// <inheritdoc/>
+    public void Dispose()
+    {
+        foreach (var device in this)
         {
-            foreach (var device in this)
-            {
-                device.Dispose();
-            }
+            device.Dispose();
         }
     }
 }

@@ -23,53 +23,52 @@
 using System;
 using System.Diagnostics;
 
-namespace LibUsbDotNet.Info
+namespace LibUsbDotNet.Info;
+
+/// <summary> Contains Endpoint information for the current <see cref="T:LibUsbDotNet.Info.UsbConfigInfo"/>.
+/// </summary>
+public class UsbEndpointInfo : UsbBaseInfo
 {
-    /// <summary> Contains Endpoint information for the current <see cref="T:LibUsbDotNet.Info.UsbConfigInfo"/>.
-    /// </summary>
-    public class UsbEndpointInfo : UsbBaseInfo
+    public static unsafe UsbEndpointInfo FromUsbEndpointDescriptor(EndpointDescriptor descriptor)
     {
-        public static unsafe UsbEndpointInfo FromUsbEndpointDescriptor(EndpointDescriptor descriptor)
+        Debug.Assert(descriptor.DescriptorType == (int)DescriptorType.Endpoint, "An endpoint descriptor was expected");
+
+        var value = new UsbEndpointInfo
         {
-            Debug.Assert(descriptor.DescriptorType == (int)DescriptorType.Endpoint, "An endpoint descriptor was expected");
+            Attributes = descriptor.Attributes,
+            EndpointAddress = descriptor.EndpointAddress,
+            RawDescriptors = new byte[descriptor.ExtraLength],
+            Interval = descriptor.Interval,
+            MaxPacketSize = descriptor.MaxPacketSize,
+            Refresh = descriptor.Refresh,
+            SyncAddress = descriptor.SynchAddress
+        };
 
-            var value = new UsbEndpointInfo
-            {
-                Attributes = descriptor.Attributes,
-                EndpointAddress = descriptor.EndpointAddress,
-                RawDescriptors = new byte[descriptor.ExtraLength],
-                Interval = descriptor.Interval,
-                MaxPacketSize = descriptor.MaxPacketSize,
-                Refresh = descriptor.Refresh,
-                SyncAddress = descriptor.SynchAddress
-            };
-
-            if (descriptor.ExtraLength > 0)
-            {
-                Span<byte> extra = new Span<byte>(descriptor.Extra, descriptor.ExtraLength);
-                extra.CopyTo(value.RawDescriptors);
-            }
-
-            return value;
+        if (descriptor.ExtraLength > 0)
+        {
+            Span<byte> extra = new Span<byte>(descriptor.Extra, descriptor.ExtraLength);
+            extra.CopyTo(value.RawDescriptors);
         }
 
-        public virtual byte Attributes { get; private set; }
-
-        public virtual byte EndpointAddress { get; private set; }
-
-        public virtual byte Interval { get; private set; }
-
-        public virtual ushort MaxPacketSize { get; private set; }
-
-        public virtual byte Refresh { get; private set; }
-
-        public virtual byte SyncAddress { get; private set; }
-
-        public override string ToString() =>
-            $"Address: 0x{EndpointAddress:X2}\n" +
-            $"Interval: {Interval}\n" +
-            $"MaxPacketSize: {MaxPacketSize}\n" +
-            $"Refresh: {Refresh}\n" +
-            $"SyncAddress: 0x{SyncAddress:X2}";
+        return value;
     }
+
+    public virtual byte Attributes { get; private set; }
+
+    public virtual byte EndpointAddress { get; private set; }
+
+    public virtual byte Interval { get; private set; }
+
+    public virtual ushort MaxPacketSize { get; private set; }
+
+    public virtual byte Refresh { get; private set; }
+
+    public virtual byte SyncAddress { get; private set; }
+
+    public override string ToString() =>
+        $"Address: 0x{EndpointAddress:X2}\n" +
+        $"Interval: {Interval}\n" +
+        $"MaxPacketSize: {MaxPacketSize}\n" +
+        $"Refresh: {Refresh}\n" +
+        $"SyncAddress: 0x{SyncAddress:X2}";
 }

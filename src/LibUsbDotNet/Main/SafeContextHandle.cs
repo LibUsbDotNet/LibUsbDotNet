@@ -23,51 +23,50 @@
 using System;
 using System.Runtime.InteropServices;
 
-namespace LibUsbDotNet.Main
+namespace LibUsbDotNet.Main;
+
+/// <summary>
+/// Base class for all critial handles.
+/// </summary>
+public abstract class SafeContextHandle : SafeHandle
 {
     /// <summary>
-    /// Base class for all critial handles.
+    ///
     /// </summary>
-    public abstract class SafeContextHandle : SafeHandle
+    /// <param name="pHandle"></param>
+    /// <param name="ownsHandle"></param>
+    protected SafeContextHandle(IntPtr pHandle, bool ownsHandle)
+        : base(IntPtr.Zero, ownsHandle)
     {
-        /// <summary>
-        ///
-        /// </summary>
-        /// <param name="pHandle"></param>
-        /// <param name="ownsHandle"></param>
-        protected SafeContextHandle(IntPtr pHandle, bool ownsHandle)
-            : base(IntPtr.Zero, ownsHandle)
-        {
-            this.SetHandle(pHandle);
-        }
+        this.SetHandle(pHandle);
+    }
 
-        /// <summary>
-        ///
-        /// </summary>
-        /// <param name="pHandleToOwn"></param>
-        protected SafeContextHandle(IntPtr pHandleToOwn)
-            : this(pHandleToOwn, true)
-        {
-        }
+    /// <summary>
+    ///
+    /// </summary>
+    /// <param name="pHandleToOwn"></param>
+    protected SafeContextHandle(IntPtr pHandleToOwn)
+        : this(pHandleToOwn, true)
+    {
+    }
 
-        /// <summary>
-        /// Gets a value indicating whether the handle value is invalid.
-        /// </summary>
-        /// <returns>
-        /// true if the handle value is invalid; otherwise, false.
-        /// </returns>
-        /// <PermissionSet><IPermission class="System.Security.Permissions.SecurityPermission, mscorlib, Version=2.0.3600.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" version="1" Flags="UnmanagedCode"/></PermissionSet>
-        public override bool IsInvalid
+    /// <summary>
+    /// Gets a value indicating whether the handle value is invalid.
+    /// </summary>
+    /// <returns>
+    /// true if the handle value is invalid; otherwise, false.
+    /// </returns>
+    /// <PermissionSet><IPermission class="System.Security.Permissions.SecurityPermission, mscorlib, Version=2.0.3600.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" version="1" Flags="UnmanagedCode"/></PermissionSet>
+    public override bool IsInvalid
+    {
+        get
         {
-            get
+            if (this.handle != IntPtr.Zero)
             {
-                if (this.handle != IntPtr.Zero)
-                {
-                    return this.handle == new IntPtr(-1);
-                }
-
-                return true;
+                return this.handle == new IntPtr(-1);
             }
+
+            return true;
         }
     }
 }

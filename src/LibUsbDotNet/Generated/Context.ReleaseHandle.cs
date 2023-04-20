@@ -20,15 +20,14 @@
 // 
 //
 
-namespace LibUsbDotNet
+namespace LibUsbDotNet;
+
+public partial class Context
 {
-    public partial class Context
+    /// <inheritdoc/>
+    protected override bool ReleaseHandle()
     {
-        /// <inheritdoc/>
-        protected override bool ReleaseHandle()
-        {
-            NativeMethods.Exit(this.handle);
-            return true;
-        }
+        NativeMethods.Exit(this.handle);
+        return true;
     }
 }

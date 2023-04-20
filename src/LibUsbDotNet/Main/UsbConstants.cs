@@ -20,30 +20,29 @@
 // 
 //
 
-namespace LibUsbDotNet.Main
+namespace LibUsbDotNet.Main;
+
+/// <summary> Various USB constants.
+/// </summary>
+public static class UsbConstants
 {
-    /// <summary> Various USB constants.
+    /// <summary>
+    /// Default timeout for all USB IO operations.
     /// </summary>
-    public static class UsbConstants
-    {
-        /// <summary>
-        /// Default timeout for all USB IO operations.
-        /// </summary>
-        public const int DefaultTimeout = 1000;
+    public const int DefaultTimeout = 1000;
 
-        /// <summary>
-        /// Maximum number of USB devices connected to the driver at once.
-        /// </summary>
-        public const int MaxDeviceCount = 256;
+    /// <summary>
+    /// Maximum number of USB devices connected to the driver at once.
+    /// </summary>
+    public const int MaxDeviceCount = 256;
 
-        /// <summary>
-        /// Endpoint direction mask.
-        /// </summary>
-        public const byte EndpointDirectionMask = 0x80;
+    /// <summary>
+    /// Endpoint direction mask.
+    /// </summary>
+    public const byte EndpointDirectionMask = 0x80;
 
-        /// <summary>
-        /// Endpoint number mask.
-        /// </summary>
-        public const byte EndpointNumberMask = 0xf;
-    }
+    /// <summary>
+    /// Endpoint number mask.
+    /// </summary>
+    public const byte EndpointNumberMask = 0xf;
 }

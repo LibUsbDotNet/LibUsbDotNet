@@ -20,15 +20,14 @@
 // 
 //
 
-namespace LibUsbDotNet
+namespace LibUsbDotNet;
+
+public partial class Device
 {
-    public partial class Device
+    /// <inheritdoc/>
+    protected override bool ReleaseHandle()
     {
-        /// <inheritdoc/>
-        protected override bool ReleaseHandle()
-        {
-            NativeMethods.UnrefDevice(this.handle);
-            return true;
-        }
+        NativeMethods.UnrefDevice(this.handle);
+        return true;
     }
 }

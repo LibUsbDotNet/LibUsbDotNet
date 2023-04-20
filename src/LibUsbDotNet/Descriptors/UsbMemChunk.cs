@@ -23,42 +23,41 @@
 using System;
 using System.Runtime.InteropServices;
 
-namespace LibUsbDotNet.Descriptors
+namespace LibUsbDotNet.Descriptors;
+
+internal abstract class UsbMemChunk
 {
-    internal abstract class UsbMemChunk
+    private readonly int mMaxSize;
+
+    private IntPtr mMemPointer = IntPtr.Zero;
+
+    protected UsbMemChunk(int maxSize)
     {
-        private readonly int mMaxSize;
+        this.mMaxSize = maxSize;
+        this.mMemPointer = Marshal.AllocHGlobal(maxSize);
+    }
 
-        private IntPtr mMemPointer = IntPtr.Zero;
+    public int MaxSize
+    {
+        get { return this.mMaxSize; }
+    }
 
-        protected UsbMemChunk(int maxSize)
+    public IntPtr Ptr
+    {
+        get { return this.mMemPointer; }
+    }
+
+    public void Free()
+    {
+        if (this.mMemPointer != IntPtr.Zero)
         {
-            this.mMaxSize = maxSize;
-            this.mMemPointer = Marshal.AllocHGlobal(maxSize);
+            Marshal.FreeHGlobal(this.mMemPointer);
+            this.mMemPointer = IntPtr.Zero;
         }
+    }
 
-        public int MaxSize
-        {
-            get { return this.mMaxSize; }
-        }
-
-        public IntPtr Ptr
-        {
-            get { return this.mMemPointer; }
-        }
-
-        public void Free()
-        {
-            if (this.mMemPointer != IntPtr.Zero)
-            {
-                Marshal.FreeHGlobal(this.mMemPointer);
-                this.mMemPointer = IntPtr.Zero;
-            }
-        }
-
-        ~UsbMemChunk()
-        {
-            this.Free();
-        }
+    ~UsbMemChunk()
+    {
+        this.Free();
     }
 }

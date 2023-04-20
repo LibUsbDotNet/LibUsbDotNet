@@ -20,86 +20,85 @@
 // 
 //
 
-namespace LibUsbDotNet.Main
+namespace LibUsbDotNet.Main;
+
+/// <summary>
+/// Availabled endpoint numbers/ids for reading.
+/// </summary>
+public enum ReadEndpointID : byte
 {
     /// <summary>
-    /// Availabled endpoint numbers/ids for reading.
+    /// Endpoint 1
     /// </summary>
-    public enum ReadEndpointID : byte
-    {
-        /// <summary>
-        /// Endpoint 1
-        /// </summary>
-        Ep01 = 0x81,
+    Ep01 = 0x81,
 
-        /// <summary>
-        /// Endpoint 2
-        /// </summary>
-        Ep02 = 0x82,
+    /// <summary>
+    /// Endpoint 2
+    /// </summary>
+    Ep02 = 0x82,
 
-        /// <summary>
-        /// Endpoint 3
-        /// </summary>
-        Ep03 = 0x83,
+    /// <summary>
+    /// Endpoint 3
+    /// </summary>
+    Ep03 = 0x83,
 
-        /// <summary>
-        /// Endpoint 4
-        /// </summary>
-        Ep04 = 0x84,
+    /// <summary>
+    /// Endpoint 4
+    /// </summary>
+    Ep04 = 0x84,
 
-        /// <summary>
-        /// Endpoint 5
-        /// </summary>
-        Ep05 = 0x85,
+    /// <summary>
+    /// Endpoint 5
+    /// </summary>
+    Ep05 = 0x85,
 
-        /// <summary>
-        /// Endpoint 6
-        /// </summary>
-        Ep06 = 0x86,
+    /// <summary>
+    /// Endpoint 6
+    /// </summary>
+    Ep06 = 0x86,
 
-        /// <summary>
-        /// Endpoint 7
-        /// </summary>
-        Ep07 = 0x87,
+    /// <summary>
+    /// Endpoint 7
+    /// </summary>
+    Ep07 = 0x87,
 
-        /// <summary>
-        /// Endpoint 8
-        /// </summary>
-        Ep08 = 0x88,
+    /// <summary>
+    /// Endpoint 8
+    /// </summary>
+    Ep08 = 0x88,
 
-        /// <summary>
-        /// Endpoint 9
-        /// </summary>
-        Ep09 = 0x89,
+    /// <summary>
+    /// Endpoint 9
+    /// </summary>
+    Ep09 = 0x89,
 
-        /// <summary>
-        /// Endpoint 10
-        /// </summary>
-        Ep10 = 0x8A,
+    /// <summary>
+    /// Endpoint 10
+    /// </summary>
+    Ep10 = 0x8A,
 
-        /// <summary>
-        /// Endpoint 11
-        /// </summary>
-        Ep11 = 0x8B,
+    /// <summary>
+    /// Endpoint 11
+    /// </summary>
+    Ep11 = 0x8B,
 
-        /// <summary>
-        /// Endpoint 12
-        /// </summary>
-        Ep12 = 0x8C,
+    /// <summary>
+    /// Endpoint 12
+    /// </summary>
+    Ep12 = 0x8C,
 
-        /// <summary>
-        /// Endpoint 13
-        /// </summary>
-        Ep13 = 0x8D,
+    /// <summary>
+    /// Endpoint 13
+    /// </summary>
+    Ep13 = 0x8D,
 
-        /// <summary>
-        /// Endpoint 14
-        /// </summary>
-        Ep14 = 0x8E,
+    /// <summary>
+    /// Endpoint 14
+    /// </summary>
+    Ep14 = 0x8E,
 
-        /// <summary>
-        /// Endpoint 15
-        /// </summary>
-        Ep15 = 0x8F,
-    }
+    /// <summary>
+    /// Endpoint 15
+    /// </summary>
+    Ep15 = 0x8F,
 }

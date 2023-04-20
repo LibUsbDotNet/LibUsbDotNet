@@ -25,64 +25,63 @@ using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Diagnostics;
 
-namespace LibUsbDotNet.Info
+namespace LibUsbDotNet.Info;
+
+/// <summary> Contains all Configuration information for the current <see cref="T:LibUsbDotNet.UsbDevice"/>.
+/// </summary>
+public class UsbConfigInfo : UsbBaseInfo
 {
-    /// <summary> Contains all Configuration information for the current <see cref="T:LibUsbDotNet.UsbDevice"/>.
-    /// </summary>
-    public class UsbConfigInfo : UsbBaseInfo
+    private readonly List<UsbInterfaceInfo> interfaces = new List<UsbInterfaceInfo>();
+
+    internal static unsafe UsbConfigInfo FromUsbConfigDescriptor(global::LibUsbDotNet.LibUsb.UsbDevice device, ConfigDescriptor descriptor)
     {
-        private readonly List<UsbInterfaceInfo> interfaces = new List<UsbInterfaceInfo>();
+        Debug.Assert(descriptor.DescriptorType == (int)DescriptorType.Config, "A config descriptor was expected");
 
-        internal static unsafe UsbConfigInfo FromUsbConfigDescriptor(global::LibUsbDotNet.LibUsb.UsbDevice device, ConfigDescriptor descriptor)
+        var value = new UsbConfigInfo
         {
-            Debug.Assert(descriptor.DescriptorType == (int)DescriptorType.Config, "A config descriptor was expected");
+            Attributes = descriptor.Attributes,
+            Configuration = device.GetStringDescriptor(descriptor.Configuration, failSilently: true),
+            ConfigurationValue = descriptor.ConfigurationValue,
+            MaxPower = descriptor.MaxPower,
+            RawDescriptors = new byte[descriptor.ExtraLength]
+        };
 
-            var value = new UsbConfigInfo
-            {
-                Attributes = descriptor.Attributes,
-                Configuration = device.GetStringDescriptor(descriptor.Configuration, failSilently: true),
-                ConfigurationValue = descriptor.ConfigurationValue,
-                MaxPower = descriptor.MaxPower,
-                RawDescriptors = new byte[descriptor.ExtraLength]
-            };
-
-            if (descriptor.ExtraLength > 0)
-            {
-                Span<byte> extra = new Span<byte>(descriptor.Extra, descriptor.ExtraLength);
-                extra.CopyTo(value.RawDescriptors);
-            }
+        if (descriptor.ExtraLength > 0)
+        {
+            Span<byte> extra = new Span<byte>(descriptor.Extra, descriptor.ExtraLength);
+            extra.CopyTo(value.RawDescriptors);
+        }
             
-            var interfaces = descriptor.Interface;
-            for (int i = 0; i < descriptor.NumInterfaces; i++)
-            {
-                var values = UsbInterfaceInfo.FromUsbInterface(device, interfaces[i]);
-                value.interfaces.AddRange(values);
-            }
-
-            return value;
-        }
-
-        public virtual string Configuration { get; protected set; }
-
-        public virtual byte Attributes { get; protected set; }
-
-        public virtual int ConfigurationValue { get; protected set; }
-
-        public virtual byte MaxPower { get; protected set; }
-
-        /// <summary>
-        /// Gets the collection of USB device interfaces associated with this <see cref="UsbConfigInfo"/> instance.
-        /// </summary>
-        public virtual ReadOnlyCollection<UsbInterfaceInfo> Interfaces
+        var interfaces = descriptor.Interface;
+        for (int i = 0; i < descriptor.NumInterfaces; i++)
         {
-            get { return this.interfaces.AsReadOnly(); }
+            var values = UsbInterfaceInfo.FromUsbInterface(device, interfaces[i]);
+            value.interfaces.AddRange(values);
         }
 
-        /// <inheritdoc/>
-        public override string ToString() =>
-            $"Configuration: {Configuration}\n" +
-            $"Attributes: 0x{Attributes:X2}\n" +
-            $"ConfigurationValue: {ConfigurationValue}\n" +
-            $"MaxPower: {MaxPower}";
+        return value;
     }
+
+    public virtual string Configuration { get; protected set; }
+
+    public virtual byte Attributes { get; protected set; }
+
+    public virtual int ConfigurationValue { get; protected set; }
+
+    public virtual byte MaxPower { get; protected set; }
+
+    /// <summary>
+    /// Gets the collection of USB device interfaces associated with this <see cref="UsbConfigInfo"/> instance.
+    /// </summary>
+    public virtual ReadOnlyCollection<UsbInterfaceInfo> Interfaces
+    {
+        get { return this.interfaces.AsReadOnly(); }
+    }
+
+    /// <inheritdoc/>
+    public override string ToString() =>
+        $"Configuration: {Configuration}\n" +
+        $"Attributes: 0x{Attributes:X2}\n" +
+        $"ConfigurationValue: {ConfigurationValue}\n" +
+        $"MaxPower: {MaxPower}";
 }

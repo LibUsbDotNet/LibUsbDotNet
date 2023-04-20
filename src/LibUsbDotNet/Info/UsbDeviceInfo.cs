@@ -23,89 +23,88 @@
 using System.Collections.ObjectModel;
 using System.Diagnostics;
 
-namespace LibUsbDotNet.Info
+namespace LibUsbDotNet.Info;
+
+/// <summary> Contains USB device descriptor information.
+/// </summary>
+public class UsbDeviceInfo
 {
-    /// <summary> Contains USB device descriptor information.
+    /// <summary>
+    /// Initializes a new instance of the <see cref="UsbDeviceInfo"/> class.
     /// </summary>
-    public class UsbDeviceInfo
+    protected UsbDeviceInfo()
     {
-        /// <summary>
-        /// Initializes a new instance of the <see cref="UsbDeviceInfo"/> class.
-        /// </summary>
-        protected UsbDeviceInfo()
-        {
-        }
-
-        private readonly Collection<UsbConfigInfo> configurations = new Collection<UsbConfigInfo>();
-
-        public static UsbDeviceInfo FromUsbDeviceDescriptor(LibUsb.IUsbDevice device, DeviceDescriptor descriptor)
-        {
-            Debug.Assert(descriptor.DescriptorType == (int)DescriptorType.Device, "A config descriptor was expected");
-
-            var value = new UsbDeviceInfo
-            {
-                Device = descriptor.Device,
-                DeviceClass = descriptor.DeviceClass,
-                DeviceProtocol = descriptor.DeviceProtocol,
-                DeviceSubClass = descriptor.DeviceSubClass,
-                ProductId = descriptor.IdProduct,
-                VendorId = descriptor.IdVendor,
-                Manufacturer = device.GetStringDescriptor(descriptor.Manufacturer, failSilently: true),
-                MaxPacketSize0 = descriptor.MaxPacketSize0,
-                NumConfigurations = descriptor.NumConfigurations,
-                Product = device.GetStringDescriptor(descriptor.Product, failSilently: true),
-                SerialNumber = device.GetStringDescriptor(descriptor.SerialNumber, failSilently: true),
-                Usb = descriptor.USB
-            };
-
-            for (byte i = 0; i < descriptor.NumConfigurations; i++)
-            {
-                if (device.TryGetConfigDescriptor(i, out var configDescriptor))
-                {
-                    value.configurations.Add(configDescriptor);
-                }
-            }
-            
-            return value;
-        }
-
-        public virtual ushort Device { get; protected set; }
-
-        public virtual byte DeviceClass { get; protected set; }
-
-        public virtual byte DeviceProtocol { get; protected set; }
-
-        public virtual byte DeviceSubClass { get; protected set; }
-
-        public virtual ushort ProductId { get; protected set; }
-
-        public virtual ushort VendorId { get; protected set; }
-
-        public virtual string Manufacturer { get; protected set; }
-
-        public virtual byte MaxPacketSize0 { get; protected set; }
-
-        public virtual byte NumConfigurations { get; protected set; }
-
-        public virtual string Product { get; protected set; }
-
-        public virtual string SerialNumber { get; protected set; } = string.Empty;
-
-        public virtual ushort Usb { get; protected set; }
-
-        public virtual ReadOnlyCollection<UsbConfigInfo> Configurations => new(this.configurations);
-
-        public override string ToString() =>
-            $"Device: 0x{Device:X4}\n" +
-            $"DeviceClass: {DeviceClass}\n" +
-            $"DeviceSubClass: 0x{DeviceSubClass:X2}\n" +
-            $"VendorId: 0x{VendorId:X4}\n" +
-            $"ProductId: 0x{ProductId:X4}\n" +
-            $"Manufacturer: {Manufacturer}\n" +
-            $"Product: {Product}\n" +
-            $"SerialNumber: {SerialNumber}\n" +
-            $"USB: 0x{Usb:X4}\n" +
-            $"MaxPacketSize: {MaxPacketSize0}\n" +
-            $"NumConfigurations: {NumConfigurations}";
     }
+
+    private readonly Collection<UsbConfigInfo> configurations = new Collection<UsbConfigInfo>();
+
+    public static UsbDeviceInfo FromUsbDeviceDescriptor(LibUsb.IUsbDevice device, DeviceDescriptor descriptor)
+    {
+        Debug.Assert(descriptor.DescriptorType == (int)DescriptorType.Device, "A config descriptor was expected");
+
+        var value = new UsbDeviceInfo
+        {
+            Device = descriptor.Device,
+            DeviceClass = descriptor.DeviceClass,
+            DeviceProtocol = descriptor.DeviceProtocol,
+            DeviceSubClass = descriptor.DeviceSubClass,
+            ProductId = descriptor.IdProduct,
+            VendorId = descriptor.IdVendor,
+            Manufacturer = device.GetStringDescriptor(descriptor.Manufacturer, failSilently: true),
+            MaxPacketSize0 = descriptor.MaxPacketSize0,
+            NumConfigurations = descriptor.NumConfigurations,
+            Product = device.GetStringDescriptor(descriptor.Product, failSilently: true),
+            SerialNumber = device.GetStringDescriptor(descriptor.SerialNumber, failSilently: true),
+            Usb = descriptor.USB
+        };
+
+        for (byte i = 0; i < descriptor.NumConfigurations; i++)
+        {
+            if (device.TryGetConfigDescriptor(i, out var configDescriptor))
+            {
+                value.configurations.Add(configDescriptor);
+            }
+        }
+            
+        return value;
+    }
+
+    public virtual ushort Device { get; protected set; }
+
+    public virtual byte DeviceClass { get; protected set; }
+
+    public virtual byte DeviceProtocol { get; protected set; }
+
+    public virtual byte DeviceSubClass { get; protected set; }
+
+    public virtual ushort ProductId { get; protected set; }
+
+    public virtual ushort VendorId { get; protected set; }
+
+    public virtual string Manufacturer { get; protected set; }
+
+    public virtual byte MaxPacketSize0 { get; protected set; }
+
+    public virtual byte NumConfigurations { get; protected set; }
+
+    public virtual string Product { get; protected set; }
+
+    public virtual string SerialNumber { get; protected set; } = string.Empty;
+
+    public virtual ushort Usb { get; protected set; }
+
+    public virtual ReadOnlyCollection<UsbConfigInfo> Configurations => new(this.configurations);
+
+    public override string ToString() =>
+        $"Device: 0x{Device:X4}\n" +
+        $"DeviceClass: {DeviceClass}\n" +
+        $"DeviceSubClass: 0x{DeviceSubClass:X2}\n" +
+        $"VendorId: 0x{VendorId:X4}\n" +
+        $"ProductId: 0x{ProductId:X4}\n" +
+        $"Manufacturer: {Manufacturer}\n" +
+        $"Product: {Product}\n" +
+        $"SerialNumber: {SerialNumber}\n" +
+        $"USB: 0x{Usb:X4}\n" +
+        $"MaxPacketSize: {MaxPacketSize0}\n" +
+        $"NumConfigurations: {NumConfigurations}";
 }

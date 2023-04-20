@@ -22,31 +22,30 @@
 
 using System;
 
-namespace LibUsbDotNet.Main
+namespace LibUsbDotNet.Main;
+
+/// <summary> All possible USB endpoint types.
+/// </summary>
+[Flags]
+public enum EndpointType : byte
 {
-    /// <summary> All possible USB endpoint types.
+    /// <summary>
+    /// Control endpoint type.
     /// </summary>
-    [Flags]
-    public enum EndpointType : byte
-    {
-        /// <summary>
-        /// Control endpoint type.
-        /// </summary>
-        Control,
+    Control,
 
-        /// <summary>
-        /// Isochronous endpoint type.
-        /// </summary>
-        Isochronous,
+    /// <summary>
+    /// Isochronous endpoint type.
+    /// </summary>
+    Isochronous,
 
-        /// <summary>
-        /// Bulk endpoint type.
-        /// </summary>
-        Bulk,
+    /// <summary>
+    /// Bulk endpoint type.
+    /// </summary>
+    Bulk,
 
-        /// <summary>
-        /// Interrupt endpoint type.
-        /// </summary>
-        Interrupt
-    }
+    /// <summary>
+    /// Interrupt endpoint type.
+    /// </summary>
+    Interrupt
 }

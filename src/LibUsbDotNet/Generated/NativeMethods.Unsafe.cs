@@ -23,14 +23,13 @@
 using System;
 using System.Runtime.InteropServices;
 
-namespace LibUsbDotNet
-{
-    internal static unsafe partial class NativeMethods
-    {
-        [DllImport(LibUsbNativeLibrary, EntryPoint = "libusb_get_device_list")]
-        public static extern IntPtr GetDeviceList(Context ctx, IntPtr** list);
+namespace LibUsbDotNet;
 
-        [DllImport(LibUsbNativeLibrary, EntryPoint = "libusb_free_device_list")]
-        public static extern IntPtr FreeDeviceList(IntPtr* list, int unrefDevices);
-    }
+internal static unsafe partial class NativeMethods
+{
+    [DllImport(LibUsbNativeLibrary, EntryPoint = "libusb_get_device_list")]
+    public static extern IntPtr GetDeviceList(Context ctx, IntPtr** list);
+
+    [DllImport(LibUsbNativeLibrary, EntryPoint = "libusb_free_device_list")]
+    public static extern IntPtr FreeDeviceList(IntPtr* list, int unrefDevices);
 }

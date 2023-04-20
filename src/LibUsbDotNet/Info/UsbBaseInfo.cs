@@ -26,28 +26,27 @@ using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 
-namespace LibUsbDotNet.Info
+namespace LibUsbDotNet.Info;
+
+/// <summary> Base class for all Usb descriptors.
+///         <see cref="LibUsbDotNet.Info.UsbConfigInfo"/>, <see cref="T:LibUsbDotNet.Info.UsbEndpointInfo"/>, <see cref="T:LibUsbDotNet.Info.UsbInterfaceInfo"/></summary>
+/// <remarks><p>LibUsbDotNet supports and parses all the basic usb descriptors.</p><p>
+///           Unknown descriptors such as driver specific class descriptors are stored as byte arrays and are accessible from the <see cref="P:LibUsbDotNet.Info.UsbBaseInfo.CustomDescriptors"/> property.
+///         </p></remarks>
+public abstract class UsbBaseInfo
 {
-    /// <summary> Base class for all Usb descriptors.
-    ///         <see cref="LibUsbDotNet.Info.UsbConfigInfo"/>, <see cref="T:LibUsbDotNet.Info.UsbEndpointInfo"/>, <see cref="T:LibUsbDotNet.Info.UsbInterfaceInfo"/></summary>
-    /// <remarks><p>LibUsbDotNet supports and parses all the basic usb descriptors.</p><p>
-    ///           Unknown descriptors such as driver specific class descriptors are stored as byte arrays and are accessible from the <see cref="P:LibUsbDotNet.Info.UsbBaseInfo.CustomDescriptors"/> property.
-    ///         </p></remarks>
-    public abstract class UsbBaseInfo
-    {
-        protected byte[] RawDescriptors { get; set; }
+    protected byte[] RawDescriptors { get; set; }
 #if NETSTANDARD2_0
-            = new byte[] { };
+        = new byte[] { };
 #else
             = Array.Empty<byte>();
 #endif
 
-        /// <summary>
-        /// Gets the device-specific custom descriptor lists.
-        /// </summary>
-        public virtual ReadOnlyCollection<byte> CustomDescriptors
-        {
-            get { return new ReadOnlyCollection<byte>(new List<byte>(this.RawDescriptors)); }
-        }
+    /// <summary>
+    /// Gets the device-specific custom descriptor lists.
+    /// </summary>
+    public virtual ReadOnlyCollection<byte> CustomDescriptors
+    {
+        get { return new ReadOnlyCollection<byte>(new List<byte>(this.RawDescriptors)); }
     }
 }
