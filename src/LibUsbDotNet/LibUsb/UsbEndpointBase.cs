@@ -23,6 +23,7 @@
 using LibUsbDotNet.Info;
 using LibUsbDotNet.Main;
 using System;
+using System.Runtime.InteropServices;
 using System.Threading.Tasks;
 
 namespace LibUsbDotNet.LibUsb;
@@ -103,20 +104,22 @@ public abstract class UsbEndpointBase
     /// <param name="timeout">Maximum time to wait for the transfer to complete.</param>
     /// <param name="transferLength">Number of bytes actually transferred.</param>
     /// <returns>True on success.</returns>
-    public virtual unsafe Error Transfer(IntPtr buffer, int offset, int length, int timeout, out int transferLength)
+    public virtual unsafe Error Transfer(Span<byte> buffer, int offset, int length, int timeout, out int transferLength)
     {
         int transferred = 0;
-        Error returnValue = 0;
 
+        Error returnValue;
         switch (this.mEndpointType)
         {
             case EndpointType.Bulk:
-                returnValue = NativeMethods.BulkTransfer(this.Device.DeviceHandle, this.mEpNum, (byte*)buffer + offset, length, ref transferred, (uint)timeout);
+                fixed (byte* bufferPtr = &MemoryMarshal.GetReference(buffer))
+                    returnValue = NativeMethods.BulkTransfer(this.Device.DeviceHandle, this.mEpNum, bufferPtr + offset, length, ref transferred, (uint)timeout);
                 transferLength = transferred;
                 return returnValue;
 
             case EndpointType.Interrupt:
-                returnValue = NativeMethods.InterruptTransfer(this.Device.DeviceHandle, this.mEpNum, (byte*)buffer + offset, length, ref transferred, (uint)timeout);
+                fixed (byte* bufferPtr = &MemoryMarshal.GetReference(buffer))
+                    returnValue = NativeMethods.InterruptTransfer(this.Device.DeviceHandle, this.mEpNum, bufferPtr + offset, length, ref transferred, (uint)timeout);
                 transferLength = transferred;
                 return returnValue;
 
@@ -124,21 +127,21 @@ public abstract class UsbEndpointBase
                 throw new NotSupportedException($"{EndpointType.Isochronous} not supported yet.");
             case EndpointType.Control:
                 throw new NotSupportedException(
-                    $"Do not use {nameof(UsbEndpointBase.Transfer)} for synchronous control transfers, use {nameof(UsbDevice.ControlTransfer)}");
+                    $"Do not use {nameof(Transfer)} for synchronous control transfers, use {nameof(UsbDevice.ControlTransfer)}");
             default:
-                throw new ArgumentOutOfRangeException();
+                throw new ArgumentOutOfRangeException(nameof(mEndpointType), $"Not an {typeof(EndpointType)}");
         }
     }
         
     /// <summary>
     /// Asynchronous bulk/interrupt transfer function.
     /// </summary>
-    /// <param name="buffer">An <see cref="IntPtr"/> to a caller-allocated buffer.</param>
+    /// <param name="buffer">Caller-allocated buffer.</param>
     /// <param name="offset">Position in buffer that transferring begins.</param>
     /// <param name="length">Number of bytes, starting from thr offset parameter to transfer.</param>
     /// <param name="timeout">Maximum time to wait for the transfer to complete.</param>
     /// <returns>Named tuple of <see cref="Error"/> and transferLength</returns>
-    protected Task<(Error error, int transferLength)> TransferAsync(IntPtr buffer, int offset, int length, int timeout) => 
+    protected Task<(Error error, int transferLength)> TransferAsync(Memory<byte> buffer, int offset, int length, int timeout) => 
         AsyncTransfer.TransferAsync(this.Device.DeviceHandle, this.mEpNum, this.mEndpointType, buffer, offset, length, timeout);
 
     /// <summary>
@@ -209,42 +212,4 @@ public abstract class UsbEndpointBase
     {
         return LookupEndpointInfo(currentConfigInfo, -1, endpointAddress, out usbInterfaceInfo, out usbEndpointInfo);
     }
-
-    /// <summary>
-    /// Synchronous bulk/interrupt transfer function.
-    /// </summary>
-    /// <param name="buffer">A caller-allocated buffer for the transfer data. This object is pinned using <see cref="PinnedHandle"/>.</param>
-    /// <param name="offset">Position in buffer that transferring begins.</param>
-    /// <param name="length">Number of bytes, starting from thr offset parameter to transfer.</param>
-    /// <param name="timeout">Maximum time to wait for the transfer to complete.</param>
-    /// <param name="transferLength">Number of bytes actually transferred.</param>
-    /// <returns>True on success.</returns>
-    public Error Transfer(object buffer, int offset, int length, int timeout, out int transferLength)
-    {
-        PinnedHandle pinned = new PinnedHandle(buffer);
-        Error eReturn = this.Transfer(pinned.Handle, offset, length, timeout, out transferLength);
-        pinned.Dispose();
-        return eReturn;
-    }
-
-    /// <summary>
-    /// Synchronous bulk/interrupt transfer function.
-    /// </summary>
-    /// <param name="buffer">A caller-allocated buffer for the transfer data. This object is pinned using <see cref="PinnedHandle"/>.</param>
-    /// <param name="offset">Position in buffer that transferring begins.</param>
-    /// <param name="length">Number of bytes, starting from thr offset parameter to transfer.</param>
-    /// <param name="timeout">Maximum time to wait for the transfer to complete.</param>
-    /// Tuple of (<see cref="Error"/> error, <see cref="int"/> transferLength). error is <see cref="Error.Success"/> on success.
-    protected async Task<(Error error, int transferLength)> TransferAsync(object buffer, int offset, int length, int timeout)
-    {
-        PinnedHandle pinned = new PinnedHandle(buffer);
-        var (eReturn, transferLength) = await this.TransferAsync(pinned.Handle, offset, length, timeout).ConfigureAwait(false);
-        pinned.Dispose();
-        return (eReturn, transferLength);
-    }
-    #region Nested type: TransferDelegate
-
-    internal delegate int TransferDelegate(IntPtr pBuffer, int bufferLength, out int lengthTransferred, int isoPacketSize, IntPtr pOverlapped);
-
-    #endregion
 }

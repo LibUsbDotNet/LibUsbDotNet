@@ -23,6 +23,7 @@
 using LibUsbDotNet.Descriptors;
 using LibUsbDotNet.Main;
 using System;
+using System.Runtime.InteropServices;
 using System.Text;
 using System.Threading;
 
@@ -119,30 +120,23 @@ public partial class UsbDevice
         this.EnsureOpen();
 
         if (descriptorIndex == 0)
-        {
             return null;
-        }
 
-        byte[] buffer = new byte[1024];
+        Span<byte> buffer = stackalloc byte[1024];
+        int length;
+        fixed (byte* ptr = &MemoryMarshal.GetReference(buffer))
+            length = (int)NativeMethods.GetStringDescriptorAscii(this.deviceHandle, descriptorIndex, ptr,
+                buffer.Length);
 
-        fixed (byte* ptr = &buffer[0])
+        if (length < 0)
         {
-            var length = (int)NativeMethods.GetStringDescriptorAscii(this.deviceHandle, descriptorIndex, ptr, buffer.Length);
+            if (failSilently)
+                return null;
 
-            if (length < 0)
-            {
-                if (failSilently)
-                {
-                    return null;
-                }
-                else
-                {
-                    ((Error)length).ThrowOnError();
-                }
-            }
-
-            return Encoding.ASCII.GetString(buffer, 0, length);
+            ((Error)length).ThrowOnError();
         }
+
+        return Encoding.ASCII.GetString(buffer[..length].ToArray());
     }
 
     /// <inheritdoc/>

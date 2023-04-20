@@ -29,12 +29,8 @@ public partial class UsbDevice
         Array.Copy(BitConverter.GetBytes(setupPacket.Index), 0, data, 4, 2);
         Array.Copy(BitConverter.GetBytes(setupPacket.Length), 0, data, 6, 2);
 
-        PinnedHandle pinned = new PinnedHandle(data);
+        (Error error, int dataTransferred) = await AsyncTransfer.TransferAsync(deviceHandle, 0, EndpointType.Control, data, 0, data.Length, UsbConstants.DefaultTimeout).ConfigureAwait(false);
 
-        (Error error, int dataTransferred) = await AsyncTransfer.TransferAsync(deviceHandle, 0, EndpointType.Control, pinned.Handle, 0, data.Length, UsbConstants.DefaultTimeout).ConfigureAwait(false);
-
-        pinned.Dispose();
-        
         error.ThrowOnError();
         
         return dataTransferred;

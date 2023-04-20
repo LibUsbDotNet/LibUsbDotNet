@@ -59,21 +59,19 @@ public partial class UsbEndpointReader : UsbEndpointBase
     /// <summary>
     /// Reads data from the current <see cref="UsbEndpointReader"/>.
     /// </summary>
-    /// <param name="buffer">The buffer to store the recieved data in.</param>
+    /// <param name="buffer">The buffer to store the received data in.</param>
     /// <param name="timeout">Maximum time to wait for the transfer to complete.  If the transfer times out, the IO operation will be cancelled.</param>
     /// <param name="transferLength">Number of bytes actually transferred.</param>
     /// <returns>
     /// <see cref="Error"/>.<see cref="Error.Success"/> on success.
     /// </returns>
-    public virtual Error Read(byte[] buffer, int timeout, out int transferLength)
-    {
-        return this.Read(buffer, 0, buffer.Length, timeout, out transferLength);
-    }
+    public virtual Error Read(byte[] buffer, int timeout, out int transferLength) 
+        => Read(buffer, 0, buffer.Length, timeout, out transferLength);
 
     /// <summary>
     /// Reads data from the current <see cref="UsbEndpointReader"/>.
     /// </summary>
-    /// <param name="buffer">The buffer to store the recieved data in.</param>
+    /// <param name="buffer">The buffer to store the received data in.</param>
     /// <param name="offset">The position in buffer to start storing the data.</param>
     /// <param name="count">The maximum number of bytes to receive.</param>
     /// <param name="timeout">Maximum time to wait for the transfer to complete.  If the transfer times out, the IO operation will be cancelled.</param>
@@ -81,15 +79,25 @@ public partial class UsbEndpointReader : UsbEndpointBase
     /// <returns>
     /// <see cref="Error"/>.<see cref="Error.Success"/> on success.
     /// </returns>
-    public virtual Error Read(IntPtr buffer, int offset, int count, int timeout, out int transferLength)
-    {
-        return this.Transfer(buffer, offset, count, timeout, out transferLength);
-    }
+    public virtual Error Read(byte[] buffer, int offset, int count, int timeout, out int transferLength) 
+        => Transfer(buffer, offset, count, timeout, out transferLength);
 
     /// <summary>
     /// Reads data from the current <see cref="UsbEndpointReader"/>.
     /// </summary>
-    /// <param name="buffer">The buffer to store the recieved data in.</param>
+    /// <param name="buffer">The buffer to store the received data in.</param>
+    /// <param name="timeout">Maximum time to wait for the transfer to complete.  If the transfer times out, the IO operation will be cancelled.</param>
+    /// <param name="transferLength">Number of bytes actually transferred.</param>
+    /// <returns>
+    /// <see cref="Error"/>.<see cref="Error.Success"/> on success.
+    /// </returns>
+    public virtual Error Read(Span<byte> buffer, int timeout, out int transferLength) 
+        => Read(buffer, 0, buffer.Length, timeout, out transferLength);
+
+    /// <summary>
+    /// Reads data from the current <see cref="UsbEndpointReader"/>.
+    /// </summary>
+    /// <param name="buffer">The buffer to store the received data in.</param>
     /// <param name="offset">The position in buffer to start storing the data.</param>
     /// <param name="count">The maximum number of bytes to receive.</param>
     /// <param name="timeout">Maximum time to wait for the transfer to complete.  If the transfer times out, the IO operation will be cancelled.</param>
@@ -97,40 +105,8 @@ public partial class UsbEndpointReader : UsbEndpointBase
     /// <returns>
     /// <see cref="Error"/>.<see cref="Error.Success"/> on success.
     /// </returns>
-    public virtual Error Read(byte[] buffer, int offset, int count, int timeout, out int transferLength)
-    {
-        return this.Transfer(buffer, offset, count, timeout, out transferLength);
-    }
-
-    /// <summary>
-    /// Reads data from the current <see cref="UsbEndpointReader"/>.
-    /// </summary>
-    /// <param name="buffer">The buffer to store the recieved data in.</param>
-    /// <param name="offset">The position in buffer to start storing the data.</param>
-    /// <param name="count">The maximum number of bytes to receive.</param>
-    /// <param name="timeout">Maximum time to wait for the transfer to complete.  If the transfer times out, the IO operation will be cancelled.</param>
-    /// <param name="transferLength">Number of bytes actually transferred.</param>
-    /// <returns>
-    /// <see cref="Error"/>.<see cref="Error.Success"/> on success.
-    /// </returns>
-    public virtual Error Read(object buffer, int offset, int count, int timeout, out int transferLength)
-    {
-        return this.Transfer(buffer, offset, count, timeout, out transferLength);
-    }
-
-    /// <summary>
-    /// Reads data from the current <see cref="UsbEndpointReader"/>.
-    /// </summary>
-    /// <param name="buffer">The buffer to store the recieved data in.</param>
-    /// <param name="timeout">Maximum time to wait for the transfer to complete.  If the transfer times out, the IO operation will be cancelled.</param>
-    /// <param name="transferLength">Number of bytes actually transferred.</param>
-    /// <returns>
-    /// <see cref="Error"/>.<see cref="Error.Success"/> on success.
-    /// </returns>
-    public virtual Error Read(object buffer, int timeout, out int transferLength)
-    {
-        return this.Transfer(buffer, 0, Marshal.SizeOf(buffer), timeout, out transferLength);
-    }
+    public virtual Error Read(Span<byte> buffer, int offset, int count, int timeout, out int transferLength) 
+        => Transfer(buffer, offset, count, timeout, out transferLength);
 
     /// <summary>
     /// Reads/discards data from the endpoint until no more data is available.
@@ -139,9 +115,9 @@ public partial class UsbEndpointReader : UsbEndpointBase
     public virtual Error ReadFlush()
     {
         byte[] bufDummy = new byte[64];
-        int iTransferred;
+
         int iBufCount = 0;
-        while (this.Read(bufDummy, 10, out iTransferred) == Error.Success && iBufCount < 128)
+        while (this.Read(bufDummy, 10, out _) == Error.Success && iBufCount < 128)
         {
             iBufCount++;
         }

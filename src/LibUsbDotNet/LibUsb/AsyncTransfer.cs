@@ -22,6 +22,7 @@
 
 using LibUsbDotNet.Main;
 using System;
+using System.Buffers;
 using System.Collections.Concurrent;
 using System.Runtime.InteropServices;
 using System.Threading.Tasks;
@@ -33,104 +34,108 @@ namespace LibUsbDotNet.LibUsb;
 /// </summary>
 internal static class AsyncTransfer
 {
+    private class TransferCallbackCompletion : IDisposable
+    {
+        private MemoryHandle _memoryHandle;
+        public TaskCompletionSource<(Error error, int transferLength)> TaskCompletionSource { get; }
+            
+        public TransferCallbackCompletion(
+            TaskCompletionSource<(Error error, int transferLength)> taskCompletionSource, MemoryHandle memoryHandle)
+        {
+            TaskCompletionSource = taskCompletionSource;
+            _memoryHandle = memoryHandle;
+        }
+            
+        public void Dispose() => _memoryHandle.Dispose();
+    }
+    
     private static readonly object TransferLock = new object();
     private static int _transferIndex;
 
     private static readonly unsafe TransferDelegate TransferCallback = new TransferDelegate(Callback);
     private static readonly IntPtr TransferDelegatePtr = 
         Marshal.GetFunctionPointerForDelegate(TransferCallback);
-    private static readonly ConcurrentDictionary<int, TaskCompletionSource<(Error error, int transferLength)>>
-        TransferDictionary = new ConcurrentDictionary<int, TaskCompletionSource<(Error error, int transferLength)>>();
+    private static readonly ConcurrentDictionary<int, TransferCallbackCompletion>
+        TransferDictionary = new();
 
-    public static Task<(Error error, int transferLength)> TransferAsync(
+    public static unsafe Task<(Error error, int transferLength)> TransferAsync(
         DeviceHandle device,
         byte endPoint,
         EndpointType endPointType,
-        IntPtr buffer,
-        int offset,
-        int length,
-        int timeout) =>
-        TransferAsync(device, endPoint, endPointType, buffer, offset, length, timeout, 0);
-
-    public static async Task<(Error error, int transferLength)> TransferAsync(
-        DeviceHandle device,
-        byte endPoint,
-        EndpointType endPointType,
-        IntPtr buffer,
+        Memory<byte> buffer,
         int offset,
         int length,
         int timeout,
-        int isoPacketSize)
+        int isoPacketSize = 0)
     {
-        if (device == null)
+        if (device == null) 
             throw new ArgumentNullException(nameof(device));
 
         if (offset < 0)
             throw new ArgumentOutOfRangeException(nameof(offset));
 
-        var transferCompletion =
-            new TaskCompletionSource<(Error error, int transferLength)>(TaskCreationOptions.RunContinuationsAsynchronously);
-            
         int transferId;
+        
         lock (TransferLock)
         {
             if (_transferIndex == int.MaxValue) // Potential edge case for long-running application?
                 _transferIndex = 0;
             transferId = _transferIndex++;
         }
+        
+        var memoryHandle = buffer.Pin();
+        var transferCompletion =
+            new TaskCompletionSource<(Error error, int transferLength)>(TaskCreationOptions.RunContinuationsAsynchronously);
+        var transferCallbackCompletion = new TransferCallbackCompletion(transferCompletion, memoryHandle);
 
-        if (!TransferDictionary.TryAdd(transferId, transferCompletion))
+        if (!TransferDictionary.TryAdd(transferId, transferCallbackCompletion))
             throw new InvalidOperationException(
                 $"{transferId} already exists in {nameof(TransferDictionary)}");
 
-        FillAndSubmitTransfer(device, endPoint, endPointType, buffer, offset, length, timeout, isoPacketSize,
-            transferId);
-
-        return await transferCompletion.Task.ConfigureAwait(false);
-    }
-
-    private static unsafe void FillAndSubmitTransfer(
-        DeviceHandle device,
-        byte endPoint,
-        EndpointType endPointType,
-        IntPtr buffer,
-        int offset,
-        int length,
-        int timeout,
-        int isoPacketSize,
-        int transferId)
-    {
         // Determine the amount of iso-synchronous packets
         int numIsoPackets = 0;
 
         if (isoPacketSize > 0)
             numIsoPackets = length / isoPacketSize;
 
-        var transfer = NativeMethods.AllocTransfer(numIsoPackets);
+        var transfer = NativeMethods.AllocTransfer(numIsoPackets); // TODO: Check if transfer is null.
 
         // Fill common properties
         transfer->DevHandle = device.DangerousGetHandle();
         transfer->Endpoint = endPoint;
         transfer->Timeout = (uint)timeout;
         transfer->Type = (byte)endPointType;
-        transfer->Buffer = (byte*)buffer + offset;
+        transfer->Buffer = (byte*)memoryHandle.Pointer + offset;
         transfer->Length = length;
         transfer->NumIsoPackets = numIsoPackets;
         transfer->Flags = (byte)TransferFlags.None;
         transfer->Callback = TransferDelegatePtr;
         transfer->UserData = new IntPtr(transferId);
 
-        NativeMethods.SubmitTransfer(transfer).ThrowOnError();
+        var error = NativeMethods.SubmitTransfer(transfer);
+
+        if (error != Error.Success)
+        {
+            transferCallbackCompletion.Dispose();
+            error.ThrowOnError();
+        }
+
+        return transferCompletion.Task;
     }
 
     private static unsafe void Callback(Transfer* transfer)
     {
         int transferId = transfer->UserData.ToInt32();
         if (TransferDictionary.TryRemove(transferId, out var transferCompletion))
-            transferCompletion.TrySetResult((GetErrorFromTransferStatus(transfer->Status), transfer->ActualLength));
+        {
+            transferCompletion.TaskCompletionSource.TrySetResult((GetErrorFromTransferStatus(transfer->Status), transfer->ActualLength));
+            transferCompletion.Dispose();
+        }
         else
+        {
             throw new InvalidOperationException(
                 $"Can't find transfer id # {transferId} in {nameof(TransferDictionary)}");
+        }
         NativeMethods.FreeTransfer(transfer);
     }
 
