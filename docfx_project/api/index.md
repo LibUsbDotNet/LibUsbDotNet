@@ -1,2 +1,2 @@
-# PLACEHOLDER
-TODO: Add .NET projects to the *src* folder and run `docfx` to generate **REAL** *API Documentation*!
+# LibUsbDotNet API Reference
+This is the API reference for the v3 branch of LibUsbDotNet.

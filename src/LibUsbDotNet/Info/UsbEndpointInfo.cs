@@ -63,10 +63,12 @@ public class UsbEndpointInfo : UsbBaseInfo
     /// Attributes which apply to the endpoint when it is configured using the bConfigurationValue.
     /// </summary>
     /// <remarks>
-    /// Bits 0:1 determine the transfer type and correspond to <see cref="EndpointType"/>.
-    /// Bits 2:3 are only used for isochronous endpoints and correspond to <see cref="IsoSyncType"/>.
-    /// Bits 4:5 are also only used for isochronous endpoints and correspond to <see cref="IsoUsageType"/>.
-    /// Bits 6:7 are reserved.
+    /// <list type="bullet">
+    /// <item>Bits 0:1 determine the transfer type and correspond to <see cref="EndpointType"/>.</item>
+    /// <item>Bits 2:3 are only used for isochronous endpoints and correspond to <see cref="IsoSyncType"/>.</item>
+    /// <item>Bits 4:5 are also only used for isochronous endpoints and correspond to <see cref="IsoUsageType"/>.</item>
+    /// <item>Bits 6:7 are reserved.</item>
+    /// </list>
     /// </remarks>
     public virtual byte Attributes { get; private set; }
 
@@ -74,9 +76,11 @@ public class UsbEndpointInfo : UsbBaseInfo
     /// The address of the endpoint described by this descriptor.
     /// </summary>
     /// <remarks>
-    /// Bits 0:3 are the endpoint number.
-    /// Bits 4:6 are reserved.
-    /// Bit 7 indicates direction, see <see cref="EndpointDirection"/>.
+    /// <list type="bullet">
+    /// <item>Bits 0:3 are the endpoint number.</item>
+    /// <item>Bits 4:6 are reserved.</item>
+    /// <item>Bit 7 indicates direction, see <see cref="EndpointDirection"/>.</item>
+    /// </list>
     /// </remarks>
     public virtual byte EndpointAddress { get; private set; }
 
