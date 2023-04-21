@@ -33,6 +33,12 @@ public class UsbInterfaceInfo : UsbBaseInfo
 {
     private List<UsbEndpointInfo> endpoints = new List<UsbEndpointInfo>();
 
+    /// <summary>
+    /// Get a collection of <see cref="UsbInterfaceInfo"/> from a <see cref="Interface"/> struct.
+    /// </summary>
+    /// <param name="device">The device the interface came from.</param>
+    /// <param name="interface">The <see cref="Interface"/> struct.</param>
+    /// <returns>The <see cref="UsbInterfaceInfo"/> collection.</returns>
     public static unsafe Collection<UsbInterfaceInfo> FromUsbInterface(LibUsb.UsbDevice device, Interface @interface)
     {
         var interfaces = (InterfaceDescriptor*)@interface.Altsetting;
@@ -46,6 +52,12 @@ public class UsbInterfaceInfo : UsbBaseInfo
         return value;
     }
 
+    /// <summary>
+    /// Get a <see cref="UsbInterfaceInfo"/> from a <see cref="InterfaceDescriptor"/> struct.
+    /// </summary>
+    /// <param name="device">The device the interface came from.</param>
+    /// <param name="descriptor">The <see cref="InterfaceDescriptor"/> struct.</param>
+    /// <returns>The <see cref="UsbInterfaceInfo"/>.</returns>
     public static unsafe UsbInterfaceInfo FromUsbInterfaceDescriptor(LibUsb.UsbDevice device, InterfaceDescriptor descriptor)
     {
         Debug.Assert(descriptor.DescriptorType == (int)DescriptorType.Interface, "A config descriptor was expected");
@@ -80,16 +92,34 @@ public class UsbInterfaceInfo : UsbBaseInfo
         return value;
     }
 
+    /// <summary>
+    /// Value used to select this alternate setting for this interface.
+    /// </summary>
     public virtual byte AlternateSetting { get; private set; }
 
+    /// <summary>
+    /// USB-IF <see cref="ClassCode"/> for this interface.
+    /// </summary>
     public virtual ClassCode Class { get; private set; }
 
+    /// <summary>
+    /// Number of this interface.
+    /// </summary>
     public virtual int Number { get; private set; }
 
+    /// <summary>
+    /// USB-IF protocol code for this interface, qualified by the <see cref="Class"/> and <see cref="SubClass"/> values.
+    /// </summary>
     public virtual byte Protocol { get; private set; }
 
+    /// <summary>
+    /// String descriptor describing this interface.
+    /// </summary>
     public virtual string Interface { get; private set; }
 
+    /// <summary>
+    /// USB-IF subclass code for this interface, qualified by the <see cref="Class"/> value.
+    /// </summary>
     public virtual byte SubClass { get; private set; }
 
     /// <summary>
@@ -100,6 +130,7 @@ public class UsbInterfaceInfo : UsbBaseInfo
         get { return this.endpoints.AsReadOnly(); }
     }
 
+    /// <inheritdoc />
     public override string ToString() =>
         $"Interface: {Interface}\n" +
         $"InterfaceId: {Number}\n" +

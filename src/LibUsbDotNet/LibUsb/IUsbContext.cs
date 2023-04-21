@@ -104,7 +104,13 @@ public interface IUsbContext : IDisposable
     /// </returns>
     UsbDeviceCollection FindAll(Func<IUsbDevice, bool> predicate);
 
+    /// <summary>
+    /// Start the event handling thread.
+    /// </summary>
     void StartHandlingEvents();
 
+    /// <summary>
+    /// Stop the event handling thread.
+    /// </summary>
     void StopHandlingEvents();
 }

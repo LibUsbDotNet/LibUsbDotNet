@@ -33,6 +33,9 @@ using System;
 
 namespace LibUsbDotNet
 {
+    /// <summary>
+    /// Transfer type.
+    /// </summary>
     [Flags]
     public enum TransferType : byte
     {

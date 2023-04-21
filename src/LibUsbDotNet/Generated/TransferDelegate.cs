@@ -34,5 +34,8 @@ using System.Runtime.InteropServices;
 
 namespace LibUsbDotNet
 {
+    /// <summary>
+    /// Asynchronous transfer callback function type.
+    /// </summary>
     public unsafe delegate void TransferDelegate(Transfer* transfer);
 }

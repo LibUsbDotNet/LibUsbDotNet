@@ -58,7 +58,7 @@ public class UsbContext : IUsbContext
         NativeMethods.Init(ref contextHandle).ThrowOnError();
         this.context = Context.DangerousCreate(contextHandle);
     }
-
+    
     ~UsbContext()
     {
         // Put cleanup code in Dispose(bool disposing).
@@ -182,7 +182,8 @@ public class UsbContext : IUsbContext
         UsbDeviceCollection devices = new UsbDeviceCollection(matchingDevices);
         return devices;
     }
-
+    
+    /// <inheritdoc/>
     public void StartHandlingEvents()
     {
         if (this.eventHandlingThread == null)
@@ -193,6 +194,7 @@ public class UsbContext : IUsbContext
         }
     }
 
+    /// <inheritdoc/>
     public void StopHandlingEvents()
     {
         if (this.eventHandlingThread != null)

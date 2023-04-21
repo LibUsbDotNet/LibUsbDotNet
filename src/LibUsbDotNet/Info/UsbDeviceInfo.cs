@@ -38,6 +38,12 @@ public class UsbDeviceInfo
 
     private readonly Collection<UsbConfigInfo> configurations = new Collection<UsbConfigInfo>();
 
+    /// <summary>
+    /// Create a <see cref="UsbDeviceInfo"/> from a <see cref="DeviceDescriptor"/>.
+    /// </summary>
+    /// <param name="device">Device the descriptor came from.</param>
+    /// <param name="descriptor">Descriptor struct.</param>
+    /// <returns>Resulting <see cref="UsbDeviceInfo"/>.</returns>
     public static UsbDeviceInfo FromUsbDeviceDescriptor(LibUsb.IUsbDevice device, DeviceDescriptor descriptor)
     {
         Debug.Assert(descriptor.DescriptorType == (int)DescriptorType.Device, "A config descriptor was expected");
@@ -69,32 +75,84 @@ public class UsbDeviceInfo
         return value;
     }
 
+    /// <summary>
+    /// Device release number in binary-coded decimal.
+    /// </summary>
     public virtual ushort Device { get; protected set; }
 
+    /// <summary>
+    /// USB-IF <see cref="ClassCode"/> for the device.
+    /// </summary>
     public virtual byte DeviceClass { get; protected set; }
 
+    /// <summary>
+    /// USB-IF protocol code for the device, qualified by the <see cref="DeviceClass"/> and <see cref="DeviceSubClass"/> values.
+    /// </summary>
     public virtual byte DeviceProtocol { get; protected set; }
 
+    /// <summary>
+    /// USB-IF subclass code for the device, qualified by the <see cref="DeviceClass"/> value.
+    /// </summary>
     public virtual byte DeviceSubClass { get; protected set; }
 
+    /// <summary>
+    /// USB-IF product ID.
+    /// </summary>
     public virtual ushort ProductId { get; protected set; }
 
+    /// <summary>
+    /// USB-IF vendor ID.
+    /// </summary>
     public virtual ushort VendorId { get; protected set; }
 
+    /// <summary>
+    /// String descriptor describing manufacturer.
+    /// </summary>
+    /// <remarks>
+    /// Device must be opened to retrieve this value.
+    /// </remarks>
     public virtual string Manufacturer { get; protected set; }
 
+    /// <summary>
+    /// Maximum packet size for endpoint 0.
+    /// </summary>
     public virtual byte MaxPacketSize0 { get; protected set; }
 
+    /// <summary>
+    /// Number of possible configurations.
+    /// </summary>
     public virtual byte NumConfigurations { get; protected set; }
 
+    /// <summary>
+    /// String descriptor describing product.
+    /// </summary>
+    /// <remarks>
+    /// Device must be opened to retrieve this value.
+    /// </remarks>
     public virtual string Product { get; protected set; }
 
+    /// <summary>
+    /// Device serial number.
+    /// </summary>
+    /// <remarks>
+    /// Device must be opened to retrieve this value.
+    /// </remarks>
     public virtual string SerialNumber { get; protected set; } = string.Empty;
 
+    /// <summary>
+    /// USB specification release number in binary-coded decimal.
+    /// </summary>
+    /// <remarks>
+    /// A value of 0x0200 indicates USB 2.0, 0x0110 indicates USB 1.1, etc.
+    /// </remarks>
     public virtual ushort Usb { get; protected set; }
 
+    /// <summary>
+    /// Collection of all configurations available on this device.
+    /// </summary>
     public virtual ReadOnlyCollection<UsbConfigInfo> Configurations => new(this.configurations);
 
+    /// <inheritdoc />
     public override string ToString() =>
         $"Device: 0x{Device:X4}\n" +
         $"DeviceClass: {DeviceClass}\n" +

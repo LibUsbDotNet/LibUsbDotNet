@@ -99,6 +99,9 @@ namespace LibUsbDotNet
         /// </summary>
         SetSel = 0x30,
 
+        /// <summary>
+        /// Delay from the time a host transmits a packet to the time it is received by the device.
+        /// </summary>
         SetIsochDelay = 0x31,
 
     }

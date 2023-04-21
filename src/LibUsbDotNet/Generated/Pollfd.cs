@@ -47,8 +47,7 @@ namespace LibUsbDotNet
 
         /// <summary>
         ///  Event flags to poll for from
-        ///  <poll
-        ///  .h>. POLLIN indicates that you
+        ///  poll.h. POLLIN indicates that you
         ///  should monitor this file descriptor for becoming ready to read from,
         ///  and POLLOUT indicates that you should monitor this file descriptor for
         ///  nonblocking write readiness.

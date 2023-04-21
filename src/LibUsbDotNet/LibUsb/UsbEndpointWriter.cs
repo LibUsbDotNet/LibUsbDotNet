@@ -30,6 +30,13 @@ namespace LibUsbDotNet.LibUsb;
 /// </summary>
 public class UsbEndpointWriter : UsbEndpointBase
 {
+    /// <summary>
+    /// Class for reading data from a USB endpoint.
+    /// </summary>
+    /// <param name="usbDevice">Device the endpoint belongs to.</param>
+    /// <param name="alternateInterfaceID">The alternate interface to write to.</param>
+    /// <param name="writeEndpointID">The endpoint id to write to.</param>
+    /// <param name="endpointType">The <see cref="EndpointType"/> of the endpoint.</param>
     public UsbEndpointWriter(IUsbDevice usbDevice, byte alternateInterfaceID, WriteEndpointID writeEndpointID, EndpointType endpointType)
         : base(usbDevice, alternateInterfaceID, (byte)writeEndpointID, endpointType)
     {
@@ -42,7 +49,7 @@ public class UsbEndpointWriter : UsbEndpointBase
     /// <param name="timeout">Maximum time to wait for the transfer to complete.  If the transfer times out, the IO operation will be cancelled.</param>
     /// <param name="transferLength">Number of bytes actually transferred.</param>
     /// <returns>
-    /// <see cref="Error"/>.<see cref="Error.None"/> on success.
+    /// <see cref="Error"/>.<see cref="Error.Success"/> on success.
     /// </returns>
     public virtual Error Write(byte[] buffer, int timeout, out int transferLength)
     {
@@ -58,7 +65,7 @@ public class UsbEndpointWriter : UsbEndpointBase
     /// <param name="timeout">Maximum time to wait for the transfer to complete.  If the transfer times out, the IO operation will be cancelled.</param>
     /// <param name="transferLength">Number of bytes actually transferred.</param>
     /// <returns>
-    /// <see cref="Error"/>.<see cref="Error.None"/> on success.
+    /// <see cref="Error"/>.<see cref="Error.Success"/> on success.
     /// </returns>
     public virtual Error Write(IntPtr pBuffer, int offset, int count, int timeout, out int transferLength)
     {
@@ -74,7 +81,7 @@ public class UsbEndpointWriter : UsbEndpointBase
     /// <param name="timeout">Maximum time to wait for the transfer to complete.  If the transfer times out, the IO operation will be cancelled.</param>
     /// <param name="transferLength">Number of bytes actually transferred.</param>
     /// <returns>
-    /// <see cref="Error"/>.<see cref="Error.None"/> on success.
+    /// <see cref="Error"/>.<see cref="Error.Success"/> on success.
     /// </returns>
     public virtual Error Write(byte[] buffer, int offset, int count, int timeout, out int transferLength)
     {
@@ -90,7 +97,7 @@ public class UsbEndpointWriter : UsbEndpointBase
     /// <param name="timeout">Maximum time to wait for the transfer to complete.  If the transfer times out, the IO operation will be cancelled.</param>
     /// <param name="transferLength">Number of bytes actually transferred.</param>
     /// <returns>
-    /// <see cref="Error"/>.<see cref="Error.None"/> on success.
+    /// <see cref="Error"/>.<see cref="Error.Success"/> on success.
     /// </returns>
     public virtual Error Write(object buffer, int offset, int count, int timeout, out int transferLength)
     {
@@ -104,7 +111,7 @@ public class UsbEndpointWriter : UsbEndpointBase
     /// <param name="timeout">Maximum time to wait for the transfer to complete.  If the transfer times out, the IO operation will be cancelled.</param>
     /// <param name="transferLength">Number of bytes actually transferred.</param>
     /// <returns>
-    /// <see cref="Error"/>.<see cref="Error.None"/> on success.
+    /// <see cref="Error"/>.<see cref="Error.Success"/> on success.
     /// </returns>
     public virtual Error Write(object buffer, int timeout, out int transferLength)
     {

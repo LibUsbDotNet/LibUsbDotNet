@@ -29,12 +29,19 @@ using System.Collections.ObjectModel;
 namespace LibUsbDotNet.Info;
 
 /// <summary> Base class for all Usb descriptors.
-///         <see cref="LibUsbDotNet.Info.UsbConfigInfo"/>, <see cref="T:LibUsbDotNet.Info.UsbEndpointInfo"/>, <see cref="T:LibUsbDotNet.Info.UsbInterfaceInfo"/></summary>
-/// <remarks><p>LibUsbDotNet supports and parses all the basic usb descriptors.</p><p>
-///           Unknown descriptors such as driver specific class descriptors are stored as byte arrays and are accessible from the <see cref="P:LibUsbDotNet.Info.UsbBaseInfo.CustomDescriptors"/> property.
-///         </p></remarks>
+/// <see cref="LibUsbDotNet.Info.UsbConfigInfo"/>, <see cref="T:LibUsbDotNet.Info.UsbEndpointInfo"/>,
+/// <see cref="T:LibUsbDotNet.Info.UsbInterfaceInfo"/></summary>
+/// <remarks>
+/// <p>LibUsbDotNet supports and parses all the basic usb descriptors.</p><p>
+/// Unknown descriptors such as driver specific class descriptors are stored as byte arrays and are accessible
+/// from the <see cref="P:LibUsbDotNet.Info.UsbBaseInfo.CustomDescriptors"/> property.
+/// </p>
+/// </remarks>
 public abstract class UsbBaseInfo
 {
+    /// <summary>
+    /// Extra descriptors.
+    /// </summary>
     protected byte[] RawDescriptors { get; set; }
 #if NETSTANDARD2_0
         = new byte[] { };

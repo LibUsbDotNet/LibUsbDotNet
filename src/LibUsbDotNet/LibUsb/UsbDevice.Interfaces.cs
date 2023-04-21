@@ -49,7 +49,7 @@ public partial class UsbDevice
         this.mClaimedInterfaces.Add(interfaceID);
         return true;
     }
-
+    
     public bool GetAltInterface(out int alternateID)
     {
         int interfaceID = this.mClaimedInterfaces.Count == 0 ? 0 : this.mClaimedInterfaces[this.mClaimedInterfaces.Count - 1];
@@ -115,6 +115,7 @@ public partial class UsbDevice
     /// <summary>
     /// Sets an alternate interface for the most recent claimed interface.
     /// </summary>
+    /// <param name="interfaceID">THe most recent claimed interface.</param>
     /// <param name="alternateID">The alternate interface to select for the most recent claimed interface See <see cref="ClaimInterface"/>.</param>
     /// <returns>True on success.</returns>
     public bool SetAltInterface(int interfaceID, int alternateID)

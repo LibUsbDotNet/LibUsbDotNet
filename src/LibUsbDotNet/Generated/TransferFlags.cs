@@ -44,8 +44,22 @@ namespace LibUsbDotNet
         /// </summary>
         ShortNotOk = 0x1,
 
+        /// <summary>
+        /// Automatically free() transfer buffer during <see cref="NativeMethods.FreeTransfer"/>.
+        /// </summary>
+        /// <remarks>
+        /// Note that buffers allocated with <see cref="NativeMethods.DevMemAlloc"/> should not be attempted freed in this way,
+        /// since free() is not an appropriate way to release such memory.
+        /// </remarks>
         FreeBuffer = 0x2,
 
+        /// <summary>
+        /// Automatically free() transfer buffer during <see cref="NativeMethods.FreeTransfer"/>.
+        /// </summary>
+        /// <remarks>
+        /// If this flag is set, it is illegal to call <see cref="NativeMethods.FreeTransfer"/> from your transfer callback,
+        /// as this will result in a double-free when this flag is acted upon.
+        /// </remarks>
         FreeTransfer = 0x4,
 
         /// <summary>

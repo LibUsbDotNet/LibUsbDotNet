@@ -34,5 +34,8 @@ using System.Runtime.InteropServices;
 
 namespace LibUsbDotNet
 {
+    /// <summary>
+    /// Callback function, invoked when a new file descriptor should be added to the set of file descriptors monitored for events.
+    /// </summary>
     public unsafe delegate void PollfdAddedDelegate(int fd, short events, IntPtr userData);
 }

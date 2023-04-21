@@ -32,24 +32,16 @@ namespace LibUsbDotNet.Main;
 /// <remarks>
 /// <list type="bullet">
 /// <item>
-/// Instances of this class can optionally be passed directly into
-/// <see cref="UsbDevice.OpenUsbDevice(LibUsbDotNet.Main.UsbDeviceFinder)"/>
-/// to quickly find and open a specific usb device in one step.
-/// </item>
-/// <item>
 /// Pass instances of this class into the
-/// <see cref="UsbRegDeviceList.Find(UsbDeviceFinder)"/>,
-/// <see cref="UsbRegDeviceList.FindAll(UsbDeviceFinder)"/>,
-/// or <see cref="UsbRegDeviceList.FindLast(UsbDeviceFinder)"/>
-/// functions of a  <see cref="UsbRegDeviceList"/>
+/// <see cref="UsbContext.Find(UsbDeviceFinder)"/> or
+/// <see cref="UsbContext.FindAll(UsbDeviceFinder)"/>
+/// functions of a  <see cref="UsbContext"/>
 /// instance to find connected usb devices without opening devices or interrogating the bus.
-/// After locating the required <see cref="UsbRegistry"/> instance, call the
-/// <see cref="UsbRegistry.Open"/> method to start using the <see cref="UsbDevice"/> instance.
 /// </item>
 /// </list>
 /// </remarks>
 /// <example>
-/// <code source="..\Examples\Show.Info\ShowInfo.cs" lang="cs"/>
+/// <code source="../../Examples/Show.Info/ShowInfo.cs" lang="cs"/>
 /// </example>
 public class UsbDeviceFinder : ISerializable
 {

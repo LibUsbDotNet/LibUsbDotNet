@@ -39,6 +39,12 @@ namespace LibUsbDotNet
     [Flags]
     public enum TransferStatus : byte
     {
+        /// <summary>
+        /// Transfer completed without error.
+        /// </summary>
+        /// <returns>
+        /// Note that this does not indicate that the entire amount of requested data was transferred.
+        /// </returns>
         Completed = 0,
 
         /// <summary>
@@ -56,6 +62,10 @@ namespace LibUsbDotNet
         /// </summary>
         Cancelled = 0x3,
 
+        /// <summary>
+        /// For bulk/interrupt endpoints: halt condition detected (endpoint stalled).
+        /// For control endpoints: control request not supported.
+        /// </summary>
         Stall = 0x4,
 
         /// <summary>

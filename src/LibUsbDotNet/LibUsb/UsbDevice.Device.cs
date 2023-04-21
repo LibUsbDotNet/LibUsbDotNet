@@ -65,6 +65,9 @@ public partial class UsbDevice
     /// <inheritdoc/>
     public ushort ProductId => this.Descriptor.ProductId;
 
+    /// <summary>
+    /// Configurations of the device.
+    /// </summary>
     public ReadOnlyCollection<UsbConfigInfo> Configs
     {
         get
@@ -275,7 +278,7 @@ public partial class UsbDevice
     /// </param>
     /// <returns>
     /// <see langword="true"/> if the descriptor could be loaded correctly; otherwise,
-    /// <see langword="false">.
+    /// <see langword="false"/>.
     /// </returns>
     public unsafe bool TryGetConfigDescriptor(byte configIndex, out UsbConfigInfo descriptor)
     {

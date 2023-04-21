@@ -33,6 +33,12 @@ using System;
 
 namespace LibUsbDotNet
 {
+    /// <summary>
+    /// libusb Error codes.
+    /// </summary>
+    /// <remarks>
+    /// Most libusb functions return 0 on success or one of these codes on failure.
+    /// </remarks>
     [Flags]
     public enum Error : int
     {
@@ -104,7 +110,7 @@ namespace LibUsbDotNet
         /// <summary>
         ///  Other error 
         /// </summary>
-        Other = -99,
+        Other = -99
 
     }
 }

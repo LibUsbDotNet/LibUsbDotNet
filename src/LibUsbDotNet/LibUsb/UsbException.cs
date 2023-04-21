@@ -26,6 +26,9 @@ using System.Runtime.Serialization;
 
 namespace LibUsbDotNet.LibUsb;
 
+/// <summary>
+/// Exceptions thrown from libusb <see cref="Error"/>s.
+/// </summary>
 [Serializable]
 public class UsbException : Exception
 {
@@ -33,6 +36,10 @@ public class UsbException : Exception
     {
     }
 
+    /// <summary>
+    /// Throw a <see cref="UsbException"/> for the given <see cref="Error"/>.
+    /// </summary>
+    /// <param name="errorCode"></param>
     public UsbException(Error errorCode)
         : this(GetErrorMessage(errorCode))
     {
@@ -40,21 +47,27 @@ public class UsbException : Exception
         this.HResult = (int)errorCode;
     }
 
+    /// <inheritdoc />
     public UsbException(string message)
         : base(message)
     {
     }
 
+    /// <inheritdoc />
     public UsbException(string message, Exception inner)
         : base(message, inner)
     {
     }
 
+    /// <inheritdoc />
     protected UsbException(SerializationInfo info, StreamingContext context)
         : base(info, context)
     {
     }
 
+    /// <summary>
+    /// The libusb <see cref="Error"/> code.
+    /// </summary>
     public Error ErrorCode
     {
         get;

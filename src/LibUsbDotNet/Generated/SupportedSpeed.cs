@@ -33,6 +33,12 @@ using System;
 
 namespace LibUsbDotNet
 {
+    /// <summary>
+    /// Supported speeds (wSpeedSupported) bitfield.
+    /// </summary>
+    /// <remarks>
+    /// Indicates what speeds the device supports.
+    /// </remarks>
     [Flags]
     public enum SupportedSpeed : byte
     {

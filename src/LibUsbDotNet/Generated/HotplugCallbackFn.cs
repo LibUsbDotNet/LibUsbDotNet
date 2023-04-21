@@ -34,5 +34,8 @@ using System.Runtime.InteropServices;
 
 namespace LibUsbDotNet
 {
+    /// <summary>
+    /// Hotplug callback function type.
+    /// </summary>
     public unsafe delegate int HotplugCallbackFn(Context ctx, Device device, HotplugEvent @event, IntPtr userData);
 }

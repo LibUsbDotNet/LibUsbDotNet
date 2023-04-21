@@ -22,6 +22,9 @@
 
 namespace LibUsbDotNet.LibUsb;
 
+/// <summary>
+/// Static class to determine the native libusb version.
+/// </summary>
 public static class NativeLibraryVersion
 {
     static unsafe NativeLibraryVersion()

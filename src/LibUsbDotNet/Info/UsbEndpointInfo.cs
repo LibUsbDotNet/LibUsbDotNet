@@ -22,6 +22,7 @@
 
 using System;
 using System.Diagnostics;
+using LibUsbDotNet.Main;
 
 namespace LibUsbDotNet.Info;
 
@@ -29,6 +30,11 @@ namespace LibUsbDotNet.Info;
 /// </summary>
 public class UsbEndpointInfo : UsbBaseInfo
 {
+    /// <summary>
+    /// Get a <see cref="UsbEndpointInfo"/> from a <see cref="EndpointDescriptor"/> struct.
+    /// </summary>
+    /// <param name="descriptor"><see cref="EndpointDescriptor"/> struct.</param>
+    /// <returns><see cref="UsbEndpointInfo"/> result.</returns>
     public static unsafe UsbEndpointInfo FromUsbEndpointDescriptor(EndpointDescriptor descriptor)
     {
         Debug.Assert(descriptor.DescriptorType == (int)DescriptorType.Endpoint, "An endpoint descriptor was expected");
@@ -53,18 +59,48 @@ public class UsbEndpointInfo : UsbBaseInfo
         return value;
     }
 
+    /// <summary>
+    /// Attributes which apply to the endpoint when it is configured using the bConfigurationValue.
+    /// </summary>
+    /// <remarks>
+    /// Bits 0:1 determine the transfer type and correspond to <see cref="EndpointType"/>.
+    /// Bits 2:3 are only used for isochronous endpoints and correspond to <see cref="IsoSyncType"/>.
+    /// Bits 4:5 are also only used for isochronous endpoints and correspond to <see cref="IsoUsageType"/>.
+    /// Bits 6:7 are reserved.
+    /// </remarks>
     public virtual byte Attributes { get; private set; }
 
+    /// <summary>
+    /// The address of the endpoint described by this descriptor.
+    /// </summary>
+    /// <remarks>
+    /// Bits 0:3 are the endpoint number.
+    /// Bits 4:6 are reserved.
+    /// Bit 7 indicates direction, see <see cref="EndpointDirection"/>.
+    /// </remarks>
     public virtual byte EndpointAddress { get; private set; }
 
+    /// <summary>
+    /// Interval for polling endpoint for data transfers.
+    /// </summary>
     public virtual byte Interval { get; private set; }
 
+    /// <summary>
+    /// Maximum packet size this endpoint is capable of sending/receiving.
+    /// </summary>
     public virtual ushort MaxPacketSize { get; private set; }
 
+    /// <summary>
+    /// For audio devices only: the rate at which synchronization feedback is provided.
+    /// </summary>
     public virtual byte Refresh { get; private set; }
 
+    /// <summary>
+    /// For audio devices only: the address if the synch endpoint.
+    /// </summary>
     public virtual byte SyncAddress { get; private set; }
 
+    /// <inheritdoc />
     public override string ToString() =>
         $"Address: 0x{EndpointAddress:X2}\n" +
         $"Interval: {Interval}\n" +

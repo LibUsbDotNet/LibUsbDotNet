@@ -33,6 +33,12 @@ using System;
 
 namespace LibUsbDotNet
 {
+    /// <summary>
+    /// Endpoint direction.
+    /// </summary>
+    /// <remarks>
+    /// Values for bit 7 of the <see cref="EndpointDescriptor.EndpointAddress"/> scheme.
+    /// </remarks>
     [Flags]
     public enum EndpointDirection : byte
     {
@@ -44,7 +50,7 @@ namespace LibUsbDotNet
         /// <summary>
         ///  Out: host-to-device 
         /// </summary>
-        Out = 0,
+        Out = 0
 
     }
 }
