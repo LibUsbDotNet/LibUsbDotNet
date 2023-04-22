@@ -8,7 +8,7 @@
 //------------------------------------------------------------------------------
 
 // Copyright © 2006-2010 Travis Robinson. All rights reserved.
-// Copyright © 2011-2018 LibUsbDotNet contributors. All rights reserved.
+// Copyright © 2011-2023 LibUsbDotNet contributors. All rights reserved.
 // 
 // website: http://github.com/libusbdotnet/libusbdotnet
 // 
@@ -33,22 +33,39 @@ using System;
 
 namespace LibUsbDotNet
 {
+    /// <summary>
+    /// Capabilities supported by an instance of libusb on the current running platform.
+    /// </summary>
+    /// <remarks>
+    /// Test if the loaded library supports a given capability by calling <see cref="NativeMethods.HasCapability"/>.
+    /// </remarks>
     [Flags]
-    public enum Capability : int
+    public enum Capability : uint
     {
         /// <summary>
-        ///  The libusb_has_capability() API is available. 
+        /// The libusb_has_capability() API is available. 
         /// </summary>
         HasCapability = 0,
 
         /// <summary>
-        ///  Hotplug support is available on this platform. 
+        /// Hotplug support is available on this platform. 
         /// </summary>
         HasHotplug = 0x1,
 
+        /// <summary>
+        /// The library can access HID devices without requiring user intervention.
+        /// </summary>
+        /// <remarks>
+        /// Note that before being able to actually access an HID device, you may still have to call additional libusb
+        /// functions such as DetachKernelDriver.
+        /// </remarks>
         HasHidAccess = 0x100,
 
+        /// <summary>
+        /// The library supports detaching of the default USB driver, using DetachKernelDriver,
+        /// if one is set by the OS kernel.
+        /// </summary>
         SupportsDetachKernelDriver = 0x101,
-
+        
     }
 }

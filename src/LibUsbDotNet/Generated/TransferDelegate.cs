@@ -8,7 +8,7 @@
 //------------------------------------------------------------------------------
 
 // Copyright © 2006-2010 Travis Robinson. All rights reserved.
-// Copyright © 2011-2018 LibUsbDotNet contributors. All rights reserved.
+// Copyright © 2011-2023 LibUsbDotNet contributors. All rights reserved.
 // 
 // website: http://github.com/libusbdotnet/libusbdotnet
 // 
@@ -34,5 +34,8 @@ using System.Runtime.InteropServices;
 
 namespace LibUsbDotNet
 {
+    /// <summary>
+    /// Asynchronous transfer callback function type.
+    /// </summary>
     public unsafe delegate void TransferDelegate(Transfer* transfer);
 }

@@ -8,7 +8,7 @@
 //------------------------------------------------------------------------------
 
 // Copyright © 2006-2010 Travis Robinson. All rights reserved.
-// Copyright © 2011-2018 LibUsbDotNet contributors. All rights reserved.
+// Copyright © 2011-2023 LibUsbDotNet contributors. All rights reserved.
 // 
 // website: http://github.com/libusbdotnet/libusbdotnet
 // 
@@ -99,6 +99,9 @@ namespace LibUsbDotNet
         /// </summary>
         SetSel = 0x30,
 
+        /// <summary>
+        /// Delay from the time a host transmits a packet to the time it is received by the device.
+        /// </summary>
         SetIsochDelay = 0x31,
 
     }

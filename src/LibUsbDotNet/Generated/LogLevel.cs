@@ -8,7 +8,7 @@
 //------------------------------------------------------------------------------
 
 // Copyright © 2006-2010 Travis Robinson. All rights reserved.
-// Copyright © 2011-2018 LibUsbDotNet contributors. All rights reserved.
+// Copyright © 2011-2023 LibUsbDotNet contributors. All rights reserved.
 // 
 // website: http://github.com/libusbdotnet/libusbdotnet
 // 
@@ -33,18 +33,36 @@ using System;
 
 namespace LibUsbDotNet
 {
+    /// <summary>
+    /// Log message levels.
+    /// </summary>
     [Flags]
     public enum LogLevel : byte
     {
+        /// <summary>
+        /// No messages ever emitted by the library (default).
+        /// </summary>
         None = 0,
 
+        /// <summary>
+        /// Error messages are emitted.
+        /// </summary>
         Error = 0x1,
 
+        /// <summary>
+        /// Warning and error messages are emitted.
+        /// </summary>
         Warning = 0x2,
 
+        /// <summary>
+        /// Informational, warning and error messages are emitted.
+        /// </summary>
         Info = 0x3,
 
+        /// <summary>
+        /// All messages are emitted.
+        /// </summary>
         Debug = 0x4,
-
+        
     }
 }

@@ -1,7 +1,7 @@
 ﻿// Copyright © 2006-2010 Travis Robinson. All rights reserved.
+// Copyright © 2011-2023 LibUsbDotNet contributors. All rights reserved.
 // 
-// website: http://sourceforge.net/projects/libusbdotnet
-// e-mail:  libusbdotnet@gmail.com
+// website: http://github.com/libusbdotnet/libusbdotnet
 // 
 // This program is free software; you can redistribute it and/or modify it
 // under the terms of the GNU General Public License as published by the
@@ -18,19 +18,18 @@
 // 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA. or 
 // visit www.gnu.org.
 // 
-// 
+//
 
 using System;
 using System.Runtime.InteropServices;
 
-namespace LibUsbDotNet
-{
-    internal static unsafe partial class NativeMethods
-    {
-        [DllImport(LibUsbNativeLibrary, EntryPoint = "libusb_get_device_list")]
-        public static extern IntPtr GetDeviceList(Context ctx, IntPtr** list);
+namespace LibUsbDotNet;
 
-        [DllImport(LibUsbNativeLibrary, EntryPoint = "libusb_free_device_list")]
-        public static extern IntPtr FreeDeviceList(IntPtr* list, int unrefDevices);
-    }
+internal static unsafe partial class NativeMethods
+{
+    [DllImport(LibUsbNativeLibrary, EntryPoint = "libusb_get_device_list")]
+    public static extern IntPtr GetDeviceList(Context ctx, IntPtr** list);
+
+    [DllImport(LibUsbNativeLibrary, EntryPoint = "libusb_free_device_list")]
+    public static extern IntPtr FreeDeviceList(IntPtr* list, int unrefDevices);
 }

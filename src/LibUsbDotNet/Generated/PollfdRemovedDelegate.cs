@@ -8,7 +8,7 @@
 //------------------------------------------------------------------------------
 
 // Copyright © 2006-2010 Travis Robinson. All rights reserved.
-// Copyright © 2011-2018 LibUsbDotNet contributors. All rights reserved.
+// Copyright © 2011-2023 LibUsbDotNet contributors. All rights reserved.
 // 
 // website: http://github.com/libusbdotnet/libusbdotnet
 // 
@@ -34,5 +34,11 @@ using System.Runtime.InteropServices;
 
 namespace LibUsbDotNet
 {
+    /// <summary>
+    /// Callback function, invoked when a file descriptor should be removed from the set of file descriptors being monitored for events.
+    /// </summary>
+    /// <remarks>
+    /// After returning from this callback, do not use that file descriptor again.
+    /// </remarks>
     public unsafe delegate void PollfdRemovedDelegate(int fd, IntPtr userData);
 }

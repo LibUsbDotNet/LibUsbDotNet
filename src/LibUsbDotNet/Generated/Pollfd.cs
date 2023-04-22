@@ -8,7 +8,7 @@
 //------------------------------------------------------------------------------
 
 // Copyright © 2006-2010 Travis Robinson. All rights reserved.
-// Copyright © 2011-2018 LibUsbDotNet contributors. All rights reserved.
+// Copyright © 2011-2023 LibUsbDotNet contributors. All rights reserved.
 // 
 // website: http://github.com/libusbdotnet/libusbdotnet
 // 
@@ -47,8 +47,7 @@ namespace LibUsbDotNet
 
         /// <summary>
         ///  Event flags to poll for from
-        ///  <poll
-        ///  .h>. POLLIN indicates that you
+        ///  poll.h. POLLIN indicates that you
         ///  should monitor this file descriptor for becoming ready to read from,
         ///  and POLLOUT indicates that you should monitor this file descriptor for
         ///  nonblocking write readiness.
