@@ -1261,7 +1261,7 @@ RefetchAltInterface:
                 }
             }
 
-            CONMSG("Benchmark device {0:X4}:{1:X4} opened..\n", Test.Vid, Test.Pid);
+            CONMSG("Benchmark device {0:X4}:{1:X4} opened..\n", ((ushort)Test.Vid), ((ushort)Test.Pid));
 
             // If this is a "whole" usb device (libusb-win32, linux libusb-1.0)
             // it exposes an IUsbDevice interface. If not (WinUSB) the 
