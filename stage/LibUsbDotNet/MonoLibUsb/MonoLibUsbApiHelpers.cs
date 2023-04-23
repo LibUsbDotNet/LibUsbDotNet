@@ -126,7 +126,7 @@ namespace MonoLibUsb
         /// <param name="vendorID">The idVendor value to search for.</param>
         /// <param name="productID">The idProduct value to search for.</param>
         /// <returns>Null if the device was not opened or not found, otherwise an opened device handle.</returns>
-        public static MonoUsbDeviceHandle OpenDeviceWithVidPid([In]MonoUsbSessionHandle sessionHandle, short vendorID, short productID)
+        public static MonoUsbDeviceHandle OpenDeviceWithVidPid([In]MonoUsbSessionHandle sessionHandle, ushort vendorID, ushort productID)
         {
             IntPtr pHandle = OpenDeviceWithVidPidInternal(sessionHandle, vendorID, productID);
             if (pHandle == IntPtr.Zero) return null;
