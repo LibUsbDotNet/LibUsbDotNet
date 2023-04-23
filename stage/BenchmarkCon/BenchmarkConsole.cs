@@ -1089,7 +1089,7 @@ RefetchAltInterface:
             if (ReferenceEquals(testParam, null)) return;
 
             CONMSG("{0} Test Information\n", TestDisplayString[(byte) testParam.TestType & 3]);
-            CONMSG("\tVid / Pid       : {0:X4}h / {1:X4}h\n", testParam.Vid, testParam.Pid);
+            CONMSG("\tVid / Pid       : {0:X4}h / {1:X4}h\n", ((ushort)testParam.Vid), ((ushort)testParam.Pid));
             CONMSG("\tInterface #     : {0:X2}h\n", testParam.Intf);
             CONMSG("\tAlt Interface # : {0:X2}h\n", testParam.Altf);
             CONMSG("\tPriority        : {0}\n", testParam.Priority);
