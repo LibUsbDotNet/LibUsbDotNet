@@ -56,6 +56,7 @@ namespace LibUsbDotNet
         /// <param name="ownsHandle">
         /// <see langword="true"/> to reliably release the handle during the finalization phase; <see langword="false"/> to prevent reliable release (not recommended).
         /// </param>
+        /// <param name="fromHotplug">Device was created from hotplug event.</param>
         protected Device(bool ownsHandle, bool fromHotplug) :
                 base(ownsHandle)
         {
@@ -82,6 +83,7 @@ namespace LibUsbDotNet
         /// <param name="ownsHandle">
         /// <see langword="true"/> to reliably release the handle during the finalization phase; <see langword="false"/> to prevent reliable release (not recommended).
         /// </param>
+        /// <param name="fromHotplug">Device was created from hotplug event.</param>
         /// <returns>
         /// </returns>
         public static Device DangerousCreate(IntPtr unsafeHandle, bool ownsHandle, bool fromHotplug)
@@ -97,6 +99,7 @@ namespace LibUsbDotNet
         /// <param name="unsafeHandle">
         /// The underlying <see cref="IntPtr"/>
         /// </param>
+        /// <param name="fromHotplug">Device was created from hotplug event.</param>
         /// <returns>
         /// </returns>
         public static Device DangerousCreate(IntPtr unsafeHandle, bool fromHotplug)

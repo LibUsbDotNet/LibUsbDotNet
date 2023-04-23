@@ -1,7 +1,9 @@
 ﻿using System;
 using System.Collections.Concurrent;
+using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
+using System.Text;
 using System.Threading.Tasks;
 using LibUsbDotNet;
 using LibUsbDotNet.Info;
@@ -14,6 +16,45 @@ internal static class Hotplug
 {
     private static readonly ConcurrentDictionary<UsbDeviceFinder, TaskCompletionSource<UsbDevice>> DeviceArrivedTasks = new();
     private static readonly ConcurrentDictionary<UsbDeviceFinder, TaskCompletionSource<CachedDeviceInfo>> DeviceLeftTasks = new();
+    private static readonly Stopwatch TransferTimer = new Stopwatch();
+    
+    public enum TransferType
+    {
+        Read,
+        Write
+    }
+        
+    public class TransferHandle
+    {
+        public TransferType Type { get; }
+        public Error Error { get; }
+        public int TransferLength { get; }
+        public double CompletionTime { get; }
+        public int Id { get; }
+        public string Data { get; }
+
+        public TransferHandle(TransferType type, Error error, int transferLength, double completionTime, int id, string data)
+        {
+            Type = type;
+            Error = error;
+            TransferLength = transferLength;
+            CompletionTime = completionTime;
+            Id = id;
+            Data = data;
+        }
+    }
+    
+    private static async Task<TransferHandle> ReadTransfer(int id, UsbEndpointReader reader, byte[] readBuffer)
+    {
+        var result = await reader.ReadAsync(readBuffer, 0, readBuffer.Length, 100);
+        return new TransferHandle(TransferType.Read, result.error, result.transferLength, TransferTimer.Elapsed.TotalMilliseconds, id, Encoding.Default.GetString(readBuffer, 0, result.transferLength));
+    }
+        
+    private static async Task<TransferHandle> WriteTransfer(int id, UsbEndpointWriter writer, byte[] bytesToSend)
+    {
+        var result = await writer.WriteAsync(bytesToSend, 0, bytesToSend.Length, 100);
+        return new TransferHandle(TransferType.Write, result.error, result.transferLength, TransferTimer.Elapsed.TotalMilliseconds, id, Encoding.Default.GetString(bytesToSend, 0, result.transferLength));
+    }
     
     public static async Task Main(string[] args)
     {
@@ -25,28 +66,76 @@ internal static class Hotplug
         };
         context.SetDebugLevel(LogLevel.Info);
         context.DeviceEvent += OnDeviceEvent;
-        var hotplug1 = new HotplugOptions();
-        context.RegisterHotPlug(hotplug1);
+        var hotplugOptions = new HotplugOptions();
+        context.RegisterHotPlug(hotplugOptions);
+
+        using var device = await WaitForDevice(finder, TimeSpan.FromSeconds(2));
+
+        Console.WriteLine("Got a stable connection.");
+        
+        device.Open();
+        device.SetConfiguration(1);
+        device.ClaimInterface(0);
+        
+        // open read endpoint 1.
+        var reader = device.OpenEndpointReader(ReadEndpointID.Ep01);
+
+        // open write endpoint 1.
+        var writer = device.OpenEndpointWriter(WriteEndpointID.Ep01);
+            
+        byte[] readBuffer = new byte[1024];
+        List<Task<TransferHandle>> transfers = new();
+        TransferTimer.Start();
+        for (int testCount = 0; testCount < 10; testCount++)
+        {
+            // Create and submit transfer
+            var usbReadTransfer = ReadTransfer(testCount, reader, readBuffer);
+            var usbWriteTransfer = WriteTransfer(testCount, writer, Encoding.Default.GetBytes(TransferTimer.Elapsed.TotalMilliseconds.ToString()));
+            transfers.Add(usbReadTransfer);
+            transfers.Add(usbWriteTransfer);
+        }
+
+        var completedTransfers = await Task.WhenAll(transfers);
+
+        foreach (var completedTransfer in completedTransfers.OrderBy(transfer => transfer.CompletionTime))
+        {
+            Console.WriteLine($"{completedTransfer.Type} transfer #{completedTransfer.Id} completed @ {completedTransfer.CompletionTime} ms with Error-{completedTransfer.Error} Length-{completedTransfer.TransferLength} Data-{completedTransfer.Data}");
+        }
+            
+        Console.WriteLine("Press any key to unregister the hotplug event...");
+        
+        Console.ReadKey();
+
+        Console.WriteLine("\nUnregistered hotplug.");
+        
+        context.UnregisterHotPlug(hotplugOptions);
+
+        Console.WriteLine("Press any key to exit...");
+        
+        Console.ReadKey();
+    }
+
+    private static async Task<UsbDevice> WaitForDevice(UsbDeviceFinder finder, TimeSpan delay)
+    {
+        UsbDevice arrivedDevice = null;
         bool stableConnection = false;
-        int count = 0;
-        while (count < 8)
+        while (!stableConnection)
         {
             var deviceArrivedTaskSource = new TaskCompletionSource<UsbDevice>(TaskCreationOptions.RunContinuationsAsynchronously);
             if (!DeviceArrivedTasks.TryAdd(finder, deviceArrivedTaskSource))
                 throw new InvalidOperationException("Could not add arrived task");
-            Console.WriteLine($"Waiting for device arrival.");
+            Console.WriteLine("Waiting for device arrival.");
 
-            var arriveddevice = await deviceArrivedTaskSource.Task;
-
+            arrivedDevice = await deviceArrivedTaskSource.Task;
+            
             var deviceLeftTaskSource = new TaskCompletionSource<CachedDeviceInfo>(TaskCreationOptions.RunContinuationsAsynchronously);
             if (!DeviceLeftTasks.TryAdd(finder, deviceLeftTaskSource))
                 throw new InvalidOperationException("Could not add left task");
-            Console.WriteLine($"Waiting for device disconnect.");
-            var completion = await Task.WhenAny(deviceLeftTaskSource.Task, Task.Delay(TimeSpan.FromSeconds(5)));
+            Console.WriteLine("Waiting for device disconnect.");
+            var completion = await Task.WhenAny(deviceLeftTaskSource.Task, Task.Delay(delay));
             if (completion is Task<CachedDeviceInfo> deviceLeft)
             {
                 Console.WriteLine("Device left");
-                Console.WriteLine($"Device is the recently arrived device: {deviceLeft.Result.GetHashCode() == arriveddevice.GetHashCode()}");
             }
             else
             {
@@ -54,21 +143,11 @@ internal static class Hotplug
                 DeviceLeftTasks.TryRemove(finder, out _);
                 stableConnection = true;
             }
-            arriveddevice.Dispose();
-            count++;
         }
 
-        Console.WriteLine("Got a stable connection.");
-        
-        Console.ReadKey();
-
-        Console.WriteLine("\nUnregister hotplug.");
-        
-        context.UnregisterHotPlug(hotplug1);
-
-        Console.ReadKey();
+        return arrivedDevice;
     }
-
+    
     private static void OnDeviceEvent(object sender, DeviceEventArgs e)
     {
         switch (e)

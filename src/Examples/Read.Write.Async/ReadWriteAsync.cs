@@ -16,19 +16,23 @@ internal static class ReadWriteAsync
 
     #region SET YOUR USB Vendor and Product ID!
 
-    public static UsbDeviceFinder MyUsbFinder = new UsbDeviceFinder(1234, 1);
+    public static UsbDeviceFinder MyUsbFinder = new()
+    {
+        Vid = 0x1234,
+        Pid = 0x0000
+    };
 
     #endregion
 
     private static readonly Stopwatch TransferTimer = new Stopwatch();
 
-    private enum TransferType
+    public enum TransferType
     {
         Read,
         Write
     }
         
-    private class TransferHandle
+    public class TransferHandle
     {
         public TransferType Type { get; }
         public Error Error { get; }

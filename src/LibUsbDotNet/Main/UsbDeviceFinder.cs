@@ -46,7 +46,7 @@ namespace LibUsbDotNet.Main;
 /// </example>
 public class UsbDeviceFinder : ISerializable
 {
-    public UsbDeviceFinder() {}
+    public UsbDeviceFinder() { }
     
     /// <summary>
     /// Initializes a new instance of the <see cref="UsbDeviceFinder"/> class using a serialization stream to fill the <see cref="UsbDeviceFinder"/> class.
@@ -92,7 +92,7 @@ public class UsbDeviceFinder : ISerializable
     {
         get;
         init;
-    } = null;
+    }
 
     /// <summary>
     /// Gets the serial number of the device to find.
@@ -104,7 +104,7 @@ public class UsbDeviceFinder : ISerializable
     {
         get;
         init;
-    } = null;
+    }
 
     /// <summary>
     /// Gets the revision number of the device to find.
@@ -217,70 +217,42 @@ public class UsbDeviceFinder : ISerializable
     
     public virtual bool Check(CachedDeviceInfo info)
     {
-        try
-        {
-            if (this.Vid != int.MaxValue &&
-                this.Vid != info.Descriptor.VendorId)
-            {
-                return false;
-            }
-
-            if (this.Pid != int.MaxValue &&
-                this.Pid != info.Descriptor.ProductId)
-            {
-                return false;
-            }
-
-            if (this.Revision != int.MaxValue && 
-                this.Revision != info.Descriptor.Usb)
-            {
-                return false;
-            }
-
-            if (this.SerialNumber != null &&
-                this.SerialNumber != info.Descriptor.SerialNumber)
-            {
-                return false;
-            }
-
-            if (LocationId != Info.LocationId.Zero &&
-                LocationId != info.PortInfo)
-            {
-                return false;
-            }
-            
-            if (PhyiscalPortId != null &&
-                PhyiscalPortId.Usb2Id != info.PortInfo &&
-                PhyiscalPortId.Usb3Id != info.PortInfo)
-            {
-                return false;
-            }
-
-            return true;
-        }
-        
-        catch (LibUsb.UsbException ex) when (ex.ErrorCode == Error.NotFound)
-        {
-            // The device has probably disconnected while we were inspecting it. Continue.
+        if (this.Vid != int.MaxValue &&
+            this.Vid != info.Descriptor.VendorId)
             return false;
-        }
+
+        if (this.Pid != int.MaxValue &&
+            this.Pid != info.Descriptor.ProductId)
+            return false;
+
+        if (this.Revision != int.MaxValue && 
+            this.Revision != info.Descriptor.Usb)
+            return false;
+
+        if (this.SerialNumber != null &&
+            this.SerialNumber != info.Descriptor.SerialNumber)
+            return false;
+
+        if (LocationId != Info.LocationId.Zero &&
+            LocationId != info.PortInfo)
+            return false;
+
+        if (PhyiscalPortId != null &&
+            PhyiscalPortId.Usb2Id != info.PortInfo &&
+            PhyiscalPortId.Usb3Id != info.PortInfo)
+            return false;
+
+        return true;
     }
 
-    protected bool Equals(UsbDeviceFinder other)
-    {
-        return Nullable.Equals(DeviceInterfaceGuid, other.DeviceInterfaceGuid) && SerialNumber == other.SerialNumber && Revision == other.Revision && Pid == other.Pid && Vid == other.Vid;
-    }
+    public override bool Equals(object obj) => obj is UsbDeviceFinder deviceFinder && Equals(deviceFinder);
 
-    public override int GetHashCode()
-    {
-        unchecked
-        {
-            var hashCode = DeviceInterfaceGuid.GetHashCode();
-            hashCode = (hashCode * 397) ^ (SerialNumber != null ? SerialNumber.GetHashCode() : 0);
-            hashCode = (hashCode * 397) ^ Revision.GetHashCode();
-            hashCode = (hashCode * 397) ^ Pid.GetHashCode();
-            hashCode = (hashCode * 397) ^ Vid.GetHashCode();
-            return hashCode;
-        }
-    }
+    protected bool Equals(UsbDeviceFinder other) => DeviceInterfaceGuid.Equals(other.DeviceInterfaceGuid) &&
+                                                    LocationId.Equals(other.LocationId) &&
+                                                    Equals(PhyiscalPortId, other.PhyiscalPortId) &&
+                                                    SerialNumber == other.SerialNumber && Revision == other.Revision &&
+                                                    Pid == other.Pid && Vid == other.Vid;
+
+    public override int GetHashCode() 
+        => HashCode.Combine(DeviceInterfaceGuid, LocationId, PhyiscalPortId, SerialNumber, Revision, Pid, Vid);
 }
