@@ -1,3 +1,4 @@
+using System;
 using System.Linq;
 using LibUsbDotNet.LibUsb;
 
@@ -17,6 +18,8 @@ public readonly struct LocationId
 
     public byte BusNumber { get; }
     public byte[] PortNumbers { get; }
+
+    public static readonly LocationId Zero = new(0, Array.Empty<byte>());
     
     public static bool operator ==(LocationId locationId1, LocationId locationId2)
         => Equals(locationId1, locationId2);

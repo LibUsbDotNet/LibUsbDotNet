@@ -6,7 +6,7 @@ public class HotplugOptions
     public int VendorId { get; set; } = (int)HotplugOptionFlag.LibusbHotplugMatchAny;
     public int ProductId { get; set; } = (int)HotplugOptionFlag.LibusbHotplugMatchAny;
     public int DeviceClass { get; set; } = (int)HotplugOptionFlag.LibusbHotplugMatchAny;
-    public HotplugEvent HotplugEventFlags { get; set; } = HotplugEvent.DeviceArrived;
+    public HotplugEvent HotplugEventFlags { get; set; } = HotplugEvent.DeviceLeft | HotplugEvent.DeviceArrived;
 }
 
 public enum HotplugOptionFlag

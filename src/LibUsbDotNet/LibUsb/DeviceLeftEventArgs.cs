@@ -1,8 +1,13 @@
+using LibUsbDotNet.Info;
+
 namespace LibUsbDotNet.LibUsb;
 
 public class DeviceLeftEventArgs : DeviceEventArgs
 {
-    public DeviceLeftEventArgs(UsbDevice device) : base(device)
+    public DeviceLeftEventArgs(CachedDeviceInfo info)
     {
+        DeviceInfo = info;
     }
+    
+    public CachedDeviceInfo DeviceInfo { get; }
 }

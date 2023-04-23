@@ -26,6 +26,7 @@ using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Runtime.InteropServices;
 using System.Threading;
+using LibUsbDotNet.Info;
 
 namespace LibUsbDotNet.LibUsb;
 
@@ -127,7 +128,7 @@ public class UsbContext : IUsbContext
         if (hotplugEvent == HotplugEvent.DeviceArrived)
             deviceEventArgs = new DeviceArrivedEventArgs(usbDevice);
         else
-            deviceEventArgs = new DeviceLeftEventArgs(usbDevice);
+            deviceEventArgs = new DeviceLeftEventArgs(new CachedDeviceInfo(usbDevice));
 
         DeviceEvent?.Invoke(this, deviceEventArgs);
 
