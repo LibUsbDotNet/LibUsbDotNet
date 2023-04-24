@@ -141,7 +141,7 @@ public partial class UsbDevice
     /// <summary>
     /// The <see cref="LocationId"/> of the device.
     /// </summary>
-    public LocationId LocationId => new LocationId(BusNumber, PortNumbers.ToArray());
+    public LocationId LocationId => new LocationId(BusNumber, PortNumbers);
 
     /// <summary>
     /// Get the the parent from the specified device.

@@ -1,4 +1,5 @@
 using System;
+using System.Collections.ObjectModel;
 using System.Linq;
 using LibUsbDotNet.LibUsb;
 
@@ -10,16 +11,16 @@ namespace LibUsbDotNet.Info;
 /// </summary>
 public readonly struct LocationId
 {
-    public LocationId(byte busNumber, byte[] portNumbers)
+    public LocationId(byte busNumber, ReadOnlyCollection<byte> portNumbers)
     {
         BusNumber = busNumber;
         PortNumbers = portNumbers;
     }
 
     public byte BusNumber { get; }
-    public byte[] PortNumbers { get; }
+    public ReadOnlyCollection<byte> PortNumbers { get; }
 
-    public static readonly LocationId Zero = new(0, Array.Empty<byte>());
+    public static readonly LocationId Zero = new(0, new ReadOnlyCollection<byte>(Array.Empty<byte>()));
     
     public static bool operator ==(LocationId locationId1, LocationId locationId2)
         => Equals(locationId1, locationId2);
@@ -47,12 +48,12 @@ public readonly struct LocationId
     {
         string result = BusNumber.ToString();
         
-        for (int i = 0; i < PortNumbers.Length; i++)
+        for (int i = 0; i < PortNumbers.Count; i++)
         {
             if (i == 0)
                 result += '-';
             result += PortNumbers[i].ToString();
-            if (i != PortNumbers.Length - 1)
+            if (i != PortNumbers.Count - 1)
                 result += '.';
         }
 
