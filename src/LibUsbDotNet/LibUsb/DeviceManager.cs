@@ -1,6 +1,8 @@
 using System;
 using System.Collections.Concurrent;
+using System.Diagnostics;
 using System.Linq;
+using System.Threading;
 using System.Threading.Tasks;
 using LibUsbDotNet.Info;
 using LibUsbDotNet.Main;
@@ -24,38 +26,37 @@ public class DeviceManager : IDisposable
         _context.RegisterHotPlug();
     }
     
-    public async Task<UsbDevice> WaitForDevice(UsbDeviceFinder finder, TimeSpan stableConnectionInterval = default)
+#nullable enable
+    public async Task<UsbDevice?> WaitForDevice(UsbDeviceFinder finder, TimeSpan maxWaitTime, CancellationToken cancellationToken, TimeSpan stableConnectionInterval = default)
     {
-        UsbDevice arrivedDevice = _context.DeviceInfoDictionary.Keys.FirstOrDefault(finder.Check);
+        UsbDevice? arrivedDevice = _context.DeviceInfoDictionary.Keys.FirstOrDefault(finder.Check);
 
         if (arrivedDevice is not null)
             return arrivedDevice;
         
         bool stableConnection = false;
-        while (!stableConnection)
+        var timer = Stopwatch.StartNew();
+        while (!stableConnection && timer.Elapsed < maxWaitTime)
         {
             var deviceArrivedTaskSource = new TaskCompletionSource<UsbDevice>(TaskCreationOptions.RunContinuationsAsynchronously);
+            using var deviceArrivedCtr = cancellationToken.Register(() => deviceArrivedTaskSource.TrySetCanceled());
             if (!_deviceArrivedTasks.TryAdd(finder, deviceArrivedTaskSource))
                 throw new InvalidOperationException("Could not add arrived task");
-            Console.WriteLine("Waiting for device arrival.");
 
-            arrivedDevice = await deviceArrivedTaskSource.Task;
-
+            arrivedDevice = await TaskWithTimeoutAndFallback(deviceArrivedTaskSource.Task, maxWaitTime - timer.Elapsed);
+            
             if (stableConnectionInterval == default)
                 return arrivedDevice;
             
             var deviceLeftTaskSource = new TaskCompletionSource<CachedDeviceInfo>(TaskCreationOptions.RunContinuationsAsynchronously);
+            using var deviceLeftCtr = cancellationToken.Register(() => deviceLeftTaskSource.TrySetCanceled());
             if (!_deviceLeftTasks.TryAdd(finder, deviceLeftTaskSource))
                 throw new InvalidOperationException("Could not add left task");
-            Console.WriteLine("Waiting for device disconnect.");
-            var completion = await Task.WhenAny(deviceLeftTaskSource.Task, Task.Delay(stableConnectionInterval));
-            if (completion is Task<CachedDeviceInfo> deviceLeft)
+
+            var deviceLeftInfo = await TaskWithTimeoutAndFallback(deviceLeftTaskSource.Task, stableConnectionInterval);
+            
+            if (deviceLeftInfo is null)
             {
-                Console.WriteLine("Device left");
-            }
-            else
-            {
-                Console.WriteLine("Timeout waiting for device disconnect");
                 _deviceLeftTasks.TryRemove(finder, out _);
                 stableConnection = true;
             }
@@ -63,6 +64,20 @@ public class DeviceManager : IDisposable
 
         return arrivedDevice;
     }
+    
+    private static async Task<T?> DelayedResultTask<T>(TimeSpan delay, T? result = default)
+    {
+        await Task.Delay(delay);
+        return result;
+    }
+
+    private static async Task<T?> TaskWithTimeoutAndFallback<T>(
+            Task<T> task,
+            TimeSpan timeout,
+            T? fallback = default) =>
+        await await Task.WhenAny(task, DelayedResultTask(timeout, fallback)!);
+
+#nullable disable
     
     private void OnDeviceEvent(object sender, DeviceEventArgs e)
     {

@@ -4,6 +4,7 @@ using System.Collections.ObjectModel;
 using System.Diagnostics;
 using System.Linq;
 using System.Text;
+using System.Threading;
 using System.Threading.Tasks;
 using LibUsbDotNet;
 using LibUsbDotNet.Info;
@@ -69,9 +70,16 @@ internal static class Hotplug
         // context.SetDebugLevel(LogLevel.Info);
         using var deviceManager = new DeviceManager(context);
         deviceManager.Start();
+        var ctr = new CancellationTokenSource();
+        ctr.CancelAfter(TimeSpan.FromSeconds(1));
+        using var device = await deviceManager.WaitForDevice(finder, TimeSpan.FromSeconds(5), ctr.Token, TimeSpan.FromSeconds(2));
 
-        using var device = await deviceManager.WaitForDevice(finder, TimeSpan.FromSeconds(2));
-
+        if (device is null)
+        {
+            Console.WriteLine("Timed out waiting for device.");
+            return;
+        }
+        
         Console.WriteLine("Got a stable connection.");
         
         device.Open();
