@@ -33,15 +33,26 @@ public class DeviceManager : IDisposable
 
         if (arrivedDevice is not null)
             return arrivedDevice;
-        
+
+        return await WaitForDeviceArrival(finder, maxWaitTime, cancellationToken, stableConnectionInterval).ConfigureAwait(false);
+    }
+
+    public async Task<UsbDevice?> WaitForDeviceArrival(UsbDeviceFinder finder, TimeSpan maxWaitTime, CancellationToken cancellationToken, TimeSpan stableConnectionInterval = default)
+    {
         bool stableConnection = false;
         var timer = Stopwatch.StartNew();
+        UsbDevice? arrivedDevice = null;
+        
         while (!stableConnection && timer.Elapsed < maxWaitTime)
         {
             var deviceArrivedTaskSource = new TaskCompletionSource<UsbDevice>(TaskCreationOptions.RunContinuationsAsynchronously);
-            using var deviceArrivedCtr = cancellationToken.Register(() => deviceArrivedTaskSource.TrySetCanceled());
-            if (!_deviceArrivedTasks.TryAdd(finder, deviceArrivedTaskSource))
-                throw new InvalidOperationException("Could not add arrived task");
+            
+            using var deviceArrivedCtr = cancellationToken.Register(() =>
+            {
+                _deviceArrivedTasks.TryRemove(finder, out var source);
+                source?.TrySetCanceled();
+            });
+            _deviceArrivedTasks.TryAdd(finder, deviceArrivedTaskSource);
 
             arrivedDevice = await TaskWithTimeoutAndFallback(deviceArrivedTaskSource.Task, maxWaitTime - timer.Elapsed);
             
@@ -49,9 +60,14 @@ public class DeviceManager : IDisposable
                 return arrivedDevice;
             
             var deviceLeftTaskSource = new TaskCompletionSource<CachedDeviceInfo>(TaskCreationOptions.RunContinuationsAsynchronously);
-            using var deviceLeftCtr = cancellationToken.Register(() => deviceLeftTaskSource.TrySetCanceled());
-            if (!_deviceLeftTasks.TryAdd(finder, deviceLeftTaskSource))
-                throw new InvalidOperationException("Could not add left task");
+            
+            using var deviceLeftCtr = cancellationToken.Register(() =>
+            {
+                _deviceLeftTasks.TryRemove(finder, out var source);
+                source?.TrySetCanceled();
+            });
+            
+            _deviceLeftTasks.TryAdd(finder, deviceLeftTaskSource);
 
             var deviceLeftInfo = await TaskWithTimeoutAndFallback(deviceLeftTaskSource.Task, stableConnectionInterval);
             
@@ -91,7 +107,7 @@ public class DeviceManager : IDisposable
                     _deviceArrivedTasks.Keys.FirstOrDefault(finder => finder.Check(device));
                 Console.WriteLine($"{DateTime.Now} {e.GetType().Name.Replace("EventArgs", string.Empty)} VendorId-0x{device.VendorId:X4} ProductId-0x{device.ProductId:X4} Port-{device.LocationId}");
                 if (matchingFinder is not null && _deviceArrivedTasks.TryRemove(matchingFinder, out var taskCompletionSource))
-                    taskCompletionSource.SetResult(device);
+                    taskCompletionSource. TrySetResult(device);
                 break;
             }
             case DeviceLeftEventArgs leftEventArgs:
@@ -101,7 +117,7 @@ public class DeviceManager : IDisposable
                     _deviceLeftTasks.Keys.FirstOrDefault(finder => finder.Check(info));
                 Console.WriteLine($"{DateTime.Now} {e.GetType().Name.Replace("EventArgs", string.Empty)} VendorId-0x{info.Descriptor.VendorId:X4} ProductId-0x{info.Descriptor.ProductId:X4} Port-{info.PortInfo}");
                 if (matchingFinder is not null && _deviceLeftTasks.TryRemove(matchingFinder, out var taskCompletionSource))
-                    taskCompletionSource.SetResult(info);
+                    taskCompletionSource.TrySetResult(info);
                 break;
             }
         }
