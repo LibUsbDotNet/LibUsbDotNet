@@ -11,47 +11,70 @@ namespace LibUsbDotNet.LibUsb;
 
 public class DeviceManager : IDisposable
 {
+    private readonly bool _disposeContext;
     private readonly UsbContext _context;
     private readonly ConcurrentDictionary<UsbDeviceFinder, TaskCompletionSource<UsbDevice>> _deviceArrivedTasks = new();
     private readonly ConcurrentDictionary<UsbDeviceFinder, TaskCompletionSource<CachedDeviceInfo>> _deviceLeftTasks = new();
 
-    public DeviceManager(UsbContext context)
+    public DeviceManager(UsbContext context, bool disposeContext = false)
     {
         _context = context;
+        _disposeContext = disposeContext;
     }
 
     public void Start()
     {
-        _context.DeviceEvent += OnDeviceEvent;
         _context.RegisterHotPlug();
+        _context.DeviceEvent += OnDeviceEvent;
     }
-    
+
 #nullable enable
-    public async Task<UsbDevice?> WaitForDevice(UsbDeviceFinder finder, TimeSpan maxWaitTime, CancellationToken cancellationToken, TimeSpan stableConnectionInterval = default)
+    public async Task<UsbDevice?> WaitForDeviceArrival(UsbDeviceFinder finder, TimeSpan maxWaitTime, CancellationToken cancellationToken, TimeSpan stableConnectionInterval = default)
     {
         UsbDevice? arrivedDevice = _context.DeviceInfoDictionary.Keys.FirstOrDefault(finder.Check);
 
         if (arrivedDevice is not null)
             return arrivedDevice;
 
-        return await WaitForDeviceArrival(finder, maxWaitTime, cancellationToken, stableConnectionInterval).ConfigureAwait(false);
+        return await WaitForNewDeviceArrival(finder, maxWaitTime, cancellationToken, stableConnectionInterval).ConfigureAwait(false);
     }
 
-    public async Task<UsbDevice?> WaitForDeviceArrival(UsbDeviceFinder finder, TimeSpan maxWaitTime, CancellationToken cancellationToken, TimeSpan stableConnectionInterval = default)
+    public async Task<UsbDevice?> WaitForNewDeviceArrival(UsbDeviceFinder finder, TimeSpan maxWaitTime, CancellationToken cancellationToken, TimeSpan stableConnectionInterval = default)
     {
         bool stableConnection = false;
         var timer = Stopwatch.StartNew();
         UsbDevice? arrivedDevice = null;
+
+#if NETSTANDARD2_0
+        using var deviceArrivedCtr = cancellationToken.Register(() =>
+        {
+            _deviceArrivedTasks.TryRemove(finder, out var source);
+            source?.TrySetCanceled();
+        });
         
+        using var deviceLeftCtr = cancellationToken.Register(() =>
+        {
+            _deviceLeftTasks.TryRemove(finder, out var source);
+            source?.TrySetCanceled();
+        });
+#else
+        await using var deviceArrivedCtr = cancellationToken.Register(() =>
+        {
+            _deviceArrivedTasks.TryRemove(finder, out var source);
+            source?.TrySetCanceled();
+        });
+        
+        await using var deviceLeftCtr = cancellationToken.Register(() =>
+        {
+            _deviceLeftTasks.TryRemove(finder, out var source);
+            source?.TrySetCanceled();
+        });
+#endif
+
         while (!stableConnection && timer.Elapsed < maxWaitTime)
         {
             var deviceArrivedTaskSource = new TaskCompletionSource<UsbDevice>(TaskCreationOptions.RunContinuationsAsynchronously);
             
-            using var deviceArrivedCtr = cancellationToken.Register(() =>
-            {
-                _deviceArrivedTasks.TryRemove(finder, out var source);
-                source?.TrySetCanceled();
-            });
             _deviceArrivedTasks.TryAdd(finder, deviceArrivedTaskSource);
 
             arrivedDevice = await TaskWithTimeoutAndFallback(deviceArrivedTaskSource.Task, maxWaitTime - timer.Elapsed);
@@ -60,13 +83,7 @@ public class DeviceManager : IDisposable
                 return arrivedDevice;
             
             var deviceLeftTaskSource = new TaskCompletionSource<CachedDeviceInfo>(TaskCreationOptions.RunContinuationsAsynchronously);
-            
-            using var deviceLeftCtr = cancellationToken.Register(() =>
-            {
-                _deviceLeftTasks.TryRemove(finder, out var source);
-                source?.TrySetCanceled();
-            });
-            
+
             _deviceLeftTasks.TryAdd(finder, deviceLeftTaskSource);
 
             var deviceLeftInfo = await TaskWithTimeoutAndFallback(deviceLeftTaskSource.Task, stableConnectionInterval);
@@ -102,20 +119,15 @@ public class DeviceManager : IDisposable
             case DeviceArrivedEventArgs arrivedEventArgs:
             {
                 var device = arrivedEventArgs.Device;
-
-                var matchingFinder =
-                    _deviceArrivedTasks.Keys.FirstOrDefault(finder => finder.Check(device));
-                Console.WriteLine($"{DateTime.Now} {e.GetType().Name.Replace("EventArgs", string.Empty)} VendorId-0x{device.VendorId:X4} ProductId-0x{device.ProductId:X4} Port-{device.LocationId}");
+                var matchingFinder = _deviceArrivedTasks.Keys.FirstOrDefault(finder => finder.Check(device));
                 if (matchingFinder is not null && _deviceArrivedTasks.TryRemove(matchingFinder, out var taskCompletionSource))
-                    taskCompletionSource. TrySetResult(device);
+                    taskCompletionSource.TrySetResult(device);
                 break;
             }
             case DeviceLeftEventArgs leftEventArgs:
             {
                 var info = leftEventArgs.DeviceInfo;
-                var matchingFinder =
-                    _deviceLeftTasks.Keys.FirstOrDefault(finder => finder.Check(info));
-                Console.WriteLine($"{DateTime.Now} {e.GetType().Name.Replace("EventArgs", string.Empty)} VendorId-0x{info.Descriptor.VendorId:X4} ProductId-0x{info.Descriptor.ProductId:X4} Port-{info.PortInfo}");
+                var matchingFinder = _deviceLeftTasks.Keys.FirstOrDefault(finder => finder.Check(info));
                 if (matchingFinder is not null && _deviceLeftTasks.TryRemove(matchingFinder, out var taskCompletionSource))
                     taskCompletionSource.TrySetResult(info);
                 break;
@@ -126,6 +138,7 @@ public class DeviceManager : IDisposable
     public void Dispose()
     {
         _context.DeviceEvent -= OnDeviceEvent;
-        _context.UnregisterHotPlug();
+        if (_disposeContext)
+            _context.Dispose();
     }
 }

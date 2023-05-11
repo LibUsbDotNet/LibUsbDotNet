@@ -327,9 +327,7 @@ public class UsbContext : IUsbContext
             
         OpenDevices.Clear();
 
-        // Ideally this shouldn't be necessary, as StopHandlingEvents should be called when the last open device is closed.
-        if (this.stopHandlingEvents == 0) 
-            StopHandlingEvents();
+        UnregisterHotPlug();
             
         // Dispose of underlying context handle.
         context.Dispose();

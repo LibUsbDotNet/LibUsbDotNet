@@ -72,7 +72,7 @@ internal static class Hotplug
         deviceManager.Start();
         var ctr = new CancellationTokenSource();
         ctr.CancelAfter(TimeSpan.FromSeconds(1));
-        using var device = await deviceManager.WaitForDevice(finder, TimeSpan.FromSeconds(5), ctr.Token, TimeSpan.FromSeconds(2));
+        using var device = await deviceManager.WaitForDeviceArrival(finder, TimeSpan.FromSeconds(5), ctr.Token, TimeSpan.FromSeconds(2));
 
         if (device is null)
         {
