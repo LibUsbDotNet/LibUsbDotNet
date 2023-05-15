@@ -10,6 +10,7 @@ using System.Linq;
 using Delegate = LibUsbDotNet.Generator.Primitives.Delegate;
 using Enum = LibUsbDotNet.Generator.Primitives.Enum;
 using CSharpSyntaxTree = Microsoft.CodeAnalysis.CSharp.CSharpSyntaxTree;
+using Index = Core.Clang.Index;
 using SyntaxNodeExtensions = Microsoft.CodeAnalysis.SyntaxNodeExtensions;
 
 namespace LibUsbDotNet.Generator

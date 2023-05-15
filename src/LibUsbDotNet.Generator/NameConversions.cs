@@ -43,7 +43,7 @@ namespace LibUsbDotNet.Generator
                 patchedName = patchedName.Substring(prefix.Length);
             }
 
-            List<string> parts = new List<string>(patchedName.Split('_', StringSplitOptions.RemoveEmptyEntries));
+            List<string> parts = new List<string>(patchedName.Split(new char[] { '_' }, StringSplitOptions.RemoveEmptyEntries));
 
             StringBuilder nameBuilder = new StringBuilder();
 

@@ -6,8 +6,8 @@ using Core.Clang;
 using LibUsbDotNet.Generator.Primitives;
 using System;
 using System.Collections.Generic;
-using System.Diagnostics;
 using System.Text;
+using Core.Clang.Documentation.Doxygen;
 
 namespace LibUsbDotNet.Generator
 {
@@ -226,8 +226,8 @@ namespace LibUsbDotNet.Generator
             // - Full Comment
             // - Paragraph Comment or ParamCommand comment
             // - Text Comment
-            var fullComment = cursor.GetParsedComment();
-            var fullCommentKind = fullComment.Kind;
+            var fullComment = Comment.FromCursor(cursor);
+            var fullCommentKind = fullComment.GetKind();
             var fullCommentChildren = fullComment.GetNumChildren();
 
             if (fullCommentKind != CommentKind.FullComment || fullCommentChildren < 1)
@@ -237,10 +237,10 @@ namespace LibUsbDotNet.Generator
 
             StringBuilder comment = new StringBuilder();
 
-            for (int i = 0; i < fullCommentChildren; i++)
+            for (uint i = 0; i < fullCommentChildren; i++)
             {
                 var childComment = fullComment.GetChild(i);
-                var childCommentKind = childComment.Kind;
+                var childCommentKind = childComment.GetKind();
 
                 if (childCommentKind != CommentKind.Paragraph
                     && childCommentKind != CommentKind.ParamCommand
@@ -262,9 +262,9 @@ namespace LibUsbDotNet.Generator
                 {
                     comment.Append(text);
                 }
-                else if (childCommentKind == CommentKind.BlockCommand)
+                else if (childCommentKind == CommentKind.BlockCommand && childComment is BlockCommandComment blockCommandComment)
                 {
-                    var name = childComment.GetCommandName();
+                    var name = blockCommandComment.GetCommandName();
                     throw new NotImplementedException();
                 }
             }
@@ -274,11 +274,11 @@ namespace LibUsbDotNet.Generator
 
         private static void GetCommentInnerText(Comment comment, StringBuilder builder)
         {
-            var commentKind = comment.Kind;
+            var commentKind = comment.GetKind();
 
             if (commentKind == CommentKind.Text)
             {
-                var text = comment.GetText();
+                var text = comment.GetNormalizedText();
                 text = text.Trim();
 
                 if (!string.IsNullOrWhiteSpace(text))
@@ -292,7 +292,7 @@ namespace LibUsbDotNet.Generator
                 // Recurse
                 var childCount = comment.GetNumChildren();
 
-                for (int i = 0; i < childCount; i++)
+                for (uint i = 0; i < childCount; i++)
                 {
                     var child = comment.GetChild(i);
                     GetCommentInnerText(child, builder);
