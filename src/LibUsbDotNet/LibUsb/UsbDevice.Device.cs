@@ -19,13 +19,11 @@
 // visit www.gnu.org.
 // 
 //
-//
-//
 
+using System;
 using LibUsbDotNet.Info;
-using System.Collections.Generic;
 using System.Collections.ObjectModel;
-using System.Linq;
+using System.Runtime.InteropServices;
 
 namespace LibUsbDotNet.LibUsb;
 
@@ -107,13 +105,7 @@ public partial class UsbDevice
     /// <summary>
     /// Get the number of the bus that a device is connected to.
     /// </summary>
-    public byte BusNumber
-    {
-        get
-        {
-            return NativeMethods.GetBusNumber(this.device);
-        }
-    }
+    public byte BusNumber => NativeMethods.GetBusNumber(this.device);
 
     /// <summary>
     /// Gets the number of the port that a device is connected to.
@@ -129,30 +121,22 @@ public partial class UsbDevice
     /// or even match the order in which ports have been numbered by the HUB/HCD manufacturer.
     /// </para>
     /// </remarks>
-    public byte PortNumber
-    {
-        get
-        {
-            return NativeMethods.GetPortNumber(this.device);
-        }
-    }
+    public byte PortNumber => NativeMethods.GetPortNumber(this.device);
 
     /// <summary>
     /// Gets the list of all port numbers from root for the specified device.
     /// </summary>
-    public unsafe List<byte> PortNumbers
+    public unsafe ReadOnlyCollection<byte> PortNumbers
     {
         get
         {
-            byte[] portNumbers = new byte[8];
+            Span<byte> portNumbers = stackalloc byte[8];
             int numPorts;
                 
-            fixed (byte* ptr = portNumbers)
-            {
+            fixed (byte* ptr = &MemoryMarshal.GetReference(portNumbers))
                 numPorts = NativeMethods.GetPortNumbers(this.device, ptr, portNumbers.Length).GetValueOrThrow();
-            }
 
-            return portNumbers.Take(numPorts).ToList();
+            return new ReadOnlyCollection<byte>(portNumbers[..numPorts].ToArray());
         }
     }
 
@@ -172,7 +156,7 @@ public partial class UsbDevice
         }
         else
         {
-            return new UsbDevice(parent);
+            return new UsbDevice(parent, originatingContext);
         }
     }
 

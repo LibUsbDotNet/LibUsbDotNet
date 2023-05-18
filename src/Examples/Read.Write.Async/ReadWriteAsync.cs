@@ -1,17 +1,16 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics;
+using System.Linq;
 using System.Text;
-using System.Text.RegularExpressions;
-using System.Threading;
+using System.Threading.Tasks;
 using LibUsbDotNet;
-using LibUsbDotNet.Internal;
 using LibUsbDotNet.Main;
-using LibUsbDotNet.LudnMonoLibUsb;
 using LibUsbDotNet.LibUsb;
 
 namespace Examples;
 
-internal class ReadWriteAsync
+internal static class ReadWriteAsync
 {
     public static IUsbDevice MyUsbDevice;
 
@@ -21,16 +20,64 @@ internal class ReadWriteAsync
 
     #endregion
 
-    public static void Main(string[] args)
+    private static readonly Stopwatch TransferTimer = new Stopwatch();
+
+    private enum TransferType
+    {
+        Read,
+        Write
+    }
+        
+    private class TransferHandle
+    {
+        public TransferType Type { get; }
+        public Error Error { get; }
+        public int TransferLength { get; }
+        public double CompletionTime { get; }
+        public int Id { get; }
+        public string Data { get; }
+
+        public TransferHandle(TransferType type, Error error, int transferLength, double completionTime, int id, string data)
+        {
+            Type = type;
+            Error = error;
+            TransferLength = transferLength;
+            CompletionTime = completionTime;
+            Id = id;
+            Data = data;
+        }
+    }
+        
+    private static async Task<TransferHandle> ReadTransfer(int id, UsbEndpointReader reader, byte[] readBuffer)
+    {
+        var result = await reader.ReadAsync(readBuffer, 0, readBuffer.Length, 100);
+        return new TransferHandle(TransferType.Read, result.error, result.transferLength, TransferTimer.Elapsed.TotalMilliseconds, id, Encoding.Default.GetString(readBuffer, 0, result.transferLength));
+    }
+        
+    private static async Task<TransferHandle> WriteTransfer(int id, UsbEndpointWriter writer, byte[] bytesToSend)
+    {
+        var result = await writer.WriteAsync(bytesToSend, 0, bytesToSend.Length, 100);
+        return new TransferHandle(TransferType.Write, result.error, result.transferLength, TransferTimer.Elapsed.TotalMilliseconds, id, Encoding.Default.GetString(bytesToSend, 0, result.transferLength));
+    }
+        
+    public static async Task Main(string[] args)
     {
         Error ec = Error.Success;
-
+            
         using (UsbContext context = new UsbContext())
         {
             try
             {
                 // Find and open the usb device.
                 MyUsbDevice = context.Find(MyUsbFinder);
+
+                if (MyUsbDevice is null)
+                {
+                    Console.WriteLine("Can't find device.");
+                    return;
+                }
+                    
+                MyUsbDevice.Open();
 
                 // If the device is open and ready
                 if (MyUsbDevice == null) throw new Exception("Device Not Found.");
@@ -57,47 +104,30 @@ internal class ReadWriteAsync
 
                 // open write endpoint 1.
                 var writer = MyUsbDevice.OpenEndpointWriter(WriteEndpointID.Ep01);
-
-                // the write test data.
-                string testWriteString = "ABCDEFGH";
-
-                Error ecWrite;
-                Error ecRead;
-                int transferredOut;
-                int transferredIn;
-                UsbTransfer usbWriteTransfer;
-                UsbTransfer usbReadTransfer;
-                byte[] bytesToSend = Encoding.Default.GetBytes(testWriteString);
+                    
                 byte[] readBuffer = new byte[1024];
-                int testCount = 0;
-                do
+                List<Task<TransferHandle>> transfers = new();
+                TransferTimer.Start();
+                for (int testCount = 0; testCount < 10; testCount++)
                 {
                     // Create and submit transfer
-                    ecRead = reader.SubmitAsyncTransfer(readBuffer, 0, readBuffer.Length, 100, out usbReadTransfer);
-                    if (ecRead != Error.Success) throw new Exception("Submit Async Read Failed.");
+                    var usbReadTransfer = ReadTransfer(testCount, reader, readBuffer);
+                    var usbWriteTransfer = WriteTransfer(testCount, writer, Encoding.Default.GetBytes(TransferTimer.Elapsed.TotalMilliseconds.ToString()));
+                    transfers.Add(usbReadTransfer);
+                    transfers.Add(usbWriteTransfer);
 
-                    ecWrite = writer.SubmitAsyncTransfer(bytesToSend, 0, bytesToSend.Length, 100, out usbWriteTransfer);
-                    if (ecWrite != Error.Success)
-                    {
-                        usbReadTransfer.Dispose();
-                        throw new Exception("Submit Async Write Failed.");
-                    }
+                    // TODO: Cancellation not supported yet
+                    // if (!usbWriteTransfer.IsCompleted) usbWriteTransfer.Cancel();
+                    // if (!usbReadTransfer.IsCompleted) usbReadTransfer.Cancel();
+                }
 
-                    WaitHandle.WaitAll(new WaitHandle[] { usbWriteTransfer.AsyncWaitHandle, usbReadTransfer.AsyncWaitHandle }, 200, false);
-                    if (!usbWriteTransfer.IsCompleted) usbWriteTransfer.Cancel();
-                    if (!usbReadTransfer.IsCompleted) usbReadTransfer.Cancel();
+                var completedTransfers = await Task.WhenAll(transfers);
 
-                    ecWrite = usbWriteTransfer.Wait(out transferredOut);
-                    ecRead = usbReadTransfer.Wait(out transferredIn);
-
-                    usbWriteTransfer.Dispose();
-                    usbReadTransfer.Dispose();
-
-                    Console.WriteLine("Read  :{0} Error:{1}", transferredIn, ecRead);
-                    Console.WriteLine("Write :{0} Error:{1}", transferredOut, ecWrite);
-                    Console.WriteLine("Data  :" + Encoding.Default.GetString(readBuffer, 0, transferredIn));
-                    testCount++;
-                } while (testCount < 5);
+                foreach (var completedTransfer in completedTransfers.OrderBy(transfer => transfer.CompletionTime))
+                {
+                    Console.WriteLine($"{completedTransfer.Type} transfer #{completedTransfer.Id} completed @ {completedTransfer.CompletionTime} ms with Error-{completedTransfer.Error} Length-{completedTransfer.TransferLength} Data-{completedTransfer.Data}");
+                }
+                    
                 Console.WriteLine("\r\nDone!\r\n");
             }
             catch (Exception ex)

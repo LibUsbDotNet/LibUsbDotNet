@@ -19,8 +19,6 @@
 // visit www.gnu.org.
 // 
 //
-//
-//
 
 using System;
 
@@ -33,6 +31,11 @@ namespace LibUsbDotNet.LibUsb;
 public partial class UsbDevice : IUsbDevice, IDisposable, ICloneable
 {
     private bool disposed;
+        
+    /// <summary>
+    /// The <see cref="UsbContext"/> the device originated from.
+    /// </summary>
+    private readonly UsbContext originatingContext;
 
     /// <summary>
     /// Initializes a new instance of the <see cref="UsbDevice"/> class.
@@ -41,7 +44,8 @@ public partial class UsbDevice : IUsbDevice, IDisposable, ICloneable
     /// A device handle for this device. In most cases, you will want to use the
     /// <see cref="UsbContext.List()"/> methods to list all devices.
     /// </param>
-    public UsbDevice(Device device)
+    /// <param name="originatingContext">The <see cref="UsbContext"/> the device originated from.</param>
+    public UsbDevice(Device device, UsbContext originatingContext)
     {
         if (device == null)
         {
@@ -54,6 +58,7 @@ public partial class UsbDevice : IUsbDevice, IDisposable, ICloneable
         }
 
         this.device = device;
+        this.originatingContext = originatingContext;
     }
 
     /// <summary>
@@ -64,7 +69,7 @@ public partial class UsbDevice : IUsbDevice, IDisposable, ICloneable
     /// </returns>
     public IUsbDevice Clone()
     {
-        return new UsbDevice(NativeMethods.RefDevice(this.device));
+        return new UsbDevice(NativeMethods.RefDevice(this.device), originatingContext);
     }
 
     /// <inheritdoc/>
@@ -87,7 +92,7 @@ public partial class UsbDevice : IUsbDevice, IDisposable, ICloneable
             this.disposed = true;
         }
     }
-
+        
     /// <inheritdoc/>
     public override string ToString()
     {
@@ -102,13 +107,13 @@ public partial class UsbDevice : IUsbDevice, IDisposable, ICloneable
     }
 
     /// <summary>
-    /// Throws a <see cref="ObjectDisposedException"/> if this device has been disposed of.
+    /// Throws a <see cref="ObjectDisposedException"/> if this device or the <see cref="originatingContext"/> of the device has been disposed of.
     /// </summary>
     protected void EnsureNotDisposed()
     {
         if (this.disposed)
-        {
             throw new ObjectDisposedException(nameof(UsbDevice));
-        }
+        if (this.originatingContext.IsDisposed)
+            throw new ObjectDisposedException(nameof(UsbContext), $"Cannot operate on {nameof(UsbDevice)} whose {nameof(originatingContext)} has been disposed.");
     }
 }

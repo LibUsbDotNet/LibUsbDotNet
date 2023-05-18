@@ -19,8 +19,6 @@
 // visit www.gnu.org.
 // 
 //
-//
-//
 
 using LibUsbDotNet.Main;
 using System;
@@ -42,12 +40,43 @@ public class UsbContext : IUsbContext
     private readonly Context context;
 
     /// <summary>
+    /// Thread for event handling.
+    /// </summary>
+    private Thread eventHandlingThread;
+        
+    /// <summary>
+    /// ID of the underlying <see cref="Context"/>.
+    /// </summary>
+    public string HandleId => context.ToString();
+
+    /// <summary>
     /// Tracks whether this context has been disposed of, or not.
     /// </summary>
-    private bool disposed = false;
+    public bool IsDisposed { get; private set; }
 
-    private Thread eventHandlingThread;
-    private bool shouldHandleEvents = false;
+    /// <summary>
+    /// Tracking list of all devices that are open on this context.
+    /// </summary>
+    internal List<UsbDevice> OpenDevices { get; }
+
+    /// <summary>
+    /// Read-only list of all devices that are open on this context.
+    /// </summary>
+    public ReadOnlyCollection<UsbDevice> ReadOnlyOpenDevices => 
+        new ReadOnlyCollection<UsbDevice>(OpenDevices);
+
+    /// <summary>
+    /// Tracks when the context is currently being disposed.
+    /// <remarks>
+    /// Used for preventing the devices in <see cref="OpenDevices"/> from modifying the list when they are closed in <see cref="Dispose()"/>.
+    /// </remarks>
+    /// </summary>
+    internal bool IsDisposing { get; private set; }
+
+    /// <summary>
+    /// Allows the event handling thread to return when set to 1.
+    /// </summary>
+    internal int stopHandlingEvents;
 
     /// <summary>
     /// Initializes a new instance of the <see cref="UsbContext"/> class.
@@ -57,8 +86,9 @@ public class UsbContext : IUsbContext
         IntPtr contextHandle = IntPtr.Zero;
         NativeMethods.Init(ref contextHandle).ThrowOnError();
         this.context = Context.DangerousCreate(contextHandle);
+        OpenDevices = new List<UsbDevice>();
     }
-    
+
     ~UsbContext()
     {
         // Put cleanup code in Dispose(bool disposing).
@@ -106,7 +136,7 @@ public class UsbContext : IUsbContext
         for (int i = 0; i < deviceCount.ToInt32(); i++)
         {
             Device device = Device.DangerousCreate(list[i]);
-            devices.Add(new UsbDevice(device));
+            devices.Add(new UsbDevice(device, this));
         }
 
         NativeMethods.FreeDeviceList(list, unrefDevices: 0 /* Do not unreference the devices */);
@@ -182,53 +212,76 @@ public class UsbContext : IUsbContext
         UsbDeviceCollection devices = new UsbDeviceCollection(matchingDevices);
         return devices;
     }
-    
-    /// <inheritdoc/>
+
+    /// <summary>
+    /// Starts the event handling thread.
+    /// </summary>
     public void StartHandlingEvents()
     {
-        if (this.eventHandlingThread == null)
+        if (this.eventHandlingThread != null)
+            return;
+            
+        this.eventHandlingThread = new Thread(this.HandleEvents)
         {
-            this.eventHandlingThread = new Thread(this.HandleEvents);
-            this.shouldHandleEvents = true;
-            this.eventHandlingThread.Start();
-        }
+            IsBackground = true
+        };
+
+        this.stopHandlingEvents = 0;
+        this.eventHandlingThread.Start();
     }
 
-    /// <inheritdoc/>
+    /// <summary>
+    /// Attempts to stop the event handling thread.
+    /// </summary>
+    /// <remarks>
+    /// Note that <see cref="NativeMethods.HandleEventsCompleted"/> must be woken up an event in order for this method to return.
+    /// Ideally this will happen when the last device in <see cref="OpenDevices"/> is closed.
+    /// </remarks>
     public void StopHandlingEvents()
     {
-        if (this.eventHandlingThread != null)
-        {
-            this.shouldHandleEvents = false;
-            this.eventHandlingThread.Join();
-        }
-        else
-        {
-            throw new InvalidOperationException();
-        }
+        if (this.eventHandlingThread == null)
+            return;
+            
+        this.eventHandlingThread.Join();
+        this.eventHandlingThread = null;
     }
 
-    protected virtual void Dispose(bool disposing)
+    protected virtual void Dispose(bool disposeManagedObjects)
     {
-        if (!this.disposed)
+        if (IsDisposed) 
+            return;
+            
+        IsDisposing = true;
+            
+        // Not sure what should go here, what resources should be cleaned up by explicit Dispose but not in the finalizer?
+        if (disposeManagedObjects)
         {
-            if (disposing)
-            {
-                // Dispose managed state (managed objects).
-            }
-
-            // Free unmanaged resources (unmanaged objects) and override a finalizer below.
-            // Set large fields to null.
-            this.disposed = true;
+            // Dispose managed state (managed objects).
         }
+
+        // Close any devices still open on this context.
+        foreach (var openDevice in OpenDevices)
+        {
+            openDevice.Dispose();
+        }
+            
+        OpenDevices.Clear();
+
+        // Ideally this shouldn't be necessary, as StopHandlingEvents should be called when the last open device is closed.
+        if (this.stopHandlingEvents == 0) 
+            StopHandlingEvents();
+            
+        // Dispose of underlying context handle.
+        context.Dispose();
+            
+        IsDisposed = true;
     }
 
     private void HandleEvents()
     {
-        while (this.shouldHandleEvents)
+        while (this.stopHandlingEvents == 0)
         {
-            int completed = this.shouldHandleEvents ? 0 : 1;
-            NativeMethods.HandleEventsCompleted(this.context, ref completed).ThrowOnError();
+            NativeMethods.HandleEventsCompleted(this.context, ref stopHandlingEvents).ThrowOnError();
         }
     }
 }

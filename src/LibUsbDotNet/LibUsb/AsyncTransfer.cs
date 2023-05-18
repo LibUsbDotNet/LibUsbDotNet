@@ -19,102 +19,131 @@
 // visit www.gnu.org.
 // 
 //
-//
-//
 
 using LibUsbDotNet.Main;
 using System;
+using System.Buffers;
 using System.Collections.Concurrent;
 using System.Runtime.InteropServices;
-using System.Threading;
+using System.Threading.Tasks;
 
 namespace LibUsbDotNet.LibUsb;
 
-public class AsyncTransfer
+/// <summary>
+/// Handles submission and awaiting of asynchronous transfers.
+/// </summary>
+internal static class AsyncTransfer
 {
-    private static readonly ConcurrentDictionary<int, ManualResetEventSlim> Transfers = new ConcurrentDictionary<int, ManualResetEventSlim>();
-    private static readonly object TransferLock = new object();
-    private static int transferIndex = 0;
-
-    private static unsafe TransferDelegate transferDelegate = new TransferDelegate(Callback);
-    private static IntPtr transferDelegatePtr = Marshal.GetFunctionPointerForDelegate(transferDelegate);
-
-    public static Error TransferAsync(
-        DeviceHandle device,
-        byte endPoint,
-        EndpointType endPointType,
-        IntPtr buffer,
-        int offset,
-        int length,
-        int timeout,
-        out int transferLength)
+    private class TransferCallbackCompletion : IDisposable
     {
-        return TransferAsync(device, endPoint, endPointType, buffer, offset, length, timeout, 0, out transferLength);
-    }
-
-    internal static unsafe Error TransferAsync(
-        DeviceHandle device,
-        byte endPoint,
-        EndpointType endPointType,
-        IntPtr buffer,
-        int offset,
-        int length,
-        int timeout,
-        int isoPacketSize,
-        out int transferLength)
-    {
-        if (device == null)
+        private MemoryHandle _memoryHandle;
+        public TaskCompletionSource<(Error error, int transferLength)> TaskCompletionSource { get; }
+            
+        public TransferCallbackCompletion(
+            TaskCompletionSource<(Error error, int transferLength)> taskCompletionSource, MemoryHandle memoryHandle)
         {
-            throw new ArgumentNullException(nameof(device));
+            TaskCompletionSource = taskCompletionSource;
+            _memoryHandle = memoryHandle;
         }
+            
+        public void Dispose() => _memoryHandle.Dispose();
+    }
+    
+    private static readonly object TransferLock = new object();
+    private static int _transferIndex;
+
+    private static readonly unsafe TransferDelegate TransferCallback = new TransferDelegate(Callback);
+    private static readonly IntPtr TransferDelegatePtr = 
+        Marshal.GetFunctionPointerForDelegate(TransferCallback);
+    private static readonly ConcurrentDictionary<int, TransferCallbackCompletion>
+        TransferDictionary = new();
+
+    public static unsafe Task<(Error error, int transferLength)> TransferAsync(
+        DeviceHandle device,
+        byte endPoint,
+        EndpointType endPointType,
+        Memory<byte> buffer,
+        int offset,
+        int length,
+        int timeout,
+        int isoPacketSize = 0)
+    {
+        if (device == null) 
+            throw new ArgumentNullException(nameof(device));
 
         if (offset < 0)
-        {
             throw new ArgumentOutOfRangeException(nameof(offset));
-        }
 
-        // Determin the amount of isosynchronous packets
+        int transferId;
+        
+        lock (TransferLock)
+        {
+            if (_transferIndex == int.MaxValue) // Potential edge case for long-running application?
+                _transferIndex = 0;
+            transferId = _transferIndex++;
+        }
+        
+        var memoryHandle = buffer.Pin();
+        var transferCompletion =
+            new TaskCompletionSource<(Error error, int transferLength)>(TaskCreationOptions.RunContinuationsAsynchronously);
+        var transferCallbackCompletion = new TransferCallbackCompletion(transferCompletion, memoryHandle);
+
+        if (!TransferDictionary.TryAdd(transferId, transferCallbackCompletion))
+            throw new InvalidOperationException(
+                $"{transferId} already exists in {nameof(TransferDictionary)}");
+
+        // Determine the amount of iso-synchronous packets
         int numIsoPackets = 0;
 
         if (isoPacketSize > 0)
-        {
             numIsoPackets = length / isoPacketSize;
-        }
 
-        var transfer = NativeMethods.AllocTransfer(numIsoPackets);
-
-        ManualResetEventSlim mre = new ManualResetEventSlim(false);
-
-        int transferId = 0;
-
-        lock (TransferLock)
-        {
-            transferId = transferIndex++;
-        }
-
-        Transfers.AddOrUpdate(transferId, mre, (index, data) => throw new NotImplementedException());
+        var transfer = NativeMethods.AllocTransfer(numIsoPackets); // TODO: Check if transfer is null.
 
         // Fill common properties
         transfer->DevHandle = device.DangerousGetHandle();
         transfer->Endpoint = endPoint;
         transfer->Timeout = (uint)timeout;
         transfer->Type = (byte)endPointType;
-        transfer->Buffer = (byte*)buffer + offset;
+        transfer->Buffer = (byte*)memoryHandle.Pointer + offset;
         transfer->Length = length;
         transfer->NumIsoPackets = numIsoPackets;
         transfer->Flags = (byte)TransferFlags.None;
-        transfer->Callback = transferDelegatePtr;
+        transfer->Callback = TransferDelegatePtr;
         transfer->UserData = new IntPtr(transferId);
 
-        NativeMethods.SubmitTransfer(transfer).ThrowOnError();
+        var error = NativeMethods.SubmitTransfer(transfer);
 
-        transferLength = 0;
-        mre.Wait();
+        if (error != Error.Success)
+        {
+            transferCallbackCompletion.Dispose();
+            error.ThrowOnError();
+        }
 
-        transferLength = transfer->ActualLength;
+        return transferCompletion.Task;
+    }
 
-        Error ret = Error.Success;
-        switch (transfer->Status)
+    private static unsafe void Callback(Transfer* transfer)
+    {
+        int transferId = transfer->UserData.ToInt32();
+        if (TransferDictionary.TryRemove(transferId, out var transferCompletion))
+        {
+            transferCompletion.TaskCompletionSource.TrySetResult((GetErrorFromTransferStatus(transfer->Status), transfer->ActualLength));
+            transferCompletion.Dispose();
+        }
+        else
+        {
+            throw new InvalidOperationException(
+                $"Can't find transfer id # {transferId} in {nameof(TransferDictionary)}");
+        }
+        NativeMethods.FreeTransfer(transfer);
+    }
+
+    private static Error GetErrorFromTransferStatus(TransferStatus status)
+    {
+        Error ret;
+
+        switch (status)
         {
             case TransferStatus.Completed:
                 ret = Error.Success;
@@ -146,15 +175,6 @@ public class AsyncTransfer
                 break;
         }
 
-        NativeMethods.FreeTransfer(transfer);
-
         return ret;
-    }
-
-    private static unsafe void Callback(Transfer* transfer)
-    {
-        int id = transfer->UserData.ToInt32();
-        Transfers.TryRemove(id, out ManualResetEventSlim transferData);
-        transferData.Set();
     }
 }
