@@ -9,6 +9,9 @@ using LibUsbDotNet.Main;
 
 namespace LibUsbDotNet.LibUsb;
 
+/// <summary>
+/// Class used for asynchronously waiting for <see cref="UsbDevice"/> arrivals.
+/// </summary>
 public class DeviceManager : IDisposable
 {
     private readonly bool _disposeContext;
@@ -16,21 +19,49 @@ public class DeviceManager : IDisposable
     private readonly ConcurrentDictionary<UsbDeviceFinder, TaskCompletionSource<UsbDevice>> _deviceArrivedTasks = new();
     private readonly ConcurrentDictionary<UsbDeviceFinder, TaskCompletionSource<CachedDeviceInfo>> _deviceLeftTasks = new();
 
+    private bool _hasStarted;
+
+    /// <summary>
+    /// Class used for asynchronously waiting for <see cref="UsbDevice"/> arrivals.
+    /// </summary>
+    /// <param name="context"><see cref="UsbContext"/> to use.</param>
+    /// <param name="disposeContext">Dispose the <see cref="UsbContext"/> on <see cref="DeviceManager"/> disposal.</param>
     public DeviceManager(UsbContext context, bool disposeContext = false)
     {
         _context = context;
         _disposeContext = disposeContext;
     }
 
+    /// <summary>
+    /// Registers the needed event for <see cref="DeviceManager"/> methods to work.
+    /// </summary>
     public void Start()
     {
         _context.RegisterHotPlug();
         _context.DeviceEvent += OnDeviceEvent;
+        _hasStarted = true;
+    }
+
+    private void EnsureStarted()
+    {
+        if (!_hasStarted)
+            throw new InvalidOperationException($"{nameof(Start)} method must be called before waiting for devices.");
     }
 
 #nullable enable
+    /// <summary>
+    /// Waits for a <see cref="UsbDevice"/> that matches the <see cref="UsbDeviceFinder"/>.
+    /// Will return immediately if device is already connected.
+    /// </summary>
+    /// <param name="finder"><see cref="UsbDeviceFinder"/> to match.</param>
+    /// <param name="maxWaitTime">Maximum time to wait for the device's arrival.</param>
+    /// <param name="cancellationToken">Cancellation token.</param>
+    /// <param name="stableConnectionInterval">Ensure the new device stays connected for at least this amount of time.</param>
+    /// <returns><see cref="UsbDevice"/> that arrived, null on timeout.</returns>
     public async Task<UsbDevice?> WaitForDeviceArrival(UsbDeviceFinder finder, TimeSpan maxWaitTime, CancellationToken cancellationToken, TimeSpan stableConnectionInterval = default)
     {
+        EnsureStarted();
+        
         UsbDevice? arrivedDevice = _context.DeviceInfoDictionary.Keys.FirstOrDefault(finder.Check);
 
         if (arrivedDevice is not null)
@@ -39,8 +70,20 @@ public class DeviceManager : IDisposable
         return await WaitForNewDeviceArrival(finder, maxWaitTime, cancellationToken, stableConnectionInterval).ConfigureAwait(false);
     }
 
+    /// <summary>
+    /// Waits for a new arrival of a <see cref="UsbDevice"/> that matches the <see cref="UsbDeviceFinder"/>.
+    /// Will not return an already existing device.
+    /// </summary>
+    /// <remarks>Useful if a device is expected to disconnect and then reconnect (i.e. on a reboot).</remarks>
+    /// <param name="finder"><see cref="UsbDeviceFinder"/> to match.</param>
+    /// <param name="maxWaitTime">Maximum time to wait for the device's arrival.</param>
+    /// <param name="cancellationToken">Cancellation token.</param>
+    /// <param name="stableConnectionInterval">Ensure the new device stays connected for at least this amount of time.</param>
+    /// <returns><see cref="UsbDevice"/> that arrived, null on timeout.</returns>
     public async Task<UsbDevice?> WaitForNewDeviceArrival(UsbDeviceFinder finder, TimeSpan maxWaitTime, CancellationToken cancellationToken, TimeSpan stableConnectionInterval = default)
     {
+        EnsureStarted();
+        
         bool stableConnection = false;
         var timer = Stopwatch.StartNew();
         UsbDevice? arrivedDevice = null;
@@ -135,9 +178,21 @@ public class DeviceManager : IDisposable
         }
     }
 
-    public void Dispose()
+    /// <summary>
+    /// Unregisters event needed for wait methods to work.
+    /// </summary>
+    public void Stop()
     {
         _context.DeviceEvent -= OnDeviceEvent;
+        _hasStarted = false;
+    }
+
+    /// <summary>
+    /// Stops the <see cref="DeviceManager"/> and disposes the <see cref="UsbContext"/> if needed.
+    /// </summary>
+    public void Dispose()
+    {
+        Stop();
         if (_disposeContext)
             _context.Dispose();
     }
