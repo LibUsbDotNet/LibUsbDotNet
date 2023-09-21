@@ -1,0 +1,440 @@
+﻿<!DOCTYPE html>
+<!--[if IE]><![endif]-->
+<html>
+  
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+    <title>Struct EndpointDescriptor
+   </title>
+    <meta name="viewport" content="width=device-width">
+    <meta name="title" content="Struct EndpointDescriptor
+   ">
+    <meta name="generator" content="docfx 2.59.4.0">
+    
+    <link rel="shortcut icon" href="../favicon.ico">
+    <link rel="stylesheet" href="../styles/docfx.vendor.css">
+    <link rel="stylesheet" href="../styles/docfx.css">
+    <link rel="stylesheet" href="../styles/main.css">
+    <meta property="docfx:navrel" content="../toc.html">
+    <meta property="docfx:tocrel" content="toc.html">
+    
+    
+    
+  </head>
+  <body data-spy="scroll" data-target="#affix" data-offset="120">
+    <div id="wrapper">
+      <header>
+        
+        <nav id="autocollapse" class="navbar navbar-inverse ng-scope" role="navigation">
+          <div class="container">
+            <div class="navbar-header">
+              <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#navbar">
+                <span class="sr-only">Toggle navigation</span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+              </button>
+              
+              <a class="navbar-brand" href="../index.html">
+                <img id="logo" class="svg" src="../logo.svg" alt="">
+              </a>
+            </div>
+            <div class="collapse navbar-collapse" id="navbar">
+              <form class="navbar-form navbar-right" role="search" id="search">
+                <div class="form-group">
+                  <input type="text" class="form-control" id="search-query" placeholder="Search" autocomplete="off">
+                </div>
+              </form>
+            </div>
+          </div>
+        </nav>
+        
+        <div class="subnav navbar navbar-default">
+          <div class="container hide-when-search" id="breadcrumb">
+            <ul class="breadcrumb">
+              <li></li>
+            </ul>
+          </div>
+        </div>
+      </header>
+      <div role="main" class="container body-content hide-when-search">
+        
+        <div class="sidenav hide-when-search">
+          <a class="btn toc-toggle collapse" data-toggle="collapse" href="#sidetoggle" aria-expanded="false" aria-controls="sidetoggle">Show / Hide Table of Contents</a>
+          <div class="sidetoggle collapse" id="sidetoggle">
+            <div id="sidetoc"></div>
+          </div>
+        </div>
+        <div class="article row grid-right">
+          <div class="col-md-10">
+            <article class="content wrap" id="_content" data-uid="LibUsbDotNet.EndpointDescriptor">
+  
+  
+  <h1 id="LibUsbDotNet_EndpointDescriptor" data-uid="LibUsbDotNet.EndpointDescriptor" class="text-break">Struct EndpointDescriptor
+  </h1>
+  <div class="markdown level0 summary"><p>A structure representing the standard USB endpoint descriptor. This
+descriptor is documented in section 9.6.6 of the USB 3.0 specification.
+All multiple-byte fields are represented in host-endian format.</p>
+</div>
+  <div class="markdown level0 conceptual"></div>
+  <h6><strong>Namespace</strong>: <a class="xref" href="LibUsbDotNet.html">LibUsbDotNet</a></h6>
+  <h6><strong>Assembly</strong>: LibUsbDotNet.dll</h6>
+  <h5 id="LibUsbDotNet_EndpointDescriptor_syntax">Syntax</h5>
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public struct EndpointDescriptor</code></pre>
+  </div>
+  <h3 id="fields">Fields
+  </h3>
+  <span class="small pull-right mobile-hide">
+    <span class="divider">|</span>
+    <a href="https://github.com/LibUsbDotNet/LibUsbDotNet/new/master/apiSpec/new?filename=LibUsbDotNet_EndpointDescriptor_Attributes.md&amp;value=---%0Auid%3A%20LibUsbDotNet.EndpointDescriptor.Attributes%0Asummary%3A%20'*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A">Improve this Doc</a>
+  </span>
+  <span class="small pull-right mobile-hide">
+    <a href="https://github.com/LibUsbDotNet/LibUsbDotNet/blob/master/src/LibUsbDotNet/Generated/EndpointDescriptor.cs/#L70">View Source</a>
+  </span>
+  <h4 id="LibUsbDotNet_EndpointDescriptor_Attributes" data-uid="LibUsbDotNet.EndpointDescriptor.Attributes">Attributes</h4>
+  <div class="markdown level1 summary"><p>Attributes which apply to the endpoint when it is configured using
+the bConfigurationValue. Bits 0:1 determine the transfer type and
+correspond to
+isochronous endpoints and correspond to
+Bits 4:5 are also only used for isochronous endpoints and correspond to</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+  <h5 class="decalaration">Declaration</h5>
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public byte Attributes</code></pre>
+  </div>
+  <h5 class="fieldValue">Field Value</h5>
+  <table class="table table-bordered table-striped table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><span class="xref">System.Byte</span></td>
+        <td></td>
+      </tr>
+    </tbody>
+  </table>
+  <span class="small pull-right mobile-hide">
+    <span class="divider">|</span>
+    <a href="https://github.com/LibUsbDotNet/LibUsbDotNet/new/master/apiSpec/new?filename=LibUsbDotNet_EndpointDescriptor_DescriptorType.md&amp;value=---%0Auid%3A%20LibUsbDotNet.EndpointDescriptor.DescriptorType%0Asummary%3A%20'*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A">Improve this Doc</a>
+  </span>
+  <span class="small pull-right mobile-hide">
+    <a href="https://github.com/LibUsbDotNet/LibUsbDotNet/blob/master/src/LibUsbDotNet/Generated/EndpointDescriptor.cs/#L54">View Source</a>
+  </span>
+  <h4 id="LibUsbDotNet_EndpointDescriptor_DescriptorType" data-uid="LibUsbDotNet.EndpointDescriptor.DescriptorType">DescriptorType</h4>
+  <div class="markdown level1 summary"><p>Descriptor type. Will have value
+this context.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+  <h5 class="decalaration">Declaration</h5>
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public byte DescriptorType</code></pre>
+  </div>
+  <h5 class="fieldValue">Field Value</h5>
+  <table class="table table-bordered table-striped table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><span class="xref">System.Byte</span></td>
+        <td></td>
+      </tr>
+    </tbody>
+  </table>
+  <span class="small pull-right mobile-hide">
+    <span class="divider">|</span>
+    <a href="https://github.com/LibUsbDotNet/LibUsbDotNet/new/master/apiSpec/new?filename=LibUsbDotNet_EndpointDescriptor_EndpointAddress.md&amp;value=---%0Auid%3A%20LibUsbDotNet.EndpointDescriptor.EndpointAddress%0Asummary%3A%20'*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A">Improve this Doc</a>
+  </span>
+  <span class="small pull-right mobile-hide">
+    <a href="https://github.com/LibUsbDotNet/LibUsbDotNet/blob/master/src/LibUsbDotNet/Generated/EndpointDescriptor.cs/#L61">View Source</a>
+  </span>
+  <h4 id="LibUsbDotNet_EndpointDescriptor_EndpointAddress" data-uid="LibUsbDotNet.EndpointDescriptor.EndpointAddress">EndpointAddress</h4>
+  <div class="markdown level1 summary"><p>The address of the endpoint described by this descriptor. Bits 0:3 are
+the endpoint number. Bits 4:6 are reserved. Bit 7 indicates direction,
+see</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+  <h5 class="decalaration">Declaration</h5>
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public byte EndpointAddress</code></pre>
+  </div>
+  <h5 class="fieldValue">Field Value</h5>
+  <table class="table table-bordered table-striped table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><span class="xref">System.Byte</span></td>
+        <td></td>
+      </tr>
+    </tbody>
+  </table>
+  <span class="small pull-right mobile-hide">
+    <span class="divider">|</span>
+    <a href="https://github.com/LibUsbDotNet/LibUsbDotNet/new/master/apiSpec/new?filename=LibUsbDotNet_EndpointDescriptor_Extra.md&amp;value=---%0Auid%3A%20LibUsbDotNet.EndpointDescriptor.Extra%0Asummary%3A%20'*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A">Improve this Doc</a>
+  </span>
+  <span class="small pull-right mobile-hide">
+    <a href="https://github.com/LibUsbDotNet/LibUsbDotNet/blob/master/src/LibUsbDotNet/Generated/EndpointDescriptor.cs/#L97">View Source</a>
+  </span>
+  <h4 id="LibUsbDotNet_EndpointDescriptor_Extra" data-uid="LibUsbDotNet.EndpointDescriptor.Extra">Extra</h4>
+  <div class="markdown level1 summary"><p>Extra descriptors. If libusb encounters unknown endpoint descriptors,
+it will store them here, should you wish to parse them.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+  <h5 class="decalaration">Declaration</h5>
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public byte *Extra</code></pre>
+  </div>
+  <h5 class="fieldValue">Field Value</h5>
+  <table class="table table-bordered table-striped table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><span class="xref">System.Byte</span>*</td>
+        <td></td>
+      </tr>
+    </tbody>
+  </table>
+  <span class="small pull-right mobile-hide">
+    <span class="divider">|</span>
+    <a href="https://github.com/LibUsbDotNet/LibUsbDotNet/new/master/apiSpec/new?filename=LibUsbDotNet_EndpointDescriptor_ExtraLength.md&amp;value=---%0Auid%3A%20LibUsbDotNet.EndpointDescriptor.ExtraLength%0Asummary%3A%20'*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A">Improve this Doc</a>
+  </span>
+  <span class="small pull-right mobile-hide">
+    <a href="https://github.com/LibUsbDotNet/LibUsbDotNet/blob/master/src/LibUsbDotNet/Generated/EndpointDescriptor.cs/#L102">View Source</a>
+  </span>
+  <h4 id="LibUsbDotNet_EndpointDescriptor_ExtraLength" data-uid="LibUsbDotNet.EndpointDescriptor.ExtraLength">ExtraLength</h4>
+  <div class="markdown level1 summary"><p>Length of the extra descriptors, in bytes.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+  <h5 class="decalaration">Declaration</h5>
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public int ExtraLength</code></pre>
+  </div>
+  <h5 class="fieldValue">Field Value</h5>
+  <table class="table table-bordered table-striped table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><span class="xref">System.Int32</span></td>
+        <td></td>
+      </tr>
+    </tbody>
+  </table>
+  <span class="small pull-right mobile-hide">
+    <span class="divider">|</span>
+    <a href="https://github.com/LibUsbDotNet/LibUsbDotNet/new/master/apiSpec/new?filename=LibUsbDotNet_EndpointDescriptor_Interval.md&amp;value=---%0Auid%3A%20LibUsbDotNet.EndpointDescriptor.Interval%0Asummary%3A%20'*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A">Improve this Doc</a>
+  </span>
+  <span class="small pull-right mobile-hide">
+    <a href="https://github.com/LibUsbDotNet/LibUsbDotNet/blob/master/src/LibUsbDotNet/Generated/EndpointDescriptor.cs/#L80">View Source</a>
+  </span>
+  <h4 id="LibUsbDotNet_EndpointDescriptor_Interval" data-uid="LibUsbDotNet.EndpointDescriptor.Interval">Interval</h4>
+  <div class="markdown level1 summary"><p>Interval for polling endpoint for data transfers.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+  <h5 class="decalaration">Declaration</h5>
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public byte Interval</code></pre>
+  </div>
+  <h5 class="fieldValue">Field Value</h5>
+  <table class="table table-bordered table-striped table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><span class="xref">System.Byte</span></td>
+        <td></td>
+      </tr>
+    </tbody>
+  </table>
+  <span class="small pull-right mobile-hide">
+    <span class="divider">|</span>
+    <a href="https://github.com/LibUsbDotNet/LibUsbDotNet/new/master/apiSpec/new?filename=LibUsbDotNet_EndpointDescriptor_Length.md&amp;value=---%0Auid%3A%20LibUsbDotNet.EndpointDescriptor.Length%0Asummary%3A%20'*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A">Improve this Doc</a>
+  </span>
+  <span class="small pull-right mobile-hide">
+    <a href="https://github.com/LibUsbDotNet/LibUsbDotNet/blob/master/src/LibUsbDotNet/Generated/EndpointDescriptor.cs/#L48">View Source</a>
+  </span>
+  <h4 id="LibUsbDotNet_EndpointDescriptor_Length" data-uid="LibUsbDotNet.EndpointDescriptor.Length">Length</h4>
+  <div class="markdown level1 summary"><p>Size of this descriptor (in bytes)</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+  <h5 class="decalaration">Declaration</h5>
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public byte Length</code></pre>
+  </div>
+  <h5 class="fieldValue">Field Value</h5>
+  <table class="table table-bordered table-striped table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><span class="xref">System.Byte</span></td>
+        <td></td>
+      </tr>
+    </tbody>
+  </table>
+  <span class="small pull-right mobile-hide">
+    <span class="divider">|</span>
+    <a href="https://github.com/LibUsbDotNet/LibUsbDotNet/new/master/apiSpec/new?filename=LibUsbDotNet_EndpointDescriptor_MaxPacketSize.md&amp;value=---%0Auid%3A%20LibUsbDotNet.EndpointDescriptor.MaxPacketSize%0Asummary%3A%20'*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A">Improve this Doc</a>
+  </span>
+  <span class="small pull-right mobile-hide">
+    <a href="https://github.com/LibUsbDotNet/LibUsbDotNet/blob/master/src/LibUsbDotNet/Generated/EndpointDescriptor.cs/#L75">View Source</a>
+  </span>
+  <h4 id="LibUsbDotNet_EndpointDescriptor_MaxPacketSize" data-uid="LibUsbDotNet.EndpointDescriptor.MaxPacketSize">MaxPacketSize</h4>
+  <div class="markdown level1 summary"><p>Maximum packet size this endpoint is capable of sending/receiving.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+  <h5 class="decalaration">Declaration</h5>
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public ushort MaxPacketSize</code></pre>
+  </div>
+  <h5 class="fieldValue">Field Value</h5>
+  <table class="table table-bordered table-striped table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><span class="xref">System.UInt16</span></td>
+        <td></td>
+      </tr>
+    </tbody>
+  </table>
+  <span class="small pull-right mobile-hide">
+    <span class="divider">|</span>
+    <a href="https://github.com/LibUsbDotNet/LibUsbDotNet/new/master/apiSpec/new?filename=LibUsbDotNet_EndpointDescriptor_Refresh.md&amp;value=---%0Auid%3A%20LibUsbDotNet.EndpointDescriptor.Refresh%0Asummary%3A%20'*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A">Improve this Doc</a>
+  </span>
+  <span class="small pull-right mobile-hide">
+    <a href="https://github.com/LibUsbDotNet/LibUsbDotNet/blob/master/src/LibUsbDotNet/Generated/EndpointDescriptor.cs/#L86">View Source</a>
+  </span>
+  <h4 id="LibUsbDotNet_EndpointDescriptor_Refresh" data-uid="LibUsbDotNet.EndpointDescriptor.Refresh">Refresh</h4>
+  <div class="markdown level1 summary"><p>For audio devices only: the rate at which synchronization feedback
+is provided.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+  <h5 class="decalaration">Declaration</h5>
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public byte Refresh</code></pre>
+  </div>
+  <h5 class="fieldValue">Field Value</h5>
+  <table class="table table-bordered table-striped table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><span class="xref">System.Byte</span></td>
+        <td></td>
+      </tr>
+    </tbody>
+  </table>
+  <span class="small pull-right mobile-hide">
+    <span class="divider">|</span>
+    <a href="https://github.com/LibUsbDotNet/LibUsbDotNet/new/master/apiSpec/new?filename=LibUsbDotNet_EndpointDescriptor_SynchAddress.md&amp;value=---%0Auid%3A%20LibUsbDotNet.EndpointDescriptor.SynchAddress%0Asummary%3A%20'*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A">Improve this Doc</a>
+  </span>
+  <span class="small pull-right mobile-hide">
+    <a href="https://github.com/LibUsbDotNet/LibUsbDotNet/blob/master/src/LibUsbDotNet/Generated/EndpointDescriptor.cs/#L91">View Source</a>
+  </span>
+  <h4 id="LibUsbDotNet_EndpointDescriptor_SynchAddress" data-uid="LibUsbDotNet.EndpointDescriptor.SynchAddress">SynchAddress</h4>
+  <div class="markdown level1 summary"><p>For audio devices only: the address if the synch endpoint</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+  <h5 class="decalaration">Declaration</h5>
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public byte SynchAddress</code></pre>
+  </div>
+  <h5 class="fieldValue">Field Value</h5>
+  <table class="table table-bordered table-striped table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><span class="xref">System.Byte</span></td>
+        <td></td>
+      </tr>
+    </tbody>
+  </table>
+</article>
+          </div>
+          
+          <div class="hidden-sm col-md-2" role="complementary">
+            <div class="sideaffix">
+              <div class="contribution">
+                <ul class="nav">
+                  <li>
+                    <a href="https://github.com/LibUsbDotNet/LibUsbDotNet/new/master/apiSpec/new?filename=LibUsbDotNet_EndpointDescriptor.md&amp;value=---%0Auid%3A%20LibUsbDotNet.EndpointDescriptor%0Asummary%3A%20'*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A" class="contribution-link">Improve this Doc</a>
+                  </li>
+                  <li>
+                    <a href="https://github.com/LibUsbDotNet/LibUsbDotNet/blob/master/src/LibUsbDotNet/Generated/EndpointDescriptor.cs/#L42" class="contribution-link">View Source</a>
+                  </li>
+                </ul>
+              </div>
+              <nav class="bs-docs-sidebar hidden-print hidden-xs hidden-sm affix" id="affix">
+                <h5>In This Article</h5>
+                <div></div>
+              </nav>
+            </div>
+          </div>
+        </div>
+      </div>
+      
+      <footer>
+        <div class="grad-bottom"></div>
+        <div class="footer">
+          <div class="container">
+            <span class="pull-right">
+              <a href="#top">Back to top</a>
+            </span>
+            
+            <span>Generated by <strong>DocFX</strong></span>
+          </div>
+        </div>
+      </footer>
+    </div>
+    
+    <script type="text/javascript" src="../styles/docfx.vendor.js"></script>
+    <script type="text/javascript" src="../styles/docfx.js"></script>
+    <script type="text/javascript" src="../styles/main.js"></script>
+  </body>
+</html>

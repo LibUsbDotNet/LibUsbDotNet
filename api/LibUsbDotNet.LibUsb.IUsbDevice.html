@@ -1,0 +1,1738 @@
+﻿<!DOCTYPE html>
+<!--[if IE]><![endif]-->
+<html>
+  
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+    <title>Interface IUsbDevice
+   </title>
+    <meta name="viewport" content="width=device-width">
+    <meta name="title" content="Interface IUsbDevice
+   ">
+    <meta name="generator" content="docfx 2.59.4.0">
+    
+    <link rel="shortcut icon" href="../favicon.ico">
+    <link rel="stylesheet" href="../styles/docfx.vendor.css">
+    <link rel="stylesheet" href="../styles/docfx.css">
+    <link rel="stylesheet" href="../styles/main.css">
+    <meta property="docfx:navrel" content="../toc.html">
+    <meta property="docfx:tocrel" content="toc.html">
+    
+    
+    
+  </head>
+  <body data-spy="scroll" data-target="#affix" data-offset="120">
+    <div id="wrapper">
+      <header>
+        
+        <nav id="autocollapse" class="navbar navbar-inverse ng-scope" role="navigation">
+          <div class="container">
+            <div class="navbar-header">
+              <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#navbar">
+                <span class="sr-only">Toggle navigation</span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+              </button>
+              
+              <a class="navbar-brand" href="../index.html">
+                <img id="logo" class="svg" src="../logo.svg" alt="">
+              </a>
+            </div>
+            <div class="collapse navbar-collapse" id="navbar">
+              <form class="navbar-form navbar-right" role="search" id="search">
+                <div class="form-group">
+                  <input type="text" class="form-control" id="search-query" placeholder="Search" autocomplete="off">
+                </div>
+              </form>
+            </div>
+          </div>
+        </nav>
+        
+        <div class="subnav navbar navbar-default">
+          <div class="container hide-when-search" id="breadcrumb">
+            <ul class="breadcrumb">
+              <li></li>
+            </ul>
+          </div>
+        </div>
+      </header>
+      <div role="main" class="container body-content hide-when-search">
+        
+        <div class="sidenav hide-when-search">
+          <a class="btn toc-toggle collapse" data-toggle="collapse" href="#sidetoggle" aria-expanded="false" aria-controls="sidetoggle">Show / Hide Table of Contents</a>
+          <div class="sidetoggle collapse" id="sidetoggle">
+            <div id="sidetoc"></div>
+          </div>
+        </div>
+        <div class="article row grid-right">
+          <div class="col-md-10">
+            <article class="content wrap" id="_content" data-uid="LibUsbDotNet.LibUsb.IUsbDevice">
+  
+  
+  <h1 id="LibUsbDotNet_LibUsb_IUsbDevice" data-uid="LibUsbDotNet.LibUsb.IUsbDevice" class="text-break">Interface IUsbDevice
+  </h1>
+  <div class="markdown level0 summary"><p>The <a class="xref" href="LibUsbDotNet.LibUsb.IUsbDevice.html">IUsbDevice</a> interface contains members needed to configure a USB device for use.</p>
+</div>
+  <div class="markdown level0 conceptual"></div>
+  <h6><strong>Namespace</strong>: <a class="xref" href="LibUsbDotNet.LibUsb.html">LibUsbDotNet.LibUsb</a></h6>
+  <h6><strong>Assembly</strong>: LibUsbDotNet.dll</h6>
+  <h5 id="LibUsbDotNet_LibUsb_IUsbDevice_syntax">Syntax</h5>
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public interface IUsbDevice</code></pre>
+  </div>
+  <h5 id="LibUsbDotNet_LibUsb_IUsbDevice_examples"><strong>Examples</strong></h5>
+  <p>This example uses the <a class="xref" href="LibUsbDotNet.LibUsb.IUsbDevice.html">IUsbDevice</a> interface to select the desired configuration and interface
+for usb devices that require it.</p>
+<pre><code source="../../Examples/Read.Write/ReadWrite.cs">using LibUsbDotNet;
+using LibUsbDotNet.LibUsb;
+using LibUsbDotNet.Main;
+using System.Linq;
+
+namespace Examples;
+
+internal class ReadWrite
+{
+//Put your Product Id Here
+private const int ProductId = 0x00f0;
+
+//Put your Vendor Id Here
+private const int VendorId = 0x04b4;
+
+public static void Main(string[] args)
+{
+    using (var context = new UsbContext())
+    {
+        context.SetDebugLevel(LogLevel.Info);
+
+        //Get a list of all connected devices
+        using var usbDeviceCollection = context.List();
+
+        //Narrow down the device by vendor and pid
+        var selectedDevice = usbDeviceCollection.FirstOrDefault(d => d.ProductId == ProductId &amp;&amp; d.VendorId == VendorId);
+
+        //Open the device
+        selectedDevice.Open();
+
+        //Get the first config number of the interface
+        selectedDevice.ClaimInterface(selectedDevice.Configs[0].Interfaces[0].Number);
+
+        //Open up the endpoints
+        var writeEndpoint = selectedDevice.OpenEndpointWriter(WriteEndpointID.Ep01);
+        var readEnpoint = selectedDevice.OpenEndpointReader(ReadEndpointID.Ep01);
+
+        //Create a buffer with some data in it
+        var buffer = new byte[64];
+        buffer[0] = 0x3f;
+        buffer[1] = 0x23;
+        buffer[2] = 0x23;
+
+        //Write three bytes
+        writeEndpoint.Write(buffer, 3000, out var bytesWritten);
+
+        var readBuffer = new byte[64];
+
+        //Read some data
+        readEnpoint.Read(readBuffer, 3000, out var readBytes);
+    }
+}
+}</code></pre>
+
+  <h3 id="properties">Properties
+  </h3>
+  <span class="small pull-right mobile-hide">
+    <span class="divider">|</span>
+    <a href="https://github.com/LibUsbDotNet/LibUsbDotNet/new/master/apiSpec/new?filename=LibUsbDotNet_LibUsb_IUsbDevice_Configs.md&amp;value=---%0Auid%3A%20LibUsbDotNet.LibUsb.IUsbDevice.Configs%0Asummary%3A%20'*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A">Improve this Doc</a>
+  </span>
+  <span class="small pull-right mobile-hide">
+    <a href="https://github.com/LibUsbDotNet/LibUsbDotNet/blob/master/src/LibUsbDotNet/LibUsb/IUsbDevice.cs/#L53">View Source</a>
+  </span>
+  <a id="LibUsbDotNet_LibUsb_IUsbDevice_Configs_" data-uid="LibUsbDotNet.LibUsb.IUsbDevice.Configs*"></a>
+  <h4 id="LibUsbDotNet_LibUsb_IUsbDevice_Configs" data-uid="LibUsbDotNet.LibUsb.IUsbDevice.Configs">Configs</h4>
+  <div class="markdown level1 summary"><p>Gets the available configurations for this <a class="xref" href="LibUsbDotNet.LibUsb.UsbDevice.html">UsbDevice</a></p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+  <h5 class="decalaration">Declaration</h5>
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">ReadOnlyCollection&lt;UsbConfigInfo&gt; Configs { get; }</code></pre>
+  </div>
+  <h5 class="propertyValue">Property Value</h5>
+  <table class="table table-bordered table-striped table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><span class="xref">ReadOnlyCollection</span>&lt;<a class="xref" href="LibUsbDotNet.Info.UsbConfigInfo.html">UsbConfigInfo</a>&gt;</td>
+        <td></td>
+      </tr>
+    </tbody>
+  </table>
+  <h5 id="LibUsbDotNet_LibUsb_IUsbDevice_Configs_remarks">Remarks</h5>
+  <div class="markdown level1 remarks"><p>The first time this property is accessed it will query the <a class="xref" href="LibUsbDotNet.LibUsb.UsbDevice.html">UsbDevice</a> for all configurations.  Subsequent request will return a cached copy of all configurations.</p>
+</div>
+  <span class="small pull-right mobile-hide">
+    <span class="divider">|</span>
+    <a href="https://github.com/LibUsbDotNet/LibUsbDotNet/new/master/apiSpec/new?filename=LibUsbDotNet_LibUsb_IUsbDevice_Configuration.md&amp;value=---%0Auid%3A%20LibUsbDotNet.LibUsb.IUsbDevice.Configuration%0Asummary%3A%20'*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A">Improve this Doc</a>
+  </span>
+  <span class="small pull-right mobile-hide">
+    <a href="https://github.com/LibUsbDotNet/LibUsbDotNet/blob/master/src/LibUsbDotNet/LibUsb/IUsbDevice.cs/#L73">View Source</a>
+  </span>
+  <a id="LibUsbDotNet_LibUsb_IUsbDevice_Configuration_" data-uid="LibUsbDotNet.LibUsb.IUsbDevice.Configuration*"></a>
+  <h4 id="LibUsbDotNet_LibUsb_IUsbDevice_Configuration" data-uid="LibUsbDotNet.LibUsb.IUsbDevice.Configuration">Configuration</h4>
+  <div class="markdown level1 summary"><p>Gets the USB devices active configuration value.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+  <h5 class="decalaration">Declaration</h5>
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">int Configuration { get; }</code></pre>
+  </div>
+  <h5 class="propertyValue">Property Value</h5>
+  <table class="table table-bordered table-striped table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><span class="xref">System.Int32</span></td>
+        <td><p>The active configuration value. A zero value means the device is not configured and a non-zero value indicates the device is configured.</p>
+</td>
+      </tr>
+    </tbody>
+  </table>
+  <span class="small pull-right mobile-hide">
+    <span class="divider">|</span>
+    <a href="https://github.com/LibUsbDotNet/LibUsbDotNet/new/master/apiSpec/new?filename=LibUsbDotNet_LibUsb_IUsbDevice_DeviceHandle.md&amp;value=---%0Auid%3A%20LibUsbDotNet.LibUsb.IUsbDevice.DeviceHandle%0Asummary%3A%20'*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A">Improve this Doc</a>
+  </span>
+  <span class="small pull-right mobile-hide">
+    <a href="https://github.com/LibUsbDotNet/LibUsbDotNet/blob/master/src/LibUsbDotNet/LibUsb/IUsbDevice.cs/#L45">View Source</a>
+  </span>
+  <a id="LibUsbDotNet_LibUsb_IUsbDevice_DeviceHandle_" data-uid="LibUsbDotNet.LibUsb.IUsbDevice.DeviceHandle*"></a>
+  <h4 id="LibUsbDotNet_LibUsb_IUsbDevice_DeviceHandle" data-uid="LibUsbDotNet.LibUsb.IUsbDevice.DeviceHandle">DeviceHandle</h4>
+  <div class="markdown level1 summary"><p>Gets the underlying device handle. The handle is populated when you open the device
+using <a class="xref" href="LibUsbDotNet.LibUsb.IUsbDevice.html#LibUsbDotNet_LibUsb_IUsbDevice_Open">Open()</a>, and cleared when you close the device using <a class="xref" href="LibUsbDotNet.LibUsb.IUsbDevice.html#LibUsbDotNet_LibUsb_IUsbDevice_Close">Close()</a>.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+  <h5 class="decalaration">Declaration</h5>
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">DeviceHandle DeviceHandle { get; }</code></pre>
+  </div>
+  <h5 class="propertyValue">Property Value</h5>
+  <table class="table table-bordered table-striped table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><a class="xref" href="LibUsbDotNet.DeviceHandle.html">DeviceHandle</a></td>
+        <td></td>
+      </tr>
+    </tbody>
+  </table>
+  <span class="small pull-right mobile-hide">
+    <span class="divider">|</span>
+    <a href="https://github.com/LibUsbDotNet/LibUsbDotNet/new/master/apiSpec/new?filename=LibUsbDotNet_LibUsb_IUsbDevice_Info.md&amp;value=---%0Auid%3A%20LibUsbDotNet.LibUsb.IUsbDevice.Info%0Asummary%3A%20'*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A">Improve this Doc</a>
+  </span>
+  <span class="small pull-right mobile-hide">
+    <a href="https://github.com/LibUsbDotNet/LibUsbDotNet/blob/master/src/LibUsbDotNet/LibUsb/IUsbDevice.cs/#L58">View Source</a>
+  </span>
+  <a id="LibUsbDotNet_LibUsb_IUsbDevice_Info_" data-uid="LibUsbDotNet.LibUsb.IUsbDevice.Info*"></a>
+  <h4 id="LibUsbDotNet_LibUsb_IUsbDevice_Info" data-uid="LibUsbDotNet.LibUsb.IUsbDevice.Info">Info</h4>
+  <div class="markdown level1 summary"><p>Gets the actual device descriptor the the current <a class="xref" href="LibUsbDotNet.LibUsb.UsbDevice.html">UsbDevice</a>.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+  <h5 class="decalaration">Declaration</h5>
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">UsbDeviceInfo Info { get; }</code></pre>
+  </div>
+  <h5 class="propertyValue">Property Value</h5>
+  <table class="table table-bordered table-striped table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><a class="xref" href="LibUsbDotNet.Info.UsbDeviceInfo.html">UsbDeviceInfo</a></td>
+        <td></td>
+      </tr>
+    </tbody>
+  </table>
+  <span class="small pull-right mobile-hide">
+    <span class="divider">|</span>
+    <a href="https://github.com/LibUsbDotNet/LibUsbDotNet/new/master/apiSpec/new?filename=LibUsbDotNet_LibUsb_IUsbDevice_IsOpen.md&amp;value=---%0Auid%3A%20LibUsbDotNet.LibUsb.IUsbDevice.IsOpen%0Asummary%3A%20'*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A">Improve this Doc</a>
+  </span>
+  <span class="small pull-right mobile-hide">
+    <a href="https://github.com/LibUsbDotNet/LibUsbDotNet/blob/master/src/LibUsbDotNet/LibUsb/IUsbDevice.cs/#L65">View Source</a>
+  </span>
+  <a id="LibUsbDotNet_LibUsb_IUsbDevice_IsOpen_" data-uid="LibUsbDotNet.LibUsb.IUsbDevice.IsOpen*"></a>
+  <h4 id="LibUsbDotNet_LibUsb_IUsbDevice_IsOpen" data-uid="LibUsbDotNet.LibUsb.IUsbDevice.IsOpen">IsOpen</h4>
+  <div class="markdown level1 summary"><p>Gets a value indicating whether the device handle is valid.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+  <h5 class="decalaration">Declaration</h5>
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">bool IsOpen { get; }</code></pre>
+  </div>
+  <h5 class="propertyValue">Property Value</h5>
+  <table class="table table-bordered table-striped table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><span class="xref">System.Boolean</span></td>
+        <td></td>
+      </tr>
+    </tbody>
+  </table>
+  <span class="small pull-right mobile-hide">
+    <span class="divider">|</span>
+    <a href="https://github.com/LibUsbDotNet/LibUsbDotNet/new/master/apiSpec/new?filename=LibUsbDotNet_LibUsb_IUsbDevice_LocationId.md&amp;value=---%0Auid%3A%20LibUsbDotNet.LibUsb.IUsbDevice.LocationId%0Asummary%3A%20'*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A">Improve this Doc</a>
+  </span>
+  <span class="small pull-right mobile-hide">
+    <a href="https://github.com/LibUsbDotNet/LibUsbDotNet/blob/master/src/LibUsbDotNet/LibUsb/IUsbDevice.cs/#L60">View Source</a>
+  </span>
+  <a id="LibUsbDotNet_LibUsb_IUsbDevice_LocationId_" data-uid="LibUsbDotNet.LibUsb.IUsbDevice.LocationId*"></a>
+  <h4 id="LibUsbDotNet_LibUsb_IUsbDevice_LocationId" data-uid="LibUsbDotNet.LibUsb.IUsbDevice.LocationId">LocationId</h4>
+  <div class="markdown level1 summary"></div>
+  <div class="markdown level1 conceptual"></div>
+  <h5 class="decalaration">Declaration</h5>
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">LocationId LocationId { get; }</code></pre>
+  </div>
+  <h5 class="propertyValue">Property Value</h5>
+  <table class="table table-bordered table-striped table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><a class="xref" href="LibUsbDotNet.Info.LocationId.html">LocationId</a></td>
+        <td></td>
+      </tr>
+    </tbody>
+  </table>
+  <span class="small pull-right mobile-hide">
+    <span class="divider">|</span>
+    <a href="https://github.com/LibUsbDotNet/LibUsbDotNet/new/master/apiSpec/new?filename=LibUsbDotNet_LibUsb_IUsbDevice_ProductId.md&amp;value=---%0Auid%3A%20LibUsbDotNet.LibUsb.IUsbDevice.ProductId%0Asummary%3A%20'*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A">Improve this Doc</a>
+  </span>
+  <span class="small pull-right mobile-hide">
+    <a href="https://github.com/LibUsbDotNet/LibUsbDotNet/blob/master/src/LibUsbDotNet/LibUsb/IUsbDevice.cs/#L83">View Source</a>
+  </span>
+  <a id="LibUsbDotNet_LibUsb_IUsbDevice_ProductId_" data-uid="LibUsbDotNet.LibUsb.IUsbDevice.ProductId*"></a>
+  <h4 id="LibUsbDotNet_LibUsb_IUsbDevice_ProductId" data-uid="LibUsbDotNet.LibUsb.IUsbDevice.ProductId">ProductId</h4>
+  <div class="markdown level1 summary"><p>Gets the Product ID (PID) of this device.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+  <h5 class="decalaration">Declaration</h5>
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">ushort ProductId { get; }</code></pre>
+  </div>
+  <h5 class="propertyValue">Property Value</h5>
+  <table class="table table-bordered table-striped table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><span class="xref">System.UInt16</span></td>
+        <td></td>
+      </tr>
+    </tbody>
+  </table>
+  <span class="small pull-right mobile-hide">
+    <span class="divider">|</span>
+    <a href="https://github.com/LibUsbDotNet/LibUsbDotNet/new/master/apiSpec/new?filename=LibUsbDotNet_LibUsb_IUsbDevice_VendorId.md&amp;value=---%0Auid%3A%20LibUsbDotNet.LibUsb.IUsbDevice.VendorId%0Asummary%3A%20'*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A">Improve this Doc</a>
+  </span>
+  <span class="small pull-right mobile-hide">
+    <a href="https://github.com/LibUsbDotNet/LibUsbDotNet/blob/master/src/LibUsbDotNet/LibUsb/IUsbDevice.cs/#L78">View Source</a>
+  </span>
+  <a id="LibUsbDotNet_LibUsb_IUsbDevice_VendorId_" data-uid="LibUsbDotNet.LibUsb.IUsbDevice.VendorId*"></a>
+  <h4 id="LibUsbDotNet_LibUsb_IUsbDevice_VendorId" data-uid="LibUsbDotNet.LibUsb.IUsbDevice.VendorId">VendorId</h4>
+  <div class="markdown level1 summary"><p>Gets the Vendor ID (PID) of the vendor of this device.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+  <h5 class="decalaration">Declaration</h5>
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">ushort VendorId { get; }</code></pre>
+  </div>
+  <h5 class="propertyValue">Property Value</h5>
+  <table class="table table-bordered table-striped table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><span class="xref">System.UInt16</span></td>
+        <td></td>
+      </tr>
+    </tbody>
+  </table>
+  <h3 id="methods">Methods
+  </h3>
+  <span class="small pull-right mobile-hide">
+    <span class="divider">|</span>
+    <a href="https://github.com/LibUsbDotNet/LibUsbDotNet/new/master/apiSpec/new?filename=LibUsbDotNet_LibUsb_IUsbDevice_ClaimInterface_System_Int32_.md&amp;value=---%0Auid%3A%20LibUsbDotNet.LibUsb.IUsbDevice.ClaimInterface(System.Int32)%0Asummary%3A%20'*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A">Improve this Doc</a>
+  </span>
+  <span class="small pull-right mobile-hide">
+    <a href="https://github.com/LibUsbDotNet/LibUsbDotNet/blob/master/src/LibUsbDotNet/LibUsb/IUsbDevice.cs/#L252">View Source</a>
+  </span>
+  <a id="LibUsbDotNet_LibUsb_IUsbDevice_ClaimInterface_" data-uid="LibUsbDotNet.LibUsb.IUsbDevice.ClaimInterface*"></a>
+  <h4 id="LibUsbDotNet_LibUsb_IUsbDevice_ClaimInterface_System_Int32_" data-uid="LibUsbDotNet.LibUsb.IUsbDevice.ClaimInterface(System.Int32)">ClaimInterface(Int32)</h4>
+  <div class="markdown level1 summary"><p>Claims the specified interface of the device.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+  <h5 class="decalaration">Declaration</h5>
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">bool ClaimInterface(int interfaceID)</code></pre>
+  </div>
+  <h5 class="parameters">Parameters</h5>
+  <table class="table table-bordered table-striped table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Name</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><span class="xref">System.Int32</span></td>
+        <td><span class="parametername">interfaceID</span></td>
+        <td><p>The interface to claim.</p>
+</td>
+      </tr>
+    </tbody>
+  </table>
+  <h5 class="returns">Returns</h5>
+  <table class="table table-bordered table-striped table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><span class="xref">System.Boolean</span></td>
+        <td><p>True on success.</p>
+</td>
+      </tr>
+    </tbody>
+  </table>
+  <span class="small pull-right mobile-hide">
+    <span class="divider">|</span>
+    <a href="https://github.com/LibUsbDotNet/LibUsbDotNet/new/master/apiSpec/new?filename=LibUsbDotNet_LibUsb_IUsbDevice_Clone.md&amp;value=---%0Auid%3A%20LibUsbDotNet.LibUsb.IUsbDevice.Clone%0Asummary%3A%20'*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A">Improve this Doc</a>
+  </span>
+  <span class="small pull-right mobile-hide">
+    <a href="https://github.com/LibUsbDotNet/LibUsbDotNet/blob/master/src/LibUsbDotNet/LibUsb/IUsbDevice.cs/#L340">View Source</a>
+  </span>
+  <a id="LibUsbDotNet_LibUsb_IUsbDevice_Clone_" data-uid="LibUsbDotNet.LibUsb.IUsbDevice.Clone*"></a>
+  <h4 id="LibUsbDotNet_LibUsb_IUsbDevice_Clone" data-uid="LibUsbDotNet.LibUsb.IUsbDevice.Clone">Clone()</h4>
+  <div class="markdown level1 summary"><p>Creates a clone of this device.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+  <h5 class="decalaration">Declaration</h5>
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">IUsbDevice Clone()</code></pre>
+  </div>
+  <h5 class="returns">Returns</h5>
+  <table class="table table-bordered table-striped table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><a class="xref" href="LibUsbDotNet.LibUsb.IUsbDevice.html">IUsbDevice</a></td>
+        <td><p>A new <a class="xref" href="LibUsbDotNet.LibUsb.UsbDevice.html">UsbDevice</a> which represents a clone of this device.</p>
+</td>
+      </tr>
+    </tbody>
+  </table>
+  <span class="small pull-right mobile-hide">
+    <span class="divider">|</span>
+    <a href="https://github.com/LibUsbDotNet/LibUsbDotNet/new/master/apiSpec/new?filename=LibUsbDotNet_LibUsb_IUsbDevice_Close.md&amp;value=---%0Auid%3A%20LibUsbDotNet.LibUsb.IUsbDevice.Close%0Asummary%3A%20'*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A">Improve this Doc</a>
+  </span>
+  <span class="small pull-right mobile-hide">
+    <a href="https://github.com/LibUsbDotNet/LibUsbDotNet/blob/master/src/LibUsbDotNet/LibUsb/IUsbDevice.cs/#L88">View Source</a>
+  </span>
+  <a id="LibUsbDotNet_LibUsb_IUsbDevice_Close_" data-uid="LibUsbDotNet.LibUsb.IUsbDevice.Close*"></a>
+  <h4 id="LibUsbDotNet_LibUsb_IUsbDevice_Close" data-uid="LibUsbDotNet.LibUsb.IUsbDevice.Close">Close()</h4>
+  <div class="markdown level1 summary"><p>Closes and frees device resources.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+  <h5 class="decalaration">Declaration</h5>
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">void Close()</code></pre>
+  </div>
+  <span class="small pull-right mobile-hide">
+    <span class="divider">|</span>
+    <a href="https://github.com/LibUsbDotNet/LibUsbDotNet/new/master/apiSpec/new?filename=LibUsbDotNet_LibUsb_IUsbDevice_ControlTransfer_LibUsbDotNet_Main_UsbSetupPacket_.md&amp;value=---%0Auid%3A%20LibUsbDotNet.LibUsb.IUsbDevice.ControlTransfer(LibUsbDotNet.Main.UsbSetupPacket)%0Asummary%3A%20'*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A">Improve this Doc</a>
+  </span>
+  <span class="small pull-right mobile-hide">
+    <a href="https://github.com/LibUsbDotNet/LibUsbDotNet/blob/master/src/LibUsbDotNet/LibUsb/IUsbDevice.cs/#L280">View Source</a>
+  </span>
+  <a id="LibUsbDotNet_LibUsb_IUsbDevice_ControlTransfer_" data-uid="LibUsbDotNet.LibUsb.IUsbDevice.ControlTransfer*"></a>
+  <h4 id="LibUsbDotNet_LibUsb_IUsbDevice_ControlTransfer_LibUsbDotNet_Main_UsbSetupPacket_" data-uid="LibUsbDotNet.LibUsb.IUsbDevice.ControlTransfer(LibUsbDotNet.Main.UsbSetupPacket)">ControlTransfer(UsbSetupPacket)</h4>
+  <div class="markdown level1 summary"><p>Transmits control data over a default control endpoint.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+  <h5 class="decalaration">Declaration</h5>
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">int ControlTransfer(UsbSetupPacket setupPacket)</code></pre>
+  </div>
+  <h5 class="parameters">Parameters</h5>
+  <table class="table table-bordered table-striped table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Name</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><a class="xref" href="LibUsbDotNet.Main.UsbSetupPacket.html">UsbSetupPacket</a></td>
+        <td><span class="parametername">setupPacket</span></td>
+        <td><p>An 8-byte setup packet which contains parameters for the control request.
+See section 9.3 USB Device Requests of the Universal Serial Bus Specification Revision 2.0 for more information.</p>
+</td>
+      </tr>
+    </tbody>
+  </table>
+  <h5 class="returns">Returns</h5>
+  <table class="table table-bordered table-striped table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><span class="xref">System.Int32</span></td>
+        <td><p>The number of bytes sent or received (depends on the direction of the control transfer).</p>
+</td>
+      </tr>
+    </tbody>
+  </table>
+  <span class="small pull-right mobile-hide">
+    <span class="divider">|</span>
+    <a href="https://github.com/LibUsbDotNet/LibUsbDotNet/new/master/apiSpec/new?filename=LibUsbDotNet_LibUsb_IUsbDevice_ControlTransfer_LibUsbDotNet_Main_UsbSetupPacket_System_Byte___System_Int32_System_Int32_.md&amp;value=---%0Auid%3A%20LibUsbDotNet.LibUsb.IUsbDevice.ControlTransfer(LibUsbDotNet.Main.UsbSetupPacket%2CSystem.Byte%5B%5D%2CSystem.Int32%2CSystem.Int32)%0Asummary%3A%20'*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A">Improve this Doc</a>
+  </span>
+  <span class="small pull-right mobile-hide">
+    <a href="https://github.com/LibUsbDotNet/LibUsbDotNet/blob/master/src/LibUsbDotNet/LibUsb/IUsbDevice.cs/#L312">View Source</a>
+  </span>
+  <a id="LibUsbDotNet_LibUsb_IUsbDevice_ControlTransfer_" data-uid="LibUsbDotNet.LibUsb.IUsbDevice.ControlTransfer*"></a>
+  <h4 id="LibUsbDotNet_LibUsb_IUsbDevice_ControlTransfer_LibUsbDotNet_Main_UsbSetupPacket_System_Byte___System_Int32_System_Int32_" data-uid="LibUsbDotNet.LibUsb.IUsbDevice.ControlTransfer(LibUsbDotNet.Main.UsbSetupPacket,System.Byte[],System.Int32,System.Int32)">ControlTransfer(UsbSetupPacket, Byte[], Int32, Int32)</h4>
+  <div class="markdown level1 summary"><p>Transmits control data over a default control endpoint.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+  <h5 class="decalaration">Declaration</h5>
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">int ControlTransfer(UsbSetupPacket setupPacket, byte[] buffer, int offset, int length)</code></pre>
+  </div>
+  <h5 class="parameters">Parameters</h5>
+  <table class="table table-bordered table-striped table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Name</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><a class="xref" href="LibUsbDotNet.Main.UsbSetupPacket.html">UsbSetupPacket</a></td>
+        <td><span class="parametername">setupPacket</span></td>
+        <td><p>An 8-byte setup packet which contains parameters for the control request.
+See section 9.3 USB Device Requests of the Universal Serial Bus Specification Revision 2.0 for more information.</p>
+</td>
+      </tr>
+      <tr>
+        <td><span class="xref">System.Byte</span>[]</td>
+        <td><span class="parametername">buffer</span></td>
+        <td><p>Data to be sent/received from the device.</p>
+</td>
+      </tr>
+      <tr>
+        <td><span class="xref">System.Int32</span></td>
+        <td><span class="parametername">offset</span></td>
+        <td><p>The offset of the first byte of the data to send.</p>
+</td>
+      </tr>
+      <tr>
+        <td><span class="xref">System.Int32</span></td>
+        <td><span class="parametername">length</span></td>
+        <td><p>Length of the buffer param.</p>
+</td>
+      </tr>
+    </tbody>
+  </table>
+  <h5 class="returns">Returns</h5>
+  <table class="table table-bordered table-striped table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><span class="xref">System.Int32</span></td>
+        <td><p>The number of bytes sent or received (depends on the direction of the control transfer).</p>
+</td>
+      </tr>
+    </tbody>
+  </table>
+  <span class="small pull-right mobile-hide">
+    <span class="divider">|</span>
+    <a href="https://github.com/LibUsbDotNet/LibUsbDotNet/new/master/apiSpec/new?filename=LibUsbDotNet_LibUsb_IUsbDevice_ControlTransferAsync_LibUsbDotNet_Main_UsbSetupPacket_.md&amp;value=---%0Auid%3A%20LibUsbDotNet.LibUsb.IUsbDevice.ControlTransferAsync(LibUsbDotNet.Main.UsbSetupPacket)%0Asummary%3A%20'*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A">Improve this Doc</a>
+  </span>
+  <span class="small pull-right mobile-hide">
+    <a href="https://github.com/LibUsbDotNet/LibUsbDotNet/blob/master/src/LibUsbDotNet/LibUsb/IUsbDevice.cs/#L292">View Source</a>
+  </span>
+  <a id="LibUsbDotNet_LibUsb_IUsbDevice_ControlTransferAsync_" data-uid="LibUsbDotNet.LibUsb.IUsbDevice.ControlTransferAsync*"></a>
+  <h4 id="LibUsbDotNet_LibUsb_IUsbDevice_ControlTransferAsync_LibUsbDotNet_Main_UsbSetupPacket_" data-uid="LibUsbDotNet.LibUsb.IUsbDevice.ControlTransferAsync(LibUsbDotNet.Main.UsbSetupPacket)">ControlTransferAsync(UsbSetupPacket)</h4>
+  <div class="markdown level1 summary"><p>Asynchronously transmits control data over a default control endpoint.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+  <h5 class="decalaration">Declaration</h5>
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">Task&lt;int&gt; ControlTransferAsync(UsbSetupPacket setupPacket)</code></pre>
+  </div>
+  <h5 class="parameters">Parameters</h5>
+  <table class="table table-bordered table-striped table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Name</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><a class="xref" href="LibUsbDotNet.Main.UsbSetupPacket.html">UsbSetupPacket</a></td>
+        <td><span class="parametername">setupPacket</span></td>
+        <td><p>An 8-byte setup packet which contains parameters for the control request.
+See section 9.3 USB Device Requests of the Universal Serial Bus Specification Revision 2.0 for more information.</p>
+</td>
+      </tr>
+    </tbody>
+  </table>
+  <h5 class="returns">Returns</h5>
+  <table class="table table-bordered table-striped table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><span class="xref">Task</span>&lt;<span class="xref">System.Int32</span>&gt;</td>
+        <td><p>The number of bytes sent or received (depends on the direction of the control transfer).</p>
+</td>
+      </tr>
+    </tbody>
+  </table>
+  <span class="small pull-right mobile-hide">
+    <span class="divider">|</span>
+    <a href="https://github.com/LibUsbDotNet/LibUsbDotNet/new/master/apiSpec/new?filename=LibUsbDotNet_LibUsb_IUsbDevice_ControlTransferAsync_LibUsbDotNet_Main_UsbSetupPacket_System_Byte___System_Int32_System_Int32_.md&amp;value=---%0Auid%3A%20LibUsbDotNet.LibUsb.IUsbDevice.ControlTransferAsync(LibUsbDotNet.Main.UsbSetupPacket%2CSystem.Byte%5B%5D%2CSystem.Int32%2CSystem.Int32)%0Asummary%3A%20'*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A">Improve this Doc</a>
+  </span>
+  <span class="small pull-right mobile-hide">
+    <a href="https://github.com/LibUsbDotNet/LibUsbDotNet/blob/master/src/LibUsbDotNet/LibUsb/IUsbDevice.cs/#L332">View Source</a>
+  </span>
+  <a id="LibUsbDotNet_LibUsb_IUsbDevice_ControlTransferAsync_" data-uid="LibUsbDotNet.LibUsb.IUsbDevice.ControlTransferAsync*"></a>
+  <h4 id="LibUsbDotNet_LibUsb_IUsbDevice_ControlTransferAsync_LibUsbDotNet_Main_UsbSetupPacket_System_Byte___System_Int32_System_Int32_" data-uid="LibUsbDotNet.LibUsb.IUsbDevice.ControlTransferAsync(LibUsbDotNet.Main.UsbSetupPacket,System.Byte[],System.Int32,System.Int32)">ControlTransferAsync(UsbSetupPacket, Byte[], Int32, Int32)</h4>
+  <div class="markdown level1 summary"><p>Asynchronously transmits control data over a default control endpoint.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+  <h5 class="decalaration">Declaration</h5>
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">Task&lt;int&gt; ControlTransferAsync(UsbSetupPacket setupPacket, byte[] buffer, int offset, int length)</code></pre>
+  </div>
+  <h5 class="parameters">Parameters</h5>
+  <table class="table table-bordered table-striped table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Name</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><a class="xref" href="LibUsbDotNet.Main.UsbSetupPacket.html">UsbSetupPacket</a></td>
+        <td><span class="parametername">setupPacket</span></td>
+        <td><p>An 8-byte setup packet which contains parameters for the control request.
+See section 9.3 USB Device Requests of the Universal Serial Bus Specification Revision 2.0 for more information.</p>
+</td>
+      </tr>
+      <tr>
+        <td><span class="xref">System.Byte</span>[]</td>
+        <td><span class="parametername">buffer</span></td>
+        <td><p>Data to be sent/received from the device.</p>
+</td>
+      </tr>
+      <tr>
+        <td><span class="xref">System.Int32</span></td>
+        <td><span class="parametername">offset</span></td>
+        <td><p>The offset of the first byte of the data to send.</p>
+</td>
+      </tr>
+      <tr>
+        <td><span class="xref">System.Int32</span></td>
+        <td><span class="parametername">length</span></td>
+        <td><p>Length of the buffer param.</p>
+</td>
+      </tr>
+    </tbody>
+  </table>
+  <h5 class="returns">Returns</h5>
+  <table class="table table-bordered table-striped table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><span class="xref">Task</span>&lt;<span class="xref">System.Int32</span>&gt;</td>
+        <td><p>The number of bytes sent or received (depends on the direction of the control transfer).</p>
+</td>
+      </tr>
+    </tbody>
+  </table>
+  <span class="small pull-right mobile-hide">
+    <span class="divider">|</span>
+    <a href="https://github.com/LibUsbDotNet/LibUsbDotNet/new/master/apiSpec/new?filename=LibUsbDotNet_LibUsb_IUsbDevice_GetAltInterface_System_Int32__.md&amp;value=---%0Auid%3A%20LibUsbDotNet.LibUsb.IUsbDevice.GetAltInterface(System.Int32%40)%0Asummary%3A%20'*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A">Improve this Doc</a>
+  </span>
+  <span class="small pull-right mobile-hide">
+    <a href="https://github.com/LibUsbDotNet/LibUsbDotNet/blob/master/src/LibUsbDotNet/LibUsb/IUsbDevice.cs/#L176">View Source</a>
+  </span>
+  <a id="LibUsbDotNet_LibUsb_IUsbDevice_GetAltInterface_" data-uid="LibUsbDotNet.LibUsb.IUsbDevice.GetAltInterface*"></a>
+  <h4 id="LibUsbDotNet_LibUsb_IUsbDevice_GetAltInterface_System_Int32__" data-uid="LibUsbDotNet.LibUsb.IUsbDevice.GetAltInterface(System.Int32@)">GetAltInterface(out Int32)</h4>
+  <div class="markdown level1 summary"><p>Gets the alternate interface number for the previously claimed interface. <a class="xref" href="LibUsbDotNet.LibUsb.IUsbDevice.html#LibUsbDotNet_LibUsb_IUsbDevice_ClaimInterface_System_Int32_">ClaimInterface(Int32)</a></p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+  <h5 class="decalaration">Declaration</h5>
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">bool GetAltInterface(out int alternateID)</code></pre>
+  </div>
+  <h5 class="parameters">Parameters</h5>
+  <table class="table table-bordered table-striped table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Name</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><span class="xref">System.Int32</span></td>
+        <td><span class="parametername">alternateID</span></td>
+        <td><p>The alternate interface number.</p>
+</td>
+      </tr>
+    </tbody>
+  </table>
+  <h5 class="returns">Returns</h5>
+  <table class="table table-bordered table-striped table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><span class="xref">System.Boolean</span></td>
+        <td><p>True on success.</p>
+</td>
+      </tr>
+    </tbody>
+  </table>
+  <span class="small pull-right mobile-hide">
+    <span class="divider">|</span>
+    <a href="https://github.com/LibUsbDotNet/LibUsbDotNet/new/master/apiSpec/new?filename=LibUsbDotNet_LibUsb_IUsbDevice_GetAltInterfaceSetting_System_Byte_System_Byte__.md&amp;value=---%0Auid%3A%20LibUsbDotNet.LibUsb.IUsbDevice.GetAltInterfaceSetting(System.Byte%2CSystem.Byte%40)%0Asummary%3A%20'*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A">Improve this Doc</a>
+  </span>
+  <span class="small pull-right mobile-hide">
+    <a href="https://github.com/LibUsbDotNet/LibUsbDotNet/blob/master/src/LibUsbDotNet/LibUsb/IUsbDevice.cs/#L245">View Source</a>
+  </span>
+  <a id="LibUsbDotNet_LibUsb_IUsbDevice_GetAltInterfaceSetting_" data-uid="LibUsbDotNet.LibUsb.IUsbDevice.GetAltInterfaceSetting*"></a>
+  <h4 id="LibUsbDotNet_LibUsb_IUsbDevice_GetAltInterfaceSetting_System_Byte_System_Byte__" data-uid="LibUsbDotNet.LibUsb.IUsbDevice.GetAltInterfaceSetting(System.Byte,System.Byte@)">GetAltInterfaceSetting(Byte, out Byte)</h4>
+  <div class="markdown level1 summary"><p>Gets the selected alternate interface of the specified interface.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+  <h5 class="decalaration">Declaration</h5>
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">void GetAltInterfaceSetting(byte interfaceID, out byte selectedAltInterfaceID)</code></pre>
+  </div>
+  <h5 class="parameters">Parameters</h5>
+  <table class="table table-bordered table-striped table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Name</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><span class="xref">System.Byte</span></td>
+        <td><span class="parametername">interfaceID</span></td>
+        <td><p>The interface settings number (index) to retrieve the selected alternate interface setting for.</p>
+</td>
+      </tr>
+      <tr>
+        <td><span class="xref">System.Byte</span></td>
+        <td><span class="parametername">selectedAltInterfaceID</span></td>
+        <td><p>The alternate interface setting selected for use with the specified interface.</p>
+</td>
+      </tr>
+    </tbody>
+  </table>
+  <span class="small pull-right mobile-hide">
+    <span class="divider">|</span>
+    <a href="https://github.com/LibUsbDotNet/LibUsbDotNet/new/master/apiSpec/new?filename=LibUsbDotNet_LibUsb_IUsbDevice_GetDescriptor_System_Byte_System_Byte_System_Int16_IntPtr_System_Int32_System_Int32__.md&amp;value=---%0Auid%3A%20LibUsbDotNet.LibUsb.IUsbDevice.GetDescriptor(System.Byte%2CSystem.Byte%2CSystem.Int16%2CIntPtr%2CSystem.Int32%2CSystem.Int32%40)%0Asummary%3A%20'*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A">Improve this Doc</a>
+  </span>
+  <span class="small pull-right mobile-hide">
+    <a href="https://github.com/LibUsbDotNet/LibUsbDotNet/blob/master/src/LibUsbDotNet/LibUsb/IUsbDevice.cs/#L100">View Source</a>
+  </span>
+  <a id="LibUsbDotNet_LibUsb_IUsbDevice_GetDescriptor_" data-uid="LibUsbDotNet.LibUsb.IUsbDevice.GetDescriptor*"></a>
+  <h4 id="LibUsbDotNet_LibUsb_IUsbDevice_GetDescriptor_System_Byte_System_Byte_System_Int16_IntPtr_System_Int32_System_Int32__" data-uid="LibUsbDotNet.LibUsb.IUsbDevice.GetDescriptor(System.Byte,System.Byte,System.Int16,IntPtr,System.Int32,System.Int32@)">GetDescriptor(Byte, Byte, Int16, IntPtr, Int32, out Int32)</h4>
+  <div class="markdown level1 summary"><p>Gets a specific descriptor from the device. See <a class="xref" href="LibUsbDotNet.DescriptorType.html">DescriptorType</a> for more information.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+  <h5 class="decalaration">Declaration</h5>
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">bool GetDescriptor(byte descriptorType, byte index, short langId, IntPtr buffer, int bufferLength, out int transferLength)</code></pre>
+  </div>
+  <h5 class="parameters">Parameters</h5>
+  <table class="table table-bordered table-striped table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Name</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><span class="xref">System.Byte</span></td>
+        <td><span class="parametername">descriptorType</span></td>
+        <td><p>The descriptor type ID to retrieve; this is usually one of the <a class="xref" href="LibUsbDotNet.DescriptorType.html">DescriptorType</a> enumerations.</p>
+</td>
+      </tr>
+      <tr>
+        <td><span class="xref">System.Byte</span></td>
+        <td><span class="parametername">index</span></td>
+        <td><p>Descriptor index.</p>
+</td>
+      </tr>
+      <tr>
+        <td><span class="xref">System.Int16</span></td>
+        <td><span class="parametername">langId</span></td>
+        <td><p>Descriptor language id.</p>
+</td>
+      </tr>
+      <tr>
+        <td><span class="xref">IntPtr</span></td>
+        <td><span class="parametername">buffer</span></td>
+        <td><p>Memory to store the returned descriptor in.</p>
+</td>
+      </tr>
+      <tr>
+        <td><span class="xref">System.Int32</span></td>
+        <td><span class="parametername">bufferLength</span></td>
+        <td><p>Length of the buffer parameter in bytes.</p>
+</td>
+      </tr>
+      <tr>
+        <td><span class="xref">System.Int32</span></td>
+        <td><span class="parametername">transferLength</span></td>
+        <td><p>The number of bytes transferred to buffer upon success.</p>
+</td>
+      </tr>
+    </tbody>
+  </table>
+  <h5 class="returns">Returns</h5>
+  <table class="table table-bordered table-striped table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><span class="xref">System.Boolean</span></td>
+        <td><p>True on success.</p>
+</td>
+      </tr>
+    </tbody>
+  </table>
+  <span class="small pull-right mobile-hide">
+    <span class="divider">|</span>
+    <a href="https://github.com/LibUsbDotNet/LibUsbDotNet/new/master/apiSpec/new?filename=LibUsbDotNet_LibUsb_IUsbDevice_GetDescriptor_System_Byte_System_Byte_System_Int16_System_Object_System_Int32_System_Int32__.md&amp;value=---%0Auid%3A%20LibUsbDotNet.LibUsb.IUsbDevice.GetDescriptor(System.Byte%2CSystem.Byte%2CSystem.Int16%2CSystem.Object%2CSystem.Int32%2CSystem.Int32%40)%0Asummary%3A%20'*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A">Improve this Doc</a>
+  </span>
+  <span class="small pull-right mobile-hide">
+    <a href="https://github.com/LibUsbDotNet/LibUsbDotNet/blob/master/src/LibUsbDotNet/LibUsb/IUsbDevice.cs/#L112">View Source</a>
+  </span>
+  <a id="LibUsbDotNet_LibUsb_IUsbDevice_GetDescriptor_" data-uid="LibUsbDotNet.LibUsb.IUsbDevice.GetDescriptor*"></a>
+  <h4 id="LibUsbDotNet_LibUsb_IUsbDevice_GetDescriptor_System_Byte_System_Byte_System_Int16_System_Object_System_Int32_System_Int32__" data-uid="LibUsbDotNet.LibUsb.IUsbDevice.GetDescriptor(System.Byte,System.Byte,System.Int16,System.Object,System.Int32,System.Int32@)">GetDescriptor(Byte, Byte, Int16, Object, Int32, out Int32)</h4>
+  <div class="markdown level1 summary"><p>Gets a specific descriptor from the device. See <a class="xref" href="LibUsbDotNet.DescriptorType.html">DescriptorType</a> for more information.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+  <h5 class="decalaration">Declaration</h5>
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">bool GetDescriptor(byte descriptorType, byte index, short langId, object buffer, int bufferLength, out int transferLength)</code></pre>
+  </div>
+  <h5 class="parameters">Parameters</h5>
+  <table class="table table-bordered table-striped table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Name</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><span class="xref">System.Byte</span></td>
+        <td><span class="parametername">descriptorType</span></td>
+        <td><p>The descriptor type ID to retrieve; this is usually one of the <a class="xref" href="LibUsbDotNet.DescriptorType.html">DescriptorType</a> enumerations.</p>
+</td>
+      </tr>
+      <tr>
+        <td><span class="xref">System.Byte</span></td>
+        <td><span class="parametername">index</span></td>
+        <td><p>Descriptor index.</p>
+</td>
+      </tr>
+      <tr>
+        <td><span class="xref">System.Int16</span></td>
+        <td><span class="parametername">langId</span></td>
+        <td><p>Descriptor language id.</p>
+</td>
+      </tr>
+      <tr>
+        <td><span class="xref">System.Object</span></td>
+        <td><span class="parametername">buffer</span></td>
+        <td><p>Memory to store the returned descriptor in.</p>
+</td>
+      </tr>
+      <tr>
+        <td><span class="xref">System.Int32</span></td>
+        <td><span class="parametername">bufferLength</span></td>
+        <td><p>Length of the buffer parameter in bytes.</p>
+</td>
+      </tr>
+      <tr>
+        <td><span class="xref">System.Int32</span></td>
+        <td><span class="parametername">transferLength</span></td>
+        <td><p>The number of bytes transferred to buffer upon success.</p>
+</td>
+      </tr>
+    </tbody>
+  </table>
+  <h5 class="returns">Returns</h5>
+  <table class="table table-bordered table-striped table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><span class="xref">System.Boolean</span></td>
+        <td><p>True on success.</p>
+</td>
+      </tr>
+    </tbody>
+  </table>
+  <span class="small pull-right mobile-hide">
+    <span class="divider">|</span>
+    <a href="https://github.com/LibUsbDotNet/LibUsbDotNet/new/master/apiSpec/new?filename=LibUsbDotNet_LibUsb_IUsbDevice_GetLangIDs_System_Int16____.md&amp;value=---%0Auid%3A%20LibUsbDotNet.LibUsb.IUsbDevice.GetLangIDs(System.Int16%5B%5D%40)%0Asummary%3A%20'*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A">Improve this Doc</a>
+  </span>
+  <span class="small pull-right mobile-hide">
+    <a href="https://github.com/LibUsbDotNet/LibUsbDotNet/blob/master/src/LibUsbDotNet/LibUsb/IUsbDevice.cs/#L123">View Source</a>
+  </span>
+  <a id="LibUsbDotNet_LibUsb_IUsbDevice_GetLangIDs_" data-uid="LibUsbDotNet.LibUsb.IUsbDevice.GetLangIDs*"></a>
+  <h4 id="LibUsbDotNet_LibUsb_IUsbDevice_GetLangIDs_System_Int16____" data-uid="LibUsbDotNet.LibUsb.IUsbDevice.GetLangIDs(System.Int16[]@)">GetLangIDs(out Int16[])</h4>
+  <div class="markdown level1 summary"><p>Asking for the zero&apos;th index is special - it returns a string
+descriptor that contains all the language IDs supported by the
+device. Typically there aren&apos;t many - often only one. The
+language IDs are 16 bit numbers, and they start at the third byte
+in the descriptor. See USB 2.0 specification, section 9.6.7, for
+more information on this.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+  <h5 class="decalaration">Declaration</h5>
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">bool GetLangIDs(out short[] langIDs)</code></pre>
+  </div>
+  <h5 class="parameters">Parameters</h5>
+  <table class="table table-bordered table-striped table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Name</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><span class="xref">System.Int16</span>[]</td>
+        <td><span class="parametername">langIDs</span></td>
+        <td></td>
+      </tr>
+    </tbody>
+  </table>
+  <h5 class="returns">Returns</h5>
+  <table class="table table-bordered table-striped table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><span class="xref">System.Boolean</span></td>
+        <td><p>A collection of LCIDs that the current <a class="xref" href="LibUsbDotNet.LibUsb.UsbDevice.html">UsbDevice</a> supports.</p>
+</td>
+      </tr>
+    </tbody>
+  </table>
+  <span class="small pull-right mobile-hide">
+    <span class="divider">|</span>
+    <a href="https://github.com/LibUsbDotNet/LibUsbDotNet/new/master/apiSpec/new?filename=LibUsbDotNet_LibUsb_IUsbDevice_GetString_System_String__System_Int16_System_Byte_.md&amp;value=---%0Auid%3A%20LibUsbDotNet.LibUsb.IUsbDevice.GetString(System.String%40%2CSystem.Int16%2CSystem.Byte)%0Asummary%3A%20'*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A">Improve this Doc</a>
+  </span>
+  <span class="small pull-right mobile-hide">
+    <a href="https://github.com/LibUsbDotNet/LibUsbDotNet/blob/master/src/LibUsbDotNet/LibUsb/IUsbDevice.cs/#L132">View Source</a>
+  </span>
+  <a id="LibUsbDotNet_LibUsb_IUsbDevice_GetString_" data-uid="LibUsbDotNet.LibUsb.IUsbDevice.GetString*"></a>
+  <h4 id="LibUsbDotNet_LibUsb_IUsbDevice_GetString_System_String__System_Int16_System_Byte_" data-uid="LibUsbDotNet.LibUsb.IUsbDevice.GetString(System.String@,System.Int16,System.Byte)">GetString(out String, Int16, Byte)</h4>
+  <div class="markdown level1 summary"><p>Gets a string descriptor from the device.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+  <h5 class="decalaration">Declaration</h5>
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">bool GetString(out string stringData, short langId, byte stringIndex)</code></pre>
+  </div>
+  <h5 class="parameters">Parameters</h5>
+  <table class="table table-bordered table-striped table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Name</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><span class="xref">System.String</span></td>
+        <td><span class="parametername">stringData</span></td>
+        <td><p>Buffer to store the returned string in upon success.</p>
+</td>
+      </tr>
+      <tr>
+        <td><span class="xref">System.Int16</span></td>
+        <td><span class="parametername">langId</span></td>
+        <td><p>The language ID to retrieve the string in. (0x409 for english).</p>
+</td>
+      </tr>
+      <tr>
+        <td><span class="xref">System.Byte</span></td>
+        <td><span class="parametername">stringIndex</span></td>
+        <td><p>The string index to retrieve.</p>
+</td>
+      </tr>
+    </tbody>
+  </table>
+  <h5 class="returns">Returns</h5>
+  <table class="table table-bordered table-striped table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><span class="xref">System.Boolean</span></td>
+        <td><p>True on success.</p>
+</td>
+      </tr>
+    </tbody>
+  </table>
+  <span class="small pull-right mobile-hide">
+    <span class="divider">|</span>
+    <a href="https://github.com/LibUsbDotNet/LibUsbDotNet/new/master/apiSpec/new?filename=LibUsbDotNet_LibUsb_IUsbDevice_GetStringDescriptor_System_Byte_System_Boolean_.md&amp;value=---%0Auid%3A%20LibUsbDotNet.LibUsb.IUsbDevice.GetStringDescriptor(System.Byte%2CSystem.Boolean)%0Asummary%3A%20'*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A">Improve this Doc</a>
+  </span>
+  <span class="small pull-right mobile-hide">
+    <a href="https://github.com/LibUsbDotNet/LibUsbDotNet/blob/master/src/LibUsbDotNet/LibUsb/IUsbDevice.cs/#L147">View Source</a>
+  </span>
+  <a id="LibUsbDotNet_LibUsb_IUsbDevice_GetStringDescriptor_" data-uid="LibUsbDotNet.LibUsb.IUsbDevice.GetStringDescriptor*"></a>
+  <h4 id="LibUsbDotNet_LibUsb_IUsbDevice_GetStringDescriptor_System_Byte_System_Boolean_" data-uid="LibUsbDotNet.LibUsb.IUsbDevice.GetStringDescriptor(System.Byte,System.Boolean)">GetStringDescriptor(Byte, Boolean)</h4>
+  <div class="markdown level1 summary"><p>Retrieve a descriptor from a device.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+  <h5 class="decalaration">Declaration</h5>
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">string GetStringDescriptor(byte descriptorIndex, bool failSilently = false)</code></pre>
+  </div>
+  <h5 class="parameters">Parameters</h5>
+  <table class="table table-bordered table-striped table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Name</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><span class="xref">System.Byte</span></td>
+        <td><span class="parametername">descriptorIndex</span></td>
+        <td><p>The index of the descriptor to retieve.</p>
+</td>
+      </tr>
+      <tr>
+        <td><span class="xref">System.Boolean</span></td>
+        <td><span class="parametername">failSilently</span></td>
+        <td><p><span class="xref">true</span> to return <span class="xref">null</span> when the descriptor could not be
+received; <span class="xref">false</span> to throw an <a class="xref" href="LibUsbDotNet.LibUsb.UsbException.html">UsbException</a> instead.</p>
+</td>
+      </tr>
+    </tbody>
+  </table>
+  <h5 class="returns">Returns</h5>
+  <table class="table table-bordered table-striped table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><span class="xref">System.String</span></td>
+        <td><p>The value of the requested descriptor.</p>
+</td>
+      </tr>
+    </tbody>
+  </table>
+  <span class="small pull-right mobile-hide">
+    <span class="divider">|</span>
+    <a href="https://github.com/LibUsbDotNet/LibUsbDotNet/new/master/apiSpec/new?filename=LibUsbDotNet_LibUsb_IUsbDevice_Open.md&amp;value=---%0Auid%3A%20LibUsbDotNet.LibUsb.IUsbDevice.Open%0Asummary%3A%20'*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A">Improve this Doc</a>
+  </span>
+  <span class="small pull-right mobile-hide">
+    <a href="https://github.com/LibUsbDotNet/LibUsbDotNet/blob/master/src/LibUsbDotNet/LibUsb/IUsbDevice.cs/#L181">View Source</a>
+  </span>
+  <a id="LibUsbDotNet_LibUsb_IUsbDevice_Open_" data-uid="LibUsbDotNet.LibUsb.IUsbDevice.Open*"></a>
+  <h4 id="LibUsbDotNet_LibUsb_IUsbDevice_Open" data-uid="LibUsbDotNet.LibUsb.IUsbDevice.Open">Open()</h4>
+  <div class="markdown level1 summary"><p>Opens/re-opens this USB device instance for communication.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+  <h5 class="decalaration">Declaration</h5>
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">void Open()</code></pre>
+  </div>
+  <span class="small pull-right mobile-hide">
+    <span class="divider">|</span>
+    <a href="https://github.com/LibUsbDotNet/LibUsbDotNet/new/master/apiSpec/new?filename=LibUsbDotNet_LibUsb_IUsbDevice_OpenEndpointReader_LibUsbDotNet_Main_ReadEndpointID_.md&amp;value=---%0Auid%3A%20LibUsbDotNet.LibUsb.IUsbDevice.OpenEndpointReader(LibUsbDotNet.Main.ReadEndpointID)%0Asummary%3A%20'*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A">Improve this Doc</a>
+  </span>
+  <span class="small pull-right mobile-hide">
+    <a href="https://github.com/LibUsbDotNet/LibUsbDotNet/blob/master/src/LibUsbDotNet/LibUsb/IUsbDevice.cs/#L214">View Source</a>
+  </span>
+  <a id="LibUsbDotNet_LibUsb_IUsbDevice_OpenEndpointReader_" data-uid="LibUsbDotNet.LibUsb.IUsbDevice.OpenEndpointReader*"></a>
+  <h4 id="LibUsbDotNet_LibUsb_IUsbDevice_OpenEndpointReader_LibUsbDotNet_Main_ReadEndpointID_" data-uid="LibUsbDotNet.LibUsb.IUsbDevice.OpenEndpointReader(LibUsbDotNet.Main.ReadEndpointID)">OpenEndpointReader(ReadEndpointID)</h4>
+  <div class="markdown level1 summary"><p>Opens a <a class="xref" href="LibUsbDotNet.Main.EndpointType.html#LibUsbDotNet_Main_EndpointType_Bulk">Bulk</a> endpoint for reading</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+  <h5 class="decalaration">Declaration</h5>
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">UsbEndpointReader OpenEndpointReader(ReadEndpointID readEndpointID)</code></pre>
+  </div>
+  <h5 class="parameters">Parameters</h5>
+  <table class="table table-bordered table-striped table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Name</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><a class="xref" href="LibUsbDotNet.Main.ReadEndpointID.html">ReadEndpointID</a></td>
+        <td><span class="parametername">readEndpointID</span></td>
+        <td><p>Endpoint number for read operations.</p>
+</td>
+      </tr>
+    </tbody>
+  </table>
+  <h5 class="returns">Returns</h5>
+  <table class="table table-bordered table-striped table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><a class="xref" href="LibUsbDotNet.LibUsb.UsbEndpointReader.html">UsbEndpointReader</a></td>
+        <td><p>A <a class="xref" href="LibUsbDotNet.LibUsb.UsbEndpointReader.html">UsbEndpointReader</a> class ready for reading. If the specified endpoint is already been opened, the original <a class="xref" href="LibUsbDotNet.LibUsb.UsbEndpointReader.html">UsbEndpointReader</a> class is returned.</p>
+</td>
+      </tr>
+    </tbody>
+  </table>
+  <span class="small pull-right mobile-hide">
+    <span class="divider">|</span>
+    <a href="https://github.com/LibUsbDotNet/LibUsbDotNet/new/master/apiSpec/new?filename=LibUsbDotNet_LibUsb_IUsbDevice_OpenEndpointReader_LibUsbDotNet_Main_ReadEndpointID_System_Int32_.md&amp;value=---%0Auid%3A%20LibUsbDotNet.LibUsb.IUsbDevice.OpenEndpointReader(LibUsbDotNet.Main.ReadEndpointID%2CSystem.Int32)%0Asummary%3A%20'*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A">Improve this Doc</a>
+  </span>
+  <span class="small pull-right mobile-hide">
+    <a href="https://github.com/LibUsbDotNet/LibUsbDotNet/blob/master/src/LibUsbDotNet/LibUsb/IUsbDevice.cs/#L198">View Source</a>
+  </span>
+  <a id="LibUsbDotNet_LibUsb_IUsbDevice_OpenEndpointReader_" data-uid="LibUsbDotNet.LibUsb.IUsbDevice.OpenEndpointReader*"></a>
+  <h4 id="LibUsbDotNet_LibUsb_IUsbDevice_OpenEndpointReader_LibUsbDotNet_Main_ReadEndpointID_System_Int32_" data-uid="LibUsbDotNet.LibUsb.IUsbDevice.OpenEndpointReader(LibUsbDotNet.Main.ReadEndpointID,System.Int32)">OpenEndpointReader(ReadEndpointID, Int32)</h4>
+  <div class="markdown level1 summary"><p>Opens a <a class="xref" href="LibUsbDotNet.Main.EndpointType.html#LibUsbDotNet_Main_EndpointType_Bulk">Bulk</a> endpoint for reading</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+  <h5 class="decalaration">Declaration</h5>
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">UsbEndpointReader OpenEndpointReader(ReadEndpointID readEndpointID, int readBufferSize)</code></pre>
+  </div>
+  <h5 class="parameters">Parameters</h5>
+  <table class="table table-bordered table-striped table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Name</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><a class="xref" href="LibUsbDotNet.Main.ReadEndpointID.html">ReadEndpointID</a></td>
+        <td><span class="parametername">readEndpointID</span></td>
+        <td><p>Endpoint number for read operations.</p>
+</td>
+      </tr>
+      <tr>
+        <td><span class="xref">System.Int32</span></td>
+        <td><span class="parametername">readBufferSize</span></td>
+        <td><p>TODO: Remove this parameter.</p>
+</td>
+      </tr>
+    </tbody>
+  </table>
+  <h5 class="returns">Returns</h5>
+  <table class="table table-bordered table-striped table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><a class="xref" href="LibUsbDotNet.LibUsb.UsbEndpointReader.html">UsbEndpointReader</a></td>
+        <td><p>A <a class="xref" href="LibUsbDotNet.LibUsb.UsbEndpointReader.html">UsbEndpointReader</a> class ready for reading. If the specified endpoint is already been opened, the original <a class="xref" href="LibUsbDotNet.LibUsb.UsbEndpointReader.html">UsbEndpointReader</a> class is returned.</p>
+</td>
+      </tr>
+    </tbody>
+  </table>
+  <span class="small pull-right mobile-hide">
+    <span class="divider">|</span>
+    <a href="https://github.com/LibUsbDotNet/LibUsbDotNet/new/master/apiSpec/new?filename=LibUsbDotNet_LibUsb_IUsbDevice_OpenEndpointReader_LibUsbDotNet_Main_ReadEndpointID_System_Int32_LibUsbDotNet_Main_EndpointType_.md&amp;value=---%0Auid%3A%20LibUsbDotNet.LibUsb.IUsbDevice.OpenEndpointReader(LibUsbDotNet.Main.ReadEndpointID%2CSystem.Int32%2CLibUsbDotNet.Main.EndpointType)%0Asummary%3A%20'*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A">Improve this Doc</a>
+  </span>
+  <span class="small pull-right mobile-hide">
+    <a href="https://github.com/LibUsbDotNet/LibUsbDotNet/blob/master/src/LibUsbDotNet/LibUsb/IUsbDevice.cs/#L207">View Source</a>
+  </span>
+  <a id="LibUsbDotNet_LibUsb_IUsbDevice_OpenEndpointReader_" data-uid="LibUsbDotNet.LibUsb.IUsbDevice.OpenEndpointReader*"></a>
+  <h4 id="LibUsbDotNet_LibUsb_IUsbDevice_OpenEndpointReader_LibUsbDotNet_Main_ReadEndpointID_System_Int32_LibUsbDotNet_Main_EndpointType_" data-uid="LibUsbDotNet.LibUsb.IUsbDevice.OpenEndpointReader(LibUsbDotNet.Main.ReadEndpointID,System.Int32,LibUsbDotNet.Main.EndpointType)">OpenEndpointReader(ReadEndpointID, Int32, EndpointType)</h4>
+  <div class="markdown level1 summary"><p>Opens an endpoint for reading</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+  <h5 class="decalaration">Declaration</h5>
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">UsbEndpointReader OpenEndpointReader(ReadEndpointID readEndpointID, int readBufferSize, EndpointType endpointType)</code></pre>
+  </div>
+  <h5 class="parameters">Parameters</h5>
+  <table class="table table-bordered table-striped table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Name</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><a class="xref" href="LibUsbDotNet.Main.ReadEndpointID.html">ReadEndpointID</a></td>
+        <td><span class="parametername">readEndpointID</span></td>
+        <td><p>Endpoint number for read operations.</p>
+</td>
+      </tr>
+      <tr>
+        <td><span class="xref">System.Int32</span></td>
+        <td><span class="parametername">readBufferSize</span></td>
+        <td><p>TODO: Remove this parameter.</p>
+</td>
+      </tr>
+      <tr>
+        <td><a class="xref" href="LibUsbDotNet.Main.EndpointType.html">EndpointType</a></td>
+        <td><span class="parametername">endpointType</span></td>
+        <td><p>The type of endpoint to open.</p>
+</td>
+      </tr>
+    </tbody>
+  </table>
+  <h5 class="returns">Returns</h5>
+  <table class="table table-bordered table-striped table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><a class="xref" href="LibUsbDotNet.LibUsb.UsbEndpointReader.html">UsbEndpointReader</a></td>
+        <td><p>A <a class="xref" href="LibUsbDotNet.LibUsb.UsbEndpointReader.html">UsbEndpointReader</a> class ready for reading. If the specified endpoint is already been opened, the original <a class="xref" href="LibUsbDotNet.LibUsb.UsbEndpointReader.html">UsbEndpointReader</a> class is returned.</p>
+</td>
+      </tr>
+    </tbody>
+  </table>
+  <span class="small pull-right mobile-hide">
+    <span class="divider">|</span>
+    <a href="https://github.com/LibUsbDotNet/LibUsbDotNet/new/master/apiSpec/new?filename=LibUsbDotNet_LibUsb_IUsbDevice_OpenEndpointWriter_LibUsbDotNet_Main_WriteEndpointID_.md&amp;value=---%0Auid%3A%20LibUsbDotNet.LibUsb.IUsbDevice.OpenEndpointWriter(LibUsbDotNet.Main.WriteEndpointID)%0Asummary%3A%20'*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A">Improve this Doc</a>
+  </span>
+  <span class="small pull-right mobile-hide">
+    <a href="https://github.com/LibUsbDotNet/LibUsbDotNet/blob/master/src/LibUsbDotNet/LibUsb/IUsbDevice.cs/#L221">View Source</a>
+  </span>
+  <a id="LibUsbDotNet_LibUsb_IUsbDevice_OpenEndpointWriter_" data-uid="LibUsbDotNet.LibUsb.IUsbDevice.OpenEndpointWriter*"></a>
+  <h4 id="LibUsbDotNet_LibUsb_IUsbDevice_OpenEndpointWriter_LibUsbDotNet_Main_WriteEndpointID_" data-uid="LibUsbDotNet.LibUsb.IUsbDevice.OpenEndpointWriter(LibUsbDotNet.Main.WriteEndpointID)">OpenEndpointWriter(WriteEndpointID)</h4>
+  <div class="markdown level1 summary"><p>Opens a <a class="xref" href="LibUsbDotNet.Main.EndpointType.html#LibUsbDotNet_Main_EndpointType_Bulk">Bulk</a> endpoint for writing</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+  <h5 class="decalaration">Declaration</h5>
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">UsbEndpointWriter OpenEndpointWriter(WriteEndpointID writeEndpointID)</code></pre>
+  </div>
+  <h5 class="parameters">Parameters</h5>
+  <table class="table table-bordered table-striped table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Name</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><a class="xref" href="LibUsbDotNet.Main.WriteEndpointID.html">WriteEndpointID</a></td>
+        <td><span class="parametername">writeEndpointID</span></td>
+        <td><p>Endpoint number for read operations.</p>
+</td>
+      </tr>
+    </tbody>
+  </table>
+  <h5 class="returns">Returns</h5>
+  <table class="table table-bordered table-striped table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><a class="xref" href="LibUsbDotNet.LibUsb.UsbEndpointWriter.html">UsbEndpointWriter</a></td>
+        <td><p>A <a class="xref" href="LibUsbDotNet.LibUsb.UsbEndpointWriter.html">UsbEndpointWriter</a> class ready for writing. If the specified endpoint is already been opened, the original <a class="xref" href="LibUsbDotNet.LibUsb.UsbEndpointWriter.html">UsbEndpointWriter</a> class is returned.</p>
+</td>
+      </tr>
+    </tbody>
+  </table>
+  <span class="small pull-right mobile-hide">
+    <span class="divider">|</span>
+    <a href="https://github.com/LibUsbDotNet/LibUsbDotNet/new/master/apiSpec/new?filename=LibUsbDotNet_LibUsb_IUsbDevice_OpenEndpointWriter_LibUsbDotNet_Main_WriteEndpointID_LibUsbDotNet_Main_EndpointType_.md&amp;value=---%0Auid%3A%20LibUsbDotNet.LibUsb.IUsbDevice.OpenEndpointWriter(LibUsbDotNet.Main.WriteEndpointID%2CLibUsbDotNet.Main.EndpointType)%0Asummary%3A%20'*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A">Improve this Doc</a>
+  </span>
+  <span class="small pull-right mobile-hide">
+    <a href="https://github.com/LibUsbDotNet/LibUsbDotNet/blob/master/src/LibUsbDotNet/LibUsb/IUsbDevice.cs/#L229">View Source</a>
+  </span>
+  <a id="LibUsbDotNet_LibUsb_IUsbDevice_OpenEndpointWriter_" data-uid="LibUsbDotNet.LibUsb.IUsbDevice.OpenEndpointWriter*"></a>
+  <h4 id="LibUsbDotNet_LibUsb_IUsbDevice_OpenEndpointWriter_LibUsbDotNet_Main_WriteEndpointID_LibUsbDotNet_Main_EndpointType_" data-uid="LibUsbDotNet.LibUsb.IUsbDevice.OpenEndpointWriter(LibUsbDotNet.Main.WriteEndpointID,LibUsbDotNet.Main.EndpointType)">OpenEndpointWriter(WriteEndpointID, EndpointType)</h4>
+  <div class="markdown level1 summary"><p>Opens an endpoint for writing</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+  <h5 class="decalaration">Declaration</h5>
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">UsbEndpointWriter OpenEndpointWriter(WriteEndpointID writeEndpointID, EndpointType endpointType)</code></pre>
+  </div>
+  <h5 class="parameters">Parameters</h5>
+  <table class="table table-bordered table-striped table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Name</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><a class="xref" href="LibUsbDotNet.Main.WriteEndpointID.html">WriteEndpointID</a></td>
+        <td><span class="parametername">writeEndpointID</span></td>
+        <td><p>Endpoint number for read operations.</p>
+</td>
+      </tr>
+      <tr>
+        <td><a class="xref" href="LibUsbDotNet.Main.EndpointType.html">EndpointType</a></td>
+        <td><span class="parametername">endpointType</span></td>
+        <td><p>The type of endpoint to open.</p>
+</td>
+      </tr>
+    </tbody>
+  </table>
+  <h5 class="returns">Returns</h5>
+  <table class="table table-bordered table-striped table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><a class="xref" href="LibUsbDotNet.LibUsb.UsbEndpointWriter.html">UsbEndpointWriter</a></td>
+        <td><p>A <a class="xref" href="LibUsbDotNet.LibUsb.UsbEndpointWriter.html">UsbEndpointWriter</a> class ready for writing. If the specified endpoint is already been opened, the original <a class="xref" href="LibUsbDotNet.LibUsb.UsbEndpointWriter.html">UsbEndpointWriter</a> class is returned.</p>
+</td>
+      </tr>
+    </tbody>
+  </table>
+  <span class="small pull-right mobile-hide">
+    <span class="divider">|</span>
+    <a href="https://github.com/LibUsbDotNet/LibUsbDotNet/new/master/apiSpec/new?filename=LibUsbDotNet_LibUsb_IUsbDevice_ReleaseInterface_System_Int32_.md&amp;value=---%0Auid%3A%20LibUsbDotNet.LibUsb.IUsbDevice.ReleaseInterface(System.Int32)%0Asummary%3A%20'*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A">Improve this Doc</a>
+  </span>
+  <span class="small pull-right mobile-hide">
+    <a href="https://github.com/LibUsbDotNet/LibUsbDotNet/blob/master/src/LibUsbDotNet/LibUsb/IUsbDevice.cs/#L259">View Source</a>
+  </span>
+  <a id="LibUsbDotNet_LibUsb_IUsbDevice_ReleaseInterface_" data-uid="LibUsbDotNet.LibUsb.IUsbDevice.ReleaseInterface*"></a>
+  <h4 id="LibUsbDotNet_LibUsb_IUsbDevice_ReleaseInterface_System_Int32_" data-uid="LibUsbDotNet.LibUsb.IUsbDevice.ReleaseInterface(System.Int32)">ReleaseInterface(Int32)</h4>
+  <div class="markdown level1 summary"><p>Releases an interface that was previously claimed with <a class="xref" href="LibUsbDotNet.LibUsb.IUsbDevice.html#LibUsbDotNet_LibUsb_IUsbDevice_ClaimInterface_System_Int32_">ClaimInterface(Int32)</a>.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+  <h5 class="decalaration">Declaration</h5>
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">bool ReleaseInterface(int interfaceID)</code></pre>
+  </div>
+  <h5 class="parameters">Parameters</h5>
+  <table class="table table-bordered table-striped table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Name</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><span class="xref">System.Int32</span></td>
+        <td><span class="parametername">interfaceID</span></td>
+        <td><p>The interface to release.</p>
+</td>
+      </tr>
+    </tbody>
+  </table>
+  <h5 class="returns">Returns</h5>
+  <table class="table table-bordered table-striped table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><span class="xref">System.Boolean</span></td>
+        <td><p>True on success.</p>
+</td>
+      </tr>
+    </tbody>
+  </table>
+  <span class="small pull-right mobile-hide">
+    <span class="divider">|</span>
+    <a href="https://github.com/LibUsbDotNet/LibUsbDotNet/new/master/apiSpec/new?filename=LibUsbDotNet_LibUsb_IUsbDevice_ResetDevice.md&amp;value=---%0Auid%3A%20LibUsbDotNet.LibUsb.IUsbDevice.ResetDevice%0Asummary%3A%20'*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A">Improve this Doc</a>
+  </span>
+  <span class="small pull-right mobile-hide">
+    <a href="https://github.com/LibUsbDotNet/LibUsbDotNet/blob/master/src/LibUsbDotNet/LibUsb/IUsbDevice.cs/#L268">View Source</a>
+  </span>
+  <a id="LibUsbDotNet_LibUsb_IUsbDevice_ResetDevice_" data-uid="LibUsbDotNet.LibUsb.IUsbDevice.ResetDevice*"></a>
+  <h4 id="LibUsbDotNet_LibUsb_IUsbDevice_ResetDevice" data-uid="LibUsbDotNet.LibUsb.IUsbDevice.ResetDevice">ResetDevice()</h4>
+  <div class="markdown level1 summary"><p>Sends a usb device reset command.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+  <h5 class="decalaration">Declaration</h5>
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">void ResetDevice()</code></pre>
+  </div>
+  <h5 id="LibUsbDotNet_LibUsb_IUsbDevice_ResetDevice_remarks">Remarks</h5>
+  <div class="markdown level1 remarks"><p>After calling <a class="xref" href="LibUsbDotNet.LibUsb.IUsbDevice.html#LibUsbDotNet_LibUsb_IUsbDevice_ResetDevice">ResetDevice()</a>, the <a class="xref" href="LibUsbDotNet.LibUsb.UsbDevice.html">UsbDevice</a> instance is disposed and
+no longer usable.  A new <a class="xref" href="LibUsbDotNet.LibUsb.UsbDevice.html">UsbDevice</a> instance must be obtained from the device list.</p>
+</div>
+  <span class="small pull-right mobile-hide">
+    <span class="divider">|</span>
+    <a href="https://github.com/LibUsbDotNet/LibUsbDotNet/new/master/apiSpec/new?filename=LibUsbDotNet_LibUsb_IUsbDevice_SetAltInterface_System_Int32_.md&amp;value=---%0Auid%3A%20LibUsbDotNet.LibUsb.IUsbDevice.SetAltInterface(System.Int32)%0Asummary%3A%20'*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A">Improve this Doc</a>
+  </span>
+  <span class="small pull-right mobile-hide">
+    <a href="https://github.com/LibUsbDotNet/LibUsbDotNet/blob/master/src/LibUsbDotNet/LibUsb/IUsbDevice.cs/#L169">View Source</a>
+  </span>
+  <a id="LibUsbDotNet_LibUsb_IUsbDevice_SetAltInterface_" data-uid="LibUsbDotNet.LibUsb.IUsbDevice.SetAltInterface*"></a>
+  <h4 id="LibUsbDotNet_LibUsb_IUsbDevice_SetAltInterface_System_Int32_" data-uid="LibUsbDotNet.LibUsb.IUsbDevice.SetAltInterface(System.Int32)">SetAltInterface(Int32)</h4>
+  <div class="markdown level1 summary"><p>sets the alternate interface number for the previously claimed interface. <a class="xref" href="LibUsbDotNet.LibUsb.IUsbDevice.html#LibUsbDotNet_LibUsb_IUsbDevice_ClaimInterface_System_Int32_">ClaimInterface(Int32)</a></p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+  <h5 class="decalaration">Declaration</h5>
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">bool SetAltInterface(int alternateID)</code></pre>
+  </div>
+  <h5 class="parameters">Parameters</h5>
+  <table class="table table-bordered table-striped table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Name</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><span class="xref">System.Int32</span></td>
+        <td><span class="parametername">alternateID</span></td>
+        <td><p>The alternate interface number.</p>
+</td>
+      </tr>
+    </tbody>
+  </table>
+  <h5 class="returns">Returns</h5>
+  <table class="table table-bordered table-striped table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><span class="xref">System.Boolean</span></td>
+        <td><p>True on success.</p>
+</td>
+      </tr>
+    </tbody>
+  </table>
+  <span class="small pull-right mobile-hide">
+    <span class="divider">|</span>
+    <a href="https://github.com/LibUsbDotNet/LibUsbDotNet/new/master/apiSpec/new?filename=LibUsbDotNet_LibUsb_IUsbDevice_SetConfiguration_System_Int32_.md&amp;value=---%0Auid%3A%20LibUsbDotNet.LibUsb.IUsbDevice.SetConfiguration(System.Int32)%0Asummary%3A%20'*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A">Improve this Doc</a>
+  </span>
+  <span class="small pull-right mobile-hide">
+    <a href="https://github.com/LibUsbDotNet/LibUsbDotNet/blob/master/src/LibUsbDotNet/LibUsb/IUsbDevice.cs/#L238">View Source</a>
+  </span>
+  <a id="LibUsbDotNet_LibUsb_IUsbDevice_SetConfiguration_" data-uid="LibUsbDotNet.LibUsb.IUsbDevice.SetConfiguration*"></a>
+  <h4 id="LibUsbDotNet_LibUsb_IUsbDevice_SetConfiguration_System_Int32_" data-uid="LibUsbDotNet.LibUsb.IUsbDevice.SetConfiguration(System.Int32)">SetConfiguration(Int32)</h4>
+  <div class="markdown level1 summary"><p>Sets the USB devices active configuration value.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+  <h5 class="decalaration">Declaration</h5>
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">void SetConfiguration(int config)</code></pre>
+  </div>
+  <h5 class="parameters">Parameters</h5>
+  <table class="table table-bordered table-striped table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Name</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><span class="xref">System.Int32</span></td>
+        <td><span class="parametername">config</span></td>
+        <td><p>The active configuration value. A zero value means the device is not configured and a non-zero value indicates the device is configured.</p>
+</td>
+      </tr>
+    </tbody>
+  </table>
+  <h5 id="LibUsbDotNet_LibUsb_IUsbDevice_SetConfiguration_System_Int32__remarks">Remarks</h5>
+  <div class="markdown level1 remarks"><p>A USB device can have several different configurations, but only one active configuration.</p>
+</div>
+  <span class="small pull-right mobile-hide">
+    <span class="divider">|</span>
+    <a href="https://github.com/LibUsbDotNet/LibUsbDotNet/new/master/apiSpec/new?filename=LibUsbDotNet_LibUsb_IUsbDevice_TryGetConfigDescriptor_System_Byte_LibUsbDotNet_Info_UsbConfigInfo__.md&amp;value=---%0Auid%3A%20LibUsbDotNet.LibUsb.IUsbDevice.TryGetConfigDescriptor(System.Byte%2CLibUsbDotNet.Info.UsbConfigInfo%40)%0Asummary%3A%20'*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A">Improve this Doc</a>
+  </span>
+  <span class="small pull-right mobile-hide">
+    <a href="https://github.com/LibUsbDotNet/LibUsbDotNet/blob/master/src/LibUsbDotNet/LibUsb/IUsbDevice.cs/#L162">View Source</a>
+  </span>
+  <a id="LibUsbDotNet_LibUsb_IUsbDevice_TryGetConfigDescriptor_" data-uid="LibUsbDotNet.LibUsb.IUsbDevice.TryGetConfigDescriptor*"></a>
+  <h4 id="LibUsbDotNet_LibUsb_IUsbDevice_TryGetConfigDescriptor_System_Byte_LibUsbDotNet_Info_UsbConfigInfo__" data-uid="LibUsbDotNet.LibUsb.IUsbDevice.TryGetConfigDescriptor(System.Byte,LibUsbDotNet.Info.UsbConfigInfo@)">TryGetConfigDescriptor(Byte, out UsbConfigInfo)</h4>
+  <div class="markdown level1 summary"><p>Attempts to get a USB configuration descriptor based on its index.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+  <h5 class="decalaration">Declaration</h5>
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">bool TryGetConfigDescriptor(byte configIndex, out UsbConfigInfo descriptor)</code></pre>
+  </div>
+  <h5 class="parameters">Parameters</h5>
+  <table class="table table-bordered table-striped table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Name</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><span class="xref">System.Byte</span></td>
+        <td><span class="parametername">configIndex</span></td>
+        <td><p>The index of the configuration you wish to retrieve</p>
+</td>
+      </tr>
+      <tr>
+        <td><a class="xref" href="LibUsbDotNet.Info.UsbConfigInfo.html">UsbConfigInfo</a></td>
+        <td><span class="parametername">descriptor</span></td>
+        <td><p>The requested descriptor.</p>
+</td>
+      </tr>
+    </tbody>
+  </table>
+  <h5 class="returns">Returns</h5>
+  <table class="table table-bordered table-striped table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><span class="xref">System.Boolean</span></td>
+        <td><p><span class="xref">true</span> if the descriptor could be loaded correctly; otherwise,
+<span class="xref">false</span>.</p>
+</td>
+      </tr>
+    </tbody>
+  </table>
+  <span class="small pull-right mobile-hide">
+    <span class="divider">|</span>
+    <a href="https://github.com/LibUsbDotNet/LibUsbDotNet/new/master/apiSpec/new?filename=LibUsbDotNet_LibUsb_IUsbDevice_TryOpen.md&amp;value=---%0Auid%3A%20LibUsbDotNet.LibUsb.IUsbDevice.TryOpen%0Asummary%3A%20'*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A">Improve this Doc</a>
+  </span>
+  <span class="small pull-right mobile-hide">
+    <a href="https://github.com/LibUsbDotNet/LibUsbDotNet/blob/master/src/LibUsbDotNet/LibUsb/IUsbDevice.cs/#L190">View Source</a>
+  </span>
+  <a id="LibUsbDotNet_LibUsb_IUsbDevice_TryOpen_" data-uid="LibUsbDotNet.LibUsb.IUsbDevice.TryOpen*"></a>
+  <h4 id="LibUsbDotNet_LibUsb_IUsbDevice_TryOpen" data-uid="LibUsbDotNet.LibUsb.IUsbDevice.TryOpen">TryOpen()</h4>
+  <div class="markdown level1 summary"><p>Attempts to open this device.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+  <h5 class="decalaration">Declaration</h5>
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">bool TryOpen()</code></pre>
+  </div>
+  <h5 class="returns">Returns</h5>
+  <table class="table table-bordered table-striped table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><span class="xref">System.Boolean</span></td>
+        <td><p><span class="xref">true</span> if the device could be opened successfully;
+otherwise, <span class="xref">false</span>.</p>
+</td>
+      </tr>
+    </tbody>
+  </table>
+</article>
+          </div>
+          
+          <div class="hidden-sm col-md-2" role="complementary">
+            <div class="sideaffix">
+              <div class="contribution">
+                <ul class="nav">
+                  <li>
+                    <a href="https://github.com/LibUsbDotNet/LibUsbDotNet/new/master/apiSpec/new?filename=LibUsbDotNet_LibUsb_IUsbDevice.md&amp;value=---%0Auid%3A%20LibUsbDotNet.LibUsb.IUsbDevice%0Asummary%3A%20'*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A" class="contribution-link">Improve this Doc</a>
+                  </li>
+                  <li>
+                    <a href="https://github.com/LibUsbDotNet/LibUsbDotNet/blob/master/src/LibUsbDotNet/LibUsb/IUsbDevice.cs/#L39" class="contribution-link">View Source</a>
+                  </li>
+                </ul>
+              </div>
+              <nav class="bs-docs-sidebar hidden-print hidden-xs hidden-sm affix" id="affix">
+                <h5>In This Article</h5>
+                <div></div>
+              </nav>
+            </div>
+          </div>
+        </div>
+      </div>
+      
+      <footer>
+        <div class="grad-bottom"></div>
+        <div class="footer">
+          <div class="container">
+            <span class="pull-right">
+              <a href="#top">Back to top</a>
+            </span>
+            
+            <span>Generated by <strong>DocFX</strong></span>
+          </div>
+        </div>
+      </footer>
+    </div>
+    
+    <script type="text/javascript" src="../styles/docfx.vendor.js"></script>
+    <script type="text/javascript" src="../styles/docfx.js"></script>
+    <script type="text/javascript" src="../styles/main.js"></script>
+  </body>
+</html>
