@@ -57,6 +57,8 @@ public interface IUsbDevice : IDisposable
     /// </summary>
     UsbDeviceInfo Info { get; }
 
+    LocationId LocationId { get; }
+    
     /// <summary>
     /// Gets a value indicating whether the device handle is valid.
     /// </summary>

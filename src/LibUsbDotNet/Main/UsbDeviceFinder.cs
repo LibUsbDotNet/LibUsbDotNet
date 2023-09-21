@@ -23,6 +23,7 @@
 using LibUsbDotNet.LibUsb;
 using System;
 using System.Runtime.Serialization;
+using LibUsbDotNet.Info;
 
 namespace LibUsbDotNet.Main;
 
@@ -45,82 +46,8 @@ namespace LibUsbDotNet.Main;
 /// </example>
 public class UsbDeviceFinder : ISerializable
 {
-    /// <summary>
-    /// Initializes a new instance of the <see cref="UsbDeviceFinder"/> class for locating and identifying usb devices.
-    /// </summary>
-    /// <param name="vid">The vendor id of the usb device to find, or <see cref="int.MaxValue"/> to ignore.</param>
-    /// <param name="pid">The product id of the usb device to find, or <see cref="int.MaxValue"/> to ignore.</param>
-    /// <param name="revision">The revision number of the usb device to find, or <see cref="int.MaxValue"/> to ignore.</param>
-    /// <param name="serialNumber">The serial number of the usb device to find, or null to ignore.</param>
-    /// <param name="deviceInterfaceGuid">The unique guid of the usb device to find, or <see cref="Guid.Empty"/> to ignore.</param>
-    public UsbDeviceFinder(int vid, int pid, int revision, string serialNumber, Guid deviceInterfaceGuid)
-    {
-        this.Vid = vid;
-        this.Pid = pid;
-        this.Revision = revision;
-        this.SerialNumber = serialNumber;
-        this.DeviceInterfaceGuid = deviceInterfaceGuid;
-    }
-
-    /// <summary>
-    /// Initializes a new instance of the <see cref="UsbDeviceFinder"/> class for locating usb devices by VendorID, ProductID, and Serial number.
-    /// </summary>
-    /// <param name="vid">The vendor id of the usb device to find.</param>
-    /// <param name="pid">The product id of the usb device to find.</param>
-    /// <param name="serialNumber">The serial number of the usb device to find.</param>
-    public UsbDeviceFinder(int vid, int pid, string serialNumber)
-        : this(vid, pid, int.MaxValue, serialNumber, Guid.Empty)
-    {
-    }
-
-    /// <summary>
-    /// Initializes a new instance of the <see cref="UsbDeviceFinder"/> class for locating usb devices by VendorID, ProuctID, and Revision code.
-    /// </summary>
-    /// <param name="vid">The vendor id of the usb device to find.</param>
-    /// <param name="pid">The product id of the usb device to find.</param>
-    /// <param name="revision">The revision number of the usb device to find.</param>
-    public UsbDeviceFinder(int vid, int pid, int revision)
-        : this(vid, pid, revision, null, Guid.Empty)
-    {
-    }
-
-    /// <summary>
-    /// Initializes a new instance of the <see cref="UsbDeviceFinder"/> class for locating usb devices vendor and product ID.
-    /// </summary>
-    /// <param name="vid">The vendor id of the usb device to find.</param>
-    /// <param name="pid">The product id of the usb device to find.</param>
-    public UsbDeviceFinder(int vid, int pid)
-        : this(vid, pid, int.MaxValue, null, Guid.Empty)
-    {
-    }
-
-    /// <summary>
-    /// Initializes a new instance of the <see cref="UsbDeviceFinder"/> class for locating usb devices.
-    /// </summary>
-    /// <param name="vid">The vendor id of the usb device to find.</param>
-    public UsbDeviceFinder(int vid)
-        : this(vid, int.MaxValue, int.MaxValue, null, Guid.Empty)
-    {
-    }
-
-    /// <summary>
-    /// Initializes a new instance of the <see cref="UsbDeviceFinder"/> class  for locating usb devices by a serial number.
-    /// </summary>
-    /// <param name="serialNumber">The serial number of the usb device to find.</param>
-    public UsbDeviceFinder(string serialNumber)
-        : this(int.MaxValue, int.MaxValue, int.MaxValue, serialNumber, Guid.Empty)
-    {
-    }
-
-    /// <summary>
-    /// Initializes a new instance of the <see cref="UsbDeviceFinder"/> class s for locating usb devices by a unique <see cref="Guid"/> string.
-    /// </summary>
-    /// <param name="deviceInterfaceGuid">The unique <see cref="Guid"/> to find.</param>
-    public UsbDeviceFinder(Guid deviceInterfaceGuid)
-        : this(int.MaxValue, int.MaxValue, int.MaxValue, null, deviceInterfaceGuid)
-    {
-    }
-
+    public UsbDeviceFinder() { }
+    
     /// <summary>
     /// Initializes a new instance of the <see cref="UsbDeviceFinder"/> class using a serialization stream to fill the <see cref="UsbDeviceFinder"/> class.
     /// </summary>
@@ -141,19 +68,30 @@ public class UsbDeviceFinder : ISerializable
     }
 
     /// <summary>
-    /// Initializes a new instance of the <see cref="UsbDeviceFinder"/> class.
+    /// Gets the device interface guid string to find, or <see cref="string.Empty"/> to ignore.
     /// </summary>
-    protected UsbDeviceFinder()
+    public Guid DeviceInterfaceGuid
     {
-    }
+        get;
+        init;
+    } = Guid.Empty;
 
     /// <summary>
     /// Gets the device interface guid string to find, or <see cref="string.Empty"/> to ignore.
     /// </summary>
-    public Guid? DeviceInterfaceGuid
+    public LocationId LocationId
     {
         get;
-        private set;
+        init;
+    } = LocationId.Zero;
+
+    /// <summary>
+    /// Gets the device interface guid string to find, or <see cref="string.Empty"/> to ignore.
+    /// </summary>
+    public PhysicalPortId PhyiscalPortId
+    {
+        get;
+        init;
     }
 
     /// <summary>
@@ -165,7 +103,7 @@ public class UsbDeviceFinder : ISerializable
     public string SerialNumber
     {
         get;
-        private set;
+        init;
     }
 
     /// <summary>
@@ -174,11 +112,11 @@ public class UsbDeviceFinder : ISerializable
     /// <remarks>
     /// Set to <see cref="int.MaxValue"/> to ignore.
     /// </remarks>
-    public int? Revision
+    public int Revision
     {
         get;
-        private set;
-    }
+        init;
+    } = int.MaxValue;
 
     /// <summary>
     /// Gets the product id of the device to find.
@@ -186,11 +124,11 @@ public class UsbDeviceFinder : ISerializable
     /// <remarks>
     /// Set to <see cref="int.MaxValue"/> to ignore.
     /// </remarks>
-    public int? Pid
+    public int Pid
     {
         get;
-        private set;
-    }
+        init;
+    } = int.MaxValue;
 
     /// <summary>
     /// Gets the vendor id of the device to find.
@@ -198,11 +136,11 @@ public class UsbDeviceFinder : ISerializable
     /// <remarks>
     /// Set to <see cref="int.MaxValue"/> to ignore.
     /// </remarks>
-    public int? Vid
+    public int Vid
     {
         get;
-        private set;
-    }
+        init;
+    } = int.MaxValue;
 
     /// <inheritdoc/>
     public void GetObjectData(SerializationInfo info, StreamingContext context)
@@ -231,29 +169,39 @@ public class UsbDeviceFinder : ISerializable
     {
         try
         {
-            if (this.Vid != null && 
-                this.Vid != int.MaxValue &&
-                this.Vid.Value != usbDevice.Info.VendorId)
+            if (this.Vid != int.MaxValue &&
+                this.Vid != usbDevice.Info.VendorId)
             {
                 return false;
             }
 
-            if (this.Pid != null && 
-                this.Pid != int.MaxValue &&
-                this.Pid.Value != usbDevice.Info.ProductId)
+            if (this.Pid != int.MaxValue &&
+                this.Pid != usbDevice.Info.ProductId)
             {
                 return false;
             }
 
-            if (this.Revision != null && 
-                this.Revision != int.MaxValue && 
-                this.Revision.Value != usbDevice.Info.Usb)
+            if (this.Revision != int.MaxValue && 
+                this.Revision != usbDevice.Info.Usb)
             {
                 return false;
             }
 
             if (this.SerialNumber != null &&
                 this.SerialNumber != usbDevice.Info.SerialNumber)
+            {
+                return false;
+            }
+
+            if (LocationId != Info.LocationId.Zero &&
+                LocationId != usbDevice.LocationId)
+            {
+                return false;
+            }
+            
+            if (PhyiscalPortId != null &&
+                PhyiscalPortId.Usb2Id != usbDevice.LocationId &&
+                 PhyiscalPortId.Usb3Id != usbDevice.LocationId)
             {
                 return false;
             }
@@ -266,4 +214,45 @@ public class UsbDeviceFinder : ISerializable
             return false;
         }
     }
+    
+    public virtual bool Check(CachedDeviceInfo info)
+    {
+        if (this.Vid != int.MaxValue &&
+            this.Vid != info.Descriptor.VendorId)
+            return false;
+
+        if (this.Pid != int.MaxValue &&
+            this.Pid != info.Descriptor.ProductId)
+            return false;
+
+        if (this.Revision != int.MaxValue && 
+            this.Revision != info.Descriptor.Usb)
+            return false;
+
+        if (this.SerialNumber != null &&
+            this.SerialNumber != info.Descriptor.SerialNumber)
+            return false;
+
+        if (LocationId != Info.LocationId.Zero &&
+            LocationId != info.PortInfo)
+            return false;
+
+        if (PhyiscalPortId != null &&
+            PhyiscalPortId.Usb2Id != info.PortInfo &&
+            PhyiscalPortId.Usb3Id != info.PortInfo)
+            return false;
+
+        return true;
+    }
+
+    public override bool Equals(object obj) => obj is UsbDeviceFinder deviceFinder && Equals(deviceFinder);
+
+    protected bool Equals(UsbDeviceFinder other) => DeviceInterfaceGuid.Equals(other.DeviceInterfaceGuid) &&
+                                                    LocationId.Equals(other.LocationId) &&
+                                                    Equals(PhyiscalPortId, other.PhyiscalPortId) &&
+                                                    SerialNumber == other.SerialNumber && Revision == other.Revision &&
+                                                    Pid == other.Pid && Vid == other.Vid;
+
+    public override int GetHashCode() 
+        => HashCode.Combine(DeviceInterfaceGuid, LocationId, PhyiscalPortId, SerialNumber, Revision, Pid, Vid);
 }

@@ -40,15 +40,14 @@ namespace LibUsbDotNet
     /// </summary>
     public partial class Device : SafeHandleZeroOrMinusOneIsInvalid
     {
-        private string creationStackTrace;
-
+        private bool _fromHotplug;
+        
         /// <summary>
         /// Initializes a new instance of the <see cref="Device"/> class.
         /// </summary>
         protected Device() :
                 base(true)
         {
-            this.creationStackTrace = Environment.StackTrace;
         }
 
         /// <summary>
@@ -57,10 +56,11 @@ namespace LibUsbDotNet
         /// <param name="ownsHandle">
         /// <see langword="true"/> to reliably release the handle during the finalization phase; <see langword="false"/> to prevent reliable release (not recommended).
         /// </param>
-        protected Device(bool ownsHandle) :
+        /// <param name="fromHotplug">Device was created from hotplug event.</param>
+        protected Device(bool ownsHandle, bool fromHotplug) :
                 base(ownsHandle)
         {
-            this.creationStackTrace = Environment.StackTrace;
+            _fromHotplug = fromHotplug;
         }
 
         /// <summary>
@@ -70,7 +70,7 @@ namespace LibUsbDotNet
         {
             get
             {
-                return Device.DangerousCreate(IntPtr.Zero);
+                return Device.DangerousCreate(IntPtr.Zero, false);
             }
         }
 
@@ -83,11 +83,12 @@ namespace LibUsbDotNet
         /// <param name="ownsHandle">
         /// <see langword="true"/> to reliably release the handle during the finalization phase; <see langword="false"/> to prevent reliable release (not recommended).
         /// </param>
+        /// <param name="fromHotplug">Device was created from hotplug event.</param>
         /// <returns>
         /// </returns>
-        public static Device DangerousCreate(IntPtr unsafeHandle, bool ownsHandle)
+        public static Device DangerousCreate(IntPtr unsafeHandle, bool ownsHandle, bool fromHotplug)
         {
-            Device safeHandle = new Device(ownsHandle);
+            Device safeHandle = new Device(ownsHandle, fromHotplug);
             safeHandle.SetHandle(unsafeHandle);
             return safeHandle;
         }
@@ -98,11 +99,12 @@ namespace LibUsbDotNet
         /// <param name="unsafeHandle">
         /// The underlying <see cref="IntPtr"/>
         /// </param>
+        /// <param name="fromHotplug">Device was created from hotplug event.</param>
         /// <returns>
         /// </returns>
-        public static Device DangerousCreate(IntPtr unsafeHandle)
+        public static Device DangerousCreate(IntPtr unsafeHandle, bool fromHotplug)
         {
-            return Device.DangerousCreate(unsafeHandle, true);
+            return Device.DangerousCreate(unsafeHandle, true, fromHotplug);
         }
 
         /// <inheritdoc/>

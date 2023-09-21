@@ -22,9 +22,12 @@
 
 using LibUsbDotNet.Main;
 using System;
+using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.Runtime.InteropServices;
 using System.Threading;
+using LibUsbDotNet.Info;
 
 namespace LibUsbDotNet.LibUsb;
 
@@ -54,6 +57,10 @@ public class UsbContext : IUsbContext
     /// </summary>
     public bool IsDisposed { get; private set; }
 
+    public bool IsUsingHotplug { get; private set; }
+
+    public HotplugOptions HotplugOptions { get; init; } = new();
+    
     /// <summary>
     /// Tracking list of all devices that are open on this context.
     /// </summary>
@@ -78,6 +85,12 @@ public class UsbContext : IUsbContext
     /// </summary>
     internal int stopHandlingEvents;
 
+    private readonly IntPtr hotplugDelegatePtr;
+    private readonly HotplugCallbackFn hotplugCallback;
+    public delegate void DeviceEventHandler(object sender, DeviceEventArgs e);
+    public event EventHandler<DeviceEventArgs> DeviceEvent;
+    internal ConcurrentDictionary<UsbDevice, CachedDeviceInfo> DeviceInfoDictionary { get; } = new();
+
     /// <summary>
     /// Initializes a new instance of the <see cref="UsbContext"/> class.
     /// </summary>
@@ -87,6 +100,8 @@ public class UsbContext : IUsbContext
         NativeMethods.Init(ref contextHandle).ThrowOnError();
         this.context = Context.DangerousCreate(contextHandle);
         OpenDevices = new List<UsbDevice>();
+        hotplugCallback = new HotplugCallbackFn(HotplugCallback);
+        hotplugDelegatePtr = Marshal.GetFunctionPointerForDelegate(hotplugCallback);
     }
 
     ~UsbContext()
@@ -110,6 +125,51 @@ public class UsbContext : IUsbContext
         NativeMethods.SetDebug(this.context, (int)level);
     }
 
+    private int HotplugCallback(IntPtr ctx, IntPtr device, HotplugEvent hotplugEvent, IntPtr userData)
+    {
+        UsbDevice usbDevice = new UsbDevice(Device.DangerousCreate(device, true), this);
+        DeviceEventArgs deviceEventArgs;
+        if (hotplugEvent == HotplugEvent.DeviceArrived)
+        {
+            deviceEventArgs = new DeviceArrivedEventArgs(usbDevice);
+            DeviceInfoDictionary.TryAdd(usbDevice, new CachedDeviceInfo(usbDevice));
+        }
+        else
+        {
+            if (!DeviceInfoDictionary.TryRemove(usbDevice, out var info))
+                throw new InvalidOperationException("Device info not found in dictionary.");
+            deviceEventArgs = new DeviceLeftEventArgs(info);
+        }
+
+        DeviceEvent?.Invoke(this, deviceEventArgs);
+
+        return 0;
+    }
+        
+    public void RegisterHotPlug()
+    {
+        if (IsUsingHotplug)
+            return;
+        if (NativeMethods.HasCapability((uint)Capability.HasHotplug) == 0)
+            throw new PlatformNotSupportedException("This platform does not support hotplug.");
+            
+        NativeMethods.HotplugRegisterCallback(context, HotplugOptions.HotplugEventFlags,
+            HotplugFlag.Enumerate, HotplugOptions.VendorId, HotplugOptions.ProductId, HotplugOptions.DeviceClass, hotplugDelegatePtr, IntPtr.Zero, ref HotplugOptions.Handle);
+        StartHandlingEvents();
+        IsUsingHotplug = true;
+    }
+        
+    public void UnregisterHotPlug()
+    {
+        if (!IsUsingHotplug)
+            return;
+            
+        Interlocked.Exchange(ref stopHandlingEvents, 1);
+        NativeMethods.HotplugDeregisterCallback(context, HotplugOptions.Handle);
+        StopHandlingEvents();
+        IsUsingHotplug = false;
+    }
+    
     /// <summary>
     /// Returns a list of USB devices currently attached to the system.
     /// </summary>
@@ -135,7 +195,7 @@ public class UsbContext : IUsbContext
 
         for (int i = 0; i < deviceCount.ToInt32(); i++)
         {
-            Device device = Device.DangerousCreate(list[i]);
+            Device device = Device.DangerousCreate(list[i], false);
             devices.Add(new UsbDevice(device, this));
         }
 
@@ -267,9 +327,7 @@ public class UsbContext : IUsbContext
             
         OpenDevices.Clear();
 
-        // Ideally this shouldn't be necessary, as StopHandlingEvents should be called when the last open device is closed.
-        if (this.stopHandlingEvents == 0) 
-            StopHandlingEvents();
+        UnregisterHotPlug();
             
         // Dispose of underlying context handle.
         context.Dispose();

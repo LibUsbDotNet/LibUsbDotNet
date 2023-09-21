@@ -12,7 +12,11 @@ internal class ReadPolling
 
     #region SET YOUR USB Vendor and Product ID!
 
-    public static UsbDeviceFinder MyUsbFinder = new UsbDeviceFinder(1234, 1);
+    public static UsbDeviceFinder MyUsbFinder = new()
+    {
+        Vid = 0x1234,
+        Pid = 0x0000
+    };
 
     #endregion
 

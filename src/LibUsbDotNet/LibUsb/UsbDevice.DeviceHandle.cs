@@ -291,7 +291,7 @@ public partial class UsbDevice
         if (!this.IsOpen)
             return;
 
-        bool shouldStopHandlingEvents = originatingContext.OpenDevices.Count == 1;
+        bool shouldStopHandlingEvents = originatingContext.OpenDevices.Count == 1 && !originatingContext.IsUsingHotplug;
 
         if (shouldStopHandlingEvents)
             Interlocked.Exchange(ref originatingContext.stopHandlingEvents, 1);
@@ -333,7 +333,7 @@ public partial class UsbDevice
         {
             this.deviceHandle = DeviceHandle.DangerousCreate(deviceHandle);
             this.descriptor = null;
-            if (originatingContext.OpenDevices.Count == 0)
+            if (originatingContext.OpenDevices.Count == 0 && !originatingContext.IsUsingHotplug)
                 originatingContext.StartHandlingEvents();
             if (!originatingContext.IsDisposing)
                 originatingContext.OpenDevices.Add(this);
