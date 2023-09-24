@@ -1,0 +1,25 @@
+# -*- mode: ruby -*-
+# vi: set ft=ruby :
+
+Vagrant.configure("2") do |config|
+    config.vm.box = "roboxes/ubuntu2004"
+    config.vm.box_version = "3.5.4"
+  
+    config.vm.provider "virtualbox" do |vb|
+        vb.customize [ "modifyvm", :id, "--usb", "on" ]
+  
+        vb.customize [ "storagectl", :id, "--name", "USB Storage", "--add", "usb", "--controller", "USB" ]
+  
+        vb.customize [ "createmedium", "disk", "--filename", File.absolute_path('usbdisk.vdi'), "--size", "256", "--format", "VDI", "--variant", "Fixed" ] unless File.exist?(File.absolute_path('usbdisk.vdi'))
+        vb.customize [ "storageattach", :id, "--storagectl", "USB Storage", "--port", "0", "--type", "hdd", "--medium", File.absolute_path('usbdisk.vdi') ]
+    end
+  
+    config.vm.provision "shell", inline: <<-SHELL
+        wget https://packages.microsoft.com/config/ubuntu/20.04/packages-microsoft-prod.deb -O packages-microsoft-prod.deb
+        sudo dpkg -i packages-microsoft-prod.deb
+        rm packages-microsoft-prod.deb
+
+        sudo apt-get update
+        sudo apt-get install -y apt-transport-https dotnet-sdk-6.0
+    SHELL
+end
