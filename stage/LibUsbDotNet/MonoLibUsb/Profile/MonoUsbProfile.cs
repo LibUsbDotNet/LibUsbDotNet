@@ -180,7 +180,9 @@ namespace MonoLibUsb.Profile
         {
             if (ReferenceEquals(null, other)) return false;
             if (ReferenceEquals(this, other)) return true;
-            return other.mBusNumber == mBusNumber && other.mDeviceAddress == mDeviceAddress;
+            return other.mBusNumber == mBusNumber
+                && other.mDeviceAddress == mDeviceAddress
+                && ProfileHandle.DangerousGetHandle() == other.ProfileHandle.DangerousGetHandle();
         }
 
         public string MakeDevicePath()
