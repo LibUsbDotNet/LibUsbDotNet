@@ -34,8 +34,12 @@
   <ItemGroup Condition=" '$(TargetFramework)' != 'net46' ">
     <PackageReference Include="Microsoft.Win32.Registry" Version="5.0.0" />
   </ItemGroup>
-  
+	
   <ItemGroup>
     <Compile Remove="MonoLibUsb\Tests\MonoLibUsbTests.cs" />
+  </ItemGroup>
+  
+  <ItemGroup Condition="'$(TargetFramework)' == 'net6.0'">
+    <ProjectReference Include="..\..\..\Huddly.Logging\Huddly.Logging.csproj" />
   </ItemGroup>
 </Project>
