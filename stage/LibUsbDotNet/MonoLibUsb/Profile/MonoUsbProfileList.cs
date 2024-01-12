@@ -61,7 +61,6 @@ namespace MonoLibUsb.Profile
         {
             SetDiscovered(false);
             newList.SetDiscovered(true);
-
             int iNewProfiles = newList.mList.Count;
             for (int iNewProfile = 0; iNewProfile < iNewProfiles; iNewProfile++)
             {
@@ -69,34 +68,37 @@ namespace MonoLibUsb.Profile
                 int iFoundOldIndex;
                 if ((iFoundOldIndex = mList.IndexOf(newProfile)) == -1)
                 {
-                    //Console.WriteLine("DeviceDiscovery: Added: {0}", newProfile.ProfileHandle.DangerousGetHandle());
                     newProfile.mDiscovered = true;
                     mList.Add(newProfile);
                     FireAddRemove(newProfile, AddRemoveType.Added);
                 }
                 else
                 {
-                    //Console.WriteLine("DeviceDiscovery: Unchanged: Orig:{0} New:{1}", mList[iFoundOldIndex].ProfileHandle.DangerousGetHandle(), newProfile.ProfileHandle.DangerousGetHandle());
-                    mList[iFoundOldIndex].mDiscovered = true;
-                    newProfile.mDiscovered = false;
-                   
+                    if (newProfile.ProfileHandle.DangerousGetHandle() != mList[iFoundOldIndex].ProfileHandle.DangerousGetHandle())
+                    {
+                        newProfile.mDiscovered = true;
+                        mList.Add(newProfile);
+                        FireAddRemove(newProfile, AddRemoveType.Added);
+                        mList[iFoundOldIndex].mDiscovered = false;
+                    }
+                    else
+                    {
+                        mList[iFoundOldIndex].mDiscovered = true;
+                        newProfile.mDiscovered = false;
+                    }
                 }
             }
-
             newList.mList.RemoveAll(FindDiscoveredFn);
             newList.Close();
-
             foreach (MonoUsbProfile deviceProfile in mList.ToList())
             {
                 if (!deviceProfile.mDiscovered)
                 {
                     // Close Unplugged device profiles.
-                    //Console.WriteLine("DeviceDiscovery: Removed: {0}", deviceProfile.ProfileHandle.DangerousGetHandle());
                     FireAddRemove(deviceProfile, AddRemoveType.Removed);
                     deviceProfile.Close();
                 }
             }
-
             // Remove Unplugged device profiles.
             mList.RemoveAll(FindUnDiscoveredFn);
         }
