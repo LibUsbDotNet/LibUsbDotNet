@@ -26,10 +26,6 @@ using System.Linq;
 using System.Runtime.InteropServices;
 using LibUsbDotNet;
 using LibUsbDotNet.Main;
-#if NET6_0_OR_GREATER
-using Microsoft.Extensions.Logging;
-using Huddly.Logging;
-#endif
 
 namespace MonoLibUsb.Profile
 {
@@ -44,10 +40,6 @@ namespace MonoLibUsb.Profile
         private static bool FindUnDiscoveredFn(MonoUsbProfile check) { return !check.mDiscovered; }
 
         private List<MonoUsbProfile> mList=new List<MonoUsbProfile>();
-
-#if NET6_0_OR_GREATER
-        private ILogger _logger { get => StaticLoggerFactory.GetLogger<MonoUsbProfileList>(); }
-#endif
         private void FireAddRemove(MonoUsbProfile monoUSBProfile, AddRemoveType addRemoveType)
         {
             EventHandler<AddRemoveEventArgs> temp = AddRemoveEvent;
@@ -77,9 +69,7 @@ namespace MonoLibUsb.Profile
                 int iFoundOldIndex;
                 if ((iFoundOldIndex = mList.IndexOf(newProfile)) == -1)
                 {
-                    #if NET6_0_OR_GREATER
-                    _logger.LogDebug("DeviceDiscovery: Added: {0}", newProfile.ProfileHandle.DangerousGetHandle());
-                    #endif
+                    Console.WriteLine($"<{nameof(MonoUsbProfileList)}>DeviceDiscovery: Added: {newProfile.ProfileHandle.DangerousGetHandle()}");
                     newProfile.mDiscovered = true;
                     mList.Add(newProfile);
                     FireAddRemove(newProfile, AddRemoveType.Added);
@@ -88,9 +78,7 @@ namespace MonoLibUsb.Profile
                 {
                     if (newProfile.ProfileHandle.DangerousGetHandle() != mList[iFoundOldIndex].ProfileHandle.DangerousGetHandle())
                     {
-                        #if NET6_0_OR_GREATER
-                        _logger.LogDebug("DeviceDiscovery: Added with new handle: Orig:{0} New:{1}", mList[iFoundOldIndex].ProfileHandle.DangerousGetHandle(), newProfile.ProfileHandle.DangerousGetHandle());
-                        #endif
+                        Console.WriteLine($"<{nameof(MonoUsbProfileList)}>DeviceDiscovery: Added with new handle: Orig:{mList[iFoundOldIndex].ProfileHandle.DangerousGetHandle()} New:{newProfile.ProfileHandle.DangerousGetHandle()}");
                         newProfile.mDiscovered = true;
                         mList.Add(newProfile);
                         FireAddRemove(newProfile, AddRemoveType.Added);
@@ -98,9 +86,7 @@ namespace MonoLibUsb.Profile
                     }
                     else
                     {
-                        #if NET6_0_OR_GREATER
-                        _logger.LogDebug("DeviceDiscovery: Unchanged: Orig:{0} New:{1}", mList[iFoundOldIndex].ProfileHandle.DangerousGetHandle(), newProfile.ProfileHandle.DangerousGetHandle());
-                        #endif
+                        Console.WriteLine($"<{nameof(MonoUsbProfileList)}>DeviceDiscovery: Unchanged: Orig:{mList[iFoundOldIndex].ProfileHandle.DangerousGetHandle()} New:{newProfile.ProfileHandle.DangerousGetHandle()}");
                         mList[iFoundOldIndex].mDiscovered = true;
                         newProfile.mDiscovered = false;
                     }
@@ -115,9 +101,7 @@ namespace MonoLibUsb.Profile
                 if (!deviceProfile.mDiscovered)
                 {
                     // Close Unplugged device profiles.
-#if NET6_0_OR_GREATER
-                    _logger.LogDebug("DeviceDiscovery: Removed: {0}", deviceProfile.ProfileHandle.DangerousGetHandle());
-                    #endif
+                    Console.WriteLine($"<{nameof(MonoUsbProfileList)}>DeviceDiscovery: Removed: {0}", deviceProfile.ProfileHandle.DangerousGetHandle());
                     FireAddRemove(deviceProfile, AddRemoveType.Removed);
                     deviceProfile.Close();
                 }

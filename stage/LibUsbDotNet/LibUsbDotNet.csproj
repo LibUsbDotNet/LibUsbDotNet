@@ -38,8 +38,4 @@
   <ItemGroup>
     <Compile Remove="MonoLibUsb\Tests\MonoLibUsbTests.cs" />
   </ItemGroup>
-  
-  <ItemGroup Condition="'$(TargetFramework)' == 'net6.0'">
-    <ProjectReference Include="..\..\..\Huddly.Logging\Huddly.Logging.csproj" />
-  </ItemGroup>
 </Project>
