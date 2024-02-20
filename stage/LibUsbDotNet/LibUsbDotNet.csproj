@@ -14,8 +14,7 @@
     <PackageProjectUrl>https://github.com/Huddly/LibUsbDotNet/</PackageProjectUrl>
     <PackageLicenseUrl>https://github.com/Huddly/LibUsbDotNet/blob/master/LICENSE</PackageLicenseUrl>
     <RepositoryType>git</RepositoryType>
-    <RuntimeIdentifiers>win</RuntimeIdentifiers>
-    
+
     <PublishRepositoryUrl>true</PublishRepositoryUrl>
     <AllowedOutputExtensionsInPackageBuildOutputFolder>$(AllowedOutputExtensionsInPackageBuildOutputFolder);.pdb</AllowedOutputExtensionsInPackageBuildOutputFolder>
     <SignAssembly>true</SignAssembly>
@@ -23,6 +22,10 @@
     <GeneratePackageOnBuild>True</GeneratePackageOnBuild>
     <Title></Title>
     <PackageReleaseNotes></PackageReleaseNotes>
+  </PropertyGroup>
+
+  <PropertyGroup Condition=" '$(TargetFramework)' == 'net46' ">
+    <RuntimeIdentifiers>win</RuntimeIdentifiers>
   </PropertyGroup>
 
   <ItemGroup Condition=" '$(TargetFramework)' == 'net46' ">
@@ -34,7 +37,7 @@
   <ItemGroup Condition=" '$(TargetFramework)' != 'net46' ">
     <PackageReference Include="Microsoft.Win32.Registry" Version="5.0.0" />
   </ItemGroup>
-  
+
   <ItemGroup>
     <Compile Remove="MonoLibUsb\Tests\MonoLibUsbTests.cs" />
   </ItemGroup>
