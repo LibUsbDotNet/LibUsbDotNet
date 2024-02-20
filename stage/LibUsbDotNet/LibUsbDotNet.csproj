@@ -14,6 +14,7 @@
     <PackageProjectUrl>https://github.com/Huddly/LibUsbDotNet/</PackageProjectUrl>
     <PackageLicenseUrl>https://github.com/Huddly/LibUsbDotNet/blob/master/LICENSE</PackageLicenseUrl>
     <RepositoryType>git</RepositoryType>
+    <Platforms>x64</Platforms>
 
     <PublishRepositoryUrl>true</PublishRepositoryUrl>
     <AllowedOutputExtensionsInPackageBuildOutputFolder>$(AllowedOutputExtensionsInPackageBuildOutputFolder);.pdb</AllowedOutputExtensionsInPackageBuildOutputFolder>
