@@ -248,6 +248,8 @@ namespace LibUsbDotNet.Main
 #endregion
 #endif
 
+#pragma warning disable SYSLIB0011
+
 #if !NETSTANDARD1_5 && !NETSTANDARD1_6
         /// <summary>
         /// Load usb device finder properties from a binary stream.
@@ -271,6 +273,7 @@ namespace LibUsbDotNet.Main
             BinaryFormatter formatter = new BinaryFormatter();
             formatter.Serialize(outStream, usbDeviceFinder);
         }
+#pragma warning restore SYSLIB0011
 #endif
 
         /// <summary>

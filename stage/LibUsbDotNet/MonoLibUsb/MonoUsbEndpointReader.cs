@@ -32,8 +32,6 @@ namespace LibUsbDotNet.LudnMonoLibUsb
     /// </summary> 
     public class MonoUsbEndpointReader : UsbEndpointReader
     {
-        private MonoUsbTransferContext mMonoTransferContext;
-
         internal MonoUsbEndpointReader(UsbDevice usbDevice, int readBufferSize, byte alternateInterfaceID, ReadEndpointID readEndpointID, EndpointType endpointType)
             : base(usbDevice, readBufferSize, alternateInterfaceID, readEndpointID, endpointType) { }
 
@@ -43,9 +41,6 @@ namespace LibUsbDotNet.LudnMonoLibUsb
         public override void Dispose()
         {
             base.Dispose();
-            if (ReferenceEquals(mMonoTransferContext, null)) return;
-            mMonoTransferContext.Dispose();
-            mMonoTransferContext = null;
         }
 
         /// <summary>

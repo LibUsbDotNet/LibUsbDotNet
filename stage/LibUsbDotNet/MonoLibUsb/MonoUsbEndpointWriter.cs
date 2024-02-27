@@ -32,8 +32,6 @@ namespace LibUsbDotNet.LudnMonoLibUsb
     /// </summary> 
     public class MonoUsbEndpointWriter : UsbEndpointWriter
     {
-        private MonoUsbTransferContext mMonoTransferContext;
-
         internal MonoUsbEndpointWriter(UsbDevice usbDevice, byte alternateInterfaceID, WriteEndpointID writeEndpointID, EndpointType endpointType)
             : base(usbDevice, alternateInterfaceID, writeEndpointID, endpointType) { }
 
@@ -43,9 +41,6 @@ namespace LibUsbDotNet.LudnMonoLibUsb
         public override void Dispose()
         {
             base.Dispose();
-            if (ReferenceEquals(mMonoTransferContext, null)) return;
-            mMonoTransferContext.Dispose();
-            mMonoTransferContext = null;
         }
 
         /// <summary>

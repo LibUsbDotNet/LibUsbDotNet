@@ -382,6 +382,11 @@ namespace LibUsbDotNet.Main
                 }
                 Abort();
                 mUsbDevice.ActiveEndpoints.RemoveFromList(this);
+                if (!ReferenceEquals(mTransferContext, null))
+                {
+                    mTransferContext.Dispose();
+                }
+                
             }
             mIsDisposed = true;
         }
