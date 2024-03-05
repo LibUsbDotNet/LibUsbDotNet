@@ -37,6 +37,7 @@ namespace LibUsbDotNet.Main
         private int mCurrentRemaining;
         private int mCurrentTransmitted;
 
+        public int LastUsbResult { get; protected set; }
         /// <summary></summary>
         protected int mIsoPacketSize;
 
