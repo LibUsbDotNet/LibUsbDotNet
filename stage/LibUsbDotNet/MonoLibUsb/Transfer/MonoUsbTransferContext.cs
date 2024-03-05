@@ -184,6 +184,8 @@ namespace LibUsbDotNet.LudnMonoLibUsb.Internal
         /// </returns>
         public override ErrorCode Submit()
         {
+            LastUsbResult = (int) MonoUsbError.Success;
+
             if (mTransferCancelEvent.WaitOne(0)) return ErrorCode.IoCancelled;
 
             if (!mTransferCompleteEvent.WaitOne(0)) return ErrorCode.ResourceBusy;
@@ -194,6 +196,8 @@ namespace LibUsbDotNet.LudnMonoLibUsb.Internal
             mTransferCompleteEvent.Reset();
 
             int ret = (int)mTransfer.Submit();
+            LastUsbResult = ret;
+
             if (ret < 0)
             {
                 mTransferCompleteEvent.Set();
@@ -236,6 +240,7 @@ namespace LibUsbDotNet.LudnMonoLibUsb.Internal
                     return ec;
                 case 1: // TransferCancelEvent
                     ret = (int)mTransfer.Cancel();
+                    LastUsbResult = ret;
                     bool bTransferComplete = mTransferCompleteEvent.WaitOne(100);
                     mTransferCompleteEvent.Set();
 

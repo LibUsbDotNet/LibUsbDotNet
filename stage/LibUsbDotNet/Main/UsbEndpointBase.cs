@@ -54,6 +54,8 @@ namespace LibUsbDotNet.Main
         private EndpointType mEndpointType;
         private UsbInterfaceInfo mUsbInterfacetInfo;
 
+        public int LastUsbResult { get; private set; }
+
         internal UsbEndpointBase(UsbDevice usbDevice, byte alternateInterfaceID, byte epNum, EndpointType endpointType)
         {
             mUsbDevice = usbDevice;
@@ -210,7 +212,11 @@ namespace LibUsbDotNet.Main
         /// <param name="timeout">Maximum time to wait for the transfer to complete.</param>
         /// <param name="transferLength">Number of bytes actually transferred.</param>
         /// <returns>True on success.</returns>
-        public virtual ErrorCode Transfer(IntPtr buffer, int offset, int length, int timeout, out int transferLength) { return UsbTransfer.SyncTransfer(TransferContext, buffer, offset, length, timeout, out transferLength); }
+        public virtual ErrorCode Transfer(IntPtr buffer, int offset, int length, int timeout, out int transferLength) {
+            var ec = UsbTransfer.SyncTransfer(TransferContext, buffer, offset, length, timeout, out transferLength);
+            LastUsbResult = TransferContext.LastUsbResult;
+            return ec;
+        }
 
         /// <summary>
         /// Creates, fills and submits an asynchronous <see cref="UsbTransfer"/> context.
@@ -232,6 +238,8 @@ namespace LibUsbDotNet.Main
             transferContext.Fill(buffer, offset, length, timeout);
 
             ErrorCode ec = transferContext.Submit();
+            LastUsbResult = transferContext.LastUsbResult;
+
             if (ec != ErrorCode.None)
             {
                 transferContext.Dispose();
@@ -262,6 +270,8 @@ namespace LibUsbDotNet.Main
             transferContext.Fill(buffer, offset, length, timeout);
 
             ErrorCode ec = transferContext.Submit();
+            LastUsbResult = transferContext.LastUsbResult;
+
             if (ec != ErrorCode.None)
             {
                 transferContext.Dispose();
