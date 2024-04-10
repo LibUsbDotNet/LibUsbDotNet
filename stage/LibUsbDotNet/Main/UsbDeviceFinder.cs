@@ -26,6 +26,9 @@ using System.IO;
 using System.Runtime.Serialization;
 using System.Runtime.Serialization.Formatters.Binary;
 #endif
+#if NET8_0_OR_GREATER
+using System.Text.Json;
+#endif
 
 namespace LibUsbDotNet.Main
 {
@@ -248,7 +251,7 @@ namespace LibUsbDotNet.Main
 #endregion
 #endif
 
-#if !NETSTANDARD1_5 && !NETSTANDARD1_6
+#if !NETSTANDARD1_5 && !NETSTANDARD1_6 && !NET8_0_OR_GREATER
         /// <summary>
         /// Load usb device finder properties from a binary stream.
         /// </summary>
@@ -270,6 +273,29 @@ namespace LibUsbDotNet.Main
         {
             BinaryFormatter formatter = new BinaryFormatter();
             formatter.Serialize(outStream, usbDeviceFinder);
+        }
+#endif
+
+#if NET8_0_OR_GREATER
+        /// <summary>
+        /// Load usb device finder properties from a binary stream.
+        /// </summary>
+        /// <param name="deviceFinderStream">The binary stream containing a
+        /// <see cref="UsbDeviceFinder"/> </param> instance.
+        /// <returns>A pre-loaded <see cref="UsbDeviceFinder"/> instance.</returns>
+        public static UsbDeviceFinder Load(Stream deviceFinderStream)
+        {
+            return JsonSerializer.Deserialize<UsbDeviceFinder>(deviceFinderStream);
+        }
+
+        /// <summary>
+        /// Saves a <see cref="UsbDeviceFinder"/> instance to a stream.
+        /// </summary>
+        /// <param name="usbDeviceFinder"></param>
+        /// <param name="outStream"></param>
+        public static void Save(UsbDeviceFinder usbDeviceFinder, Stream outStream)
+        {
+            JsonSerializer.Serialize(outStream, usbDeviceFinder);
         }
 #endif
 
