@@ -89,7 +89,7 @@ jobs:
 
       - uses: actions/setup-dotnet@v1
         with:
-          dotnet-version: '7.0.x'
+          dotnet-version: '8.0.x'
 
       - name: Build
         run: dotnet pack src\LibUsbDotNet\LibUsbDotNet.csproj -c Release -o ${{ github.workspace }}/nuget/
@@ -134,7 +134,7 @@ jobs:
 
       - uses: actions/setup-dotnet@v1
         with:
-          dotnet-version: '7.0.x'
+          dotnet-version: '8.0.x'
 
       - name: Test
         run: |
@@ -151,7 +151,7 @@ jobs:
 
       - uses: actions/setup-dotnet@v1
         with:
-          dotnet-version: '7.0.x'
+          dotnet-version: '8.0.x'
 
       - name: Install libusb
         run: |

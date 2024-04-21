@@ -5,7 +5,7 @@
     <AssemblyTitle>LibUsbDotNet</AssemblyTitle>
     <Authors>Travis Robinson;Stevie-O;Quamotion</Authors>
     <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
-    <TargetFrameworks>netstandard2.0;net6.0;net7.0</TargetFrameworks>
+    <TargetFrameworks>netstandard2.0;net6.0;net8.0</TargetFrameworks>
     <PackageProjectUrl>https://github.com/LibUsbDotNet/LibUsbDotNet/</PackageProjectUrl>
     <PackageLicenseExpression>LGPL-3.0-or-later</PackageLicenseExpression>
     <PackageIconUrl>http://c.fsdn.com/allura/p/libusbdotnet/icon</PackageIconUrl>
