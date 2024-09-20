@@ -30,7 +30,8 @@ public partial class UsbDevice
         Array.Copy(BitConverter.GetBytes(setupPacket.Length), 0, data, 6, 2);
 
         (Error error, int dataTransferred) = await AsyncTransfer.TransferAsync(deviceHandle, 0, EndpointType.Control, data, 0, data.Length, UsbConstants.DefaultTimeout).ConfigureAwait(false);
-
+        
+        Array.Copy(data, 8, buffer, 0, dataTransferred);
         error.ThrowOnError();
         
         return dataTransferred;
