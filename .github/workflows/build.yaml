@@ -82,7 +82,7 @@ jobs:
         with:
           fetch-depth: 0
 
-      - uses: actions/download-artifact@v4
+      - uses: actions/download-artifact@v3
         with:
           name: libusb-${{ github.run_id }}
           path: ${{ env.VCPKG_ROOT }}/installed/
@@ -127,7 +127,7 @@ jobs:
         with:
           fetch-depth: 0
 
-      - uses: actions/download-artifact@v4
+      - uses: actions/download-artifact@v3
         with:
           name: libusb-${{ github.run_id }}
           path: ${{ env.VCPKG_ROOT }}/installed/
