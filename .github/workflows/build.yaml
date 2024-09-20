@@ -27,14 +27,14 @@ jobs:
         run: vcpkg install ${{ matrix.package.name }}:${{ matrix.triplet }}
 
       - name: Upload vcpkg artifacts
-        uses: actions/upload-artifact@v2
+        uses: actions/upload-artifact@v4
         if: always()
         with:
           name: ${{ matrix.package.name }}-${{ github.run_id }}
           path: ${{ env.VCPKG_ROOT }}/installed/
 
       - name: Upload vcpkg build tree
-        uses: actions/upload-artifact@v2
+        uses: actions/upload-artifact@v4
         if: always()
         with:
           name: ${{ matrix.package.name }}-${{ github.run_id }}-buildtree
@@ -63,7 +63,7 @@ jobs:
         run: vcpkg install ${{ matrix.package.name }}:${{ matrix.triplet }} --overlay-triplets=${{ env.VCPKG_ROOT }}/triplets/community/
 
       - name: Upload vcpkg artifacts
-        uses: actions/upload-artifact@v2
+        uses: actions/upload-artifact@v4
         if: always()
         with:
           name: ${{ matrix.package.name }}-${{ github.run_id }}
@@ -82,7 +82,7 @@ jobs:
         with:
           fetch-depth: 0
 
-      - uses: actions/download-artifact@v4.1.7
+      - uses: actions/download-artifact@v4
         with:
           name: libusb-${{ github.run_id }}
           path: ${{ env.VCPKG_ROOT }}/installed/
@@ -108,7 +108,7 @@ jobs:
       #  shell: cmd
 
       - name: Upload LibUsbDotNet NuGet package
-        uses: actions/upload-artifact@v2
+        uses: actions/upload-artifact@v4
         if: always()
         with:
           name: LibUsbDotNet-${{ github.run_id }}
@@ -127,7 +127,7 @@ jobs:
         with:
           fetch-depth: 0
 
-      - uses: actions/download-artifact@v4.1.7
+      - uses: actions/download-artifact@v4
         with:
           name: libusb-${{ github.run_id }}
           path: ${{ env.VCPKG_ROOT }}/installed/
