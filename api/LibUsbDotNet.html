@@ -1,0 +1,280 @@
+﻿<!DOCTYPE html>
+<!--[if IE]><![endif]-->
+<html>
+  
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+    <title>Namespace LibUsbDotNet
+   </title>
+    <meta name="viewport" content="width=device-width">
+    <meta name="title" content="Namespace LibUsbDotNet
+   ">
+    <meta name="generator" content="docfx 2.59.4.0">
+    
+    <link rel="shortcut icon" href="../favicon.ico">
+    <link rel="stylesheet" href="../styles/docfx.vendor.css">
+    <link rel="stylesheet" href="../styles/docfx.css">
+    <link rel="stylesheet" href="../styles/main.css">
+    <meta property="docfx:navrel" content="../toc.html">
+    <meta property="docfx:tocrel" content="toc.html">
+    
+    
+    
+  </head>
+  <body data-spy="scroll" data-target="#affix" data-offset="120">
+    <div id="wrapper">
+      <header>
+        
+        <nav id="autocollapse" class="navbar navbar-inverse ng-scope" role="navigation">
+          <div class="container">
+            <div class="navbar-header">
+              <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#navbar">
+                <span class="sr-only">Toggle navigation</span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+              </button>
+              
+              <a class="navbar-brand" href="../index.html">
+                <img id="logo" class="svg" src="../logo.svg" alt="">
+              </a>
+            </div>
+            <div class="collapse navbar-collapse" id="navbar">
+              <form class="navbar-form navbar-right" role="search" id="search">
+                <div class="form-group">
+                  <input type="text" class="form-control" id="search-query" placeholder="Search" autocomplete="off">
+                </div>
+              </form>
+            </div>
+          </div>
+        </nav>
+        
+        <div class="subnav navbar navbar-default">
+          <div class="container hide-when-search" id="breadcrumb">
+            <ul class="breadcrumb">
+              <li></li>
+            </ul>
+          </div>
+        </div>
+      </header>
+      <div role="main" class="container body-content hide-when-search">
+        
+        <div class="sidenav hide-when-search">
+          <a class="btn toc-toggle collapse" data-toggle="collapse" href="#sidetoggle" aria-expanded="false" aria-controls="sidetoggle">Show / Hide Table of Contents</a>
+          <div class="sidetoggle collapse" id="sidetoggle">
+            <div id="sidetoc"></div>
+          </div>
+        </div>
+        <div class="article row grid-right">
+          <div class="col-md-10">
+            <article class="content wrap" id="_content" data-uid="LibUsbDotNet">
+  
+  <h1 id="LibUsbDotNet" data-uid="LibUsbDotNet" class="text-break">Namespace LibUsbDotNet
+  </h1>
+  <div class="markdown level0 summary"></div>
+  <div class="markdown level0 conceptual"></div>
+  <div class="markdown level0 remarks"></div>
+    <h3 id="classes">Classes
+  </h3>
+      <h4><a class="xref" href="LibUsbDotNet.Context.html">Context</a></h4>
+      <section><p>Represents a wrapper class for <code>libusb_context</code> handles.</p>
+</section>
+      <h4><a class="xref" href="LibUsbDotNet.Device.html">Device</a></h4>
+      <section><p>Represents a wrapper class for <code>libusb_device</code> handles.</p>
+</section>
+      <h4><a class="xref" href="LibUsbDotNet.DeviceHandle.html">DeviceHandle</a></h4>
+      <section><p>Represents a wrapper class for <code>libusb_device_handle</code> handles.</p>
+</section>
+    <h3 id="structs">Structs
+  </h3>
+      <h4><a class="xref" href="LibUsbDotNet.BosDescriptor.html">BosDescriptor</a></h4>
+      <section><p>A structure representing the Binary Device Object Store (BOS) descriptor.
+This descriptor is documented in section 9.6.2 of the USB 3.0 specification.
+All multiple-byte fields are represented in host-endian format.</p>
+</section>
+      <h4><a class="xref" href="LibUsbDotNet.BosDevCapabilityDescriptor.html">BosDevCapabilityDescriptor</a></h4>
+      <section><p>A generic representation of a BOS Device Capability descriptor. It is
+advised to check bDevCapabilityType and call the matching
+libusb_get_*_descriptor function to get a structure fully matching the type.</p>
+</section>
+      <h4><a class="xref" href="LibUsbDotNet.ConfigDescriptor.html">ConfigDescriptor</a></h4>
+      <section><p>A structure representing the standard USB configuration descriptor. This
+descriptor is documented in section 9.6.3 of the USB 3.0 specification.
+All multiple-byte fields are represented in host-endian format.</p>
+</section>
+      <h4><a class="xref" href="LibUsbDotNet.ContainerIdDescriptor.html">ContainerIdDescriptor</a></h4>
+      <section><p>A structure representing the Container ID descriptor.
+This descriptor is documented in section 9.6.2.3 of the USB 3.0 specification.
+All multiple-byte fields, except UUIDs, are represented in host-endian format.</p>
+</section>
+      <h4><a class="xref" href="LibUsbDotNet.ControlSetup.html">ControlSetup</a></h4>
+      <section><p>Setup packet for control transfers.</p>
+</section>
+      <h4><a class="xref" href="LibUsbDotNet.DeviceDescriptor.html">DeviceDescriptor</a></h4>
+      <section><p>A structure representing the standard USB device descriptor. This
+descriptor is documented in section 9.6.1 of the USB 3.0 specification.
+All multiple-byte fields are represented in host-endian format.</p>
+</section>
+      <h4><a class="xref" href="LibUsbDotNet.EndpointDescriptor.html">EndpointDescriptor</a></h4>
+      <section><p>A structure representing the standard USB endpoint descriptor. This
+descriptor is documented in section 9.6.6 of the USB 3.0 specification.
+All multiple-byte fields are represented in host-endian format.</p>
+</section>
+      <h4><a class="xref" href="LibUsbDotNet.Interface.html">Interface</a></h4>
+      <section><p>A collection of alternate settings for a particular USB interface.</p>
+</section>
+      <h4><a class="xref" href="LibUsbDotNet.InterfaceDescriptor.html">InterfaceDescriptor</a></h4>
+      <section><p>A structure representing the standard USB interface descriptor. This
+descriptor is documented in section 9.6.5 of the USB 3.0 specification.
+All multiple-byte fields are represented in host-endian format.</p>
+</section>
+      <h4><a class="xref" href="LibUsbDotNet.IsoPacketDescriptor.html">IsoPacketDescriptor</a></h4>
+      <section><p>Isochronous packet descriptor.</p>
+</section>
+      <h4><a class="xref" href="LibUsbDotNet.Pollfd.html">Pollfd</a></h4>
+      <section><p>File descriptor for polling</p>
+</section>
+      <h4><a class="xref" href="LibUsbDotNet.SsEndpointCompanionDescriptor.html">SsEndpointCompanionDescriptor</a></h4>
+      <section><p>A structure representing the superspeed endpoint companion
+descriptor. This descriptor is documented in section 9.6.7 of
+the USB 3.0 specification. All multiple-byte fields are represented in
+host-endian format.</p>
+</section>
+      <h4><a class="xref" href="LibUsbDotNet.SsUsbDeviceCapabilityDescriptor.html">SsUsbDeviceCapabilityDescriptor</a></h4>
+      <section><p>A structure representing the SuperSpeed USB Device Capability descriptor
+This descriptor is documented in section 9.6.2.2 of the USB 3.0 specification.
+All multiple-byte fields are represented in host-endian format.</p>
+</section>
+      <h4><a class="xref" href="LibUsbDotNet.Transfer.html">Transfer</a></h4>
+      <section><p>The generic USB transfer structure. The user populates this structure and
+then submits it in order to request a transfer. After the transfer has
+completed, the library populates the transfer with the results and passes
+it back to the user.</p>
+</section>
+      <h4><a class="xref" href="LibUsbDotNet.Usb20ExtensionDescriptor.html">Usb20ExtensionDescriptor</a></h4>
+      <section><p>A structure representing the USB 2.0 Extension descriptor
+This descriptor is documented in section 9.6.2.1 of the USB 3.0 specification.
+All multiple-byte fields are represented in host-endian format.</p>
+</section>
+      <h4><a class="xref" href="LibUsbDotNet.Version.html">Version</a></h4>
+      <section><p>Structure providing the version of the libusb runtime</p>
+</section>
+    <h3 id="enums">Enums
+  </h3>
+      <h4><a class="xref" href="LibUsbDotNet.BosType.html">BosType</a></h4>
+      <section><p>USB capability types</p>
+</section>
+      <h4><a class="xref" href="LibUsbDotNet.Capability.html">Capability</a></h4>
+      <section><p>Capabilities supported by an instance of libusb on the current running platform.</p>
+</section>
+      <h4><a class="xref" href="LibUsbDotNet.ClassCode.html">ClassCode</a></h4>
+      <section><p>Device and/or Interface Class codes </p>
+</section>
+      <h4><a class="xref" href="LibUsbDotNet.DescriptorType.html">DescriptorType</a></h4>
+      <section><p>Descriptor types as defined by the USB specification. </p>
+</section>
+      <h4><a class="xref" href="LibUsbDotNet.EndpointDirection.html">EndpointDirection</a></h4>
+      <section><p>Endpoint direction.</p>
+</section>
+      <h4><a class="xref" href="LibUsbDotNet.Error.html">Error</a></h4>
+      <section><p>libusb Error codes.</p>
+</section>
+      <h4><a class="xref" href="LibUsbDotNet.HotplugEvent.html">HotplugEvent</a></h4>
+      <section><p>Since version 1.0.16, 
+Hotplug events </p>
+</section>
+      <h4><a class="xref" href="LibUsbDotNet.HotplugFlag.html">HotplugFlag</a></h4>
+      <section><p>Since version 1.0.16, 
+Flags for hotplug events </p>
+</section>
+      <h4><a class="xref" href="LibUsbDotNet.IsoSyncType.html">IsoSyncType</a></h4>
+      <section><p>libusb_endpoint_descriptor.</p>
+</section>
+      <h4><a class="xref" href="LibUsbDotNet.IsoUsageType.html">IsoUsageType</a></h4>
+      <section><p>libusb_endpoint_descriptor.</p>
+</section>
+      <h4><a class="xref" href="LibUsbDotNet.LogLevel.html">LogLevel</a></h4>
+      <section><p>Log message levels.</p>
+</section>
+      <h4><a class="xref" href="LibUsbDotNet.RequestRecipient.html">RequestRecipient</a></h4>
+      <section><p>transfers. Values 4 through 31 are reserved. </p>
+</section>
+      <h4><a class="xref" href="LibUsbDotNet.RequestType.html">RequestType</a></h4>
+      <section><p>transfers. </p>
+</section>
+      <h4><a class="xref" href="LibUsbDotNet.Speed.html">Speed</a></h4>
+      <section><p>Speed codes. Indicates the speed at which the device is operating.</p>
+</section>
+      <h4><a class="xref" href="LibUsbDotNet.SsUsbDeviceCapabilityAttributes.html">SsUsbDeviceCapabilityAttributes</a></h4>
+      <section><p>field of the SuperSpeed USB Device Capability descriptor.</p>
+</section>
+      <h4><a class="xref" href="LibUsbDotNet.StandardRequest.html">StandardRequest</a></h4>
+      <section><p>Standard requests, as defined in table 9-5 of the USB 3.0 specifications </p>
+</section>
+      <h4><a class="xref" href="LibUsbDotNet.SupportedSpeed.html">SupportedSpeed</a></h4>
+      <section><p>Supported speeds (wSpeedSupported) bitfield.</p>
+</section>
+      <h4><a class="xref" href="LibUsbDotNet.TransferFlags.html">TransferFlags</a></h4>
+      <section><p>libusb_transfer.flags values </p>
+</section>
+      <h4><a class="xref" href="LibUsbDotNet.TransferStatus.html">TransferStatus</a></h4>
+      <section><p>Transfer status codes </p>
+</section>
+      <h4><a class="xref" href="LibUsbDotNet.TransferType.html">TransferType</a></h4>
+      <section><p>Transfer type.</p>
+</section>
+      <h4><a class="xref" href="LibUsbDotNet.Usb20ExtensionAttributes.html">Usb20ExtensionAttributes</a></h4>
+      <section><p>of the USB 2.0 Extension descriptor.</p>
+</section>
+    <h3 id="delegates">Delegates
+  </h3>
+      <h4><a class="xref" href="LibUsbDotNet.HotplugCallbackFn.html">HotplugCallbackFn</a></h4>
+      <section><p>Hotplug callback function type.</p>
+</section>
+      <h4><a class="xref" href="LibUsbDotNet.PollfdAddedDelegate.html">PollfdAddedDelegate</a></h4>
+      <section><p>Callback function, invoked when a new file descriptor should be added to the set of file descriptors monitored for events.</p>
+</section>
+      <h4><a class="xref" href="LibUsbDotNet.PollfdRemovedDelegate.html">PollfdRemovedDelegate</a></h4>
+      <section><p>Callback function, invoked when a file descriptor should be removed from the set of file descriptors being monitored for events.</p>
+</section>
+      <h4><a class="xref" href="LibUsbDotNet.TransferDelegate.html">TransferDelegate</a></h4>
+      <section><p>Asynchronous transfer callback function type.</p>
+</section>
+</article>
+          </div>
+          
+          <div class="hidden-sm col-md-2" role="complementary">
+            <div class="sideaffix">
+              <div class="contribution">
+                <ul class="nav">
+                </ul>
+              </div>
+              <nav class="bs-docs-sidebar hidden-print hidden-xs hidden-sm affix" id="affix">
+                <h5>In This Article</h5>
+                <div></div>
+              </nav>
+            </div>
+          </div>
+        </div>
+      </div>
+      
+      <footer>
+        <div class="grad-bottom"></div>
+        <div class="footer">
+          <div class="container">
+            <span class="pull-right">
+              <a href="#top">Back to top</a>
+            </span>
+            
+            <span>Generated by <strong>DocFX</strong></span>
+          </div>
+        </div>
+      </footer>
+    </div>
+    
+    <script type="text/javascript" src="../styles/docfx.vendor.js"></script>
+    <script type="text/javascript" src="../styles/docfx.js"></script>
+    <script type="text/javascript" src="../styles/main.js"></script>
+  </body>
+</html>
