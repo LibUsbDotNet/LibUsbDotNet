@@ -1,6 +1,8 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
+    <ManagePackageVersionsCentrally>false</ManagePackageVersionsCentrally>
+
     <Description>Huddly fork of LibUsbDotNet. .NET C# USB library for WinUSB, LibUsb-Win32, and libusb-1.0. All credit to the original authors Travis Robinson, Stevie-O and Quamotion.</Description>
     <AssemblyTitle>LibUsbDotNet for .NET Core</AssemblyTitle>
     <VersionPrefix>2.2.10</VersionPrefix>
@@ -42,4 +44,5 @@
   <ItemGroup>
     <Compile Remove="MonoLibUsb\Tests\MonoLibUsbTests.cs" />
   </ItemGroup>
+
 </Project>
