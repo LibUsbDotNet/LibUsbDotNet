@@ -119,7 +119,7 @@ jobs:
           fetch-depth: 0
           ref: 'v2'
 
-      - uses: actions/download-artifact@v2
+      - uses: actions/download-artifact@v3
         with:
           name: libusb-${{ github.run_id }}
           path: ${{ env.VCPKG_ROOT }}/installed/
