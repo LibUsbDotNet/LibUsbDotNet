@@ -41,7 +41,7 @@ jobs:
           path: ${{ env.VCPKG_ROOT }}/buildtrees/${{ matrix.package.name }}/
 
   libusb_osx:
-    runs-on: macos-12
+    runs-on: macos-13
 
     strategy:
       matrix:
@@ -115,7 +115,7 @@ jobs:
           path: '${{ github.workspace }}/nuget/' 
 
   libusbdotnet_macos:
-    runs-on: macos-12
+    runs-on: macos-13
 
     needs: [ libusb_windows, libusb_osx ]
 
