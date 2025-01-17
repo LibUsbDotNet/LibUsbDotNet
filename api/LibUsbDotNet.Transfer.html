@@ -1,0 +1,531 @@
+﻿<!DOCTYPE html>
+<!--[if IE]><![endif]-->
+<html>
+  
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+    <title>Struct Transfer
+   </title>
+    <meta name="viewport" content="width=device-width">
+    <meta name="title" content="Struct Transfer
+   ">
+    <meta name="generator" content="docfx 2.59.4.0">
+    
+    <link rel="shortcut icon" href="../favicon.ico">
+    <link rel="stylesheet" href="../styles/docfx.vendor.css">
+    <link rel="stylesheet" href="../styles/docfx.css">
+    <link rel="stylesheet" href="../styles/main.css">
+    <meta property="docfx:navrel" content="../toc.html">
+    <meta property="docfx:tocrel" content="toc.html">
+    
+    
+    
+  </head>
+  <body data-spy="scroll" data-target="#affix" data-offset="120">
+    <div id="wrapper">
+      <header>
+        
+        <nav id="autocollapse" class="navbar navbar-inverse ng-scope" role="navigation">
+          <div class="container">
+            <div class="navbar-header">
+              <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#navbar">
+                <span class="sr-only">Toggle navigation</span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+              </button>
+              
+              <a class="navbar-brand" href="../index.html">
+                <img id="logo" class="svg" src="../logo.svg" alt="">
+              </a>
+            </div>
+            <div class="collapse navbar-collapse" id="navbar">
+              <form class="navbar-form navbar-right" role="search" id="search">
+                <div class="form-group">
+                  <input type="text" class="form-control" id="search-query" placeholder="Search" autocomplete="off">
+                </div>
+              </form>
+            </div>
+          </div>
+        </nav>
+        
+        <div class="subnav navbar navbar-default">
+          <div class="container hide-when-search" id="breadcrumb">
+            <ul class="breadcrumb">
+              <li></li>
+            </ul>
+          </div>
+        </div>
+      </header>
+      <div role="main" class="container body-content hide-when-search">
+        
+        <div class="sidenav hide-when-search">
+          <a class="btn toc-toggle collapse" data-toggle="collapse" href="#sidetoggle" aria-expanded="false" aria-controls="sidetoggle">Show / Hide Table of Contents</a>
+          <div class="sidetoggle collapse" id="sidetoggle">
+            <div id="sidetoc"></div>
+          </div>
+        </div>
+        <div class="article row grid-right">
+          <div class="col-md-10">
+            <article class="content wrap" id="_content" data-uid="LibUsbDotNet.Transfer">
+  
+  
+  <h1 id="LibUsbDotNet_Transfer" data-uid="LibUsbDotNet.Transfer" class="text-break">Struct Transfer
+  </h1>
+  <div class="markdown level0 summary"><p>The generic USB transfer structure. The user populates this structure and
+then submits it in order to request a transfer. After the transfer has
+completed, the library populates the transfer with the results and passes
+it back to the user.</p>
+</div>
+  <div class="markdown level0 conceptual"></div>
+  <h6><strong>Namespace</strong>: <a class="xref" href="LibUsbDotNet.html">LibUsbDotNet</a></h6>
+  <h6><strong>Assembly</strong>: LibUsbDotNet.dll</h6>
+  <h5 id="LibUsbDotNet_Transfer_syntax">Syntax</h5>
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public struct Transfer</code></pre>
+  </div>
+  <h3 id="fields">Fields
+  </h3>
+  <span class="small pull-right mobile-hide">
+    <span class="divider">|</span>
+    <a href="https://github.com/LibUsbDotNet/LibUsbDotNet/new/master/apiSpec/new?filename=LibUsbDotNet_Transfer_ActualLength.md&amp;value=---%0Auid%3A%20LibUsbDotNet.Transfer.ActualLength%0Asummary%3A%20'*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A">Improve this Doc</a>
+  </span>
+  <span class="small pull-right mobile-hide">
+    <a href="https://github.com/LibUsbDotNet/LibUsbDotNet/blob/master/src/LibUsbDotNet/Generated/Transfer.cs/#L91">View Source</a>
+  </span>
+  <h4 id="LibUsbDotNet_Transfer_ActualLength" data-uid="LibUsbDotNet.Transfer.ActualLength">ActualLength</h4>
+  <div class="markdown level1 summary"><p>Actual length of data that was transferred. Read-only, and only for
+use within transfer callback function. Not valid for isochronous
+endpoint transfers.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+  <h5 class="decalaration">Declaration</h5>
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public int ActualLength</code></pre>
+  </div>
+  <h5 class="fieldValue">Field Value</h5>
+  <table class="table table-bordered table-striped table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><span class="xref">System.Int32</span></td>
+        <td></td>
+      </tr>
+    </tbody>
+  </table>
+  <span class="small pull-right mobile-hide">
+    <span class="divider">|</span>
+    <a href="https://github.com/LibUsbDotNet/LibUsbDotNet/new/master/apiSpec/new?filename=LibUsbDotNet_Transfer_Buffer.md&amp;value=---%0Auid%3A%20LibUsbDotNet.Transfer.Buffer%0Asummary%3A%20'*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A">Improve this Doc</a>
+  </span>
+  <span class="small pull-right mobile-hide">
+    <a href="https://github.com/LibUsbDotNet/LibUsbDotNet/blob/master/src/LibUsbDotNet/Generated/Transfer.cs/#L107">View Source</a>
+  </span>
+  <h4 id="LibUsbDotNet_Transfer_Buffer" data-uid="LibUsbDotNet.Transfer.Buffer">Buffer</h4>
+  <div class="markdown level1 summary"><p>Data buffer</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+  <h5 class="decalaration">Declaration</h5>
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public byte *Buffer</code></pre>
+  </div>
+  <h5 class="fieldValue">Field Value</h5>
+  <table class="table table-bordered table-striped table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><span class="xref">System.Byte</span>*</td>
+        <td></td>
+      </tr>
+    </tbody>
+  </table>
+  <span class="small pull-right mobile-hide">
+    <span class="divider">|</span>
+    <a href="https://github.com/LibUsbDotNet/LibUsbDotNet/new/master/apiSpec/new?filename=LibUsbDotNet_Transfer_Callback.md&amp;value=---%0Auid%3A%20LibUsbDotNet.Transfer.Callback%0Asummary%3A%20'*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A">Improve this Doc</a>
+  </span>
+  <span class="small pull-right mobile-hide">
+    <a href="https://github.com/LibUsbDotNet/LibUsbDotNet/blob/master/src/LibUsbDotNet/Generated/Transfer.cs/#L97">View Source</a>
+  </span>
+  <h4 id="LibUsbDotNet_Transfer_Callback" data-uid="LibUsbDotNet.Transfer.Callback">Callback</h4>
+  <div class="markdown level1 summary"><p>Callback function. This will be invoked when the transfer completes,
+fails, or is cancelled.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+  <h5 class="decalaration">Declaration</h5>
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public IntPtr Callback</code></pre>
+  </div>
+  <h5 class="fieldValue">Field Value</h5>
+  <table class="table table-bordered table-striped table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><span class="xref">IntPtr</span></td>
+        <td></td>
+      </tr>
+    </tbody>
+  </table>
+  <span class="small pull-right mobile-hide">
+    <span class="divider">|</span>
+    <a href="https://github.com/LibUsbDotNet/LibUsbDotNet/new/master/apiSpec/new?filename=LibUsbDotNet_Transfer_DevHandle.md&amp;value=---%0Auid%3A%20LibUsbDotNet.Transfer.DevHandle%0Asummary%3A%20'*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A">Improve this Doc</a>
+  </span>
+  <span class="small pull-right mobile-hide">
+    <a href="https://github.com/LibUsbDotNet/LibUsbDotNet/blob/master/src/LibUsbDotNet/Generated/Transfer.cs/#L49">View Source</a>
+  </span>
+  <h4 id="LibUsbDotNet_Transfer_DevHandle" data-uid="LibUsbDotNet.Transfer.DevHandle">DevHandle</h4>
+  <div class="markdown level1 summary"><p>Handle of the device that this transfer will be submitted to</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+  <h5 class="decalaration">Declaration</h5>
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public IntPtr DevHandle</code></pre>
+  </div>
+  <h5 class="fieldValue">Field Value</h5>
+  <table class="table table-bordered table-striped table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><span class="xref">IntPtr</span></td>
+        <td></td>
+      </tr>
+    </tbody>
+  </table>
+  <span class="small pull-right mobile-hide">
+    <span class="divider">|</span>
+    <a href="https://github.com/LibUsbDotNet/LibUsbDotNet/new/master/apiSpec/new?filename=LibUsbDotNet_Transfer_Endpoint.md&amp;value=---%0Auid%3A%20LibUsbDotNet.Transfer.Endpoint%0Asummary%3A%20'*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A">Improve this Doc</a>
+  </span>
+  <span class="small pull-right mobile-hide">
+    <a href="https://github.com/LibUsbDotNet/LibUsbDotNet/blob/master/src/LibUsbDotNet/Generated/Transfer.cs/#L59">View Source</a>
+  </span>
+  <h4 id="LibUsbDotNet_Transfer_Endpoint" data-uid="LibUsbDotNet.Transfer.Endpoint">Endpoint</h4>
+  <div class="markdown level1 summary"><p>Address of the endpoint where this transfer will be sent.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+  <h5 class="decalaration">Declaration</h5>
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public byte Endpoint</code></pre>
+  </div>
+  <h5 class="fieldValue">Field Value</h5>
+  <table class="table table-bordered table-striped table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><span class="xref">System.Byte</span></td>
+        <td></td>
+      </tr>
+    </tbody>
+  </table>
+  <span class="small pull-right mobile-hide">
+    <span class="divider">|</span>
+    <a href="https://github.com/LibUsbDotNet/LibUsbDotNet/new/master/apiSpec/new?filename=LibUsbDotNet_Transfer_Flags.md&amp;value=---%0Auid%3A%20LibUsbDotNet.Transfer.Flags%0Asummary%3A%20'*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A">Improve this Doc</a>
+  </span>
+  <span class="small pull-right mobile-hide">
+    <a href="https://github.com/LibUsbDotNet/LibUsbDotNet/blob/master/src/LibUsbDotNet/Generated/Transfer.cs/#L54">View Source</a>
+  </span>
+  <h4 id="LibUsbDotNet_Transfer_Flags" data-uid="LibUsbDotNet.Transfer.Flags">Flags</h4>
+  <div class="markdown level1 summary"><p>A bitwise OR combination of</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+  <h5 class="decalaration">Declaration</h5>
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public byte Flags</code></pre>
+  </div>
+  <h5 class="fieldValue">Field Value</h5>
+  <table class="table table-bordered table-striped table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><span class="xref">System.Byte</span></td>
+        <td></td>
+      </tr>
+    </tbody>
+  </table>
+  <span class="small pull-right mobile-hide">
+    <span class="divider">|</span>
+    <a href="https://github.com/LibUsbDotNet/LibUsbDotNet/new/master/apiSpec/new?filename=LibUsbDotNet_Transfer_IsoPacketDesc.md&amp;value=---%0Auid%3A%20LibUsbDotNet.Transfer.IsoPacketDesc%0Asummary%3A%20'*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A">Improve this Doc</a>
+  </span>
+  <span class="small pull-right mobile-hide">
+    <a href="https://github.com/LibUsbDotNet/LibUsbDotNet/blob/master/src/LibUsbDotNet/Generated/Transfer.cs/#L118">View Source</a>
+  </span>
+  <h4 id="LibUsbDotNet_Transfer_IsoPacketDesc" data-uid="LibUsbDotNet.Transfer.IsoPacketDesc">IsoPacketDesc</h4>
+  <div class="markdown level1 summary"><p>Isochronous packet descriptors, for isochronous transfers only.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+  <h5 class="decalaration">Declaration</h5>
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public IntPtr IsoPacketDesc</code></pre>
+  </div>
+  <h5 class="fieldValue">Field Value</h5>
+  <table class="table table-bordered table-striped table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><span class="xref">IntPtr</span></td>
+        <td></td>
+      </tr>
+    </tbody>
+  </table>
+  <span class="small pull-right mobile-hide">
+    <span class="divider">|</span>
+    <a href="https://github.com/LibUsbDotNet/LibUsbDotNet/new/master/apiSpec/new?filename=LibUsbDotNet_Transfer_Length.md&amp;value=---%0Auid%3A%20LibUsbDotNet.Transfer.Length%0Asummary%3A%20'*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A">Improve this Doc</a>
+  </span>
+  <span class="small pull-right mobile-hide">
+    <a href="https://github.com/LibUsbDotNet/LibUsbDotNet/blob/master/src/LibUsbDotNet/Generated/Transfer.cs/#L84">View Source</a>
+  </span>
+  <h4 id="LibUsbDotNet_Transfer_Length" data-uid="LibUsbDotNet.Transfer.Length">Length</h4>
+  <div class="markdown level1 summary"><p>Length of the data buffer</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+  <h5 class="decalaration">Declaration</h5>
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public int Length</code></pre>
+  </div>
+  <h5 class="fieldValue">Field Value</h5>
+  <table class="table table-bordered table-striped table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><span class="xref">System.Int32</span></td>
+        <td></td>
+      </tr>
+    </tbody>
+  </table>
+  <span class="small pull-right mobile-hide">
+    <span class="divider">|</span>
+    <a href="https://github.com/LibUsbDotNet/LibUsbDotNet/new/master/apiSpec/new?filename=LibUsbDotNet_Transfer_NumIsoPackets.md&amp;value=---%0Auid%3A%20LibUsbDotNet.Transfer.NumIsoPackets%0Asummary%3A%20'*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A">Improve this Doc</a>
+  </span>
+  <span class="small pull-right mobile-hide">
+    <a href="https://github.com/LibUsbDotNet/LibUsbDotNet/blob/master/src/LibUsbDotNet/Generated/Transfer.cs/#L113">View Source</a>
+  </span>
+  <h4 id="LibUsbDotNet_Transfer_NumIsoPackets" data-uid="LibUsbDotNet.Transfer.NumIsoPackets">NumIsoPackets</h4>
+  <div class="markdown level1 summary"><p>Number of isochronous packets. Only used for I/O with isochronous
+endpoints.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+  <h5 class="decalaration">Declaration</h5>
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public int NumIsoPackets</code></pre>
+  </div>
+  <h5 class="fieldValue">Field Value</h5>
+  <table class="table table-bordered table-striped table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><span class="xref">System.Int32</span></td>
+        <td></td>
+      </tr>
+    </tbody>
+  </table>
+  <span class="small pull-right mobile-hide">
+    <span class="divider">|</span>
+    <a href="https://github.com/LibUsbDotNet/LibUsbDotNet/new/master/apiSpec/new?filename=LibUsbDotNet_Transfer_Status.md&amp;value=---%0Auid%3A%20LibUsbDotNet.Transfer.Status%0Asummary%3A%20'*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A">Improve this Doc</a>
+  </span>
+  <span class="small pull-right mobile-hide">
+    <a href="https://github.com/LibUsbDotNet/LibUsbDotNet/blob/master/src/LibUsbDotNet/Generated/Transfer.cs/#L79">View Source</a>
+  </span>
+  <h4 id="LibUsbDotNet_Transfer_Status" data-uid="LibUsbDotNet.Transfer.Status">Status</h4>
+  <div class="markdown level1 summary"><p>The status of the transfer. Read-only, and only for use within
+transfer callback function.
+If this is an isochronous transfer, this field may read COMPLETED even
+if there were errors in the frames. Use the
+to determine if errors occurred.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+  <h5 class="decalaration">Declaration</h5>
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public TransferStatus Status</code></pre>
+  </div>
+  <h5 class="fieldValue">Field Value</h5>
+  <table class="table table-bordered table-striped table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><a class="xref" href="LibUsbDotNet.TransferStatus.html">TransferStatus</a></td>
+        <td></td>
+      </tr>
+    </tbody>
+  </table>
+  <span class="small pull-right mobile-hide">
+    <span class="divider">|</span>
+    <a href="https://github.com/LibUsbDotNet/LibUsbDotNet/new/master/apiSpec/new?filename=LibUsbDotNet_Transfer_Timeout.md&amp;value=---%0Auid%3A%20LibUsbDotNet.Transfer.Timeout%0Asummary%3A%20'*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A">Improve this Doc</a>
+  </span>
+  <span class="small pull-right mobile-hide">
+    <a href="https://github.com/LibUsbDotNet/LibUsbDotNet/blob/master/src/LibUsbDotNet/Generated/Transfer.cs/#L70">View Source</a>
+  </span>
+  <h4 id="LibUsbDotNet_Transfer_Timeout" data-uid="LibUsbDotNet.Transfer.Timeout">Timeout</h4>
+  <div class="markdown level1 summary"><p>Timeout for this transfer in milliseconds. A value of 0 indicates no
+timeout.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+  <h5 class="decalaration">Declaration</h5>
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public uint Timeout</code></pre>
+  </div>
+  <h5 class="fieldValue">Field Value</h5>
+  <table class="table table-bordered table-striped table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><span class="xref">System.UInt32</span></td>
+        <td></td>
+      </tr>
+    </tbody>
+  </table>
+  <span class="small pull-right mobile-hide">
+    <span class="divider">|</span>
+    <a href="https://github.com/LibUsbDotNet/LibUsbDotNet/new/master/apiSpec/new?filename=LibUsbDotNet_Transfer_Type.md&amp;value=---%0Auid%3A%20LibUsbDotNet.Transfer.Type%0Asummary%3A%20'*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A">Improve this Doc</a>
+  </span>
+  <span class="small pull-right mobile-hide">
+    <a href="https://github.com/LibUsbDotNet/LibUsbDotNet/blob/master/src/LibUsbDotNet/Generated/Transfer.cs/#L64">View Source</a>
+  </span>
+  <h4 id="LibUsbDotNet_Transfer_Type" data-uid="LibUsbDotNet.Transfer.Type">Type</h4>
+  <div class="markdown level1 summary"><p>Type of the endpoint from</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+  <h5 class="decalaration">Declaration</h5>
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public byte Type</code></pre>
+  </div>
+  <h5 class="fieldValue">Field Value</h5>
+  <table class="table table-bordered table-striped table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><span class="xref">System.Byte</span></td>
+        <td></td>
+      </tr>
+    </tbody>
+  </table>
+  <span class="small pull-right mobile-hide">
+    <span class="divider">|</span>
+    <a href="https://github.com/LibUsbDotNet/LibUsbDotNet/new/master/apiSpec/new?filename=LibUsbDotNet_Transfer_UserData.md&amp;value=---%0Auid%3A%20LibUsbDotNet.Transfer.UserData%0Asummary%3A%20'*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A">Improve this Doc</a>
+  </span>
+  <span class="small pull-right mobile-hide">
+    <a href="https://github.com/LibUsbDotNet/LibUsbDotNet/blob/master/src/LibUsbDotNet/Generated/Transfer.cs/#L102">View Source</a>
+  </span>
+  <h4 id="LibUsbDotNet_Transfer_UserData" data-uid="LibUsbDotNet.Transfer.UserData">UserData</h4>
+  <div class="markdown level1 summary"><p>User context data to pass to the callback function.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+  <h5 class="decalaration">Declaration</h5>
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public IntPtr UserData</code></pre>
+  </div>
+  <h5 class="fieldValue">Field Value</h5>
+  <table class="table table-bordered table-striped table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><span class="xref">IntPtr</span></td>
+        <td></td>
+      </tr>
+    </tbody>
+  </table>
+</article>
+          </div>
+          
+          <div class="hidden-sm col-md-2" role="complementary">
+            <div class="sideaffix">
+              <div class="contribution">
+                <ul class="nav">
+                  <li>
+                    <a href="https://github.com/LibUsbDotNet/LibUsbDotNet/new/master/apiSpec/new?filename=LibUsbDotNet_Transfer.md&amp;value=---%0Auid%3A%20LibUsbDotNet.Transfer%0Asummary%3A%20'*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A" class="contribution-link">Improve this Doc</a>
+                  </li>
+                  <li>
+                    <a href="https://github.com/LibUsbDotNet/LibUsbDotNet/blob/master/src/LibUsbDotNet/Generated/Transfer.cs/#L43" class="contribution-link">View Source</a>
+                  </li>
+                </ul>
+              </div>
+              <nav class="bs-docs-sidebar hidden-print hidden-xs hidden-sm affix" id="affix">
+                <h5>In This Article</h5>
+                <div></div>
+              </nav>
+            </div>
+          </div>
+        </div>
+      </div>
+      
+      <footer>
+        <div class="grad-bottom"></div>
+        <div class="footer">
+          <div class="container">
+            <span class="pull-right">
+              <a href="#top">Back to top</a>
+            </span>
+            
+            <span>Generated by <strong>DocFX</strong></span>
+          </div>
+        </div>
+      </footer>
+    </div>
+    
+    <script type="text/javascript" src="../styles/docfx.vendor.js"></script>
+    <script type="text/javascript" src="../styles/docfx.js"></script>
+    <script type="text/javascript" src="../styles/main.js"></script>
+  </body>
+</html>
