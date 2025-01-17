@@ -33,6 +33,11 @@ namespace LibUsbDotNet.LibUsb;
 public partial class UsbDevice
 {
     /// <summary>
+    /// Timeout for all control transfers in milliseconds.
+    /// </summary>
+    public static int ControlTransferTimeout { get; set; } = UsbConstants.DefaultTimeout;
+
+    /// <summary>
     /// The underlying device handle. The handle is populated when you open the device
     /// using <see cref="Open"/>, and cleared when you close the device using <see cref="Close"/>.
     /// </summary>
@@ -165,7 +170,7 @@ public partial class UsbDevice
                     (ushort)setupPacket.Index,
                     data,
                     (ushort)length,
-                    UsbConstants.DefaultTimeout);
+                    (uint)ControlTransferTimeout);
             }
         }
         else
@@ -178,7 +183,7 @@ public partial class UsbDevice
                 (ushort)setupPacket.Index,
                 null,
                 0,
-                UsbConstants.DefaultTimeout);
+                (uint)ControlTransferTimeout);
         }
 
         if (result >= 0)
