@@ -45,6 +45,8 @@ namespace LibUsbDotNet.LudnMonoLibUsb
         internal static MonoUsbProfileList mMonoUSBProfileList;
         private readonly MonoUsbProfile mMonoUSBProfile;
 
+        public static int ControlTransferTimeout_ms { get; set; } = UsbConstants.DEFAULT_TIMEOUT;
+
         internal MonoUsbDevice(ref MonoUsbProfile monoUSBProfile)
             : base(null, null)
         {
@@ -195,7 +197,7 @@ namespace LibUsbDotNet.LudnMonoLibUsb
                                                       setupPacket.Index,
                                                       buffer,
                                                       (short)bufferLength,
-                                                      UsbConstants.DEFAULT_TIMEOUT);
+                                                      ControlTransferTimeout_ms);
 
             Debug.WriteLine(GetType().Name + ".ControlTransfer() Error:" + ((MonoUsbError)ret).ToString(), "Libusb-1.0");
             if (ret < 0)
