@@ -20,7 +20,10 @@ public partial class UsbDevice
         else
         {
             data = new byte[buffer.Length + 8];
-            Array.Copy(buffer, 0, data, 8, length);
+            if ((setupPacket.RequestType & (byte)UsbCtrlFlags.Direction_In) == 0)
+            {
+                Array.Copy(buffer, 0, data, 8, length);
+            }
         }
 
         data[0] = setupPacket.RequestType;
@@ -32,7 +35,11 @@ public partial class UsbDevice
         (Error error, int dataTransferred) = await AsyncTransfer.TransferAsync(deviceHandle, 0, EndpointType.Control, data, 0, data.Length, UsbConstants.DefaultTimeout).ConfigureAwait(false);
 
         error.ThrowOnError();
-        
+
+        if (buffer is not null && (setupPacket.RequestType & (byte)UsbCtrlFlags.Direction_In) != 0) {
+            Array.Copy(data, 8, buffer, 0, dataTransferred);
+        }
+
         return dataTransferred;
     }
         
