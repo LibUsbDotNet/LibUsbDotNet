@@ -640,8 +640,8 @@ namespace LibUsbDotNet.Main
                     {
                         if (!transferParam.mTransferHandles[i].Context.IsCompleted)
                         {
-                            transferParam.EndpointBase.Abort();
-                            Thread.Sleep(1);
+                            // To avoid mutex lock on NET6.0, wait until the transfer is completed
+                            transferParam.mTransferHandles[i].Context.AsyncWaitHandle.WaitOne();
                         }
 
                         transferParam.mTransferHandles[i].InUse = false;
