@@ -8,8 +8,7 @@ All basic USB device functionality can be performed through common device classe
 
 * LibUsbDotNet versions 2.2.4 and above support the Libusb-1.0 driver.
 * LibUsbDotNet 2.1.0 and above supports the genuine [libusb-win32](https://github.com/mcuee/libusb-win32/releases) driver package. However, 
-  access to basic device information via the windows registry is not available. See the [LegacyUsbRegistry](http://libusbdotnet.sourceforge.net/V2/html/9b8a7337-0d0c-c3e6-6f56-d47f1a3e5856.htm)
-  class for more information.
+  access to basic device information via the windows registry is not available.
 
 ## Features
 * Full support for WinUSB. All WinUSB interfaces are treated as separate devices; each interface can be used by a different application.
