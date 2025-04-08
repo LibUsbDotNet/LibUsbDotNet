@@ -31,7 +31,7 @@ jobs:
         uses: actions/upload-artifact@v4
         if: always()
         with:
-          name: ${{ matrix.package.name }}-${{ github.run_id }}
+          name: ${{ matrix.package.name }}-libusb_windows-${{ github.run_id }}
           path: ${{ env.VCPKG_ROOT }}/installed/
 
       - name: Upload vcpkg build tree
@@ -67,7 +67,7 @@ jobs:
         uses: actions/upload-artifact@v4
         if: always()
         with:
-          name: ${{ matrix.package.name }}-${{ github.run_id }}
+          name: ${{ matrix.package.name }}-libusb_osx-${{ github.run_id }}
           path: ${{ env.VCPKG_ROOT }}/installed/
 
   libusbdotnet_windows:
@@ -87,6 +87,8 @@ jobs:
         with:
           name: libusb-${{ github.run_id }}
           path: ${{ env.VCPKG_ROOT }}/installed/
+          pattern: libusb-*-${{ github.run_id }}
+          merge-multiple: true
 
       - uses: actions/setup-dotnet@v1
         with:
@@ -132,6 +134,8 @@ jobs:
         with:
           name: libusb-${{ github.run_id }}
           path: ${{ env.VCPKG_ROOT }}/installed/
+          pattern: libusb-*-${{ github.run_id }}
+          merge-multiple: true
 
       - uses: actions/setup-dotnet@v1
         with:
