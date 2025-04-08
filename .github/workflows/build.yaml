@@ -38,7 +38,7 @@ jobs:
         uses: actions/upload-artifact@v4
         if: always()
         with:
-          name: ${{ matrix.package.name }}-${{ github.run_id }}-buildtree
+          name: ${{ matrix.package.name }}-${{matrix.triplet}}-${{ github.run_id }}-buildtree
           path: ${{ env.VCPKG_ROOT }}/buildtrees/${{ matrix.package.name }}/
 
   libusb_osx:
