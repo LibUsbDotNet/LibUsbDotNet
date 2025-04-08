@@ -141,7 +141,7 @@ jobs:
 
       - name: Test
         run: |
-          export LD_LIBRARY_PATH=$VCPKG_ROOT/installed/x64-osx-dynamic/lib/:$LD_LIBRARY_PATH
+          export DYLD_LIBRARY_PATH=$VCPKG_ROOT/installed/x64-osx-dynamic/lib/:$DYLD_LIBRARY_PATH
           dotnet test src/LibUsbDotNet.Tests/LibUsbDotNet.Tests.csproj
 
   libusbdotnet_ubuntu:
