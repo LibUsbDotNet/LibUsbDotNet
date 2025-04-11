@@ -12,7 +12,8 @@
     <PackageId>LibUsbDotNet</PackageId>
     <PackageProjectUrl>https://github.com/LibUsbDotNet/LibUsbDotNet/</PackageProjectUrl>
     <PackageLicenseUrl>https://github.com/LibUsbDotNet/LibUsbDotNet/blob/master/LICENSE</PackageLicenseUrl>
-    <PackageIconUrl>http://c.fsdn.com/allura/p/libusbdotnet/icon</PackageIconUrl>
+    <PackageIcon>icon.png</PackageIcon>
+    <PackageReadmeFile>Readme.md</PackageReadmeFile>
     <RepositoryType>git</RepositoryType>
     <RuntimeIdentifiers>win</RuntimeIdentifiers>
     
@@ -38,4 +39,10 @@
   <ItemGroup>
     <Compile Remove="MonoLibUsb\Tests\MonoLibUsbTests.cs" />
   </ItemGroup>
+
+  <ItemGroup>
+    <None Include="..\..\Readme.md" Pack="true" PackagePath="\"/>
+    <None Include="..\..\icon.png" Pack="true" PackagePath="\"/>
+  </ItemGroup>
+  
 </Project>
