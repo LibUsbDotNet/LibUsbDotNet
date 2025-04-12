@@ -3,6 +3,7 @@ on:
   push:
     branches:
       - v2
+      - v2-workflow-fix
   pull_request:
 
 jobs:
@@ -27,17 +28,17 @@ jobs:
         run: vcpkg install ${{ matrix.package.name }}:${{ matrix.triplet }}
 
       - name: Upload vcpkg artifacts
-        uses: actions/upload-artifact@v3
+        uses: actions/upload-artifact@v4
         if: always()
         with:
-          name: ${{ matrix.package.name }}-${{ github.run_id }}
+          name: ${{ matrix.package.name }}-${{matrix.triplet}}-${{ github.run_id }}
           path: ${{ env.VCPKG_ROOT }}/installed/
 
       - name: Upload vcpkg build tree
-        uses: actions/upload-artifact@v3
+        uses: actions/upload-artifact@v4
         if: always()
         with:
-          name: ${{ matrix.package.name }}-${{ github.run_id }}-buildtree
+          name: ${{ matrix.package.name }}-${{matrix.triplet}}-${{ github.run_id }}-buildtree
           path: ${{ env.VCPKG_ROOT }}/buildtrees/${{ matrix.package.name }}/
 
   libusb_osx:
@@ -63,10 +64,10 @@ jobs:
         run: vcpkg install ${{ matrix.package.name }}:${{ matrix.triplet }} --overlay-triplets=${{ env.VCPKG_ROOT }}/triplets/community/
 
       - name: Upload vcpkg artifacts
-        uses: actions/upload-artifact@v3
+        uses: actions/upload-artifact@v4
         if: always()
         with:
-          name: ${{ matrix.package.name }}-${{ github.run_id }}
+          name: ${{ matrix.package.name }}-${{matrix.triplet}}-${{ github.run_id }}
           path: ${{ env.VCPKG_ROOT }}/installed/
 
   libusbdotnet_windows:
@@ -83,10 +84,11 @@ jobs:
           fetch-depth: 0
           ref: 'v2'
 
-      - uses: actions/download-artifact@v3
+      - uses: actions/download-artifact@v4
         with:
-          name: libusb-${{ github.run_id }}
           path: ${{ env.VCPKG_ROOT }}/installed/
+          pattern: libusb-*
+          merge-multiple: true
 
       - uses: actions/setup-dotnet@v1
         with:
@@ -99,7 +101,7 @@ jobs:
         run: dotnet pack .\stage\LibUsbDotNet\LibUsbDotNet.csproj -c Release -o ${{ github.workspace }}/nuget/
 
       - name: Upload LibUsbDotNet NuGet package
-        uses: actions/upload-artifact@v3
+        uses: actions/upload-artifact@v4
         if: always()
         with:
           name: LibUsbDotNet-${{ github.run_id }}
@@ -117,12 +119,12 @@ jobs:
       - uses: actions/checkout@v2
         with:
           fetch-depth: 0
-          ref: 'v2'
 
-      - uses: actions/download-artifact@v3
+      - uses: actions/download-artifact@v4
         with:
-          name: libusb-${{ github.run_id }}
           path: ${{ env.VCPKG_ROOT }}/installed/
+          pattern: libusb-*
+          merge-multiple: true
 
       - uses: actions/setup-dotnet@v1
         with:
