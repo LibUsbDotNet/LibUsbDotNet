@@ -12,6 +12,7 @@
   <ItemGroup>
     <Folder Include="Models\" />
     <AvaloniaResource Include="Assets\**" />
+    <AvaloniaResource Include="..\..\icon.png" Link="Assets\icon.png" />
   </ItemGroup>
 
   <ItemGroup>
