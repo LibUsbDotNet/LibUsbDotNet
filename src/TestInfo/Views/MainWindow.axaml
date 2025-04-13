@@ -1,0 +1,61 @@
+<Window xmlns="https://github.com/avaloniaui"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:viewModels="clr-namespace:TestInfo.ViewModels"
+        xmlns:info="clr-namespace:LibUsbDotNet.Info;assembly=LibUsbDotNet"
+        xmlns:libUsb="clr-namespace:LibUsbDotNet.LibUsb;assembly=LibUsbDotNet"
+        mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
+        x:Class="TestInfo.Views.MainWindow"
+        x:DataType="viewModels:MainWindowViewModel"
+        Icon="/Assets/avalonia-logo.ico"
+        Title="TestInfo">
+
+    <Design.DataContext>
+        <!-- This only sets the DataContext for the previewer in an IDE,
+             to set the actual DataContext for runtime, set the DataContext property in code (look at App.axaml.cs) -->
+        <viewModels:MainWindowViewModel/>
+    </Design.DataContext>
+
+
+    <Grid Margin="10" RowDefinitions="Auto, *" >
+        <Button Margin="10" Content="Refresh" Command="{Binding RefreshDeviceListCommand}" />
+        <DataGrid Margin="10" Grid.Row="1" ItemsSource="{Binding DeviceInfos}" IsReadOnly="True">
+            <DataGrid.Columns>
+                <DataGridTextColumn Header="Device" Binding="{Binding Device, StringFormat='0x{0:X4}', Mode=OneWay}" />
+                <DataGridTextColumn Header="Device Class"
+                                    Binding="{Binding DeviceClass, StringFormat='0x{0:X4}', Mode=OneWay}" />
+                <DataGridTextColumn Header="Device Protocol"
+                                    Binding="{Binding DeviceProtocol, StringFormat='0x{0:X4}', Mode=OneWay}" />
+                <DataGridTextColumn Header="Device Subclass"
+                                    Binding="{Binding DeviceSubClass, StringFormat='0x{0:X4}', Mode=OneWay}" />
+                <DataGridTextColumn Header="Product ID"
+                                    Binding="{Binding ProductId, StringFormat='0x{0:X4}', Mode=OneWay}" />
+                <DataGridTextColumn Header="Vendor ID"
+                                    Binding="{Binding VendorId, StringFormat='0x{0:X4}', Mode=OneWay}" />
+                <DataGridTextColumn Header="Manufacturer" Binding="{Binding Manufacturer, Mode=OneWay}" />
+                <DataGridTextColumn Header="MaxPacketSize0" Binding="{Binding MaxPacketSize0, Mode=OneWay}" />
+                <DataGridTextColumn Header="Num Configurations" Binding="{Binding NumConfigurations, Mode=OneWay}" />
+                <DataGridTextColumn Header="Product" Binding="{Binding Product, Mode=OneWay}" />
+                <DataGridTextColumn Header="Usb Version" Binding="{Binding Usb, StringFormat='0x{0:X4}', Mode=OneWay}" />
+                <DataGridTextColumn Header="Serial Number" Binding="{Binding SerialNumber, Mode=OneWay}" />
+            </DataGrid.Columns>
+        </DataGrid>
+    </Grid>
+    
+    <!-- <TreeView ItemsSource="{Binding Devices}"> -->
+    <!--     <TreeView.DataTemplates> -->
+    <!--         <TreeDataTemplate x:DataType="libUsb:IUsbDevice" ItemsSource="{Binding Configs}"> -->
+    <!--             <TextBlock> -->
+    <!--                 <TextBlock.Text> -->
+    <!--                     <MultiBinding StringFormat="{}{0}: {1}"> -->
+    <!--                         <Binding Path="Configuration"/> -->
+    <!--                         <Binding Path="Configuration"/> -->
+    <!--                     </MultiBinding> -->
+    <!--                 </TextBlock.Text> -->
+    <!--             </TextBlock> -->
+    <!--         </TreeDataTemplate> -->
+    <!--     </TreeView.DataTemplates> -->
+    <!-- </TreeView> -->
+    
+</Window>
