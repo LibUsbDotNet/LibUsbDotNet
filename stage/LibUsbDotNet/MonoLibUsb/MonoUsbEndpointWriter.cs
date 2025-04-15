@@ -71,6 +71,10 @@ namespace LibUsbDotNet.LudnMonoLibUsb
             return true;
         }
 
-        internal override UsbTransfer CreateTransferContext() { return new MonoUsbTransferContext(this); }
+        internal override UsbTransfer CreateTransferContext()
+        {
+            mMonoTransferContext = new MonoUsbTransferContext(this);
+            return mMonoTransferContext;
+        }
     }
 }
