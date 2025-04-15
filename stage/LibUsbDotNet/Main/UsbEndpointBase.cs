@@ -153,7 +153,15 @@ namespace LibUsbDotNet.Main
         /// <summary>
         /// Frees resources associated with the endpoint.  Once disposed this <see cref="UsbEndpointBase"/> cannot be used.
         /// </summary>
-        public virtual void Dispose() { DisposeAndRemoveFromList(); }
+        public virtual void Dispose()
+        {
+            if (!ReferenceEquals(mTransferContext, null))
+            {
+                mTransferContext.Dispose();
+                mTransferContext = null;
+            }
+            DisposeAndRemoveFromList();
+        }
 
         #endregion
 
