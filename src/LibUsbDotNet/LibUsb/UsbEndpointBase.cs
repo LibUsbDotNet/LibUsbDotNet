@@ -132,7 +132,18 @@ public abstract class UsbEndpointBase
                 throw new ArgumentOutOfRangeException(nameof(mEndpointType), $"Not an {typeof(EndpointType)}");
         }
     }
-        
+
+    /// <summary>
+    /// Clear an halt/stall for a endpoint. 
+    /// </summary>
+    /// <returns>
+    /// <see cref="Error.Success"/> on success, 
+    /// <see cref="Error.NotFound"/> if the endpoint does not exist, 
+    /// <see cref="Error.NoDevice"> if the device has been disconnected,
+    /// and a <see cref="Error"/> on failure. 
+    /// </returns>
+    public Error ClearHalt() => NativeMethods.ClearHalt(this.Device.DeviceHandle, this.mEpNum);
+
     /// <summary>
     /// Asynchronous bulk/interrupt transfer function.
     /// </summary>
