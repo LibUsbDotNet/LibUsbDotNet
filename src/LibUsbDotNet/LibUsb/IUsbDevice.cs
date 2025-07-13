@@ -24,6 +24,7 @@ using LibUsbDotNet.Info;
 using LibUsbDotNet.Main;
 using System;
 using System.Collections.ObjectModel;
+using System.Threading;
 using System.Threading.Tasks;
 
 namespace LibUsbDotNet.LibUsb;
@@ -58,7 +59,7 @@ public interface IUsbDevice : IDisposable
     UsbDeviceInfo Info { get; }
 
     LocationId LocationId { get; }
-    
+
     /// <summary>
     /// Gets a value indicating whether the device handle is valid.
     /// </summary>
@@ -214,6 +215,15 @@ public interface IUsbDevice : IDisposable
     UsbEndpointReader OpenEndpointReader(ReadEndpointID readEndpointID);
 
     /// <summary>
+    /// Open a <see cref="UsbEndpointTransferQueueReader"/> for reading data from a <see cref="EndpointType.Bulk"/> endpoint.
+    /// </summary>
+    /// <param name="readEndpointId">Endpoint number for read operations.</param>
+    /// <param name="readBufferSize">TODO: Remove this parameter.</param>
+    /// <param name="token">Cancellation token</param>
+    /// <param name="transferQueueSize">Specifies how many read operations can be queued at once and is by default set to 1.</param>
+    UsbEndpointTransferQueueReader OpenEndpointTransferQueueReader(ReadEndpointID readEndpointId, int readBufferSize, CancellationToken token, int transferQueueSize = 1);
+
+    /// <summary>
     /// Opens a <see cref="EndpointType.Bulk"/> endpoint for writing
     /// </summary>
     /// <param name="writeEndpointID">Endpoint number for read operations.</param>
@@ -278,7 +288,7 @@ public interface IUsbDevice : IDisposable
     /// The number of bytes sent or received (depends on the direction of the control transfer).
     /// </returns>
     int ControlTransfer(UsbSetupPacket setupPacket);
-        
+
     /// <summary>
     /// Asynchronously transmits control data over a default control endpoint.
     /// </summary>
@@ -310,7 +320,7 @@ public interface IUsbDevice : IDisposable
     /// <returns>The number of bytes sent or received (depends on the direction of the control transfer).
     /// </returns>
     int ControlTransfer(UsbSetupPacket setupPacket, byte[] buffer, int offset, int length);
-        
+
     /// <summary>
     /// Asynchronously transmits control data over a default control endpoint.
     /// </summary>
