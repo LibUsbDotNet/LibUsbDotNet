@@ -10,7 +10,7 @@ using var context = new UsbContext()
 	}
 };
 
-context.RegisterHotPlug();
+context.RegisterHotPlug(); // TODO check if Hotplug is supported?!
 
 Console.ReadKey();
 

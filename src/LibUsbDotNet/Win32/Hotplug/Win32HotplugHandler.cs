@@ -20,6 +20,11 @@ namespace LibUsbDotNet.Win32.Hotplug
 		private const uint CM_NOTIFY_FILTER_TYPE_DEVICEINTERFACE = 0;
 
 		/// <summary>
+		/// Success code for the CM_Register_Notification callback function.
+		/// </summary>
+		private const int CR_SUCCESS = 0;
+
+		/// <summary>
 		/// Calback delegate to handle device notifications.
 		/// </summary>
 		/// <remarks>
@@ -84,7 +89,7 @@ namespace LibUsbDotNet.Win32.Hotplug
 			var data = Marshal.PtrToStructure<CmNotifyEventData>(eventData);
 			if (data.FilterType != CM_NOTIFY_FILTER_TYPE_DEVICEINTERFACE)
 			{
-				return 0; // We are only interested in device interfaces
+				return CR_SUCCESS; // We are only interested in device interfaces
 			}
 
 			var eventArgs = ConvertToEventArgs(action, eventData);
@@ -95,7 +100,7 @@ namespace LibUsbDotNet.Win32.Hotplug
 				DeviceInterfaceClass = Guid.Empty,
 			});
 
-			return 0;
+			return CR_SUCCESS;
 		}
 
 		/// <summary>

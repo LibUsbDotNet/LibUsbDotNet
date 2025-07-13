@@ -152,8 +152,9 @@ public class UsbContext : IUsbContext
             return;
         if (NativeMethods.HasCapability((uint)Capability.HasHotplug) == 0)
             throw new PlatformNotSupportedException("This platform does not support hotplug.");
-            
-        NativeMethods.HotplugRegisterCallback(context, HotplugOptions.HotplugEventFlags,
+		// TODO add WIN32 support for hotplug.
+
+		NativeMethods.HotplugRegisterCallback(context, HotplugOptions.HotplugEventFlags,
             HotplugFlag.Enumerate, HotplugOptions.VendorId, HotplugOptions.ProductId, HotplugOptions.DeviceClass, hotplugDelegatePtr, IntPtr.Zero, ref HotplugOptions.Handle);
         StartHandlingEvents();
         IsUsingHotplug = true;
