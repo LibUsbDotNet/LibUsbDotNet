@@ -5,7 +5,7 @@ namespace LibUsbDotNet.Win32.Hotplug
 	/// <summary>
 	/// Represents an event triggered by a Win32 hotplug device, containing information about the device's vendor and product identifiers.
 	/// </summary>
-	public sealed class Win32HotplugHandlerEventArgs : EventArgs
+	public sealed class Win32HotplugEventArgs : EventArgs
 	{
 		/// <summary>
 		/// Represents the vendor ID.
@@ -25,6 +25,6 @@ namespace LibUsbDotNet.Win32.Hotplug
 		/// <summary>
 		/// Represents the type of event that occurred in the Win32 hotplug handler.
 		/// </summary>
-		public Win32HotplugHandlerEventType Type { get; set; } = Win32HotplugHandlerEventType.Undefined;
+		public Win32HotplugEventType Type { get; set; } = Win32HotplugEventType.Undefined;
 	}
 }

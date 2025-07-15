@@ -13,11 +13,11 @@ namespace LibUsbDotNet.Win32.Hotplug
 	/// </remarks>
 	internal sealed class CmNotifyHandle : SafeHandleZeroOrMinusOneIsInvalid
 	{
-		private const string DLL_CFGMGR32 = "cfgmgr32.dll";
-		private const string CM_UNREGISTER_NOTIFICATION = "CM_Unregister_Notification";
-		private const int CR_SUCCESS = 0;
+		private const string DllCfgMgr32 = "cfgmgr32.dll";
+		private const string CmUnregisterNotificationEntryPoint = "CM_Unregister_Notification";
+		private const int CrSuccess = 0;
 
-		[DllImport(DLL_CFGMGR32, EntryPoint = CM_UNREGISTER_NOTIFICATION, CallingConvention = CallingConvention.StdCall)]
+		[DllImport(DllCfgMgr32, EntryPoint = CmUnregisterNotificationEntryPoint, CallingConvention = CallingConvention.StdCall)]
 		private static extern uint CmUnregisterNotification(IntPtr notify);
 
 		/// <summary>
@@ -31,7 +31,7 @@ namespace LibUsbDotNet.Win32.Hotplug
 		protected override bool ReleaseHandle()
 		{
 			var result = CmUnregisterNotification(handle);
-			return result == CR_SUCCESS;
+			return result == CrSuccess;
 		}
 	}
 }

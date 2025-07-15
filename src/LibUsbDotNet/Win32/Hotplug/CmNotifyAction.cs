@@ -15,7 +15,7 @@
 		DeviceQueryRemoveFailed,
 		DeviceRemovePending,
 		DeviceRemoveComplete,
-		DeviceCutomEvent,
+		DeviceCustomEvent,
 
 		DeviceInstanceEnumerated,
 		DeviceInstanceStarted,

@@ -4,38 +4,44 @@ using System.Text.RegularExpressions;
 
 namespace LibUsbDotNet.Win32.Hotplug
 {
-	public sealed class Win32HotplugHandler : IDisposable
+    /// <summary>
+    /// Represents a Win32 implementation for hotplug events, allowing applications to receive notifications when USB devices are added or removed.
+    /// </summary>
+    /// <remarks>
+    /// Is only needed for Windows operating systems als long as no Hotplug support is provided by libusb.
+    /// </remarks>
+    public sealed class Win32Hotplug : IWin32Hotplug
 	{
-		/// <summary>
-		/// The GUID_DEVINTERFACE_USB_DEVICE device interface class is defined for USB devices that are attached to a USB hub.
-		/// </summary>
-		/// <remarks>
-		/// See also documentation: <see href="https://learn.microsoft.com/en-us/windows-hardware/drivers/install/device-interface-classes" />
-		/// </remarks>
-		private const string GUID_DEVINTERFACE_USB_DEVICE = "A5DCBF10-6530-11D2-901F-00C04FB951ED";
+        /// <summary>
+        /// The GUID_DEVINTERFACE_USB_DEVICE device interface class is defined for USB devices that are attached to a USB hub.
+        /// </summary>
+        /// <remarks>
+        /// See also documentation: <see href="https://learn.microsoft.com/en-us/windows-hardware/drivers/install/guid-devinterface-usb-device?source=recommendations" />
+        /// </remarks>
+        private const string GuidDeviceInterfaceUsbDevice = "A5DCBF10-6530-11D2-901F-00C04FB951ED";
 
 		/// <summary>
 		/// Register to receive notifications for PnP events for all device interface classes.
 		/// </summary>
-		private const uint CM_NOTIFY_FILTER_TYPE_DEVICEINTERFACE = 0;
+		private const uint CmNotifyFilterTypeDeviceInterface = 0;
 
 		/// <summary>
 		/// Success code for the CM_Register_Notification callback function.
 		/// </summary>
-		private const uint CR_SUCCESS = 0x00000000;
+		private const uint CrSuccess = 0x00000000;
 
 		/// <summary>
 		/// Error code for the CM_Register_Notification callback function when it fails.
 		/// </summary>
-		private const uint CR_FAILURE = 0x00000013;
+		private const uint CrFailure = 0x00000013;
 
 		/// <summary>
 		/// Offset in byte(s) to read VID, PID and GUID from the event data structure.
 		/// </summary>
-		private const int USB_DEV_IFACE_OFFSET = 32;
+		private const int UsbDeviceInterfaceOffset = 32;
 
 		/// <summary>
-		/// Calback delegate to handle device notifications.
+		/// Callback to handle device notifications.
 		/// </summary>
 		/// <remarks>
 		/// See also documentation: <see href="https://learn.microsoft.com/en-us/windows/win32/api/cfgmgr32/nf-cfgmgr32-cm_register_notification" />
@@ -60,7 +66,7 @@ namespace LibUsbDotNet.Win32.Hotplug
 		/// <summary>
 		/// Unique identifier for the USB device interface class.
 		/// </summary>
-		private readonly Guid _usbDevIface = new(GUID_DEVINTERFACE_USB_DEVICE);
+		private readonly Guid _usbDeviceInterface = new(GuidDeviceInterfaceUsbDevice);
 
 		/// <summary>
 		/// Notification handle for device change notifications.
@@ -70,20 +76,20 @@ namespace LibUsbDotNet.Win32.Hotplug
 		/// <summary>
 		/// Represents an event that is raised when a device change occurs.
 		/// </summary>
-		public event EventHandler<Win32HotplugHandlerEventArgs> DeviceChangedEvent;
+		public event EventHandler<Win32HotplugEventArgs> DeviceChangedEvent;
 
 		/// <summary>
-		/// Initializes a new instance of the <see cref="Win32HotplugHandler"/> class.
+		/// Initializes a new instance of the <see cref="Win32Hotplug"/> class.
 		/// </summary>
 		/// <exception cref="InvalidOperationException"/>
-		public Win32HotplugHandler()
+		public Win32Hotplug()
 		{
 			var filter = new CmNotifyFilter
 			{
 				CbSize = (uint)Marshal.SizeOf<CmNotifyFilter>(),
-				FilterType = CM_NOTIFY_FILTER_TYPE_DEVICEINTERFACE
+				FilterType = CmNotifyFilterTypeDeviceInterface
 			};
-			Array.Copy(_usbDevIface.ToByteArray(), filter.Data, 16);
+			Array.Copy(_usbDeviceInterface.ToByteArray(), filter.Data, 16);
 
 			var result = NativeMethods.CmRegisterNotification(ref filter, IntPtr.Zero, DeviceNotifyCallback, out var hNotify);
 			if (result != 0)
@@ -102,13 +108,13 @@ namespace LibUsbDotNet.Win32.Hotplug
 			try
 			{
 				var data = Marshal.PtrToStructure<CmNotifyEventData>(eventData);
-				if (data.FilterType != CM_NOTIFY_FILTER_TYPE_DEVICEINTERFACE)
+				if (data.FilterType != CmNotifyFilterTypeDeviceInterface)
 				{
-					return CR_SUCCESS; // We are only interested in device interfaces (USB devices).
+					return CrSuccess; // We are only interested in USB device interfaces.
 				}
 
 				var eventArgs = ConvertToEventArgs(action, eventData);
-				DeviceChangedEvent?.Invoke(this, eventArgs ?? new Win32HotplugHandlerEventArgs
+				DeviceChangedEvent?.Invoke(this, eventArgs ?? new Win32HotplugEventArgs
 				{
 					VendorId = 0,
 					ProductId = 0,
@@ -117,30 +123,30 @@ namespace LibUsbDotNet.Win32.Hotplug
 			}
 			catch (Exception)
 			{
-				return CR_FAILURE;
+				return CrFailure;
 			}
-			return CR_SUCCESS;
+			return CrSuccess;
 		}
 
 		/// <summary>
-		/// Convert the given <see cref="CmNotifyAction"/> to a <see cref="Win32HotplugHandlerEventType"/>.
+		/// Convert the given <see cref="CmNotifyAction"/> to a <see cref="Win32HotplugEventType"/>.
 		/// </summary>
-		private static Win32HotplugHandlerEventType ConvertToEventType(CmNotifyAction action)
+		private static Win32HotplugEventType ConvertToEventType(CmNotifyAction action)
 		{
 			return action switch
 			{
-				CmNotifyAction.DeviceInterfaceArrival => Win32HotplugHandlerEventType.Arrival,
-				CmNotifyAction.DeviceInterfaceRemoval => Win32HotplugHandlerEventType.Removal,
-				_ => Win32HotplugHandlerEventType.Undefined,
+				CmNotifyAction.DeviceInterfaceArrival => Win32HotplugEventType.Arrival,
+				CmNotifyAction.DeviceInterfaceRemoval => Win32HotplugEventType.Removal,
+				_ => Win32HotplugEventType.Undefined,
 			};
 		}
 
 		/// <summary>
-		/// Convert the given event data to a <see cref="Win32HotplugHandlerEventArgs"/>.
+		/// Convert the given event data to a <see cref="Win32HotplugEventArgs"/>.
 		/// </summary>
-		private static Win32HotplugHandlerEventArgs ConvertToEventArgs(CmNotifyAction action, IntPtr eventData)
+		private static Win32HotplugEventArgs ConvertToEventArgs(CmNotifyAction action, IntPtr eventData)
 		{
-			IntPtr symbolicLinkPtr = IntPtr.Add(eventData, USB_DEV_IFACE_OFFSET);
+			var symbolicLinkPtr = IntPtr.Add(eventData, UsbDeviceInterfaceOffset);
 			var device = Marshal.PtrToStringUni(symbolicLinkPtr) ?? string.Empty;
 
 			// Example input: USB#VID_046D&PID_0A9C#...#{GUID}
@@ -150,10 +156,10 @@ namespace LibUsbDotNet.Win32.Hotplug
 				return null;
 			}
 
-			return new Win32HotplugHandlerEventArgs
+			return new Win32HotplugEventArgs
 			{
-				VendorId = uint.Parse(match.Groups[1].Value, System.Globalization.NumberStyles.HexNumber),
-				ProductId = uint.Parse(match.Groups[2].Value, System.Globalization.NumberStyles.HexNumber),
+				VendorId = Convert.ToUInt32(match.Groups[1].Value, 16),
+				ProductId = Convert.ToUInt32(match.Groups[2].Value, 16),
 				DeviceInterfaceClass = Guid.Parse(match.Groups[3].Value),
 				Type = ConvertToEventType(action)
 			};

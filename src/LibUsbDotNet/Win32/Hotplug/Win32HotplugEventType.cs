@@ -1,9 +1,9 @@
 ﻿namespace LibUsbDotNet.Win32.Hotplug
 {
 	/// <summary>
-	/// Represents the type of event that occurred in the Win32 hotplug handler.
+	/// Represents the type of event that occurred in the Win32 hotplug.
 	/// </summary>
-	public enum Win32HotplugHandlerEventType : uint
+	public enum Win32HotplugEventType : uint
 	{
 		/// <summary>
 		/// USB device was added to the system.

@@ -20,14 +20,16 @@
 // 
 //
 
+using LibUsbDotNet.Info;
 using LibUsbDotNet.Main;
+using LibUsbDotNet.Win32.Hotplug;
 using System;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.Linq;
 using System.Runtime.InteropServices;
 using System.Threading;
-using LibUsbDotNet.Info;
 
 namespace LibUsbDotNet.LibUsb;
 
@@ -46,7 +48,15 @@ public class UsbContext : IUsbContext
     /// Thread for event handling.
     /// </summary>
     private Thread eventHandlingThread;
-        
+
+    /// <summary>
+    /// Handles the hotplug events on Windows platforms using the Win32 API.
+    /// </summary>
+    /// <remarks>
+    /// See also <see href="https://learn.microsoft.com/en-us/windows/win32/api/cfgmgr32/nf-cfgmgr32-cm_register_notification" />
+    /// </remarks>
+    private IWin32Hotplug _win32Hotplug;
+
     /// <summary>
     /// ID of the underlying <see cref="Context"/>.
     /// </summary>
@@ -60,7 +70,7 @@ public class UsbContext : IUsbContext
     public bool IsUsingHotplug { get; private set; }
 
     public HotplugOptions HotplugOptions { get; init; } = new();
-    
+
     /// <summary>
     /// Tracking list of all devices that are open on this context.
     /// </summary>
@@ -69,7 +79,7 @@ public class UsbContext : IUsbContext
     /// <summary>
     /// Read-only list of all devices that are open on this context.
     /// </summary>
-    public ReadOnlyCollection<UsbDevice> ReadOnlyOpenDevices => 
+    public ReadOnlyCollection<UsbDevice> ReadOnlyOpenDevices =>
         new ReadOnlyCollection<UsbDevice>(OpenDevices);
 
     /// <summary>
@@ -145,32 +155,102 @@ public class UsbContext : IUsbContext
 
         return 0;
     }
-        
+
+    /// <summary>
+    /// Handles the device changed event from the Win32 hotplug implementation.
+    /// </summary>
+    /// <exception cref="InvalidOperationException"></exception>
+    /// <exception cref="NotImplementedException"></exception>
+    private void OnDeviceChangedEvent(object sender, Win32HotplugEventArgs e)
+    {
+        if (e.Type == Win32HotplugEventType.Undefined)
+        {
+            return;
+        }
+
+        var usbDevice = (UsbDevice)List().FirstOrDefault(d => d.ProductId == e.ProductId && d.VendorId == e.VendorId);
+        if (usbDevice == null)
+        {
+            return;
+        }
+
+        DeviceEventArgs deviceEventArgs;
+        switch (e.Type)
+        {
+            case Win32HotplugEventType.Arrival:
+                deviceEventArgs = new DeviceArrivedEventArgs(usbDevice);
+                DeviceInfoDictionary.TryAdd(usbDevice, new CachedDeviceInfo(usbDevice));
+                break;
+            case Win32HotplugEventType.Removal:
+                if (!DeviceInfoDictionary.TryRemove(usbDevice, out var info))
+                    throw new InvalidOperationException("Device info not found in dictionary.");
+                deviceEventArgs = new DeviceLeftEventArgs(info);
+                break;
+            case Win32HotplugEventType.Undefined:
+                // This should not happen, but if it does, we can ignore it.
+                return;
+            default:
+                throw new NotImplementedException($"Type {e.Type} not implemented");
+        }
+
+        DeviceEvent?.Invoke(this, deviceEventArgs);
+    }
+
+    private void CreateWin32Hotplug()
+    {
+        _win32Hotplug = new Win32Hotplug();
+        _win32Hotplug.DeviceChangedEvent += OnDeviceChangedEvent;
+    }
+
+    private void DestroyWin32Hotplug()
+    {
+        if (_win32Hotplug == null)
+        {
+            return;
+        }
+        _win32Hotplug.DeviceChangedEvent -= OnDeviceChangedEvent;
+        _win32Hotplug.Dispose();
+    }
+
     public void RegisterHotPlug()
     {
         if (IsUsingHotplug)
             return;
+
+        if (RuntimeInformation.IsOSPlatform(OSPlatform.Windows))
+        {
+            CreateWin32Hotplug();
+            IsUsingHotplug = true;
+            return;
+        }
+
         if (NativeMethods.HasCapability((uint)Capability.HasHotplug) == 0)
             throw new PlatformNotSupportedException("This platform does not support hotplug.");
-		// TODO add WIN32 support for hotplug.
 
-		NativeMethods.HotplugRegisterCallback(context, HotplugOptions.HotplugEventFlags,
+        NativeMethods.HotplugRegisterCallback(context, HotplugOptions.HotplugEventFlags,
             HotplugFlag.Enumerate, HotplugOptions.VendorId, HotplugOptions.ProductId, HotplugOptions.DeviceClass, hotplugDelegatePtr, IntPtr.Zero, ref HotplugOptions.Handle);
         StartHandlingEvents();
         IsUsingHotplug = true;
     }
-        
+
     public void UnregisterHotPlug()
     {
         if (!IsUsingHotplug)
             return;
-            
+
+        if (RuntimeInformation.IsOSPlatform(OSPlatform.Windows) && _win32Hotplug != null)
+        {
+            DestroyWin32Hotplug();
+            IsUsingHotplug = false;
+            return;
+        }
+
         Interlocked.Exchange(ref stopHandlingEvents, 1);
         NativeMethods.HotplugDeregisterCallback(context, HotplugOptions.Handle);
         StopHandlingEvents();
         IsUsingHotplug = false;
     }
-    
+
     /// <summary>
     /// Returns a list of USB devices currently attached to the system.
     /// </summary>
@@ -281,7 +361,7 @@ public class UsbContext : IUsbContext
     {
         if (this.eventHandlingThread != null)
             return;
-            
+
         this.eventHandlingThread = new Thread(this.HandleEvents)
         {
             IsBackground = true
@@ -302,18 +382,18 @@ public class UsbContext : IUsbContext
     {
         if (this.eventHandlingThread == null)
             return;
-            
+
         this.eventHandlingThread.Join();
         this.eventHandlingThread = null;
     }
 
     protected virtual void Dispose(bool disposeManagedObjects)
     {
-        if (IsDisposed) 
+        if (IsDisposed)
             return;
-            
+
         IsDisposing = true;
-            
+
         // Not sure what should go here, what resources should be cleaned up by explicit Dispose but not in the finalizer?
         if (disposeManagedObjects)
         {
@@ -325,14 +405,14 @@ public class UsbContext : IUsbContext
         {
             openDevice.Dispose();
         }
-            
+
         OpenDevices.Clear();
 
         UnregisterHotPlug();
-            
+
         // Dispose of underlying context handle.
         context.Dispose();
-            
+
         IsDisposed = true;
     }
 
