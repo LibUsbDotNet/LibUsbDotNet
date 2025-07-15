@@ -1,23 +1,23 @@
 ﻿namespace LibUsbDotNet.Win32.Hotplug
 {
-	/// <summary>
-	/// Represents the type of event that occurred in the Win32 hotplug.
-	/// </summary>
-	public enum Win32HotplugEventType : uint
-	{
-		/// <summary>
-		/// USB device was added to the system.
-		/// </summary>
-		Arrival = 0,
+    /// <summary>
+    /// Represents the type of event that occurred in the Win32 hotplug.
+    /// </summary>
+    public enum Win32HotplugEventType : uint
+    {
+        /// <summary>
+        /// USB device was added to the system.
+        /// </summary>
+        Arrival = 0,
 
-		/// <summary>
-		/// USB device was removed from the system.
-		/// </summary>
-		Removal,
+        /// <summary>
+        /// USB device was removed from the system.
+        /// </summary>
+        Removal,
 
-		/// <summary>
-		/// Event could not be processed in the WIN32 hotplug handler.
-		/// </summary>
-		Undefined,
-	}
+        /// <summary>
+        /// Event could not be processed in the WIN32 hotplug handler.
+        /// </summary>
+        Undefined,
+    }
 }
