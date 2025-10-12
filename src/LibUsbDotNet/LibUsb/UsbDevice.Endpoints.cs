@@ -21,6 +21,7 @@
 //
 
 using LibUsbDotNet.Main;
+using System.Threading;
 
 namespace LibUsbDotNet.LibUsb;
 
@@ -35,6 +36,12 @@ public partial class UsbDevice
     public UsbEndpointReader OpenEndpointReader(ReadEndpointID readEndpointID)
     {
         return this.OpenEndpointReader(readEndpointID, UsbEndpointReader.DefReadBufferSize);
+    }
+
+    /// <inheritdoc/>
+    public UsbEndpointTransferQueueReader OpenEndpointTransferQueueReader(ReadEndpointID readEndpointId, int readBufferSize, CancellationToken token, int transferQueueSize = 1)
+    {
+        return new UsbEndpointTransferQueueReader(this, readBufferSize, readEndpointId, transferQueueSize, token);
     }
 
     /// <summary>
