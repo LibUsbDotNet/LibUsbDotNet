@@ -27,8 +27,15 @@ public partial class Device
     /// <inheritdoc/>
     protected override bool ReleaseHandle()
     {
-        if (!_fromHotplug)
-            NativeMethods.UnrefDevice(this.handle);
+        try
+        {
+            if (!_fromHotplug)
+                NativeMethods.UnrefDevice(this.handle);
+        }
+        catch
+        {
+            return false;
+        }
         return true;
     }
 }
