@@ -13,9 +13,8 @@ All basic USB device functionality can be performed through common device classe
 ## Features
 * Full support for WinUSB. All WinUSB interfaces are treated as separate devices; each interface can be used by a different application.
 * Extended kernel level support for libusb-win32.
-* Supports Unix-like operating systems using Mono .NET and libusb-1.0.
+* Supports Unix-like operating systems using Microsoft dotnet, Mono and libusb-1.0.
 * Common device classes allow for a single code base to support multiple drivers and platforms.
-* Includes a Usb InfWizard utility (Windows only) for generating usb installation packages, removing devices, and installing drivers.
 * Device discovery using any or all of the folowing criteria:
   * VendorID
   * ProductID
