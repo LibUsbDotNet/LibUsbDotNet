@@ -45,28 +45,5 @@
     <None Include="..\..\Readme.md" Pack="true" PackagePath="\"/>
     <None Include="..\..\icon.png" Pack="true" PackagePath="\"/>
   </ItemGroup>
-
-  <ItemGroup>
-    <!-- Build artifacts, these are available during the GitHub actions build -->
-    <Content Include="$(VCPKG_ROOT)/installed/x64-windows/bin/libusb-1.0.dll">
-      <PackagePath>runtimes/win-x64/native/%(Filename)%(Extension)</PackagePath>
-      <Pack>true</Pack>
-    </Content>
-    <Content Include="$(VCPKG_ROOT)/installed/x86-windows/bin/libusb-1.0.dll">
-      <PackagePath>runtimes/win-x86/native/%(Filename)%(Extension)</PackagePath>
-      <Pack>true</Pack>
-    </Content>
-    <Content Include="$(VCPKG_ROOT)/installed/arm64-windows/bin/libusb-1.0.dll">
-      <PackagePath>runtimes/win-arm64/native/%(Filename)%(Extension)</PackagePath>
-      <Pack>true</Pack>
-    </Content>
-    <Content Include="$(VCPKG_ROOT)/installed/x64-osx-dynamic/lib/libusb-1.0.dylib">
-      <PackagePath>runtimes/osx-x64/native/%(Filename)%(Extension)</PackagePath>
-      <Pack>true</Pack>
-    </Content>
-    <Content Include="$(VCPKG_ROOT)/installed/arm64-osx-dynamic/lib/libusb-1.0.dylib">
-      <PackagePath>runtimes/osx-arm64/native/%(Filename)%(Extension)</PackagePath>
-      <Pack>true</Pack>
-    </Content>
-  </ItemGroup>
 </Project>
+
