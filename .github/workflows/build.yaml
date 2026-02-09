@@ -32,7 +32,7 @@ jobs:
           path: '${{ github.workspace }}/nuget/' 
 
   libusbdotnet_macos:
-    runs-on: macos-13
+    runs-on: macos-15
 
     env:
       VCPKG_ROOT: /usr/local/share/vcpkg
