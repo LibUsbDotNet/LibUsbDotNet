@@ -26,7 +26,7 @@
       <IncludeAssets Condition="'$(Configuration)' != 'Debug'">None</IncludeAssets>
       <PrivateAssets Condition="'$(Configuration)' != 'Debug'">All</PrivateAssets>
     </PackageReference>
-    <PackageReference Include="LibUsbDotNet" Version="3.0.167-alpha" />
+    <PackageReference Include="LibUsbDotNet" Version="3.0" />
     <PackageReference Include="ReactiveUI.SourceGenerators" Version="2.1.27">
       <PrivateAssets>all</PrivateAssets>
       <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
