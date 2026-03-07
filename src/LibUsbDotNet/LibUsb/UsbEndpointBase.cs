@@ -23,6 +23,7 @@
 using LibUsbDotNet.Info;
 using LibUsbDotNet.Main;
 using System;
+using System.Buffers;
 using System.Runtime.InteropServices;
 using System.Threading.Tasks;
 
@@ -96,6 +97,33 @@ public abstract class UsbEndpointBase
     }
 
     /// <summary>
+    /// Synchronous bulk/interrupt transfer function for read-only buffers.
+    /// </summary>
+    /// <param name="readOnlyBuffer">An <see cref="ReadOnlySpan{T}"/> to a caller-allocated read-only buffer.</param>
+    /// <param name="timeout">Maximum time to wait for the transfer to complete.</param>
+    /// <param name="transferLength">Number of bytes actually transferred.</param>
+    /// <returns>True on success.</returns>
+    public virtual Error Transfer(ReadOnlySpan<byte> readOnlyBuffer, int timeout, out int transferLength)
+    {
+        var buffer = ArrayPool<byte>.Shared.Rent(readOnlyBuffer.Length);
+
+        try
+        {
+            // To convert a ReadOnlySpan<byte> into a writable Span<byte>,
+            // copy it to a temporary buffer and pass it to Transfer(Span<byte>).
+            // The write is performed on the temporary buffer, so it
+            // does not affect the original ReadOnlySpan<byte>.
+            readOnlyBuffer.CopyTo(buffer);
+
+            return Transfer(buffer.AsSpan(0, readOnlyBuffer.Length), timeout, out transferLength);
+        }
+        finally
+        {
+            ArrayPool<byte>.Shared.Return(buffer);
+        }
+    }
+
+    /// <summary>
     /// Synchronous bulk/interrupt transfer function.
     /// </summary>
     /// <param name="buffer">A <see cref="Span{T}"/> to a caller-allocated buffer.</param>
@@ -141,6 +169,32 @@ public abstract class UsbEndpointBase
     /// and a <see cref="Error"/> on failure. 
     /// </returns>
     public Error ClearHalt() => NativeMethods.ClearHalt(this.Device.DeviceHandle, this.mEpNum);
+
+    /// <summary>
+    /// Asynchronous bulk/interrupt transfer function for read-only buffers.
+    /// </summary>
+    /// <param name="readOnlyBuffer">Caller-allocated read-only buffer.</param>
+    /// <param name="timeout">Maximum time to wait for the transfer to complete.</param>
+    /// <returns>Named tuple of <see cref="Error"/> and transferLength</returns>
+    protected async Task<(Error error, int transferLength)> TransferAsync(ReadOnlyMemory<byte> readOnlyBuffer, int timeout)
+    {
+        var buffer = ArrayPool<byte>.Shared.Rent(readOnlyBuffer.Length);
+
+        try
+        {
+            // To convert a ReadOnlyMemory<byte> into a writable Memory<byte>,
+            // copy it to a temporary buffer and pass it to TransferAsync(Memory<byte>).
+            // The write is performed on the temporary buffer, so it
+            // does not affect the original ReadOnlyMemory<byte>.
+            readOnlyBuffer.CopyTo(buffer);
+
+            return await TransferAsync(buffer.AsMemory(0, readOnlyBuffer.Length), timeout).ConfigureAwait(false);
+        }
+        finally
+        {
+            ArrayPool<byte>.Shared.Return(buffer);
+        }
+    }
 
     /// <summary>
     /// Asynchronous bulk/interrupt transfer function.
