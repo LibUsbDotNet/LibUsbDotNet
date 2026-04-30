@@ -103,6 +103,13 @@ public abstract class UsbEndpointBase
     /// <param name="timeout">Maximum time to wait for the transfer to complete.</param>
     /// <param name="transferLength">Number of bytes actually transferred.</param>
     /// <returns>True on success.</returns>
+    /// <remarks>
+    /// This method passes a data buffer (<paramref name="readOnlyBuffer"/>) to the native API,
+    /// but unlike the <see cref="Transfer(Span{byte},int,out int)"/>, it ignores the contents of
+    /// the buffer without copying them, even if data has been written to it.
+    /// If you expect to receive data from the native API and have it written to the original buffer,
+    /// use the <see cref="Transfer(Span{byte},int,out int)"/> method.
+    /// </remarks>
     public virtual Error Transfer(ReadOnlySpan<byte> readOnlyBuffer, int timeout, out int transferLength)
     {
         var buffer = ArrayPool<byte>.Shared.Rent(readOnlyBuffer.Length);
@@ -176,6 +183,13 @@ public abstract class UsbEndpointBase
     /// <param name="readOnlyBuffer">Caller-allocated read-only buffer.</param>
     /// <param name="timeout">Maximum time to wait for the transfer to complete.</param>
     /// <returns>Named tuple of <see cref="Error"/> and transferLength</returns>
+    /// <remarks>
+    /// This method passes a data buffer (<paramref name="readOnlyBuffer"/>) to the native API,
+    /// but unlike the <see cref="TransferAsync(Memory{byte},int)"/>, it ignores the contents of
+    /// the buffer without copying them, even if data has been written to it.
+    /// If you expect to receive data from the native API and have it written to the original buffer,
+    /// use the <see cref="TransferAsync(Memory{byte},int)"/> method.
+    /// </remarks>
     protected async Task<(Error error, int transferLength)> TransferAsync(ReadOnlyMemory<byte> readOnlyBuffer, int timeout)
     {
         var buffer = ArrayPool<byte>.Shared.Rent(readOnlyBuffer.Length);
