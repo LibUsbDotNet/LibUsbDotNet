@@ -27,14 +27,14 @@ jobs:
         run: vcpkg install ${{ matrix.package.name }}:${{ matrix.triplet }}
 
       - name: Upload vcpkg artifacts
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v7
         if: always()
         with:
           name: ${{ matrix.package.name }}-${{matrix.triplet}}-${{ github.run_id }}
           path: ${{ env.VCPKG_ROOT }}/installed/
 
       - name: Upload vcpkg build tree
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v7
         if: always()
         with:
           name: ${{ matrix.package.name }}-${{matrix.triplet}}-${{ github.run_id }}-buildtree
@@ -63,7 +63,7 @@ jobs:
         run: vcpkg install ${{ matrix.package.name }}:${{ matrix.triplet }} --overlay-triplets=${{ env.VCPKG_ROOT }}/triplets/community/
 
       - name: Upload vcpkg artifacts
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v7
         if: always()
         with:
           name: ${{ matrix.package.name }}-${{matrix.triplet}}-${{ github.run_id }}
@@ -78,7 +78,7 @@ jobs:
       VCPKG_ROOT: C:\vcpkg
 
     steps:
-      - uses: actions/checkout@v2
+      - uses: actions/checkout@v6
         with:
           fetch-depth: 0
           ref: 'v2'
@@ -89,7 +89,7 @@ jobs:
           pattern: libusb-*
           merge-multiple: true
 
-      - uses: actions/setup-dotnet@v1
+      - uses: actions/setup-dotnet@v5
         with:
           dotnet-version: '8.0.x'
 
@@ -100,7 +100,7 @@ jobs:
         run: dotnet pack .\stage\LibUsbDotNet\LibUsbDotNet.csproj -c Release -o ${{ github.workspace }}/nuget/
 
       - name: Upload LibUsbDotNet NuGet package
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v7
         if: always()
         with:
           name: LibUsbDotNet-${{ github.run_id }}
@@ -115,17 +115,17 @@ jobs:
       VCPKG_ROOT: /usr/local/share/vcpkg
 
     steps:
-      - uses: actions/checkout@v2
+      - uses: actions/checkout@v6
         with:
           fetch-depth: 0
 
-      - uses: actions/download-artifact@v4
+      - uses: actions/download-artifact@v8
         with:
           path: ${{ env.VCPKG_ROOT }}/installed/
           pattern: libusb-*
           merge-multiple: true
 
-      - uses: actions/setup-dotnet@v1
+      - uses: actions/setup-dotnet@v5
         with:
           dotnet-version: '8.0.x'
 
@@ -136,12 +136,12 @@ jobs:
     runs-on: ubuntu-22.04
 
     steps:
-      - uses: actions/checkout@v2
+      - uses: actions/checkout@v6
         with:
           fetch-depth: 0
           ref: 'v2'
 
-      - uses: actions/setup-dotnet@v1
+      - uses: actions/setup-dotnet@v5
         with:
           dotnet-version: '8.0.x'
 
