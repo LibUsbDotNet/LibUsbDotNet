@@ -80,7 +80,7 @@ public partial class UsbEndpointReader : UsbEndpointBase
     /// <see cref="Error"/>.<see cref="Error.Success"/> on success.
     /// </returns>
     public virtual Error Read(byte[] buffer, int offset, int count, int timeout, out int transferLength) 
-        => Transfer(buffer, offset, count, timeout, out transferLength);
+        => Transfer(buffer.AsSpan(offset, count), timeout, out transferLength);
 
     /// <summary>
     /// Reads data from the current <see cref="UsbEndpointReader"/>.
@@ -92,7 +92,7 @@ public partial class UsbEndpointReader : UsbEndpointBase
     /// <see cref="Error"/>.<see cref="Error.Success"/> on success.
     /// </returns>
     public virtual Error Read(Span<byte> buffer, int timeout, out int transferLength) 
-        => Read(buffer, 0, buffer.Length, timeout, out transferLength);
+        => Transfer(buffer, timeout, out transferLength);
 
     /// <summary>
     /// Reads data from the current <see cref="UsbEndpointReader"/>.
@@ -106,7 +106,7 @@ public partial class UsbEndpointReader : UsbEndpointBase
     /// <see cref="Error"/>.<see cref="Error.Success"/> on success.
     /// </returns>
     public virtual Error Read(Span<byte> buffer, int offset, int count, int timeout, out int transferLength) 
-        => Transfer(buffer, offset, count, timeout, out transferLength);
+        => Transfer(buffer.Slice(offset, count), timeout, out transferLength);
 
     /// <summary>
     /// Reads/discards data from the endpoint until no more data is available.

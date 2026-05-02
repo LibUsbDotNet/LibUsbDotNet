@@ -98,13 +98,11 @@ public abstract class UsbEndpointBase
     /// <summary>
     /// Synchronous bulk/interrupt transfer function.
     /// </summary>
-    /// <param name="buffer">An <see cref="IntPtr"/> to a caller-allocated buffer.</param>
-    /// <param name="offset">Position in buffer that transferring begins.</param>
-    /// <param name="length">Number of bytes, starting from thr offset parameter to transfer.</param>
+    /// <param name="buffer">A <see cref="Span{byte}"/> to a caller-allocated buffer.</param>
     /// <param name="timeout">Maximum time to wait for the transfer to complete.</param>
     /// <param name="transferLength">Number of bytes actually transferred.</param>
     /// <returns>True on success.</returns>
-    public virtual unsafe Error Transfer(Span<byte> buffer, int offset, int length, int timeout, out int transferLength)
+    public virtual unsafe Error Transfer(Span<byte> buffer, int timeout, out int transferLength)
     {
         int transferred = 0;
 
@@ -113,13 +111,13 @@ public abstract class UsbEndpointBase
         {
             case EndpointType.Bulk:
                 fixed (byte* bufferPtr = &MemoryMarshal.GetReference(buffer))
-                    returnValue = NativeMethods.BulkTransfer(this.Device.DeviceHandle, this.mEpNum, bufferPtr + offset, length, ref transferred, (uint)timeout);
+                    returnValue = NativeMethods.BulkTransfer(this.Device.DeviceHandle, this.mEpNum, bufferPtr, buffer.Length, ref transferred, (uint)timeout);
                 transferLength = transferred;
                 return returnValue;
 
             case EndpointType.Interrupt:
                 fixed (byte* bufferPtr = &MemoryMarshal.GetReference(buffer))
-                    returnValue = NativeMethods.InterruptTransfer(this.Device.DeviceHandle, this.mEpNum, bufferPtr + offset, length, ref transferred, (uint)timeout);
+                    returnValue = NativeMethods.InterruptTransfer(this.Device.DeviceHandle, this.mEpNum, bufferPtr, buffer.Length, ref transferred, (uint)timeout);
                 transferLength = transferred;
                 return returnValue;
 
@@ -148,12 +146,10 @@ public abstract class UsbEndpointBase
     /// Asynchronous bulk/interrupt transfer function.
     /// </summary>
     /// <param name="buffer">Caller-allocated buffer.</param>
-    /// <param name="offset">Position in buffer that transferring begins.</param>
-    /// <param name="length">Number of bytes, starting from thr offset parameter to transfer.</param>
     /// <param name="timeout">Maximum time to wait for the transfer to complete.</param>
     /// <returns>Named tuple of <see cref="Error"/> and transferLength</returns>
-    protected Task<(Error error, int transferLength)> TransferAsync(Memory<byte> buffer, int offset, int length, int timeout) => 
-        AsyncTransfer.TransferAsync(this.Device.DeviceHandle, this.mEpNum, this.mEndpointType, buffer, offset, length, timeout);
+    protected Task<(Error error, int transferLength)> TransferAsync(Memory<byte> buffer, int timeout) => 
+        AsyncTransfer.TransferAsync(this.Device.DeviceHandle, this.mEpNum, this.mEndpointType, buffer, timeout);
 
     /// <summary>
     /// Looks up endpoint/interface information in a configuration.

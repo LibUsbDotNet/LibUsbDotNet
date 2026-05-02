@@ -63,16 +63,11 @@ internal static class AsyncTransfer
         byte endPoint,
         EndpointType endPointType,
         Memory<byte> buffer,
-        int offset,
-        int length,
         int timeout,
         int isoPacketSize = 0)
     {
         if (device == null) 
             throw new ArgumentNullException(nameof(device));
-
-        if (offset < 0)
-            throw new ArgumentOutOfRangeException(nameof(offset));
 
         int transferId;
         
@@ -96,7 +91,7 @@ internal static class AsyncTransfer
         int numIsoPackets = 0;
 
         if (isoPacketSize > 0)
-            numIsoPackets = length / isoPacketSize;
+            numIsoPackets = buffer.Length / isoPacketSize;
 
         var transfer = NativeMethods.AllocTransfer(numIsoPackets); // TODO: Check if transfer is null.
 
@@ -105,8 +100,8 @@ internal static class AsyncTransfer
         transfer->Endpoint = endPoint;
         transfer->Timeout = (uint)timeout;
         transfer->Type = (byte)endPointType;
-        transfer->Buffer = (byte*)memoryHandle.Pointer + offset;
-        transfer->Length = length;
+        transfer->Buffer = (byte*)memoryHandle.Pointer;
+        transfer->Length = buffer.Length;
         transfer->NumIsoPackets = numIsoPackets;
         transfer->Flags = (byte)TransferFlags.None;
         transfer->Callback = TransferDelegatePtr;

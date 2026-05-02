@@ -28,7 +28,7 @@ public partial class UsbEndpointWriter
     /// Tuple of (<see cref="Error"/> error, <see cref="int"/> transferLength). error is <see cref="Error.Success"/> on success.
     /// </returns>
     public virtual async Task<(Error error, int transferLength)> WriteAsync(byte[] buffer, int offset, int length, int timeout) => 
-        await TransferAsync(buffer, offset, length, timeout).ConfigureAwait(false);
+        await TransferAsync(buffer.AsMemory(offset, length), timeout).ConfigureAwait(false);
     
     /// <summary>
     /// Writes data asynchronously to the current <see cref="UsbEndpointWriter"/>.
@@ -39,7 +39,7 @@ public partial class UsbEndpointWriter
     /// Tuple of (<see cref="Error"/> error, <see cref="int"/> transferLength). error is <see cref="Error.Success"/> on success.
     /// </returns>
     public virtual async Task<(Error error, int transferLength)> WriteAsync(Memory<byte> buffer, int timeout) => 
-        await WriteAsync(buffer, 0, buffer.Length, timeout).ConfigureAwait(false);
+        await TransferAsync(buffer, timeout).ConfigureAwait(false);
 
     /// <summary>
     /// Writes data asynchronously to the current <see cref="UsbEndpointWriter"/>.
@@ -52,5 +52,5 @@ public partial class UsbEndpointWriter
     /// Tuple of (<see cref="Error"/> error, <see cref="int"/> transferLength). error is <see cref="Error.Success"/> on success.
     /// </returns>
     public virtual async Task<(Error error, int transferLength)> WriteAsync(Memory<byte> buffer, int offset, int length, int timeout) => 
-        await TransferAsync(buffer, offset, length, timeout).ConfigureAwait(false);
+        await TransferAsync(buffer.Slice(offset, length), timeout).ConfigureAwait(false);
 }
