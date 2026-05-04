@@ -120,6 +120,16 @@ public abstract class UsbEndpointBase
             // copy it to a temporary buffer and pass it to Transfer(Span<byte>).
             // The write is performed on the temporary buffer, so it
             // does not affect the original ReadOnlySpan<byte>.
+            //
+            // Furthermore, since the native API `libusb_bulk_transfer` and `libusb_interrupt_transfer`
+            // called by the `Transfer` method handle both outgoing and incoming transfers.
+            // Their pointer parameters are of type `unsigned char*`, meaning they
+            // are writable.
+            // Moreover, the documentation contains no explicit statement that they
+            // never write to the buffer during outbound transfers.
+            //
+            // Therefore, to ensure that the provided buffer is read-only, we copy the data
+            // to a temporary buffer here.
             readOnlyBuffer.CopyTo(buffer);
 
             return Transfer(buffer.AsSpan(0, readOnlyBuffer.Length), timeout, out transferLength);
@@ -200,6 +210,17 @@ public abstract class UsbEndpointBase
             // copy it to a temporary buffer and pass it to TransferAsync(Memory<byte>).
             // The write is performed on the temporary buffer, so it
             // does not affect the original ReadOnlyMemory<byte>.
+            //
+            // Furthermore, the native API `libusb_submit_transfer`, which is called by
+            // the `AsyncTransfer.TransferAsync` method, is invoked for both outgoing
+            // and incoming transfers. The `buffer` member of its parameter
+            // `struct libusb_transfer` is of type `unsigned char*`, meaning it is
+            // writable.
+            // Moreover, the documentation contains no explicit statement that they
+            // never write to the buffer during outbound transfers.
+            //
+            // Therefore, to ensure that the provided buffer is read-only, we copy the data
+            // to a temporary buffer here.
             readOnlyBuffer.CopyTo(buffer);
 
             return await TransferAsync(buffer.AsMemory(0, readOnlyBuffer.Length), timeout).ConfigureAwait(false);
