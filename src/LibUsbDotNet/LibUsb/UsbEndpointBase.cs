@@ -98,7 +98,7 @@ public abstract class UsbEndpointBase
     /// <summary>
     /// Synchronous bulk/interrupt transfer function.
     /// </summary>
-    /// <param name="buffer">A <see cref="Span{byte}"/> to a caller-allocated buffer.</param>
+    /// <param name="buffer">A <see cref="Span{T}"/> to a caller-allocated buffer.</param>
     /// <param name="timeout">Maximum time to wait for the transfer to complete.</param>
     /// <param name="transferLength">Number of bytes actually transferred.</param>
     /// <returns>True on success.</returns>
