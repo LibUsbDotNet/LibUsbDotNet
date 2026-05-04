@@ -27,7 +27,7 @@ using LibUsbDotNet.Main;
 namespace LibUsbDotNet.LibUsb;
 
 /// <summary>
-/// Contains methods for retrieving data from a <see cref="EndpointType.Bulk"/> or <see cref="EndpointType.Interrupt"/> endpoint using the overloaded <see cref="Read(byte[],int,out int)"/> functions.
+/// Contains methods for retrieving data from a <see cref="EndpointType.Bulk"/> or <see cref="EndpointType.Interrupt"/> endpoint using the overloaded <see cref="Read(Span{byte},int,out int)"/> functions.
 /// </summary>
 public partial class UsbEndpointReader : UsbEndpointBase
 {
@@ -55,32 +55,6 @@ public partial class UsbEndpointReader : UsbEndpointBase
     /// The default is 4096.
     /// </remarks>
     public static int DefReadBufferSize { get; set; } = 4096;
-
-    /// <summary>
-    /// Reads data from the current <see cref="UsbEndpointReader"/>.
-    /// </summary>
-    /// <param name="buffer">The buffer to store the received data in.</param>
-    /// <param name="timeout">Maximum time to wait for the transfer to complete.  If the transfer times out, the IO operation will be cancelled.</param>
-    /// <param name="transferLength">Number of bytes actually transferred.</param>
-    /// <returns>
-    /// <see cref="Error"/>.<see cref="Error.Success"/> on success.
-    /// </returns>
-    public virtual Error Read(byte[] buffer, int timeout, out int transferLength) 
-        => Read(buffer, 0, buffer.Length, timeout, out transferLength);
-
-    /// <summary>
-    /// Reads data from the current <see cref="UsbEndpointReader"/>.
-    /// </summary>
-    /// <param name="buffer">The buffer to store the received data in.</param>
-    /// <param name="offset">The position in buffer to start storing the data.</param>
-    /// <param name="count">The maximum number of bytes to receive.</param>
-    /// <param name="timeout">Maximum time to wait for the transfer to complete.  If the transfer times out, the IO operation will be cancelled.</param>
-    /// <param name="transferLength">Number of bytes actually transferred.</param>
-    /// <returns>
-    /// <see cref="Error"/>.<see cref="Error.Success"/> on success.
-    /// </returns>
-    public virtual Error Read(byte[] buffer, int offset, int count, int timeout, out int transferLength) 
-        => Transfer(buffer.AsSpan(offset, count), timeout, out transferLength);
 
     /// <summary>
     /// Reads data from the current <see cref="UsbEndpointReader"/>.
