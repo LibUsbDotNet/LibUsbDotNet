@@ -13,32 +13,8 @@ public partial class UsbEndpointReader
         /// <returns>
         /// Tuple of (<see cref="Error"/> error, <see cref="int"/> transferLength). error is <see cref="Error.Success"/> on success.
         /// </returns>
-        public virtual async Task<(Error error, int transferLength)> ReadAsync(byte[] buffer, int timeout) => 
-            await ReadAsync(buffer, 0, buffer.Length, timeout).ConfigureAwait(false);
-
-        /// <summary>
-        /// Reads data asynchronously from the current <see cref="UsbEndpointReader"/>.
-        /// </summary>
-        /// <param name="buffer">The buffer to store the received data in.</param>
-        /// <param name="offset">The position in buffer to start storing the data.</param>
-        /// <param name="length">The maximum number of bytes to receive.</param>
-        /// <param name="timeout">Maximum time to wait for the transfer to complete.  If the transfer times out, the IO operation will be cancelled.</param>
-        /// <returns>
-        /// Tuple of (<see cref="Error"/> error, <see cref="int"/> transferLength). error is <see cref="Error.Success"/> on success.
-        /// </returns>
-        public virtual async Task<(Error error, int transferLength)> ReadAsync(byte[] buffer, int offset, int length, int timeout) => 
-            await TransferAsync(buffer, offset, length, timeout).ConfigureAwait(false);
-        
-        /// <summary>
-        /// Reads data asynchronously from the current <see cref="UsbEndpointReader"/>.
-        /// </summary>
-        /// <param name="buffer">The buffer to store the received data in.</param>
-        /// <param name="timeout">Maximum time to wait for the transfer to complete.  If the transfer times out, the IO operation will be cancelled.</param>
-        /// <returns>
-        /// Tuple of (<see cref="Error"/> error, <see cref="int"/> transferLength). error is <see cref="Error.Success"/> on success.
-        /// </returns>
         public virtual async Task<(Error error, int transferLength)> ReadAsync(Memory<byte> buffer, int timeout) => 
-            await ReadAsync(buffer, 0, buffer.Length, timeout).ConfigureAwait(false);
+            await TransferAsync(buffer, timeout).ConfigureAwait(false);
         
         /// <summary>
         /// Reads data asynchronously from the current <see cref="UsbEndpointReader"/>.
@@ -51,7 +27,7 @@ public partial class UsbEndpointReader
         /// Tuple of (<see cref="Error"/> error, <see cref="int"/> transferLength). error is <see cref="Error.Success"/> on success.
         /// </returns>
         public virtual async Task<(Error error, int transferLength)> ReadAsync(Memory<byte> buffer, int offset, int length, int timeout) => 
-            await TransferAsync(buffer, offset, length, timeout).ConfigureAwait(false);
+            await TransferAsync(buffer.Slice(offset, length), timeout).ConfigureAwait(false);
 
         /// <summary>
         /// Reads/discards data asynchronously from the endpoint until no more data is available.
