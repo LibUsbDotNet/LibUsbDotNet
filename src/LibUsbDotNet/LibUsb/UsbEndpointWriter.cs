@@ -25,7 +25,7 @@ using System;
 
 namespace LibUsbDotNet.LibUsb;
 
-/// <summary>Contains methods for writing data to a <see cref="EndpointType.Bulk"/> or <see cref="EndpointType.Interrupt"/> endpoint using the overloaded <see cref="Write(Span{byte},int,out int)"/> functions.
+/// <summary>Contains methods for writing data to a <see cref="EndpointType.Bulk"/> or <see cref="EndpointType.Interrupt"/> endpoint using the overloaded <see cref="Write(ReadOnlySpan{byte},int,out int)"/> functions.
 /// </summary>
 public partial class UsbEndpointWriter : UsbEndpointBase
 {
@@ -43,7 +43,7 @@ public partial class UsbEndpointWriter : UsbEndpointBase
     /// <returns>
     /// <see cref="Error"/>.<see cref="Error.Success"/> on success.
     /// </returns>
-    public virtual Error Write(Span<byte> buffer, int timeout, out int transferLength) => 
+    public virtual Error Write(ReadOnlySpan<byte> buffer, int timeout, out int transferLength) => 
         Transfer(buffer, timeout, out transferLength);
 
     /// <summary>
@@ -57,6 +57,6 @@ public partial class UsbEndpointWriter : UsbEndpointBase
     /// <returns>
     /// <see cref="Error"/>.<see cref="Error.Success"/> on success.
     /// </returns>
-    public virtual Error Write(Span<byte> buffer, int offset, int count, int timeout, out int transferLength) => 
+    public virtual Error Write(ReadOnlySpan<byte> buffer, int offset, int count, int timeout, out int transferLength) => 
         Transfer(buffer.Slice(offset, count), timeout, out transferLength);
 }
