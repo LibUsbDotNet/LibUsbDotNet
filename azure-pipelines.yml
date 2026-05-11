@@ -1,7 +1,7 @@
 jobs:
 - job: windows
   pool:
-    vmImage: 'vs2017-win2016'
+    vmImage: 'windows-2022'
   steps:
   - script: |
       dotnet restore stage\LibUsbDotNet\LibUsbDotNet.csproj
