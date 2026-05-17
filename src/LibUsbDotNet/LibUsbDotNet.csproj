@@ -21,7 +21,7 @@
   <PropertyGroup>
     <!-- Temporarily silence no doc warnings --> 
     <GenerateDocumentationFile>true</GenerateDocumentationFile> 
-    <TargetFrameworks>netstandard2.0;net8.0</TargetFrameworks>
+    <TargetFrameworks>netstandard2.0;net8.0;net10.0</TargetFrameworks>
   </PropertyGroup>
 
   <ItemGroup Condition=" '$(TargetFramework)' == 'netstandard2.0' ">
