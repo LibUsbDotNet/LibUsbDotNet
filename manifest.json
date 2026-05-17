@@ -1,0 +1,1354 @@
+{
+  "source_base_path": "D:/a/LibUsbDotNet/LibUsbDotNet/docfx_project",
+  "xrefmap": "xrefmap.yml",
+  "files": [
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/LibUsbDotNet.BosDescriptor.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/LibUsbDotNet.BosDescriptor.html"
+        }
+      },
+      "version": "",
+      "Uid": null,
+      "IsMRef": true,
+      "Title": "LibUsbDotNet.BosDescriptor",
+      "Summary": "<p sourcefile=\"api/LibUsbDotNet.BosDescriptor.yml\" sourcestartlinenumber=\"1\">A structure representing the Binary Device Object Store (BOS) descriptor.\nThis descriptor is documented in section 9.6.2 of the USB 3.0 specification.\nAll multiple-byte fields are represented in host-endian format.</p>\n"
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/LibUsbDotNet.BosDevCapabilityDescriptor.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/LibUsbDotNet.BosDevCapabilityDescriptor.html"
+        }
+      },
+      "version": "",
+      "Uid": null,
+      "IsMRef": true,
+      "Title": "LibUsbDotNet.BosDevCapabilityDescriptor",
+      "Summary": "<p sourcefile=\"api/LibUsbDotNet.BosDevCapabilityDescriptor.yml\" sourcestartlinenumber=\"1\">A generic representation of a BOS Device Capability descriptor. It is\nadvised to check bDevCapabilityType and call the matching\nlibusb_get_*_descriptor function to get a structure fully matching the type.</p>\n"
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/LibUsbDotNet.BosType.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/LibUsbDotNet.BosType.html"
+        }
+      },
+      "version": "",
+      "Uid": null,
+      "IsMRef": true,
+      "Title": "LibUsbDotNet.BosType",
+      "Summary": "<p sourcefile=\"api/LibUsbDotNet.BosType.yml\" sourcestartlinenumber=\"1\">USB capability types</p>\n"
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/LibUsbDotNet.Capability.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/LibUsbDotNet.Capability.html"
+        }
+      },
+      "version": "",
+      "Uid": null,
+      "IsMRef": true,
+      "Title": "LibUsbDotNet.Capability",
+      "Summary": "<p sourcefile=\"api/LibUsbDotNet.Capability.yml\" sourcestartlinenumber=\"1\">Capabilities supported by an instance of libusb on the current running platform.</p>\n"
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/LibUsbDotNet.ClassCode.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/LibUsbDotNet.ClassCode.html"
+        }
+      },
+      "version": "",
+      "Uid": null,
+      "IsMRef": true,
+      "Title": "LibUsbDotNet.ClassCode",
+      "Summary": "<p sourcefile=\"api/LibUsbDotNet.ClassCode.yml\" sourcestartlinenumber=\"1\">Device and/or Interface Class codes</p>\n"
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/LibUsbDotNet.ConfigDescriptor.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/LibUsbDotNet.ConfigDescriptor.html"
+        }
+      },
+      "version": "",
+      "Uid": null,
+      "IsMRef": true,
+      "Title": "LibUsbDotNet.ConfigDescriptor",
+      "Summary": "<p sourcefile=\"api/LibUsbDotNet.ConfigDescriptor.yml\" sourcestartlinenumber=\"1\">A structure representing the standard USB configuration descriptor. This\ndescriptor is documented in section 9.6.3 of the USB 3.0 specification.\nAll multiple-byte fields are represented in host-endian format.</p>\n"
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/LibUsbDotNet.ContainerIdDescriptor.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/LibUsbDotNet.ContainerIdDescriptor.html"
+        }
+      },
+      "version": "",
+      "Uid": null,
+      "IsMRef": true,
+      "Title": "LibUsbDotNet.ContainerIdDescriptor",
+      "Summary": "<p sourcefile=\"api/LibUsbDotNet.ContainerIdDescriptor.yml\" sourcestartlinenumber=\"1\">A structure representing the Container ID descriptor.\nThis descriptor is documented in section 9.6.2.3 of the USB 3.0 specification.\nAll multiple-byte fields, except UUIDs, are represented in host-endian format.</p>\n"
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/LibUsbDotNet.Context.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/LibUsbDotNet.Context.html"
+        }
+      },
+      "version": "",
+      "Uid": null,
+      "IsMRef": true,
+      "Title": "LibUsbDotNet.Context",
+      "Summary": "<p sourcefile=\"api/LibUsbDotNet.Context.yml\" sourcestartlinenumber=\"1\">Represents a wrapper class for <code>libusb_context</code> handles.</p>\n"
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/LibUsbDotNet.ControlSetup.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/LibUsbDotNet.ControlSetup.html"
+        }
+      },
+      "version": "",
+      "Uid": null,
+      "IsMRef": true,
+      "Title": "LibUsbDotNet.ControlSetup",
+      "Summary": "<p sourcefile=\"api/LibUsbDotNet.ControlSetup.yml\" sourcestartlinenumber=\"1\">Setup packet for control transfers.</p>\n"
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/LibUsbDotNet.DescriptorType.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/LibUsbDotNet.DescriptorType.html"
+        }
+      },
+      "version": "",
+      "Uid": null,
+      "IsMRef": true,
+      "Title": "LibUsbDotNet.DescriptorType",
+      "Summary": "<p sourcefile=\"api/LibUsbDotNet.DescriptorType.yml\" sourcestartlinenumber=\"1\">Descriptor types as defined by the USB specification.</p>\n"
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/LibUsbDotNet.Descriptors.UsbDescriptor.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/LibUsbDotNet.Descriptors.UsbDescriptor.html"
+        }
+      },
+      "version": "",
+      "Uid": null,
+      "IsMRef": true,
+      "Title": "LibUsbDotNet.Descriptors.UsbDescriptor",
+      "Summary": "<p sourcefile=\"api/LibUsbDotNet.Descriptors.UsbDescriptor.yml\" sourcestartlinenumber=\"1\">Base class for all usb descriptors structures.</p>\n"
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/LibUsbDotNet.Descriptors.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/LibUsbDotNet.Descriptors.html"
+        }
+      },
+      "version": "",
+      "Uid": null,
+      "IsMRef": true,
+      "Title": "LibUsbDotNet.Descriptors",
+      "Summary": null
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/LibUsbDotNet.Device.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/LibUsbDotNet.Device.html"
+        }
+      },
+      "version": "",
+      "Uid": null,
+      "IsMRef": true,
+      "Title": "LibUsbDotNet.Device",
+      "Summary": "<p sourcefile=\"api/LibUsbDotNet.Device.yml\" sourcestartlinenumber=\"1\">Represents a wrapper class for <code>libusb_device</code> handles.</p>\n"
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/LibUsbDotNet.DeviceDescriptor.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/LibUsbDotNet.DeviceDescriptor.html"
+        }
+      },
+      "version": "",
+      "Uid": null,
+      "IsMRef": true,
+      "Title": "LibUsbDotNet.DeviceDescriptor",
+      "Summary": "<p sourcefile=\"api/LibUsbDotNet.DeviceDescriptor.yml\" sourcestartlinenumber=\"1\">A structure representing the standard USB device descriptor. This\ndescriptor is documented in section 9.6.1 of the USB 3.0 specification.\nAll multiple-byte fields are represented in host-endian format.</p>\n"
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/LibUsbDotNet.DeviceHandle.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/LibUsbDotNet.DeviceHandle.html"
+        }
+      },
+      "version": "",
+      "Uid": null,
+      "IsMRef": true,
+      "Title": "LibUsbDotNet.DeviceHandle",
+      "Summary": "<p sourcefile=\"api/LibUsbDotNet.DeviceHandle.yml\" sourcestartlinenumber=\"1\">Represents a wrapper class for <code>libusb_device_handle</code> handles.</p>\n"
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/LibUsbDotNet.EndpointDescriptor.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/LibUsbDotNet.EndpointDescriptor.html"
+        }
+      },
+      "version": "",
+      "Uid": null,
+      "IsMRef": true,
+      "Title": "LibUsbDotNet.EndpointDescriptor",
+      "Summary": "<p sourcefile=\"api/LibUsbDotNet.EndpointDescriptor.yml\" sourcestartlinenumber=\"1\">A structure representing the standard USB endpoint descriptor. This\ndescriptor is documented in section 9.6.6 of the USB 3.0 specification.\nAll multiple-byte fields are represented in host-endian format.</p>\n"
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/LibUsbDotNet.EndpointDirection.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/LibUsbDotNet.EndpointDirection.html"
+        }
+      },
+      "version": "",
+      "Uid": null,
+      "IsMRef": true,
+      "Title": "LibUsbDotNet.EndpointDirection",
+      "Summary": "<p sourcefile=\"api/LibUsbDotNet.EndpointDirection.yml\" sourcestartlinenumber=\"1\">Endpoint direction.</p>\n"
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/LibUsbDotNet.Error.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/LibUsbDotNet.Error.html"
+        }
+      },
+      "version": "",
+      "Uid": null,
+      "IsMRef": true,
+      "Title": "LibUsbDotNet.Error",
+      "Summary": "<p sourcefile=\"api/LibUsbDotNet.Error.yml\" sourcestartlinenumber=\"1\">libusb Error codes.</p>\n"
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/LibUsbDotNet.HotplugCallbackFn.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/LibUsbDotNet.HotplugCallbackFn.html"
+        }
+      },
+      "version": "",
+      "Uid": null,
+      "IsMRef": true,
+      "Title": "LibUsbDotNet.HotplugCallbackFn",
+      "Summary": "<p sourcefile=\"api/LibUsbDotNet.HotplugCallbackFn.yml\" sourcestartlinenumber=\"1\">Hotplug callback function type.</p>\n"
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/LibUsbDotNet.HotplugEvent.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/LibUsbDotNet.HotplugEvent.html"
+        }
+      },
+      "version": "",
+      "Uid": null,
+      "IsMRef": true,
+      "Title": "LibUsbDotNet.HotplugEvent",
+      "Summary": "<p sourcefile=\"api/LibUsbDotNet.HotplugEvent.yml\" sourcestartlinenumber=\"1\">Since version 1.0.16,\nHotplug events</p>\n"
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/LibUsbDotNet.HotplugFlag.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/LibUsbDotNet.HotplugFlag.html"
+        }
+      },
+      "version": "",
+      "Uid": null,
+      "IsMRef": true,
+      "Title": "LibUsbDotNet.HotplugFlag",
+      "Summary": "<p sourcefile=\"api/LibUsbDotNet.HotplugFlag.yml\" sourcestartlinenumber=\"1\">Since version 1.0.16,\nFlags for hotplug events</p>\n"
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/LibUsbDotNet.Info.CachedDeviceInfo.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/LibUsbDotNet.Info.CachedDeviceInfo.html"
+        }
+      },
+      "version": "",
+      "Uid": null,
+      "IsMRef": true,
+      "Title": "LibUsbDotNet.Info.CachedDeviceInfo",
+      "Summary": null
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/LibUsbDotNet.Info.LocationId.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/LibUsbDotNet.Info.LocationId.html"
+        }
+      },
+      "version": "",
+      "Uid": null,
+      "IsMRef": true,
+      "Title": "LibUsbDotNet.Info.LocationId",
+      "Summary": "<p sourcefile=\"api/LibUsbDotNet.Info.LocationId.yml\" sourcestartlinenumber=\"1\">Value representing a combination of a <xref href=\"LibUsbDotNet.LibUsb.UsbDevice.BusNumber\" data-throw-if-not-resolved=\"false\"></xref> and <xref href=\"LibUsbDotNet.LibUsb.UsbDevice.PortNumbers\" data-throw-if-not-resolved=\"false\"></xref>\ntree.</p>\n"
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/LibUsbDotNet.Info.PhysicalPortId.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/LibUsbDotNet.Info.PhysicalPortId.html"
+        }
+      },
+      "version": "",
+      "Uid": null,
+      "IsMRef": true,
+      "Title": "LibUsbDotNet.Info.PhysicalPortId",
+      "Summary": "<p sourcefile=\"api/LibUsbDotNet.Info.PhysicalPortId.yml\" sourcestartlinenumber=\"1\">An ID for a physical USB port.</p>\n"
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/LibUsbDotNet.Info.UsbBaseInfo.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/LibUsbDotNet.Info.UsbBaseInfo.html"
+        }
+      },
+      "version": "",
+      "Uid": null,
+      "IsMRef": true,
+      "Title": "LibUsbDotNet.Info.UsbBaseInfo",
+      "Summary": "<p sourcefile=\"api/LibUsbDotNet.Info.UsbBaseInfo.yml\" sourcestartlinenumber=\"1\">Base class for all Usb descriptors.\n<xref href=\"LibUsbDotNet.Info.UsbConfigInfo\" data-throw-if-not-resolved=\"false\"></xref>, <xref href=\"LibUsbDotNet.Info.UsbEndpointInfo\" data-throw-if-not-resolved=\"false\"></xref>,\n<xref href=\"LibUsbDotNet.Info.UsbInterfaceInfo\" data-throw-if-not-resolved=\"false\"></xref></p>\n"
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/LibUsbDotNet.Info.UsbConfigInfo.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/LibUsbDotNet.Info.UsbConfigInfo.html"
+        }
+      },
+      "version": "",
+      "Uid": null,
+      "IsMRef": true,
+      "Title": "LibUsbDotNet.Info.UsbConfigInfo",
+      "Summary": "<p sourcefile=\"api/LibUsbDotNet.Info.UsbConfigInfo.yml\" sourcestartlinenumber=\"1\">Contains all Configuration information for the current <xref href=\"LibUsbDotNet.UsbDevice\" data-throw-if-not-resolved=\"false\"></xref>.</p>\n"
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/LibUsbDotNet.Info.UsbDeviceInfo.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/LibUsbDotNet.Info.UsbDeviceInfo.html"
+        }
+      },
+      "version": "",
+      "Uid": null,
+      "IsMRef": true,
+      "Title": "LibUsbDotNet.Info.UsbDeviceInfo",
+      "Summary": "<p sourcefile=\"api/LibUsbDotNet.Info.UsbDeviceInfo.yml\" sourcestartlinenumber=\"1\">Contains USB device descriptor information.</p>\n"
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/LibUsbDotNet.Info.UsbEndpointInfo.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/LibUsbDotNet.Info.UsbEndpointInfo.html"
+        }
+      },
+      "version": "",
+      "Uid": null,
+      "IsMRef": true,
+      "Title": "LibUsbDotNet.Info.UsbEndpointInfo",
+      "Summary": "<p sourcefile=\"api/LibUsbDotNet.Info.UsbEndpointInfo.yml\" sourcestartlinenumber=\"1\">Contains Endpoint information for the current <xref href=\"LibUsbDotNet.Info.UsbConfigInfo\" data-throw-if-not-resolved=\"false\"></xref>.</p>\n"
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/LibUsbDotNet.Info.UsbInterfaceInfo.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/LibUsbDotNet.Info.UsbInterfaceInfo.html"
+        }
+      },
+      "version": "",
+      "Uid": null,
+      "IsMRef": true,
+      "Title": "LibUsbDotNet.Info.UsbInterfaceInfo",
+      "Summary": "<p sourcefile=\"api/LibUsbDotNet.Info.UsbInterfaceInfo.yml\" sourcestartlinenumber=\"1\">Describes a USB device interface.</p>\n"
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/LibUsbDotNet.Info.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/LibUsbDotNet.Info.html"
+        }
+      },
+      "version": "",
+      "Uid": null,
+      "IsMRef": true,
+      "Title": "LibUsbDotNet.Info",
+      "Summary": null
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/LibUsbDotNet.Interface.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/LibUsbDotNet.Interface.html"
+        }
+      },
+      "version": "",
+      "Uid": null,
+      "IsMRef": true,
+      "Title": "LibUsbDotNet.Interface",
+      "Summary": "<p sourcefile=\"api/LibUsbDotNet.Interface.yml\" sourcestartlinenumber=\"1\">A collection of alternate settings for a particular USB interface.</p>\n"
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/LibUsbDotNet.InterfaceDescriptor.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/LibUsbDotNet.InterfaceDescriptor.html"
+        }
+      },
+      "version": "",
+      "Uid": null,
+      "IsMRef": true,
+      "Title": "LibUsbDotNet.InterfaceDescriptor",
+      "Summary": "<p sourcefile=\"api/LibUsbDotNet.InterfaceDescriptor.yml\" sourcestartlinenumber=\"1\">A structure representing the standard USB interface descriptor. This\ndescriptor is documented in section 9.6.5 of the USB 3.0 specification.\nAll multiple-byte fields are represented in host-endian format.</p>\n"
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/LibUsbDotNet.IsoPacketDescriptor.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/LibUsbDotNet.IsoPacketDescriptor.html"
+        }
+      },
+      "version": "",
+      "Uid": null,
+      "IsMRef": true,
+      "Title": "LibUsbDotNet.IsoPacketDescriptor",
+      "Summary": "<p sourcefile=\"api/LibUsbDotNet.IsoPacketDescriptor.yml\" sourcestartlinenumber=\"1\">Isochronous packet descriptor.</p>\n"
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/LibUsbDotNet.IsoSyncType.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/LibUsbDotNet.IsoSyncType.html"
+        }
+      },
+      "version": "",
+      "Uid": null,
+      "IsMRef": true,
+      "Title": "LibUsbDotNet.IsoSyncType",
+      "Summary": "<p sourcefile=\"api/LibUsbDotNet.IsoSyncType.yml\" sourcestartlinenumber=\"1\">libusb_endpoint_descriptor.</p>\n"
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/LibUsbDotNet.IsoUsageType.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/LibUsbDotNet.IsoUsageType.html"
+        }
+      },
+      "version": "",
+      "Uid": null,
+      "IsMRef": true,
+      "Title": "LibUsbDotNet.IsoUsageType",
+      "Summary": "<p sourcefile=\"api/LibUsbDotNet.IsoUsageType.yml\" sourcestartlinenumber=\"1\">libusb_endpoint_descriptor.</p>\n"
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/LibUsbDotNet.LibUsb.DeviceArrivedEventArgs.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/LibUsbDotNet.LibUsb.DeviceArrivedEventArgs.html"
+        }
+      },
+      "version": "",
+      "Uid": null,
+      "IsMRef": true,
+      "Title": "LibUsbDotNet.LibUsb.DeviceArrivedEventArgs",
+      "Summary": null
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/LibUsbDotNet.LibUsb.DeviceEventArgs.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/LibUsbDotNet.LibUsb.DeviceEventArgs.html"
+        }
+      },
+      "version": "",
+      "Uid": null,
+      "IsMRef": true,
+      "Title": "LibUsbDotNet.LibUsb.DeviceEventArgs",
+      "Summary": null
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/LibUsbDotNet.LibUsb.DeviceLeftEventArgs.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/LibUsbDotNet.LibUsb.DeviceLeftEventArgs.html"
+        }
+      },
+      "version": "",
+      "Uid": null,
+      "IsMRef": true,
+      "Title": "LibUsbDotNet.LibUsb.DeviceLeftEventArgs",
+      "Summary": null
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/LibUsbDotNet.LibUsb.DeviceManager.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/LibUsbDotNet.LibUsb.DeviceManager.html"
+        }
+      },
+      "version": "",
+      "Uid": null,
+      "IsMRef": true,
+      "Title": "LibUsbDotNet.LibUsb.DeviceManager",
+      "Summary": "<p sourcefile=\"api/LibUsbDotNet.LibUsb.DeviceManager.yml\" sourcestartlinenumber=\"1\">Class used for asynchronously waiting for <xref href=\"LibUsbDotNet.LibUsb.UsbDevice\" data-throw-if-not-resolved=\"false\"></xref> arrivals.</p>\n"
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/LibUsbDotNet.LibUsb.ErrorExtensions.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/LibUsbDotNet.LibUsb.ErrorExtensions.html"
+        }
+      },
+      "version": "",
+      "Uid": null,
+      "IsMRef": true,
+      "Title": "LibUsbDotNet.LibUsb.ErrorExtensions",
+      "Summary": "<p sourcefile=\"api/LibUsbDotNet.LibUsb.ErrorExtensions.yml\" sourcestartlinenumber=\"1\">Provides extension methods for the <xref href=\"LibUsbDotNet.Error\" data-throw-if-not-resolved=\"false\"></xref> enumeration.</p>\n"
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/LibUsbDotNet.LibUsb.HotplugOptionFlag.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/LibUsbDotNet.LibUsb.HotplugOptionFlag.html"
+        }
+      },
+      "version": "",
+      "Uid": null,
+      "IsMRef": true,
+      "Title": "LibUsbDotNet.LibUsb.HotplugOptionFlag",
+      "Summary": null
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/LibUsbDotNet.LibUsb.HotplugOptions.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/LibUsbDotNet.LibUsb.HotplugOptions.html"
+        }
+      },
+      "version": "",
+      "Uid": null,
+      "IsMRef": true,
+      "Title": "LibUsbDotNet.LibUsb.HotplugOptions",
+      "Summary": null
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/LibUsbDotNet.LibUsb.IUsbContext.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/LibUsbDotNet.LibUsb.IUsbContext.html"
+        }
+      },
+      "version": "",
+      "Uid": null,
+      "IsMRef": true,
+      "Title": "LibUsbDotNet.LibUsb.IUsbContext",
+      "Summary": "<p sourcefile=\"api/LibUsbDotNet.LibUsb.IUsbContext.yml\" sourcestartlinenumber=\"1\">Initializes a new libusb context. You can access most of libusb's functionality through context. Multiple\ncontexts operate in isolation from each other.</p>\n"
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/LibUsbDotNet.LibUsb.IUsbDevice.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/LibUsbDotNet.LibUsb.IUsbDevice.html"
+        }
+      },
+      "version": "",
+      "Uid": null,
+      "IsMRef": true,
+      "Title": "LibUsbDotNet.LibUsb.IUsbDevice",
+      "Summary": "<p sourcefile=\"api/LibUsbDotNet.LibUsb.IUsbDevice.yml\" sourcestartlinenumber=\"1\">The <xref href=\"LibUsbDotNet.LibUsb.IUsbDevice\" data-throw-if-not-resolved=\"false\"></xref> interface contains members needed to configure a USB device for use.</p>\n"
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/LibUsbDotNet.LibUsb.NativeLibraryVersion.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/LibUsbDotNet.LibUsb.NativeLibraryVersion.html"
+        }
+      },
+      "version": "",
+      "Uid": null,
+      "IsMRef": true,
+      "Title": "LibUsbDotNet.LibUsb.NativeLibraryVersion",
+      "Summary": "<p sourcefile=\"api/LibUsbDotNet.LibUsb.NativeLibraryVersion.yml\" sourcestartlinenumber=\"1\">Static class to determine the native libusb version.</p>\n"
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/LibUsbDotNet.LibUsb.UnixNativeTimeval.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/LibUsbDotNet.LibUsb.UnixNativeTimeval.html"
+        }
+      },
+      "version": "",
+      "Uid": null,
+      "IsMRef": true,
+      "Title": "LibUsbDotNet.LibUsb.UnixNativeTimeval",
+      "Summary": "<p sourcefile=\"api/LibUsbDotNet.LibUsb.UnixNativeTimeval.yml\" sourcestartlinenumber=\"1\">Unix mono.net timeval structure.</p>\n"
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/LibUsbDotNet.LibUsb.UsbContext.DeviceEventHandler.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/LibUsbDotNet.LibUsb.UsbContext.DeviceEventHandler.html"
+        }
+      },
+      "version": "",
+      "Uid": null,
+      "IsMRef": true,
+      "Title": "LibUsbDotNet.LibUsb.UsbContext.DeviceEventHandler",
+      "Summary": null
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/LibUsbDotNet.LibUsb.UsbContext.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/LibUsbDotNet.LibUsb.UsbContext.html"
+        }
+      },
+      "version": "",
+      "Uid": null,
+      "IsMRef": true,
+      "Title": "LibUsbDotNet.LibUsb.UsbContext",
+      "Summary": "<p sourcefile=\"api/LibUsbDotNet.LibUsb.UsbContext.yml\" sourcestartlinenumber=\"1\">An instance of the libusb API. You can use multiple <xref href=\"LibUsbDotNet.LibUsb.UsbContext\" data-throw-if-not-resolved=\"false\"></xref> which are independent\nfrom each other.</p>\n"
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/LibUsbDotNet.LibUsb.UsbDevice.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/LibUsbDotNet.LibUsb.UsbDevice.html"
+        }
+      },
+      "version": "",
+      "Uid": null,
+      "IsMRef": true,
+      "Title": "LibUsbDotNet.LibUsb.UsbDevice",
+      "Summary": "<p sourcefile=\"api/LibUsbDotNet.LibUsb.UsbDevice.yml\" sourcestartlinenumber=\"1\">Represents a device which is managed by libusb. Use <xref href=\"LibUsbDotNet.LibUsb.UsbContext.List\" data-throw-if-not-resolved=\"false\"></xref>\nto get a list of devices which are available for use.</p>\n"
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/LibUsbDotNet.LibUsb.UsbDeviceCollection.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/LibUsbDotNet.LibUsb.UsbDeviceCollection.html"
+        }
+      },
+      "version": "",
+      "Uid": null,
+      "IsMRef": true,
+      "Title": "LibUsbDotNet.LibUsb.UsbDeviceCollection",
+      "Summary": "<p sourcefile=\"api/LibUsbDotNet.LibUsb.UsbDeviceCollection.yml\" sourcestartlinenumber=\"1\">A collection of <xref href=\"LibUsbDotNet.LibUsb.UsbDevice\" data-throw-if-not-resolved=\"false\"></xref> objects. All devices in this collection are disposed\nof when youd dispose the collection.</p>\n"
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/LibUsbDotNet.LibUsb.UsbEndpointBase.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/LibUsbDotNet.LibUsb.UsbEndpointBase.html"
+        }
+      },
+      "version": "",
+      "Uid": null,
+      "IsMRef": true,
+      "Title": "LibUsbDotNet.LibUsb.UsbEndpointBase",
+      "Summary": "<p sourcefile=\"api/LibUsbDotNet.LibUsb.UsbEndpointBase.yml\" sourcestartlinenumber=\"1\">Endpoint members common to Read, Write, Bulk, and Interrupt <xref href=\"LibUsbDotNet.Main.EndpointType\" data-throw-if-not-resolved=\"false\"></xref>.</p>\n"
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/LibUsbDotNet.LibUsb.UsbEndpointReader.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/LibUsbDotNet.LibUsb.UsbEndpointReader.html"
+        }
+      },
+      "version": "",
+      "Uid": null,
+      "IsMRef": true,
+      "Title": "LibUsbDotNet.LibUsb.UsbEndpointReader",
+      "Summary": "<p sourcefile=\"api/LibUsbDotNet.LibUsb.UsbEndpointReader.yml\" sourcestartlinenumber=\"1\">Contains methods for retrieving data from a <xref href=\"LibUsbDotNet.Main.EndpointType.Bulk\" data-throw-if-not-resolved=\"false\"></xref> or <xref href=\"LibUsbDotNet.Main.EndpointType.Interrupt\" data-throw-if-not-resolved=\"false\"></xref> endpoint using the overloaded <xref href=\"LibUsbDotNet.LibUsb.UsbEndpointReader.Read(System.Span%7bSystem.Byte%7d%2cSystem.Int32%2cSystem.Int32%40)\" data-throw-if-not-resolved=\"false\"></xref> functions.</p>\n"
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/LibUsbDotNet.LibUsb.UsbEndpointTransferQueueReader.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/LibUsbDotNet.LibUsb.UsbEndpointTransferQueueReader.html"
+        }
+      },
+      "version": "",
+      "Uid": null,
+      "IsMRef": true,
+      "Title": "LibUsbDotNet.LibUsb.UsbEndpointTransferQueueReader",
+      "Summary": "<p sourcefile=\"api/LibUsbDotNet.LibUsb.UsbEndpointTransferQueueReader.yml\" sourcestartlinenumber=\"1\">Represents a reader for USB endpoint transfers that uses a queue to manage multiple read operations.</p>\n"
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/LibUsbDotNet.LibUsb.UsbEndpointWriter.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/LibUsbDotNet.LibUsb.UsbEndpointWriter.html"
+        }
+      },
+      "version": "",
+      "Uid": null,
+      "IsMRef": true,
+      "Title": "LibUsbDotNet.LibUsb.UsbEndpointWriter",
+      "Summary": "<p sourcefile=\"api/LibUsbDotNet.LibUsb.UsbEndpointWriter.yml\" sourcestartlinenumber=\"1\">Contains methods for writing data to a <xref href=\"LibUsbDotNet.Main.EndpointType.Bulk\" data-throw-if-not-resolved=\"false\"></xref> or <xref href=\"LibUsbDotNet.Main.EndpointType.Interrupt\" data-throw-if-not-resolved=\"false\"></xref> endpoint using the overloaded <xref href=\"LibUsbDotNet.LibUsb.UsbEndpointWriter.Write(System.ReadOnlySpan%7bSystem.Byte%7d%2cSystem.Int32%2cSystem.Int32%40)\" data-throw-if-not-resolved=\"false\"></xref> functions.</p>\n"
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/LibUsbDotNet.LibUsb.UsbException.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/LibUsbDotNet.LibUsb.UsbException.html"
+        }
+      },
+      "version": "",
+      "Uid": null,
+      "IsMRef": true,
+      "Title": "LibUsbDotNet.LibUsb.UsbException",
+      "Summary": "<p sourcefile=\"api/LibUsbDotNet.LibUsb.UsbException.yml\" sourcestartlinenumber=\"1\">Exceptions thrown from libusb <xref href=\"LibUsbDotNet.Error\" data-throw-if-not-resolved=\"false\"></xref>s.</p>\n"
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/LibUsbDotNet.LibUsb.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/LibUsbDotNet.LibUsb.html"
+        }
+      },
+      "version": "",
+      "Uid": null,
+      "IsMRef": true,
+      "Title": "LibUsbDotNet.LibUsb",
+      "Summary": null
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/LibUsbDotNet.LogLevel.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/LibUsbDotNet.LogLevel.html"
+        }
+      },
+      "version": "",
+      "Uid": null,
+      "IsMRef": true,
+      "Title": "LibUsbDotNet.LogLevel",
+      "Summary": "<p sourcefile=\"api/LibUsbDotNet.LogLevel.yml\" sourcestartlinenumber=\"1\">Log message levels.</p>\n"
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/LibUsbDotNet.Main.EndpointType.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/LibUsbDotNet.Main.EndpointType.html"
+        }
+      },
+      "version": "",
+      "Uid": null,
+      "IsMRef": true,
+      "Title": "LibUsbDotNet.Main.EndpointType",
+      "Summary": "<p sourcefile=\"api/LibUsbDotNet.Main.EndpointType.yml\" sourcestartlinenumber=\"1\">All possible USB endpoint types.</p>\n"
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/LibUsbDotNet.Main.Helper.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/LibUsbDotNet.Main.Helper.html"
+        }
+      },
+      "version": "",
+      "Uid": null,
+      "IsMRef": true,
+      "Title": "LibUsbDotNet.Main.Helper",
+      "Summary": "<p sourcefile=\"api/LibUsbDotNet.Main.Helper.yml\" sourcestartlinenumber=\"1\">General utilities class used by LudnLite and exposed publicly for your convience.</p>\n"
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/LibUsbDotNet.Main.PinnedHandle.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/LibUsbDotNet.Main.PinnedHandle.html"
+        }
+      },
+      "version": "",
+      "Uid": null,
+      "IsMRef": true,
+      "Title": "LibUsbDotNet.Main.PinnedHandle",
+      "Summary": "<p sourcefile=\"api/LibUsbDotNet.Main.PinnedHandle.yml\" sourcestartlinenumber=\"1\">Used for allocating a <xref href=\"System.Runtime.InteropServices.GCHandle\" data-throw-if-not-resolved=\"false\"></xref> to access the underlying pointer of an object.</p>\n"
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/LibUsbDotNet.Main.ReadEndpointID.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/LibUsbDotNet.Main.ReadEndpointID.html"
+        }
+      },
+      "version": "",
+      "Uid": null,
+      "IsMRef": true,
+      "Title": "LibUsbDotNet.Main.ReadEndpointID",
+      "Summary": "<p sourcefile=\"api/LibUsbDotNet.Main.ReadEndpointID.yml\" sourcestartlinenumber=\"1\">Availabled endpoint numbers/ids for reading.</p>\n"
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/LibUsbDotNet.Main.SafeContextHandle.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/LibUsbDotNet.Main.SafeContextHandle.html"
+        }
+      },
+      "version": "",
+      "Uid": null,
+      "IsMRef": true,
+      "Title": "LibUsbDotNet.Main.SafeContextHandle",
+      "Summary": "<p sourcefile=\"api/LibUsbDotNet.Main.SafeContextHandle.yml\" sourcestartlinenumber=\"1\">Base class for all critial handles.</p>\n"
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/LibUsbDotNet.Main.UsbConstants.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/LibUsbDotNet.Main.UsbConstants.html"
+        }
+      },
+      "version": "",
+      "Uid": null,
+      "IsMRef": true,
+      "Title": "LibUsbDotNet.Main.UsbConstants",
+      "Summary": "<p sourcefile=\"api/LibUsbDotNet.Main.UsbConstants.yml\" sourcestartlinenumber=\"1\">Various USB constants.</p>\n"
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/LibUsbDotNet.Main.UsbCtrlFlags.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/LibUsbDotNet.Main.UsbCtrlFlags.html"
+        }
+      },
+      "version": "",
+      "Uid": null,
+      "IsMRef": true,
+      "Title": "LibUsbDotNet.Main.UsbCtrlFlags",
+      "Summary": "<p sourcefile=\"api/LibUsbDotNet.Main.UsbCtrlFlags.yml\" sourcestartlinenumber=\"1\">For Convienience Endpoint direction, recipient of the request, and request type on one enumeration.</p>\n"
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/LibUsbDotNet.Main.UsbDeviceFinder.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/LibUsbDotNet.Main.UsbDeviceFinder.html"
+        }
+      },
+      "version": "",
+      "Uid": null,
+      "IsMRef": true,
+      "Title": "LibUsbDotNet.Main.UsbDeviceFinder",
+      "Summary": "<p sourcefile=\"api/LibUsbDotNet.Main.UsbDeviceFinder.yml\" sourcestartlinenumber=\"1\">Finds and identifies usb devices. Used for easily locating</p>\n"
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/LibUsbDotNet.Main.UsbRequestRecipient.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/LibUsbDotNet.Main.UsbRequestRecipient.html"
+        }
+      },
+      "version": "",
+      "Uid": null,
+      "IsMRef": true,
+      "Title": "LibUsbDotNet.Main.UsbRequestRecipient",
+      "Summary": "<p sourcefile=\"api/LibUsbDotNet.Main.UsbRequestRecipient.yml\" sourcestartlinenumber=\"1\">Recipient of the request.</p>\n"
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/LibUsbDotNet.Main.UsbRequestType.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/LibUsbDotNet.Main.UsbRequestType.html"
+        }
+      },
+      "version": "",
+      "Uid": null,
+      "IsMRef": true,
+      "Title": "LibUsbDotNet.Main.UsbRequestType",
+      "Summary": "<p sourcefile=\"api/LibUsbDotNet.Main.UsbRequestType.yml\" sourcestartlinenumber=\"1\">Standard USB requests.</p>\n"
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/LibUsbDotNet.Main.UsbSetupPacket.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/LibUsbDotNet.Main.UsbSetupPacket.html"
+        }
+      },
+      "version": "",
+      "Uid": null,
+      "IsMRef": true,
+      "Title": "LibUsbDotNet.Main.UsbSetupPacket",
+      "Summary": "<p sourcefile=\"api/LibUsbDotNet.Main.UsbSetupPacket.yml\" sourcestartlinenumber=\"1\">Transfers data to the main control endpoint (Endpoint 0).</p>\n"
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/LibUsbDotNet.Main.UsbStream.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/LibUsbDotNet.Main.UsbStream.html"
+        }
+      },
+      "version": "",
+      "Uid": null,
+      "IsMRef": true,
+      "Title": "LibUsbDotNet.Main.UsbStream",
+      "Summary": "<p sourcefile=\"api/LibUsbDotNet.Main.UsbStream.yml\" sourcestartlinenumber=\"1\">A stream which reads and writes of an USB connection.</p>\n"
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/LibUsbDotNet.Main.WriteEndpointID.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/LibUsbDotNet.Main.WriteEndpointID.html"
+        }
+      },
+      "version": "",
+      "Uid": null,
+      "IsMRef": true,
+      "Title": "LibUsbDotNet.Main.WriteEndpointID",
+      "Summary": "<p sourcefile=\"api/LibUsbDotNet.Main.WriteEndpointID.yml\" sourcestartlinenumber=\"1\">Availabled endpoint numbers/ids for writing.</p>\n"
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/LibUsbDotNet.Main.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/LibUsbDotNet.Main.html"
+        }
+      },
+      "version": "",
+      "Uid": null,
+      "IsMRef": true,
+      "Title": "LibUsbDotNet.Main",
+      "Summary": null
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/LibUsbDotNet.Pollfd.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/LibUsbDotNet.Pollfd.html"
+        }
+      },
+      "version": "",
+      "Uid": null,
+      "IsMRef": true,
+      "Title": "LibUsbDotNet.Pollfd",
+      "Summary": "<p sourcefile=\"api/LibUsbDotNet.Pollfd.yml\" sourcestartlinenumber=\"1\">File descriptor for polling</p>\n"
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/LibUsbDotNet.PollfdAddedDelegate.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/LibUsbDotNet.PollfdAddedDelegate.html"
+        }
+      },
+      "version": "",
+      "Uid": null,
+      "IsMRef": true,
+      "Title": "LibUsbDotNet.PollfdAddedDelegate",
+      "Summary": "<p sourcefile=\"api/LibUsbDotNet.PollfdAddedDelegate.yml\" sourcestartlinenumber=\"1\">Callback function, invoked when a new file descriptor should be added to the set of file descriptors monitored for events.</p>\n"
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/LibUsbDotNet.PollfdRemovedDelegate.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/LibUsbDotNet.PollfdRemovedDelegate.html"
+        }
+      },
+      "version": "",
+      "Uid": null,
+      "IsMRef": true,
+      "Title": "LibUsbDotNet.PollfdRemovedDelegate",
+      "Summary": "<p sourcefile=\"api/LibUsbDotNet.PollfdRemovedDelegate.yml\" sourcestartlinenumber=\"1\">Callback function, invoked when a file descriptor should be removed from the set of file descriptors being monitored for events.</p>\n"
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/LibUsbDotNet.RequestRecipient.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/LibUsbDotNet.RequestRecipient.html"
+        }
+      },
+      "version": "",
+      "Uid": null,
+      "IsMRef": true,
+      "Title": "LibUsbDotNet.RequestRecipient",
+      "Summary": "<p sourcefile=\"api/LibUsbDotNet.RequestRecipient.yml\" sourcestartlinenumber=\"1\">transfers. Values 4 through 31 are reserved.</p>\n"
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/LibUsbDotNet.RequestType.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/LibUsbDotNet.RequestType.html"
+        }
+      },
+      "version": "",
+      "Uid": null,
+      "IsMRef": true,
+      "Title": "LibUsbDotNet.RequestType",
+      "Summary": "<p sourcefile=\"api/LibUsbDotNet.RequestType.yml\" sourcestartlinenumber=\"1\">transfers.</p>\n"
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/LibUsbDotNet.Speed.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/LibUsbDotNet.Speed.html"
+        }
+      },
+      "version": "",
+      "Uid": null,
+      "IsMRef": true,
+      "Title": "LibUsbDotNet.Speed",
+      "Summary": "<p sourcefile=\"api/LibUsbDotNet.Speed.yml\" sourcestartlinenumber=\"1\">Speed codes. Indicates the speed at which the device is operating.</p>\n"
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/LibUsbDotNet.SsEndpointCompanionDescriptor.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/LibUsbDotNet.SsEndpointCompanionDescriptor.html"
+        }
+      },
+      "version": "",
+      "Uid": null,
+      "IsMRef": true,
+      "Title": "LibUsbDotNet.SsEndpointCompanionDescriptor",
+      "Summary": "<p sourcefile=\"api/LibUsbDotNet.SsEndpointCompanionDescriptor.yml\" sourcestartlinenumber=\"1\">A structure representing the superspeed endpoint companion\ndescriptor. This descriptor is documented in section 9.6.7 of\nthe USB 3.0 specification. All multiple-byte fields are represented in\nhost-endian format.</p>\n"
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/LibUsbDotNet.SsUsbDeviceCapabilityAttributes.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/LibUsbDotNet.SsUsbDeviceCapabilityAttributes.html"
+        }
+      },
+      "version": "",
+      "Uid": null,
+      "IsMRef": true,
+      "Title": "LibUsbDotNet.SsUsbDeviceCapabilityAttributes",
+      "Summary": "<p sourcefile=\"api/LibUsbDotNet.SsUsbDeviceCapabilityAttributes.yml\" sourcestartlinenumber=\"1\">field of the SuperSpeed USB Device Capability descriptor.</p>\n"
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/LibUsbDotNet.SsUsbDeviceCapabilityDescriptor.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/LibUsbDotNet.SsUsbDeviceCapabilityDescriptor.html"
+        }
+      },
+      "version": "",
+      "Uid": null,
+      "IsMRef": true,
+      "Title": "LibUsbDotNet.SsUsbDeviceCapabilityDescriptor",
+      "Summary": "<p sourcefile=\"api/LibUsbDotNet.SsUsbDeviceCapabilityDescriptor.yml\" sourcestartlinenumber=\"1\">A structure representing the SuperSpeed USB Device Capability descriptor\nThis descriptor is documented in section 9.6.2.2 of the USB 3.0 specification.\nAll multiple-byte fields are represented in host-endian format.</p>\n"
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/LibUsbDotNet.StandardRequest.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/LibUsbDotNet.StandardRequest.html"
+        }
+      },
+      "version": "",
+      "Uid": null,
+      "IsMRef": true,
+      "Title": "LibUsbDotNet.StandardRequest",
+      "Summary": "<p sourcefile=\"api/LibUsbDotNet.StandardRequest.yml\" sourcestartlinenumber=\"1\">Standard requests, as defined in table 9-5 of the USB 3.0 specifications</p>\n"
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/LibUsbDotNet.SupportedSpeed.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/LibUsbDotNet.SupportedSpeed.html"
+        }
+      },
+      "version": "",
+      "Uid": null,
+      "IsMRef": true,
+      "Title": "LibUsbDotNet.SupportedSpeed",
+      "Summary": "<p sourcefile=\"api/LibUsbDotNet.SupportedSpeed.yml\" sourcestartlinenumber=\"1\">Supported speeds (wSpeedSupported) bitfield.</p>\n"
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/LibUsbDotNet.Transfer.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/LibUsbDotNet.Transfer.html"
+        }
+      },
+      "version": "",
+      "Uid": null,
+      "IsMRef": true,
+      "Title": "LibUsbDotNet.Transfer",
+      "Summary": "<p sourcefile=\"api/LibUsbDotNet.Transfer.yml\" sourcestartlinenumber=\"1\">The generic USB transfer structure. The user populates this structure and\nthen submits it in order to request a transfer. After the transfer has\ncompleted, the library populates the transfer with the results and passes\nit back to the user.</p>\n"
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/LibUsbDotNet.TransferDelegate.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/LibUsbDotNet.TransferDelegate.html"
+        }
+      },
+      "version": "",
+      "Uid": null,
+      "IsMRef": true,
+      "Title": "LibUsbDotNet.TransferDelegate",
+      "Summary": "<p sourcefile=\"api/LibUsbDotNet.TransferDelegate.yml\" sourcestartlinenumber=\"1\">Asynchronous transfer callback function type.</p>\n"
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/LibUsbDotNet.TransferFlags.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/LibUsbDotNet.TransferFlags.html"
+        }
+      },
+      "version": "",
+      "Uid": null,
+      "IsMRef": true,
+      "Title": "LibUsbDotNet.TransferFlags",
+      "Summary": "<p sourcefile=\"api/LibUsbDotNet.TransferFlags.yml\" sourcestartlinenumber=\"1\">libusb_transfer.flags values</p>\n"
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/LibUsbDotNet.TransferStatus.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/LibUsbDotNet.TransferStatus.html"
+        }
+      },
+      "version": "",
+      "Uid": null,
+      "IsMRef": true,
+      "Title": "LibUsbDotNet.TransferStatus",
+      "Summary": "<p sourcefile=\"api/LibUsbDotNet.TransferStatus.yml\" sourcestartlinenumber=\"1\">Transfer status codes</p>\n"
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/LibUsbDotNet.TransferType.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/LibUsbDotNet.TransferType.html"
+        }
+      },
+      "version": "",
+      "Uid": null,
+      "IsMRef": true,
+      "Title": "LibUsbDotNet.TransferType",
+      "Summary": "<p sourcefile=\"api/LibUsbDotNet.TransferType.yml\" sourcestartlinenumber=\"1\">Transfer type.</p>\n"
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/LibUsbDotNet.Usb20ExtensionAttributes.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/LibUsbDotNet.Usb20ExtensionAttributes.html"
+        }
+      },
+      "version": "",
+      "Uid": null,
+      "IsMRef": true,
+      "Title": "LibUsbDotNet.Usb20ExtensionAttributes",
+      "Summary": "<p sourcefile=\"api/LibUsbDotNet.Usb20ExtensionAttributes.yml\" sourcestartlinenumber=\"1\">of the USB 2.0 Extension descriptor.</p>\n"
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/LibUsbDotNet.Usb20ExtensionDescriptor.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/LibUsbDotNet.Usb20ExtensionDescriptor.html"
+        }
+      },
+      "version": "",
+      "Uid": null,
+      "IsMRef": true,
+      "Title": "LibUsbDotNet.Usb20ExtensionDescriptor",
+      "Summary": "<p sourcefile=\"api/LibUsbDotNet.Usb20ExtensionDescriptor.yml\" sourcestartlinenumber=\"1\">A structure representing the USB 2.0 Extension descriptor\nThis descriptor is documented in section 9.6.2.1 of the USB 3.0 specification.\nAll multiple-byte fields are represented in host-endian format.</p>\n"
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/LibUsbDotNet.Version.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/LibUsbDotNet.Version.html"
+        }
+      },
+      "version": "",
+      "Uid": null,
+      "IsMRef": true,
+      "Title": "LibUsbDotNet.Version",
+      "Summary": "<p sourcefile=\"api/LibUsbDotNet.Version.yml\" sourcestartlinenumber=\"1\">Structure providing the version of the libusb runtime</p>\n"
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/LibUsbDotNet.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/LibUsbDotNet.html"
+        }
+      },
+      "version": "",
+      "Uid": null,
+      "IsMRef": true,
+      "Title": "LibUsbDotNet",
+      "Summary": null
+    },
+    {
+      "type": "Conceptual",
+      "source_relative_path": "api/index.md",
+      "output": {
+        ".html": {
+          "relative_path": "api/index.html"
+        }
+      },
+      "version": ""
+    },
+    {
+      "type": "Toc",
+      "source_relative_path": "api/toc.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/toc.html"
+        },
+        ".json": {
+          "relative_path": "api/toc.json"
+        }
+      },
+      "version": ""
+    },
+    {
+      "type": "Conceptual",
+      "source_relative_path": "articles/intro.md",
+      "output": {
+        ".html": {
+          "relative_path": "articles/intro.html"
+        }
+      },
+      "version": ""
+    },
+    {
+      "type": "Toc",
+      "source_relative_path": "articles/toc.yml",
+      "output": {
+        ".html": {
+          "relative_path": "articles/toc.html"
+        },
+        ".json": {
+          "relative_path": "articles/toc.json"
+        }
+      },
+      "version": ""
+    },
+    {
+      "type": "Conceptual",
+      "source_relative_path": "index.md",
+      "output": {
+        ".html": {
+          "relative_path": "index.html"
+        }
+      },
+      "version": ""
+    },
+    {
+      "type": "Toc",
+      "source_relative_path": "toc.yml",
+      "output": {
+        ".html": {
+          "relative_path": "toc.html"
+        },
+        ".json": {
+          "relative_path": "toc.json"
+        }
+      },
+      "version": ""
+    }
+  ],
+  "groups": [
+    {
+      "xrefmap": "xrefmap.yml"
+    }
+  ]
+}

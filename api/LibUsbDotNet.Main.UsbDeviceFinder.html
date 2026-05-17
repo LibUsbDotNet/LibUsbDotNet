@@ -1,0 +1,772 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+      <title>Class UsbDeviceFinder </title>
+      <meta name="viewport" content="width=device-width, initial-scale=1.0">
+      <meta name="title" content="Class UsbDeviceFinder ">
+      
+      <meta name="description" content="Finds and identifies usb devices. Used for easily locating">
+      <link rel="icon" href="../favicon.ico">
+      <link rel="stylesheet" href="../public/docfx.min.css">
+      <link rel="stylesheet" href="../public/main.css">
+      <meta name="docfx:navrel" content="../toc.html">
+      <meta name="docfx:tocrel" content="toc.html">
+      
+      
+      
+      
+      <meta name="docfx:docurl" content="https://github.com/LibUsbDotNet/LibUsbDotNet/new/master/apiSpec/new?filename=LibUsbDotNet_Main_UsbDeviceFinder.md&amp;value=---%0Auid%3A%20LibUsbDotNet.Main.UsbDeviceFinder%0Asummary%3A%20&#39;*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax&#39;%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A">
+      <meta name="loc:inThisArticle" content="In this article">
+      <meta name="loc:searchResultsCount" content="{count} results for &quot;{query}&quot;">
+      <meta name="loc:searchNoResults" content="No results for &quot;{query}&quot;">
+      <meta name="loc:tocFilter" content="Filter by title">
+      <meta name="loc:nextArticle" content="Next">
+      <meta name="loc:prevArticle" content="Previous">
+      <meta name="loc:themeLight" content="Light">
+      <meta name="loc:themeDark" content="Dark">
+      <meta name="loc:themeAuto" content="Auto">
+      <meta name="loc:changeTheme" content="Change theme">
+      <meta name="loc:copy" content="Copy">
+      <meta name="loc:downloadPdf" content="Download PDF">
+
+      <script type="module" src="./../public/docfx.min.js"></script>
+
+      <script>
+        const theme = localStorage.getItem('theme') || 'auto'
+        document.documentElement.setAttribute('data-bs-theme', theme === 'auto' ? (window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light') : theme)
+      </script>
+
+  </head>
+
+  <body class="tex2jax_ignore" data-layout="" data-yaml-mime="ManagedReference">
+    <header class="bg-body border-bottom">
+      <nav id="autocollapse" class="navbar navbar-expand-md" role="navigation">
+        <div class="container-xxl flex-nowrap">
+          <a class="navbar-brand" href="../index.html">
+            <img id="logo" class="svg" src="../logo.svg" alt="">
+            
+          </a>
+          <button class="btn btn-lg d-md-none border-0" type="button" data-bs-toggle="collapse" data-bs-target="#navpanel" aria-controls="navpanel" aria-expanded="false" aria-label="Toggle navigation">
+            <i class="bi bi-three-dots"></i>
+          </button>
+          <div class="collapse navbar-collapse" id="navpanel">
+            <div id="navbar">
+            </div>
+          </div>
+        </div>
+      </nav>
+    </header>
+
+    <main class="container-xxl">
+      <div class="toc-offcanvas">
+        <div class="offcanvas-md offcanvas-start" tabindex="-1" id="tocOffcanvas" aria-labelledby="tocOffcanvasLabel">
+          <div class="offcanvas-header">
+            <h5 class="offcanvas-title" id="tocOffcanvasLabel">Table of Contents</h5>
+            <button type="button" class="btn-close" data-bs-dismiss="offcanvas" data-bs-target="#tocOffcanvas" aria-label="Close"></button>
+          </div>
+          <div class="offcanvas-body">
+            <nav class="toc" id="toc"></nav>
+          </div>
+        </div>
+      </div>
+
+      <div class="content">
+        <div class="actionbar">
+          <button class="btn btn-lg border-0 d-md-none" type="button" data-bs-toggle="offcanvas" data-bs-target="#tocOffcanvas" aria-controls="tocOffcanvas" aria-expanded="false" aria-label="Show table of contents">
+            <i class="bi bi-list"></i>
+          </button>
+
+          <nav id="breadcrumb"></nav>
+        </div>
+
+        <article data-uid="LibUsbDotNet.Main.UsbDeviceFinder">
+
+
+
+  <h1 id="LibUsbDotNet_Main_UsbDeviceFinder" data-uid="LibUsbDotNet.Main.UsbDeviceFinder" class="text-break">
+Class UsbDeviceFinder  <a class="header-action link-secondary" title="View source" href="https://github.com/LibUsbDotNet/LibUsbDotNet/blob/master/src/LibUsbDotNet/Main/UsbDeviceFinder.cs/#L47"><i class="bi bi-code-slash"></i></a>
+  </h1>
+
+  <div class="facts text-secondary">
+    <dl><dt>Namespace</dt><dd><a class="xref" href="LibUsbDotNet.html">LibUsbDotNet</a>.<a class="xref" href="LibUsbDotNet.Main.html">Main</a></dd></dl>
+  <dl><dt>Assembly</dt><dd>LibUsbDotNet.dll</dd></dl>
+  </div>
+
+  <div class="markdown summary"><p>Finds and identifies usb devices. Used for easily locating</p>
+</div>
+  <div class="markdown conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public class UsbDeviceFinder : ISerializable</code></pre>
+  </div>
+
+
+
+
+  <dl class="typelist inheritance">
+    <dt>Inheritance</dt>
+    <dd>
+      <div><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.object">object</a></div>
+      <div><span class="xref">UsbDeviceFinder</span></div>
+    </dd>
+  </dl>
+
+  <dl class="typelist implements">
+    <dt>Implements</dt>
+    <dd>
+      <div><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.runtime.serialization.iserializable">ISerializable</a></div>
+    </dd>
+  </dl>
+
+
+  <dl class="typelist inheritedMembers">
+    <dt>Inherited Members</dt>
+    <dd>
+    <div>
+      <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.object.equals#system-object-equals(system-object-system-object)">object.Equals(object, object)</a>
+    </div>
+    <div>
+      <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.object.gettype">object.GetType()</a>
+    </div>
+    <div>
+      <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.object.memberwiseclone">object.MemberwiseClone()</a>
+    </div>
+    <div>
+      <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.object.referenceequals">object.ReferenceEquals(object, object)</a>
+    </div>
+    <div>
+      <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.object.tostring">object.ToString()</a>
+    </div>
+  </dd></dl>
+
+
+
+  <h2 id="LibUsbDotNet_Main_UsbDeviceFinder_examples">Examples</h2>
+  <pre><code class="lang-cs">using LibUsbDotNet.Info;
+using LibUsbDotNet.LibUsb;
+using System;
+using System.Collections.ObjectModel;
+
+namespace Examples;
+
+internal class ShowInfo
+{
+    public static void Main(string[] args)
+    {
+        // Dump all devices and descriptor information to console output.
+        using (UsbContext context = new UsbContext())
+        {
+            var allDevices = context.List();
+            foreach (UsbDevice device in allDevices)
+            {
+                bool openedDevice = device.TryOpen();
+
+                Console.WriteLine(device.Info.ToString());
+
+                Console.Write($"LocationId: {device.BusNumber}");
+                for (int i = 0; i &lt; device.PortNumbers.Count; i++)
+                {
+                    if (i == 0)
+                        Console.Write('-');
+                    Console.Write(device.PortNumbers[i]);
+                    if (i != device.PortNumbers.Count - 1)
+                        Console.Write('.');
+                }
+                Console.WriteLine();
+
+                if (!openedDevice)
+                {
+                    Console.WriteLine(new string ('-', 50));
+                    continue;
+                }
+
+                foreach (var configInfo in device.Configs)
+                {
+                    Console.WriteLine($"\t{configInfo.ToString().ReplaceLineEndings("\n\t")}");
+
+                    ReadOnlyCollection&lt;UsbInterfaceInfo&gt; interfaceList = configInfo.Interfaces;
+                    for (int iInterface = 0; iInterface &lt; interfaceList.Count; iInterface++)
+                    {
+                        UsbInterfaceInfo interfaceInfo = interfaceList[iInterface];
+                        Console.WriteLine($"\t\t{interfaceInfo.ToString().ReplaceLineEndings("\n\t\t")}");
+
+                        ReadOnlyCollection&lt;UsbEndpointInfo&gt; endpointList = interfaceInfo.Endpoints;
+                        for (int iEndpoint = 0; iEndpoint &lt; endpointList.Count; iEndpoint++)
+                        {
+                            Console.WriteLine($"\t\t\tEndpoint: {iEndpoint}");
+                            Console.WriteLine($"\t\t\t{endpointList[iEndpoint].ToString().ReplaceLineEndings("\n\t\t\t")}");
+                        }
+                    }
+                }
+
+                device.Close();
+                Console.WriteLine(new string ('-', 50));
+            }
+        }
+
+        // Wait for user input..
+        Console.WriteLine("Press any key to exit");
+        Console.ReadKey();
+    }
+}</code></pre>
+
+
+  <h2 id="LibUsbDotNet_Main_UsbDeviceFinder_remarks">Remarks</h2>
+  <div class="markdown level0 remarks"><ul><li>
+Pass instances of this class into the
+<a class="xref" href="LibUsbDotNet.LibUsb.UsbContext.html#LibUsbDotNet_LibUsb_UsbContext_Find_LibUsbDotNet_Main_UsbDeviceFinder_">Find(UsbDeviceFinder)</a> or
+<a class="xref" href="LibUsbDotNet.LibUsb.UsbContext.html#LibUsbDotNet_LibUsb_UsbContext_FindAll_LibUsbDotNet_Main_UsbDeviceFinder_">FindAll(UsbDeviceFinder)</a>
+functions of a  <a class="xref" href="LibUsbDotNet.LibUsb.UsbContext.html">UsbContext</a>
+instance to find connected usb devices without opening devices or interrogating the bus.
+</li></ul>
+</div>
+
+
+  <h2 class="section" id="constructors">Constructors
+</h2>
+
+
+  <a id="LibUsbDotNet_Main_UsbDeviceFinder__ctor_" data-uid="LibUsbDotNet.Main.UsbDeviceFinder.#ctor*"></a>
+
+  <h3 id="LibUsbDotNet_Main_UsbDeviceFinder__ctor" data-uid="LibUsbDotNet.Main.UsbDeviceFinder.#ctor">
+  UsbDeviceFinder()
+  <a class="header-action link-secondary" title="View source" href="https://github.com/LibUsbDotNet/LibUsbDotNet/blob/master/src/LibUsbDotNet/Main/UsbDeviceFinder.cs/#L49"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"></div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public UsbDeviceFinder()</code></pre>
+  </div>
+
+
+
+
+
+
+
+
+
+
+
+
+
+  <a id="LibUsbDotNet_Main_UsbDeviceFinder__ctor_" data-uid="LibUsbDotNet.Main.UsbDeviceFinder.#ctor*"></a>
+
+  <h3 id="LibUsbDotNet_Main_UsbDeviceFinder__ctor_System_Runtime_Serialization_SerializationInfo_System_Runtime_Serialization_StreamingContext_" data-uid="LibUsbDotNet.Main.UsbDeviceFinder.#ctor(System.Runtime.Serialization.SerializationInfo,System.Runtime.Serialization.StreamingContext)">
+  UsbDeviceFinder(SerializationInfo, StreamingContext)
+  <a class="header-action link-secondary" title="View source" href="https://github.com/LibUsbDotNet/LibUsbDotNet/blob/master/src/LibUsbDotNet/Main/UsbDeviceFinder.cs/#L56"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>Initializes a new instance of the <a class="xref" href="LibUsbDotNet.Main.UsbDeviceFinder.html">UsbDeviceFinder</a> class using a serialization stream to fill the <a class="xref" href="LibUsbDotNet.Main.UsbDeviceFinder.html">UsbDeviceFinder</a> class.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">protected UsbDeviceFinder(SerializationInfo info, StreamingContext context)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>info</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.runtime.serialization.serializationinfo">SerializationInfo</a></dt>
+    <dd></dd>
+    <dt><code>context</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.runtime.serialization.streamingcontext">StreamingContext</a></dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+
+
+  <h2 class="section" id="properties">Properties
+</h2>
+
+
+  <a id="LibUsbDotNet_Main_UsbDeviceFinder_DeviceInterfaceGuid_" data-uid="LibUsbDotNet.Main.UsbDeviceFinder.DeviceInterfaceGuid*"></a>
+
+  <h3 id="LibUsbDotNet_Main_UsbDeviceFinder_DeviceInterfaceGuid" data-uid="LibUsbDotNet.Main.UsbDeviceFinder.DeviceInterfaceGuid">
+  DeviceInterfaceGuid
+  <a class="header-action link-secondary" title="View source" href="https://github.com/LibUsbDotNet/LibUsbDotNet/blob/master/src/LibUsbDotNet/Main/UsbDeviceFinder.cs/#L73"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>Gets the device interface guid string to find, or <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.string.empty">Empty</a> to ignore.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public Guid DeviceInterfaceGuid { get; init; }</code></pre>
+  </div>
+
+
+
+
+
+  <h4 class="section">Property Value</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.guid">Guid</a></dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+
+
+  <a id="LibUsbDotNet_Main_UsbDeviceFinder_LocationId_" data-uid="LibUsbDotNet.Main.UsbDeviceFinder.LocationId*"></a>
+
+  <h3 id="LibUsbDotNet_Main_UsbDeviceFinder_LocationId" data-uid="LibUsbDotNet.Main.UsbDeviceFinder.LocationId">
+  LocationId
+  <a class="header-action link-secondary" title="View source" href="https://github.com/LibUsbDotNet/LibUsbDotNet/blob/master/src/LibUsbDotNet/Main/UsbDeviceFinder.cs/#L82"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>Gets the device interface guid string to find, or <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.string.empty">Empty</a> to ignore.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public LocationId LocationId { get; init; }</code></pre>
+  </div>
+
+
+
+
+
+  <h4 class="section">Property Value</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="LibUsbDotNet.Info.LocationId.html">LocationId</a></dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+
+
+  <a id="LibUsbDotNet_Main_UsbDeviceFinder_PhyiscalPortId_" data-uid="LibUsbDotNet.Main.UsbDeviceFinder.PhyiscalPortId*"></a>
+
+  <h3 id="LibUsbDotNet_Main_UsbDeviceFinder_PhyiscalPortId" data-uid="LibUsbDotNet.Main.UsbDeviceFinder.PhyiscalPortId">
+  PhyiscalPortId
+  <a class="header-action link-secondary" title="View source" href="https://github.com/LibUsbDotNet/LibUsbDotNet/blob/master/src/LibUsbDotNet/Main/UsbDeviceFinder.cs/#L91"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>Gets the device interface guid string to find, or <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.string.empty">Empty</a> to ignore.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public PhysicalPortId PhyiscalPortId { get; init; }</code></pre>
+  </div>
+
+
+
+
+
+  <h4 class="section">Property Value</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="LibUsbDotNet.Info.PhysicalPortId.html">PhysicalPortId</a></dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+
+
+  <a id="LibUsbDotNet_Main_UsbDeviceFinder_Pid_" data-uid="LibUsbDotNet.Main.UsbDeviceFinder.Pid*"></a>
+
+  <h3 id="LibUsbDotNet_Main_UsbDeviceFinder_Pid" data-uid="LibUsbDotNet.Main.UsbDeviceFinder.Pid">
+  Pid
+  <a class="header-action link-secondary" title="View source" href="https://github.com/LibUsbDotNet/LibUsbDotNet/blob/master/src/LibUsbDotNet/Main/UsbDeviceFinder.cs/#L127"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>Gets the product id of the device to find.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public int Pid { get; init; }</code></pre>
+  </div>
+
+
+
+
+
+  <h4 class="section">Property Value</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.int32">int</a></dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+  <h4 class="section" id="LibUsbDotNet_Main_UsbDeviceFinder_Pid_remarks">Remarks</h4>
+  <div class="markdown level1 remarks"><p>Set to <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.int32.maxvalue">MaxValue</a> to ignore.</p>
+</div>
+
+
+
+
+  <a id="LibUsbDotNet_Main_UsbDeviceFinder_Revision_" data-uid="LibUsbDotNet.Main.UsbDeviceFinder.Revision*"></a>
+
+  <h3 id="LibUsbDotNet_Main_UsbDeviceFinder_Revision" data-uid="LibUsbDotNet.Main.UsbDeviceFinder.Revision">
+  Revision
+  <a class="header-action link-secondary" title="View source" href="https://github.com/LibUsbDotNet/LibUsbDotNet/blob/master/src/LibUsbDotNet/Main/UsbDeviceFinder.cs/#L115"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>Gets the revision number of the device to find.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public int Revision { get; init; }</code></pre>
+  </div>
+
+
+
+
+
+  <h4 class="section">Property Value</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.int32">int</a></dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+  <h4 class="section" id="LibUsbDotNet_Main_UsbDeviceFinder_Revision_remarks">Remarks</h4>
+  <div class="markdown level1 remarks"><p>Set to <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.int32.maxvalue">MaxValue</a> to ignore.</p>
+</div>
+
+
+
+
+  <a id="LibUsbDotNet_Main_UsbDeviceFinder_SerialNumber_" data-uid="LibUsbDotNet.Main.UsbDeviceFinder.SerialNumber*"></a>
+
+  <h3 id="LibUsbDotNet_Main_UsbDeviceFinder_SerialNumber" data-uid="LibUsbDotNet.Main.UsbDeviceFinder.SerialNumber">
+  SerialNumber
+  <a class="header-action link-secondary" title="View source" href="https://github.com/LibUsbDotNet/LibUsbDotNet/blob/master/src/LibUsbDotNet/Main/UsbDeviceFinder.cs/#L103"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>Gets the serial number of the device to find.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public string SerialNumber { get; init; }</code></pre>
+  </div>
+
+
+
+
+
+  <h4 class="section">Property Value</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.string">string</a></dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+  <h4 class="section" id="LibUsbDotNet_Main_UsbDeviceFinder_SerialNumber_remarks">Remarks</h4>
+  <div class="markdown level1 remarks"><p>Set to null to ignore.</p>
+</div>
+
+
+
+
+  <a id="LibUsbDotNet_Main_UsbDeviceFinder_Vid_" data-uid="LibUsbDotNet.Main.UsbDeviceFinder.Vid*"></a>
+
+  <h3 id="LibUsbDotNet_Main_UsbDeviceFinder_Vid" data-uid="LibUsbDotNet.Main.UsbDeviceFinder.Vid">
+  Vid
+  <a class="header-action link-secondary" title="View source" href="https://github.com/LibUsbDotNet/LibUsbDotNet/blob/master/src/LibUsbDotNet/Main/UsbDeviceFinder.cs/#L139"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>Gets the vendor id of the device to find.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public int Vid { get; init; }</code></pre>
+  </div>
+
+
+
+
+
+  <h4 class="section">Property Value</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.int32">int</a></dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+  <h4 class="section" id="LibUsbDotNet_Main_UsbDeviceFinder_Vid_remarks">Remarks</h4>
+  <div class="markdown level1 remarks"><p>Set to <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.int32.maxvalue">MaxValue</a> to ignore.</p>
+</div>
+
+
+
+
+  <h2 class="section" id="methods">Methods
+</h2>
+
+
+  <a id="LibUsbDotNet_Main_UsbDeviceFinder_Check_" data-uid="LibUsbDotNet.Main.UsbDeviceFinder.Check*"></a>
+
+  <h3 id="LibUsbDotNet_Main_UsbDeviceFinder_Check_LibUsbDotNet_Info_CachedDeviceInfo_" data-uid="LibUsbDotNet.Main.UsbDeviceFinder.Check(LibUsbDotNet.Info.CachedDeviceInfo)">
+  Check(CachedDeviceInfo)
+  <a class="header-action link-secondary" title="View source" href="https://github.com/LibUsbDotNet/LibUsbDotNet/blob/master/src/LibUsbDotNet/Main/UsbDeviceFinder.cs/#L218"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"></div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public virtual bool Check(CachedDeviceInfo info)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>info</code> <a class="xref" href="LibUsbDotNet.Info.CachedDeviceInfo.html">CachedDeviceInfo</a></dt>
+    <dd></dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.boolean">bool</a></dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+
+  <a id="LibUsbDotNet_Main_UsbDeviceFinder_Check_" data-uid="LibUsbDotNet.Main.UsbDeviceFinder.Check*"></a>
+
+  <h3 id="LibUsbDotNet_Main_UsbDeviceFinder_Check_LibUsbDotNet_LibUsb_IUsbDevice_" data-uid="LibUsbDotNet.Main.UsbDeviceFinder.Check(LibUsbDotNet.LibUsb.IUsbDevice)">
+  Check(IUsbDevice)
+  <a class="header-action link-secondary" title="View source" href="https://github.com/LibUsbDotNet/LibUsbDotNet/blob/master/src/LibUsbDotNet/Main/UsbDeviceFinder.cs/#L168"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>Dynamic predicate find function. Pass this function into any method that has a <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.predicate-1">Predicate&lt;T&gt;</a> parameter.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public virtual bool Check(IUsbDevice usbDevice)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>usbDevice</code> <a class="xref" href="LibUsbDotNet.LibUsb.IUsbDevice.html">IUsbDevice</a></dt>
+    <dd><p>The UsbDevice to check.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.boolean">bool</a></dt>
+    <dd><p>True if the <a class="xref" href="LibUsbDotNet.LibUsb.UsbDevice.html">UsbDevice</a> instance matches the <a class="xref" href="LibUsbDotNet.Main.UsbDeviceFinder.html">UsbDeviceFinder</a> properties.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+  <h4 class="section" id="LibUsbDotNet_Main_UsbDeviceFinder_Check_LibUsbDotNet_LibUsb_IUsbDevice__remarks">Remarks</h4>
+  <div class="markdown level1 remarks"><p>Override this member when inheriting the <a class="xref" href="LibUsbDotNet.Main.UsbDeviceFinder.html">UsbDeviceFinder</a> class to change/alter the matching behavior.</p>
+</div>
+
+
+
+
+  <a id="LibUsbDotNet_Main_UsbDeviceFinder_Equals_" data-uid="LibUsbDotNet.Main.UsbDeviceFinder.Equals*"></a>
+
+  <h3 id="LibUsbDotNet_Main_UsbDeviceFinder_Equals_LibUsbDotNet_Main_UsbDeviceFinder_" data-uid="LibUsbDotNet.Main.UsbDeviceFinder.Equals(LibUsbDotNet.Main.UsbDeviceFinder)">
+  Equals(UsbDeviceFinder)
+  <a class="header-action link-secondary" title="View source" href="https://github.com/LibUsbDotNet/LibUsbDotNet/blob/master/src/LibUsbDotNet/Main/UsbDeviceFinder.cs/#L250"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"></div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">protected bool Equals(UsbDeviceFinder other)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>other</code> <a class="xref" href="LibUsbDotNet.Main.UsbDeviceFinder.html">UsbDeviceFinder</a></dt>
+    <dd></dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.boolean">bool</a></dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+
+  <a id="LibUsbDotNet_Main_UsbDeviceFinder_Equals_" data-uid="LibUsbDotNet.Main.UsbDeviceFinder.Equals*"></a>
+
+  <h3 id="LibUsbDotNet_Main_UsbDeviceFinder_Equals_System_Object_" data-uid="LibUsbDotNet.Main.UsbDeviceFinder.Equals(System.Object)">
+  Equals(object)
+  <a class="header-action link-secondary" title="View source" href="https://github.com/LibUsbDotNet/LibUsbDotNet/blob/master/src/LibUsbDotNet/Main/UsbDeviceFinder.cs/#L248"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"></div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public override bool Equals(object obj)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>obj</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.object">object</a></dt>
+    <dd></dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.boolean">bool</a></dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+
+  <a id="LibUsbDotNet_Main_UsbDeviceFinder_GetHashCode_" data-uid="LibUsbDotNet.Main.UsbDeviceFinder.GetHashCode*"></a>
+
+  <h3 id="LibUsbDotNet_Main_UsbDeviceFinder_GetHashCode" data-uid="LibUsbDotNet.Main.UsbDeviceFinder.GetHashCode">
+  GetHashCode()
+  <a class="header-action link-secondary" title="View source" href="https://github.com/LibUsbDotNet/LibUsbDotNet/blob/master/src/LibUsbDotNet/Main/UsbDeviceFinder.cs/#L256"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"></div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public override int GetHashCode()</code></pre>
+  </div>
+
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.int32">int</a></dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+
+  <a id="LibUsbDotNet_Main_UsbDeviceFinder_GetObjectData_" data-uid="LibUsbDotNet.Main.UsbDeviceFinder.GetObjectData*"></a>
+
+  <h3 id="LibUsbDotNet_Main_UsbDeviceFinder_GetObjectData_System_Runtime_Serialization_SerializationInfo_System_Runtime_Serialization_StreamingContext_" data-uid="LibUsbDotNet.Main.UsbDeviceFinder.GetObjectData(System.Runtime.Serialization.SerializationInfo,System.Runtime.Serialization.StreamingContext)">
+  GetObjectData(SerializationInfo, StreamingContext)
+  <a class="header-action link-secondary" title="View source" href="https://github.com/LibUsbDotNet/LibUsbDotNet/blob/master/src/LibUsbDotNet/Main/UsbDeviceFinder.cs/#L146"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"></div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public void GetObjectData(SerializationInfo info, StreamingContext context)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>info</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.runtime.serialization.serializationinfo">SerializationInfo</a></dt>
+    <dd></dd>
+    <dt><code>context</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.runtime.serialization.streamingcontext">StreamingContext</a></dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+
+
+
+</article>
+
+        <div class="contribution d-print-none">
+          <a href="https://github.com/LibUsbDotNet/LibUsbDotNet/blob/master/src/LibUsbDotNet/Main/UsbDeviceFinder.cs/#L47" class="edit-link">Edit this page</a>
+        </div>
+
+
+      </div>
+
+      <div class="affix">
+        <nav id="affix"></nav>
+      </div>
+    </main>
+
+
+    <footer class="border-top text-secondary">
+      <div class="container-xxl">
+        <div class="flex-fill">
+          <span>Made with <a href="https://dotnet.github.io/docfx">docfx</a></span>
+        </div>
+      </div>
+    </footer>
+  </body>
+</html>
