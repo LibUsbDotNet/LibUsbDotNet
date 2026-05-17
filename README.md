@@ -1,5 +1,5 @@
 # LibUsbDotNet
-[![Build status](https://ci.appveyor.com/api/projects/status/bmdk6l5odm6ia6jf?svg=true)](https://ci.appveyor.com/project/qmfrederik/libusbdotnet-sjtox)
+[![Build status](https://ci.appveyor.com/api/projects/status/bmdk6l5odm6ia6jf?svg=true)](https://ci.appveyor.com/project/qmfrederik/libusbdotnet)
 ![NuGet version](https://img.shields.io/nuget/v/LibUsbDotNet.svg)
 ![LGPLv3 license](https://img.shields.io/github/license/LibUsbDotNet/LibUsbDotNet.svg)
 
