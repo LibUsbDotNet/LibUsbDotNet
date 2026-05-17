@@ -14,8 +14,8 @@ internal class ReadPolling
 
     public static UsbDeviceFinder MyUsbFinder = new()
     {
-        Vid = 0x1234,
-        Pid = 0x0000
+        Vid = 0x04b4,
+        Pid = 0x00f1
     };
 
     #endregion
