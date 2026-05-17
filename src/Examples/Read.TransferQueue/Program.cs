@@ -9,8 +9,8 @@ var cts = new CancellationTokenSource();
 var context = new UsbContext();
 var usbFinder = new UsbDeviceFinder()
 {
-    Vid = 0x0000, // Replace with your USB device's Vendor ID
-    Pid = 0x0000 // Replace with your USB device's Product ID
+    Vid = 0x04b4,
+    Pid = 0x00f1
 };
 
 using var usbDevice = context.Find(usbFinder);
