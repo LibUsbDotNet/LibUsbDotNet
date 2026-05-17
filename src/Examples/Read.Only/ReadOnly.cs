@@ -33,7 +33,9 @@ internal class ReadPolling
 
                 // If the device is open and ready
                 if (MyUsbDevice == null) throw new Exception("Device Not Found.");
-
+                
+                MyUsbDevice.Open();
+                
                 // If this is a "whole" usb device (libusb-win32, linux libusb-1.0)
                 // it exposes an IUsbDevice interface. If not (WinUSB) the 
                 // 'wholeUsbDevice' variable will be null indicating this is 
