@@ -1,41 +1,18 @@
 name: build
-on:
-  push:
-    branches:
-      - master
-  pull_request:
+on: [push, pull_request]
 
 jobs:
-  libusbdotnet_windows:
-    runs-on: windows-2022
+  build:
+    strategy:
+      matrix:
+        dotnet-version:
+          - "10.0.x"
+        sys:
+          - "windows-latest"
+          - "ubuntu-latest"
+          - "macos-latest"
 
-    env:
-      VCPKG_ROOT: C:\vcpkg
-
-    steps:
-      - uses: actions/checkout@v6
-        with:
-          fetch-depth: 0
-
-      - uses: actions/setup-dotnet@v5
-        with:
-          dotnet-version: '8.0.x'
-
-      - name: Build
-        run: dotnet pack src\LibUsbDotNet\LibUsbDotNet.csproj -c Release -o ${{ github.workspace }}/nuget/
-
-      - name: Upload LibUsbDotNet NuGet package
-        uses: actions/upload-artifact@v7
-        if: always()
-        with:
-          name: LibUsbDotNet-${{ github.run_id }}
-          path: '${{ github.workspace }}/nuget/' 
-
-  libusbdotnet_macos:
-    runs-on: macos-15
-
-    env:
-      VCPKG_ROOT: /usr/local/share/vcpkg
+    runs-on: ${{ matrix.sys }}
 
     steps:
       - uses: actions/checkout@v6
@@ -44,25 +21,28 @@ jobs:
 
       - uses: actions/setup-dotnet@v5
         with:
-          dotnet-version: '8.0.x'
+          dotnet-version: ${{ matrix.dotnet-version }}
 
-  libusbdotnet_ubuntu:
-    runs-on: ubuntu-22.04
-
-    steps:
-      - uses: actions/checkout@v6
-        with:
-          fetch-depth: 0
-
-      - uses: actions/setup-dotnet@v5
-        with:
-          dotnet-version: '8.0.x'
-
-      - name: Install libusb
+      - name: Install libusb (Ubuntu)
+        if: matrix.sys == 'ubuntu-latest'
         run: |
           sudo apt-get update
           sudo apt-get install -y libusb-1.0-0
 
-      - name: Test
+      - name: Install dependencies (Mac OS)
+        if: matrix.sys == 'macos-latest'
         run: |
-          dotnet test src/LibUsbDotNet.Tests/LibUsbDotNet.Tests.csproj
+          brew install libusb
+
+      - name: Build
+        run: dotnet pack src/LibUsbDotNet/LibUsbDotNet.csproj -c Release -o ${{ github.workspace }}/nuget/
+
+      - name: Test
+        if: matrix.sys == 'ubuntu-latest'
+        run: dotnet test src/LibUsbDotNet.Tests/LibUsbDotNet.Tests.csproj
+
+      - name: Upload LibUsbDotNet NuGet package
+        uses: actions/upload-artifact@v7
+        with:
+          name: LibUsbDotNet-${{ matrix.sys }}-${{ github.run_id }}
+          path: "${{ github.workspace }}/nuget/"
