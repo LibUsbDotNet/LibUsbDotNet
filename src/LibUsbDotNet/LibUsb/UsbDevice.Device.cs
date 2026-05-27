@@ -20,10 +20,9 @@
 // 
 //
 
-using System;
 using LibUsbDotNet.Info;
+using System;
 using System.Collections.ObjectModel;
-using System.Linq;
 using System.Runtime.InteropServices;
 
 namespace LibUsbDotNet.LibUsb;
@@ -130,7 +129,7 @@ public partial class UsbDevice
         {
             Span<byte> portNumbers = stackalloc byte[8];
             int numPorts;
-                
+
             fixed (byte* ptr = &MemoryMarshal.GetReference(portNumbers))
                 numPorts = NativeMethods.GetPortNumbers(this.device, ptr, portNumbers.Length).GetValueOrThrow();
 

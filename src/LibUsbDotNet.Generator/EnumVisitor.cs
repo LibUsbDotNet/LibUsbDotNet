@@ -2,10 +2,10 @@
 // Copyright (c) Quamotion. All rights reserved.
 // </copyright>
 
-using System.Collections.Generic;
-using System.Text;
 using Core.Clang;
 using Core.Clang.Documentation.Doxygen;
+using System.Collections.Generic;
+using System.Text;
 using Enum = LibUsbDotNet.Generator.Primitives.Enum;
 using EnumValue = LibUsbDotNet.Generator.Primitives.EnumValue;
 

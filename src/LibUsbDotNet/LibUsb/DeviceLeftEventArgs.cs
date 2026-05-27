@@ -8,6 +8,6 @@ public class DeviceLeftEventArgs : DeviceEventArgs
     {
         DeviceInfo = info;
     }
-    
+
     public CachedDeviceInfo DeviceInfo { get; }
 }

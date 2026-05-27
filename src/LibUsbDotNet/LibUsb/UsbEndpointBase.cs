@@ -237,7 +237,7 @@ public abstract class UsbEndpointBase
     /// <param name="buffer">Caller-allocated buffer.</param>
     /// <param name="timeout">Maximum time to wait for the transfer to complete.</param>
     /// <returns>Named tuple of <see cref="Error"/> and transferLength</returns>
-    protected Task<(Error error, int transferLength)> TransferAsync(Memory<byte> buffer, int timeout) => 
+    protected Task<(Error error, int transferLength)> TransferAsync(Memory<byte> buffer, int timeout) =>
         AsyncTransfer.TransferAsync(this.Device.DeviceHandle, this.mEpNum, this.mEndpointType, buffer, timeout);
 
     /// <summary>

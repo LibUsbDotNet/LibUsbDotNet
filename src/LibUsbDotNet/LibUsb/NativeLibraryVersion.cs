@@ -35,7 +35,7 @@ public static class NativeLibraryVersion
         Micro = version->Micro;
         Nano = version->Nano;
     }
-    
+
     /// <summary>
     ///  Library major version.
     /// </summary>
@@ -59,12 +59,12 @@ public static class NativeLibraryVersion
     /// <summary>
     /// libusb version with nano included
     /// </summary>
-    public static string FullVersion 
+    public static string FullVersion
         => $"{Major}.{Minor}.{Micro}.{Nano}";
-    
+
     /// <summary>
     /// libusb version
     /// </summary>
-    public static string Version 
+    public static string Version
         => $"{Major}.{Minor}.{Micro}";
 }

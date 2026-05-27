@@ -20,9 +20,8 @@
 // 
 //
 
-using System;
-using System.Runtime.InteropServices;
 using LibUsbDotNet.Main;
+using System;
 
 namespace LibUsbDotNet.LibUsb;
 
@@ -65,7 +64,7 @@ public partial class UsbEndpointReader : UsbEndpointBase
     /// <returns>
     /// <see cref="Error"/>.<see cref="Error.Success"/> on success.
     /// </returns>
-    public virtual Error Read(Span<byte> buffer, int timeout, out int transferLength) 
+    public virtual Error Read(Span<byte> buffer, int timeout, out int transferLength)
         => Transfer(buffer, timeout, out transferLength);
 
     /// <summary>
@@ -79,7 +78,7 @@ public partial class UsbEndpointReader : UsbEndpointBase
     /// <returns>
     /// <see cref="Error"/>.<see cref="Error.Success"/> on success.
     /// </returns>
-    public virtual Error Read(Span<byte> buffer, int offset, int count, int timeout, out int transferLength) 
+    public virtual Error Read(Span<byte> buffer, int offset, int count, int timeout, out int transferLength)
         => Transfer(buffer.Slice(offset, count), timeout, out transferLength);
 
     /// <summary>

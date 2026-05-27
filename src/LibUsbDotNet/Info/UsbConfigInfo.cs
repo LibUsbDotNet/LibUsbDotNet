@@ -51,7 +51,7 @@ public class UsbConfigInfo : UsbBaseInfo
             Span<byte> extra = new Span<byte>(descriptor.Extra, descriptor.ExtraLength);
             extra.CopyTo(value.RawDescriptors);
         }
-            
+
         var interfaces = descriptor.Interface;
         for (int i = 0; i < descriptor.NumInterfaces; i++)
         {

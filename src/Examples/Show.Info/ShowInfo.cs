@@ -18,7 +18,7 @@ internal class ShowInfo
                 bool openedDevice = device.TryOpen();
 
                 Console.WriteLine(device.Info.ToString());
-                    
+
                 Console.Write($"LocationId: {device.BusNumber}");
                 for (int i = 0; i < device.PortNumbers.Count; i++)
                 {
@@ -29,13 +29,13 @@ internal class ShowInfo
                         Console.Write('.');
                 }
                 Console.WriteLine();
-                    
+
                 if (!openedDevice)
                 {
-                    Console.WriteLine(new string ('-', 50));
+                    Console.WriteLine(new string('-', 50));
                     continue;
                 }
-                    
+
                 foreach (var configInfo in device.Configs)
                 {
                     Console.WriteLine($"\t{configInfo.ToString().ReplaceLineEndings("\n\t")}");
@@ -56,7 +56,7 @@ internal class ShowInfo
                 }
 
                 device.Close();
-                Console.WriteLine(new string ('-', 50));
+                Console.WriteLine(new string('-', 50));
             }
         }
 

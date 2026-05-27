@@ -20,10 +20,10 @@
 // 
 //
 
+using LibUsbDotNet.Info;
 using LibUsbDotNet.LibUsb;
 using System;
 using System.Runtime.Serialization;
-using LibUsbDotNet.Info;
 
 namespace LibUsbDotNet.Main;
 
@@ -47,7 +47,7 @@ namespace LibUsbDotNet.Main;
 public class UsbDeviceFinder : ISerializable
 {
     public UsbDeviceFinder() { }
-    
+
     /// <summary>
     /// Initializes a new instance of the <see cref="UsbDeviceFinder"/> class using a serialization stream to fill the <see cref="UsbDeviceFinder"/> class.
     /// </summary>
@@ -181,7 +181,7 @@ public class UsbDeviceFinder : ISerializable
                 return false;
             }
 
-            if (this.Revision != int.MaxValue && 
+            if (this.Revision != int.MaxValue &&
                 this.Revision != usbDevice.Info.Usb)
             {
                 return false;
@@ -198,7 +198,7 @@ public class UsbDeviceFinder : ISerializable
             {
                 return false;
             }
-            
+
             if (PhyiscalPortId != null &&
                 PhyiscalPortId.Usb2Id != usbDevice.LocationId &&
                  PhyiscalPortId.Usb3Id != usbDevice.LocationId)
@@ -214,7 +214,7 @@ public class UsbDeviceFinder : ISerializable
             return false;
         }
     }
-    
+
     public virtual bool Check(CachedDeviceInfo info)
     {
         if (this.Vid != int.MaxValue &&
@@ -225,7 +225,7 @@ public class UsbDeviceFinder : ISerializable
             this.Pid != info.Descriptor.ProductId)
             return false;
 
-        if (this.Revision != int.MaxValue && 
+        if (this.Revision != int.MaxValue &&
             this.Revision != info.Descriptor.Usb)
             return false;
 
@@ -253,6 +253,6 @@ public class UsbDeviceFinder : ISerializable
                                                     SerialNumber == other.SerialNumber && Revision == other.Revision &&
                                                     Pid == other.Pid && Vid == other.Vid;
 
-    public override int GetHashCode() 
+    public override int GetHashCode()
         => HashCode.Combine(DeviceInterfaceGuid, LocationId, PhyiscalPortId, SerialNumber, Revision, Pid, Vid);
 }

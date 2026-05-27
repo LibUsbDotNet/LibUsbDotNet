@@ -1,13 +1,11 @@
-﻿using System;
-using System.Collections.ObjectModel;
-using System.Linq;
-using System.Reactive.Disposables;
-using System.Runtime.InteropServices;
-using DynamicData;
-using LibUsbDotNet.Info;
+﻿using LibUsbDotNet.Info;
 using LibUsbDotNet.LibUsb;
 using ReactiveUI;
 using ReactiveUI.SourceGenerators;
+using System;
+using System.Collections.ObjectModel;
+using System.Reactive.Disposables;
+using System.Runtime.InteropServices;
 
 namespace TestInfo.ViewModels;
 
@@ -19,7 +17,7 @@ public partial class MainWindowViewModel : ActivatableViewModelBase
     public MainWindowViewModel()
     {
         _isHotPlugSupported = !RuntimeInformation.IsOSPlatform(OSPlatform.Windows);
-        
+
         this.WhenActivated((CompositeDisposable disposables) =>
         {
             RefreshDeviceListCommand.Execute()

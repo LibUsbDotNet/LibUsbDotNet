@@ -2,11 +2,6 @@
 // Copyright (c) Quamotion. All rights reserved.
 // </copyright>
 
-using System;
-using System.CodeDom;
-using System.Diagnostics;
-using System.Linq;
-using System.Runtime.InteropServices;
 using Core.Clang;
 
 namespace LibUsbDotNet.Generator

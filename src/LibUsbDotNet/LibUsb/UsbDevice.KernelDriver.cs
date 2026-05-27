@@ -29,7 +29,7 @@ public partial class UsbDevice
     /// Determine if this platform supports detaching the kernel driver.
     /// </summary>
     /// <returns>True if kernel driver detach supported, false otherwise.</returns>
-    public bool SupportsDetachKernelDriver() => 
+    public bool SupportsDetachKernelDriver() =>
         NativeMethods.HasCapability((uint)Capability.SupportsDetachKernelDriver) != 0;
 
     /// <summary>

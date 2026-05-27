@@ -4,7 +4,6 @@
 
 namespace LibUsbDotNet.Generator
 {
-    using System;
     using Core.Clang;
 
     internal sealed class ForwardDeclarationVisitor : CursorVisitor

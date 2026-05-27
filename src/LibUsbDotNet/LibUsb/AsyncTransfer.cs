@@ -38,22 +38,22 @@ internal static class AsyncTransfer
     {
         private MemoryHandle _memoryHandle;
         public TaskCompletionSource<(Error error, int transferLength)> TaskCompletionSource { get; }
-            
+
         public TransferCallbackCompletion(
             TaskCompletionSource<(Error error, int transferLength)> taskCompletionSource, MemoryHandle memoryHandle)
         {
             TaskCompletionSource = taskCompletionSource;
             _memoryHandle = memoryHandle;
         }
-            
+
         public void Dispose() => _memoryHandle.Dispose();
     }
-    
+
     private static readonly object TransferLock = new object();
     private static int _transferIndex;
 
     private static readonly unsafe TransferDelegate TransferCallback = new TransferDelegate(Callback);
-    private static readonly IntPtr TransferDelegatePtr = 
+    private static readonly IntPtr TransferDelegatePtr =
         Marshal.GetFunctionPointerForDelegate(TransferCallback);
     private static readonly ConcurrentDictionary<int, TransferCallbackCompletion>
         TransferDictionary = new();
@@ -66,18 +66,18 @@ internal static class AsyncTransfer
         int timeout,
         int isoPacketSize = 0)
     {
-        if (device == null) 
+        if (device == null)
             throw new ArgumentNullException(nameof(device));
 
         int transferId;
-        
+
         lock (TransferLock)
         {
             if (_transferIndex == int.MaxValue) // Potential edge case for long-running application?
                 _transferIndex = 0;
             transferId = _transferIndex++;
         }
-        
+
         var memoryHandle = buffer.Pin();
         var transferCompletion =
             new TaskCompletionSource<(Error error, int transferLength)>(TaskCreationOptions.RunContinuationsAsynchronously);

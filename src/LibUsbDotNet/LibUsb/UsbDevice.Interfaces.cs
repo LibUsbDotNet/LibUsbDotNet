@@ -49,7 +49,7 @@ public partial class UsbDevice
         this.mClaimedInterfaces.Add(interfaceID);
         return true;
     }
-    
+
     public bool GetAltInterface(out int alternateID)
     {
         int interfaceID = this.mClaimedInterfaces.Count == 0 ? 0 : this.mClaimedInterfaces[this.mClaimedInterfaces.Count - 1];

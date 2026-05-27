@@ -1,11 +1,11 @@
+using LibUsbDotNet.Info;
+using LibUsbDotNet.Main;
 using System;
 using System.Collections.Concurrent;
 using System.Diagnostics;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
-using LibUsbDotNet.Info;
-using LibUsbDotNet.Main;
 
 namespace LibUsbDotNet.LibUsb;
 
@@ -61,7 +61,7 @@ public class DeviceManager : IDisposable
     public async Task<UsbDevice?> WaitForDeviceArrival(UsbDeviceFinder finder, TimeSpan maxWaitTime, CancellationToken cancellationToken, TimeSpan stableConnectionInterval = default)
     {
         EnsureStarted();
-        
+
         UsbDevice? arrivedDevice = _context.DeviceInfoDictionary.Keys.FirstOrDefault(finder.Check);
 
         if (arrivedDevice is not null)
@@ -83,7 +83,7 @@ public class DeviceManager : IDisposable
     public async Task<UsbDevice?> WaitForNewDeviceArrival(UsbDeviceFinder finder, TimeSpan maxWaitTime, CancellationToken cancellationToken, TimeSpan stableConnectionInterval = default)
     {
         EnsureStarted();
-        
+
         bool stableConnection = false;
         var timer = Stopwatch.StartNew();
         UsbDevice? arrivedDevice = null;
@@ -94,7 +94,7 @@ public class DeviceManager : IDisposable
             _deviceArrivedTasks.TryRemove(finder, out var source);
             source?.TrySetCanceled();
         });
-        
+
         using var deviceLeftCtr = cancellationToken.Register(() =>
         {
             _deviceLeftTasks.TryRemove(finder, out var source);
@@ -106,7 +106,7 @@ public class DeviceManager : IDisposable
             _deviceArrivedTasks.TryRemove(finder, out var source);
             source?.TrySetCanceled();
         });
-        
+
         await using var deviceLeftCtr = cancellationToken.Register(() =>
         {
             _deviceLeftTasks.TryRemove(finder, out var source);
@@ -117,20 +117,20 @@ public class DeviceManager : IDisposable
         while (!stableConnection && timer.Elapsed < maxWaitTime)
         {
             var deviceArrivedTaskSource = new TaskCompletionSource<UsbDevice>(TaskCreationOptions.RunContinuationsAsynchronously);
-            
+
             _deviceArrivedTasks.TryAdd(finder, deviceArrivedTaskSource);
 
             arrivedDevice = await TaskWithTimeoutAndFallback(deviceArrivedTaskSource.Task, maxWaitTime - timer.Elapsed);
-            
+
             if (stableConnectionInterval == default)
                 return arrivedDevice;
-            
+
             var deviceLeftTaskSource = new TaskCompletionSource<CachedDeviceInfo>(TaskCreationOptions.RunContinuationsAsynchronously);
 
             _deviceLeftTasks.TryAdd(finder, deviceLeftTaskSource);
 
             var deviceLeftInfo = await TaskWithTimeoutAndFallback(deviceLeftTaskSource.Task, stableConnectionInterval);
-            
+
             if (deviceLeftInfo is null)
             {
                 _deviceLeftTasks.TryRemove(finder, out _);
@@ -140,7 +140,7 @@ public class DeviceManager : IDisposable
 
         return arrivedDevice;
     }
-    
+
     private static async Task<T?> DelayedResultTask<T>(TimeSpan delay, T? result = default)
     {
         await Task.Delay(delay);
@@ -154,27 +154,27 @@ public class DeviceManager : IDisposable
         await await Task.WhenAny(task, DelayedResultTask(timeout, fallback)!);
 
 #nullable disable
-    
+
     private void OnDeviceEvent(object sender, DeviceEventArgs e)
     {
         switch (e)
         {
             case DeviceArrivedEventArgs arrivedEventArgs:
-            {
-                var device = arrivedEventArgs.Device;
-                var matchingFinder = _deviceArrivedTasks.Keys.FirstOrDefault(finder => finder.Check(device));
-                if (matchingFinder is not null && _deviceArrivedTasks.TryRemove(matchingFinder, out var taskCompletionSource))
-                    taskCompletionSource.TrySetResult(device);
-                break;
-            }
+                {
+                    var device = arrivedEventArgs.Device;
+                    var matchingFinder = _deviceArrivedTasks.Keys.FirstOrDefault(finder => finder.Check(device));
+                    if (matchingFinder is not null && _deviceArrivedTasks.TryRemove(matchingFinder, out var taskCompletionSource))
+                        taskCompletionSource.TrySetResult(device);
+                    break;
+                }
             case DeviceLeftEventArgs leftEventArgs:
-            {
-                var info = leftEventArgs.DeviceInfo;
-                var matchingFinder = _deviceLeftTasks.Keys.FirstOrDefault(finder => finder.Check(info));
-                if (matchingFinder is not null && _deviceLeftTasks.TryRemove(matchingFinder, out var taskCompletionSource))
-                    taskCompletionSource.TrySetResult(info);
-                break;
-            }
+                {
+                    var info = leftEventArgs.DeviceInfo;
+                    var matchingFinder = _deviceLeftTasks.Keys.FirstOrDefault(finder => finder.Check(info));
+                    if (matchingFinder is not null && _deviceLeftTasks.TryRemove(matchingFinder, out var taskCompletionSource))
+                        taskCompletionSource.TrySetResult(info);
+                    break;
+                }
         }
     }
 

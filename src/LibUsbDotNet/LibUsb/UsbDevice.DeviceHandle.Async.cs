@@ -1,6 +1,6 @@
+using LibUsbDotNet.Main;
 using System;
 using System.Threading.Tasks;
-using LibUsbDotNet.Main;
 
 namespace LibUsbDotNet.LibUsb;
 
@@ -36,14 +36,15 @@ public partial class UsbDevice
 
         error.ThrowOnError();
 
-        if (buffer is not null && (setupPacket.RequestType & (byte)UsbCtrlFlags.Direction_In) != 0) {
+        if (buffer is not null && (setupPacket.RequestType & (byte)UsbCtrlFlags.Direction_In) != 0)
+        {
             Array.Copy(data, 8, buffer, 0, dataTransferred);
         }
 
         return dataTransferred;
     }
-        
+
     /// <inheritdoc/>
-    public Task<int> ControlTransferAsync(UsbSetupPacket setupPacket) => 
+    public Task<int> ControlTransferAsync(UsbSetupPacket setupPacket) =>
         ControlTransferAsync(setupPacket, null, 0, 0);
 }

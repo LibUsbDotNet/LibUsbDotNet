@@ -116,7 +116,7 @@ namespace LibUsbDotNet.Generator
                             {
                                 return "byte*";
                             }
-                            else if(functionKind == FunctionKind.Default)
+                            else if (functionKind == FunctionKind.Default)
                             {
                                 return NameConversions.ToClrName(pointee.GetTypedefName(), NameConversion.Type);
                             }
