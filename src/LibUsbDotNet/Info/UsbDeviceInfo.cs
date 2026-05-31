@@ -71,7 +71,7 @@ public class UsbDeviceInfo
                 value.configurations.Add(configDescriptor);
             }
         }
-            
+
         return value;
     }
 

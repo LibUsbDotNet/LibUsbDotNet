@@ -4,11 +4,8 @@
 
 namespace LibUsbDotNet.Generator
 {
-    using System;
-    using System.CodeDom;
-    using System.Runtime.InteropServices;
-    using System.Collections.Generic;
     using Core.Clang;
+    using System;
 
     internal static class CursorExtensions
     {

@@ -3,12 +3,12 @@
 // </copyright>
 
 using Core.Clang;
+using Core.Clang.Documentation.Doxygen;
 using LibUsbDotNet.Generator.Primitives;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
 using System.Text;
-using Core.Clang.Documentation.Doxygen;
 
 namespace LibUsbDotNet.Generator
 {
@@ -33,7 +33,8 @@ namespace LibUsbDotNet.Generator
             if (cursor.IsInlinedFunction())
             {
                 return ChildVisitResult.Continue;
-            };
+            }
+            ;
 
             CursorKind curKind = cursor.Kind;
 

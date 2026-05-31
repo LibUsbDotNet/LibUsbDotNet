@@ -3,11 +3,11 @@
 // </copyright>
 
 using Core.Clang;
+using Core.Clang.Documentation.Doxygen;
 using LibUsbDotNet.Generator.Primitives;
 using System;
 using System.Collections.Generic;
 using System.Text;
-using Core.Clang.Documentation.Doxygen;
 
 namespace LibUsbDotNet.Generator
 {

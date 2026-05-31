@@ -43,7 +43,7 @@ public partial class UsbEndpointWriter : UsbEndpointBase
     /// <returns>
     /// <see cref="Error"/>.<see cref="Error.Success"/> on success.
     /// </returns>
-    public virtual Error Write(ReadOnlySpan<byte> buffer, int timeout, out int transferLength) => 
+    public virtual Error Write(ReadOnlySpan<byte> buffer, int timeout, out int transferLength) =>
         Transfer(buffer, timeout, out transferLength);
 
     /// <summary>
@@ -57,6 +57,6 @@ public partial class UsbEndpointWriter : UsbEndpointBase
     /// <returns>
     /// <see cref="Error"/>.<see cref="Error.Success"/> on success.
     /// </returns>
-    public virtual Error Write(ReadOnlySpan<byte> buffer, int offset, int count, int timeout, out int transferLength) => 
+    public virtual Error Write(ReadOnlySpan<byte> buffer, int offset, int count, int timeout, out int transferLength) =>
         Transfer(buffer.Slice(offset, count), timeout, out transferLength);
 }

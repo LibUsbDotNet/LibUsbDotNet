@@ -6,6 +6,6 @@ public class DeviceArrivedEventArgs : DeviceEventArgs
     {
         Device = device;
     }
-    
+
     public UsbDevice Device { get; }
 }

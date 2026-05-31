@@ -1,7 +1,7 @@
+using LibUsbDotNet.LibUsb;
 using System;
 using System.Collections.ObjectModel;
 using System.Linq;
-using LibUsbDotNet.LibUsb;
 
 namespace LibUsbDotNet.Info;
 
@@ -21,11 +21,11 @@ public readonly struct LocationId
     public ReadOnlyCollection<byte> PortNumbers { get; }
 
     public static readonly LocationId Zero = new(0, new ReadOnlyCollection<byte>(Array.Empty<byte>()));
-    
+
     public static bool operator ==(LocationId locationId1, LocationId locationId2)
         => Equals(locationId1, locationId2);
 
-    public static bool operator !=(LocationId locationId1, LocationId locationId2) 
+    public static bool operator !=(LocationId locationId1, LocationId locationId2)
         => !(locationId1 == locationId2);
 
     public override bool Equals(object obj)
@@ -47,7 +47,7 @@ public readonly struct LocationId
     public override string ToString()
     {
         string result = BusNumber.ToString();
-        
+
         for (int i = 0; i < PortNumbers.Count; i++)
         {
             if (i == 0)

@@ -20,6 +20,7 @@
 // 
 //
 
+using LibUsbDotNet.Info;
 using LibUsbDotNet.Main;
 using System;
 using System.Collections.Concurrent;
@@ -27,7 +28,6 @@ using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Runtime.InteropServices;
 using System.Threading;
-using LibUsbDotNet.Info;
 
 namespace LibUsbDotNet.LibUsb;
 
@@ -46,7 +46,7 @@ public class UsbContext : IUsbContext
     /// Thread for event handling.
     /// </summary>
     private Thread eventHandlingThread;
-        
+
     /// <summary>
     /// ID of the underlying <see cref="Context"/>.
     /// </summary>
@@ -60,7 +60,7 @@ public class UsbContext : IUsbContext
     public bool IsUsingHotplug { get; private set; }
 
     public HotplugOptions HotplugOptions { get; init; } = new();
-    
+
     /// <summary>
     /// Tracking list of all devices that are open on this context.
     /// </summary>
@@ -69,7 +69,7 @@ public class UsbContext : IUsbContext
     /// <summary>
     /// Read-only list of all devices that are open on this context.
     /// </summary>
-    public ReadOnlyCollection<UsbDevice> ReadOnlyOpenDevices => 
+    public ReadOnlyCollection<UsbDevice> ReadOnlyOpenDevices =>
         new ReadOnlyCollection<UsbDevice>(OpenDevices);
 
     /// <summary>
@@ -145,31 +145,31 @@ public class UsbContext : IUsbContext
 
         return 0;
     }
-        
+
     public void RegisterHotPlug()
     {
         if (IsUsingHotplug)
             return;
         if (NativeMethods.HasCapability((uint)Capability.HasHotplug) == 0)
             throw new PlatformNotSupportedException("This platform does not support hotplug.");
-            
+
         NativeMethods.HotplugRegisterCallback(context, HotplugOptions.HotplugEventFlags,
             HotplugFlag.Enumerate, HotplugOptions.VendorId, HotplugOptions.ProductId, HotplugOptions.DeviceClass, hotplugDelegatePtr, IntPtr.Zero, ref HotplugOptions.Handle);
         StartHandlingEvents();
         IsUsingHotplug = true;
     }
-        
+
     public void UnregisterHotPlug()
     {
         if (!IsUsingHotplug)
             return;
-            
+
         Interlocked.Exchange(ref stopHandlingEvents, 1);
         NativeMethods.HotplugDeregisterCallback(context, HotplugOptions.Handle);
         StopHandlingEvents();
         IsUsingHotplug = false;
     }
-    
+
     /// <summary>
     /// Returns a list of USB devices currently attached to the system.
     /// </summary>
@@ -280,7 +280,7 @@ public class UsbContext : IUsbContext
     {
         if (this.eventHandlingThread != null)
             return;
-            
+
         this.eventHandlingThread = new Thread(this.HandleEvents)
         {
             IsBackground = true
@@ -301,18 +301,18 @@ public class UsbContext : IUsbContext
     {
         if (this.eventHandlingThread == null)
             return;
-            
+
         this.eventHandlingThread.Join();
         this.eventHandlingThread = null;
     }
 
     protected virtual void Dispose(bool disposeManagedObjects)
     {
-        if (IsDisposed) 
+        if (IsDisposed)
             return;
-            
+
         IsDisposing = true;
-            
+
         // Not sure what should go here, what resources should be cleaned up by explicit Dispose but not in the finalizer?
         if (disposeManagedObjects)
         {
@@ -324,14 +324,14 @@ public class UsbContext : IUsbContext
         {
             openDevice.Dispose();
         }
-            
+
         OpenDevices.Clear();
 
         UnregisterHotPlug();
-            
+
         // Dispose of underlying context handle.
         context.Dispose();
-            
+
         IsDisposed = true;
     }
 

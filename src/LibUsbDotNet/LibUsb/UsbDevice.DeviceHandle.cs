@@ -300,13 +300,13 @@ public partial class UsbDevice
 
         if (shouldStopHandlingEvents)
             Interlocked.Exchange(ref originatingContext.stopHandlingEvents, 1);
-            
+
         this.deviceHandle.Dispose();
         this.deviceHandle = null;
 
-        if (shouldStopHandlingEvents) 
+        if (shouldStopHandlingEvents)
             originatingContext.StopHandlingEvents();
-            
+
         if (!originatingContext.IsDisposing)
             originatingContext.OpenDevices.Remove(this);
     }
@@ -333,7 +333,7 @@ public partial class UsbDevice
 
         IntPtr deviceHandle = IntPtr.Zero;
         var ret = NativeMethods.Open(this.device, ref deviceHandle);
-            
+
         if (ret == Error.Success)
         {
             this.deviceHandle = DeviceHandle.DangerousCreate(deviceHandle);

@@ -20,9 +20,9 @@
 // 
 //
 
+using LibUsbDotNet.Main;
 using System;
 using System.Diagnostics;
-using LibUsbDotNet.Main;
 
 namespace LibUsbDotNet.Info;
 

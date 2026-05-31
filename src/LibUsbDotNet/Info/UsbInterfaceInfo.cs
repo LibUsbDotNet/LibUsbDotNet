@@ -72,7 +72,7 @@ public class UsbInterfaceInfo : UsbBaseInfo
             SubClass = descriptor.InterfaceSubClass,
             RawDescriptors = new byte[descriptor.ExtraLength]
         };
-            
+
         var endpoints = descriptor.Endpoint;
 
         for (int i = 0; i < descriptor.NumEndpoints; i++)
@@ -82,7 +82,7 @@ public class UsbInterfaceInfo : UsbBaseInfo
                 value.endpoints.Add(UsbEndpointInfo.FromUsbEndpointDescriptor(endpoints[i]));
             }
         }
-            
+
         if (descriptor.ExtraLength > 0)
         {
             Span<byte> extra = new Span<byte>(descriptor.Extra, descriptor.ExtraLength);
