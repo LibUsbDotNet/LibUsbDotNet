@@ -39,12 +39,12 @@ jobs:
         if: matrix.sys == 'macos-latest'
         run: |
           brew install libusb
+          echo "DYLD_LIBRARY_PATH=$(brew --prefix libusb)/lib:$DYLD_LIBRARY_PATH" >> $GITHUB_ENV
 
       - name: Build
         run: dotnet pack src/LibUsbDotNet/LibUsbDotNet.csproj -c Release -o ${{ github.workspace }}/nuget/
 
       - name: Test
-        if: matrix.sys == 'ubuntu-latest' || matrix.sys == 'windows-latest'
         run: dotnet test src/LibUsbDotNet.Tests/LibUsbDotNet.Tests.csproj
 
       - name: Upload LibUsbDotNet NuGet package
