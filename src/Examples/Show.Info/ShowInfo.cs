@@ -1,3 +1,7 @@
+// SPDX-FileCopyrightText: 2006-2010 Travis Robinson
+// SPDX-FileCopyrightText: 2011-2023 LibUsbDotNet contributors
+// SPDX-License-Identifier: LGPL-2.0-or-later
+
 using LibUsbDotNet.Info;
 using LibUsbDotNet.LibUsb;
 using System;
