@@ -45,4 +45,9 @@ public static class UsbConstants
     /// Endpoint number mask.
     /// </summary>
     public const byte EndpointNumberMask = 0xf;
+
+    /// <summary>
+    /// Endpoint type mask.
+    /// </summary>
+    public const byte EndpointTypeMask = 0x3;
 }

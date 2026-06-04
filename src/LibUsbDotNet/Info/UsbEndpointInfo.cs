@@ -73,6 +73,11 @@ public class UsbEndpointInfo : UsbBaseInfo
     public virtual byte Attributes { get; private set; }
 
     /// <summary>
+    /// The transfer type supported by this endpoint, determined by bits 0:1 of the <see cref="Attributes"/> property.
+    /// </summary>
+    public EndpointType EndpointType { get { return (EndpointType)(Attributes & UsbConstants.EndpointTypeMask); } }
+
+    /// <summary>
     /// The address of the endpoint described by this descriptor.
     /// </summary>
     /// <remarks>
@@ -83,6 +88,11 @@ public class UsbEndpointInfo : UsbBaseInfo
     /// </list>
     /// </remarks>
     public virtual byte EndpointAddress { get; private set; }
+
+    /// <summary>
+    /// The direction of the endpoint, determined by bit 7 of the <see cref="EndpointAddress"/> property.
+    /// </summary>
+    public EndpointDirection EndpointDirection { get { return (EndpointDirection)(EndpointAddress & UsbConstants.EndpointDirectionMask); } }
 
     /// <summary>
     /// Interval for polling endpoint for data transfers.
@@ -107,6 +117,8 @@ public class UsbEndpointInfo : UsbBaseInfo
     /// <inheritdoc />
     public override string ToString() =>
         $"Address: 0x{EndpointAddress:X2}\n" +
+        $"EndpointDirection: {EndpointDirection}\n" +
+        $"EndpointType: {EndpointType}\n" +
         $"Interval: {Interval}\n" +
         $"MaxPacketSize: {MaxPacketSize}\n" +
         $"Refresh: {Refresh}\n" +
