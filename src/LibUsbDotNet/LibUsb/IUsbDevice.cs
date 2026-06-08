@@ -239,6 +239,13 @@ public interface IUsbDevice : IDisposable
     UsbEndpointWriter OpenEndpointWriter(WriteEndpointID writeEndpointID, EndpointType endpointType);
 
     /// <summary>
+    /// Opens an endpoint for writing
+    /// </summary>
+    /// <param name="endpointInfo">Endpoint information for write operations.</param>
+    /// <returns>A <see cref="UsbEndpointWriter"/> class ready for writing. If the specified endpoint is already been opened, the original <see cref="UsbEndpointWriter"/> class is returned.</returns>
+    UsbEndpointWriter OpenEndpointWriter(UsbEndpointInfo endpointInfo);
+
+    /// <summary>
     /// Sets the USB devices active configuration value.
     /// </summary>
     /// <param name="config">The active configuration value. A zero value means the device is not configured and a non-zero value indicates the device is configured.</param>

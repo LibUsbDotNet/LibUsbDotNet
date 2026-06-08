@@ -20,7 +20,9 @@
 // 
 //
 
+using LibUsbDotNet.Info;
 using LibUsbDotNet.Main;
+using System;
 using System.Threading;
 
 namespace LibUsbDotNet.LibUsb;
@@ -92,5 +94,17 @@ public partial class UsbDevice
         byte altIntefaceID = this.mClaimedInterfaces.Count == 0 ? this.usbAltInterfaceSettings[0] : this.usbAltInterfaceSettings[this.mClaimedInterfaces[this.mClaimedInterfaces.Count - 1]];
 
         return new UsbEndpointWriter(this, altIntefaceID, writeEndpointID, endpointType);
+    }
+
+    /// <summary>
+    /// Opens an endpoint for writing
+    /// </summary>
+    /// <param name="endpointInfo">Endpoint information for write operations.</param>
+    /// <returns>A <see cref="UsbEndpointWriter"/> class ready for writing. If the specified endpoint is already been opened, the original <see cref="UsbEndpointWriter"/> class is returned.</returns>
+    public UsbEndpointWriter OpenEndpointWriter(UsbEndpointInfo endpointInfo)
+    {
+        if (endpointInfo.EndpointDirection != EndpointDirection.Out)
+            throw new ArgumentException($"Endpoint {endpointInfo.EndpointAddress} is not a write endpoint.");
+        return this.OpenEndpointWriter((WriteEndpointID)endpointInfo.EndpointAddress, endpointInfo.EndpointType);
     }
 }
