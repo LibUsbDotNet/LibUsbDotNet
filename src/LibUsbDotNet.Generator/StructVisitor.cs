@@ -23,7 +23,18 @@ namespace LibUsbDotNet.Generator
 
         public ChildVisitResult Visit(Cursor cursor, Cursor parent)
         {
-            if (!cursor.GetLocation().IsFromMainFile())
+            // GetLocation() can return null for cursors that libclang/ClangSharp
+            // synthesizes without a backing source location (observed with newer
+            // libusb/clang headers). Warn and skip rather than crashing.
+            var location = cursor.GetLocation();
+
+            if (location == null)
+            {
+                Console.Error.WriteLine($"Warning: skipping struct cursor '{cursor.GetSpelling()}' with no source location.");
+                return ChildVisitResult.Continue;
+            }
+
+            if (!location.IsFromMainFile())
             {
                 return ChildVisitResult.Continue;
             }
@@ -44,7 +55,7 @@ namespace LibUsbDotNet.Generator
                 {
                     var forwardDeclaringVisitor = new ForwardDeclarationVisitor(cursor, skipSystemHeaderCheck: true);
                     forwardDeclaringVisitor.VisitChildren(cursor.GetSemanticParent());
-                    nativeName = forwardDeclaringVisitor.ForwardDeclarationCursor.GetSpelling();
+                    nativeName = forwardDeclaringVisitor.ForwardDeclarationCursor?.GetSpelling();
 
                     if (string.IsNullOrEmpty(nativeName))
                     {
@@ -225,7 +236,17 @@ namespace LibUsbDotNet.Generator
             // - Full Comment
             // - Paragraph Comment or ParamCommand comment
             // - Text Comment
+            // Comment.FromCursor returns null when libclang produces no parsed
+            // comment tree for this cursor (observed with newer headers). Warn so
+            // that silently dropped documentation does not go unnoticed.
             var fullComment = Comment.FromCursor(cursor);
+
+            if (fullComment == null)
+            {
+                Console.Error.WriteLine($"Warning: no parsed documentation for struct cursor '{cursor.GetSpelling()}'.");
+                return null;
+            }
+
             var fullCommentKind = fullComment.GetKind();
             var fullCommentChildren = fullComment.GetNumChildren();
 
@@ -238,7 +259,15 @@ namespace LibUsbDotNet.Generator
 
             for (uint i = 0; i < fullCommentChildren; i++)
             {
+                // GetChild can return null for a malformed/partial comment tree;
+                // skip the node rather than dereferencing it.
                 var childComment = fullComment.GetChild(i);
+
+                if (childComment == null)
+                {
+                    continue;
+                }
+
                 var childCommentKind = childComment.GetKind();
 
                 if (childCommentKind != CommentKind.Paragraph
@@ -294,6 +323,12 @@ namespace LibUsbDotNet.Generator
                 for (uint i = 0; i < childCount; i++)
                 {
                     var child = comment.GetChild(i);
+
+                    if (child == null)
+                    {
+                        continue;
+                    }
+
                     GetCommentInnerText(child, builder);
                 }
             }

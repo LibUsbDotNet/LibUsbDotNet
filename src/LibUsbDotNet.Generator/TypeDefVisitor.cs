@@ -2,10 +2,10 @@
 // SPDX-License-Identifier: LGPL-2.0-or-later
 
 using Core.Clang;
+using System;
 
 namespace LibUsbDotNet.Generator
 {
-
     internal class TypeDefVisitor
     {
         private readonly Generator generator;
@@ -17,7 +17,18 @@ namespace LibUsbDotNet.Generator
 
         public ChildVisitResult Visit(Cursor cursor, Cursor parent)
         {
-            if (!cursor.GetLocation().IsFromMainFile())
+            // GetLocation() can return null for cursors that libclang/ClangSharp
+            // synthesizes without a backing source location (observed with newer
+            // libusb/clang headers). Warn and skip rather than crashing.
+            var location = cursor.GetLocation();
+
+            if (location == null)
+            {
+                Console.Error.WriteLine($"Warning: skipping typedef cursor '{cursor.GetSpelling()}' with no source location.");
+                return ChildVisitResult.Continue;
+            }
+
+            if (!location.IsFromMainFile())
             {
                 return ChildVisitResult.Continue;
             }
