@@ -1,4 +1,7 @@
-﻿using Core.Clang.Diagnostics;
+﻿// SPDX-FileCopyrightText: Copyright (c) Quamotion
+// SPDX-License-Identifier: LGPL-2.0-or-later
+
+using Core.Clang.Diagnostics;
 using LibUsbDotNet.Generator.Primitives;
 using Nustache.Core;
 using System;
