@@ -1,6 +1,5 @@
-﻿// <copyright file="ForwardDeclarationVisitor.cs" company="Quamotion">
-// Copyright (c) Quamotion. All rights reserved.
-// </copyright>
+﻿// SPDX-FileCopyrightText: Copyright (c) Quamotion
+// SPDX-License-Identifier: LGPL-2.0-or-later
 
 namespace LibUsbDotNet.Generator
 {
