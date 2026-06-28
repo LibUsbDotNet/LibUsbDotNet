@@ -3,6 +3,7 @@
 
 using Core.Clang;
 using Core.Clang.Documentation.Doxygen;
+using System;
 using System.Collections.Generic;
 using System.Text;
 using Enum = LibUsbDotNet.Generator.Primitives.Enum;
@@ -21,7 +22,18 @@ namespace LibUsbDotNet.Generator
 
         public ChildVisitResult Visit(Cursor cursor, Cursor parent)
         {
-            if (!cursor.GetLocation().IsFromMainFile())
+            // GetLocation() can return null for cursors that libclang/ClangSharp
+            // synthesizes without a backing source location. This has been observed
+            // with newer libusb/clang headers. Warn and skip rather than crashing.
+            var location = cursor.GetLocation();
+
+            if (location == null)
+            {
+                Console.Error.WriteLine($"Warning: skipping enum cursor '{cursor.GetSpelling()}' with no source location.");
+                return ChildVisitResult.Continue;
+            }
+
+            if (!location.IsFromMainFile())
             {
                 return ChildVisitResult.Continue;
             }
@@ -40,7 +52,7 @@ namespace LibUsbDotNet.Generator
                 {
                     var forwardDeclaringVisitor = new ForwardDeclarationVisitor(cursor, skipSystemHeaderCheck: true);
                     forwardDeclaringVisitor.VisitChildren(cursor.GetLexicalParent());
-                    nativeName = forwardDeclaringVisitor.ForwardDeclarationCursor.GetSpelling();
+                    nativeName = forwardDeclaringVisitor.ForwardDeclarationCursor?.GetSpelling();
 
                     if (string.IsNullOrEmpty(nativeName))
                     {
@@ -131,7 +143,17 @@ namespace LibUsbDotNet.Generator
             // - Full Comment
             // - Paragraph Comment
             // - Text Comment
+            // Comment.FromCursor returns null when libclang produces no parsed
+            // comment tree for this cursor (observed with newer headers). Warn so
+            // that silently dropped documentation does not go unnoticed.
             var fullComment = Comment.FromCursor(cursor);
+
+            if (fullComment == null)
+            {
+                Console.Error.WriteLine($"Warning: no parsed documentation for enum cursor '{cursor.GetSpelling()}'.");
+                return null;
+            }
+
             var fullCommentKind = fullComment.GetKind();
             var fullCommentChildren = fullComment.GetNumChildren();
 
@@ -145,7 +167,15 @@ namespace LibUsbDotNet.Generator
 
             for (uint i = 0; i < fullCommentChildren; i++)
             {
+                // GetChild can return null for a malformed/partial comment tree;
+                // skip the node rather than dereferencing it.
                 var paragraphComment = fullComment.GetChild(i);
+
+                if (paragraphComment == null)
+                {
+                    continue;
+                }
+
                 var paragraphCommentKind = paragraphComment.GetKind();
                 var paragraphCommentChildren = paragraphComment.GetNumChildren();
 
@@ -155,6 +185,12 @@ namespace LibUsbDotNet.Generator
                 }
 
                 var textComment = paragraphComment.GetChild(0);
+
+                if (textComment == null)
+                {
+                    continue;
+                }
+
                 var textCommentKind = textComment.GetKind();
 
                 if (textCommentKind == CommentKind.Text)
