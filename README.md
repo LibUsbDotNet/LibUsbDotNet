@@ -1,6 +1,7 @@
 # LibUsbDotNet
 
 [![Build](https://github.com/LibUsbDotNet/LibUsbDotNet/actions/workflows/build.yaml/badge.svg)](https://github.com/LibUsbDotNet/LibUsbDotNet/actions/workflows/build.yaml)
+[![CodeQL](https://github.com/LibUsbDotNet/LibUsbDotNet/actions/workflows/codeql.yml/badge.svg)](https://github.com/LibUsbDotNet/LibUsbDotNet/actions/workflows/codeql.yml)
 [![NuGet version](https://img.shields.io/nuget/v/LibUsbDotNet.svg)](https://www.nuget.org/packages/LibUsbDotNet/)
 ![LGPLv3 license](https://img.shields.io/github/license/LibUsbDotNet/LibUsbDotNet.svg)
 
