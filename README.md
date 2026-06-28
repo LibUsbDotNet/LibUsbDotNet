@@ -1,6 +1,6 @@
 # LibUsbDotNet
 
-[![Build Status](https://dev.azure.com/libusbdotnet/libusbdotnet/_apis/build/status/LibUsbDotNet.LibUsbDotNet?branchName=master)](https://dev.azure.com/libusbdotnet/libusbdotnet/_build/latest?definitionId=1)
+[![Build](https://github.com/LibUsbDotNet/LibUsbDotNet/actions/workflows/build.yaml/badge.svg)](https://github.com/LibUsbDotNet/LibUsbDotNet/actions/workflows/build.yaml)
 [![NuGet version](https://img.shields.io/nuget/v/LibUsbDotNet.svg)](https://www.nuget.org/packages/LibUsbDotNet/)
 ![LGPLv3 license](https://img.shields.io/github/license/LibUsbDotNet/LibUsbDotNet.svg)
 
