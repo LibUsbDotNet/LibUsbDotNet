@@ -4,10 +4,16 @@ on:
     branches:
       - master
 
+permissions:
+  contents: read
+
 jobs:
   generate-docs:
 
     runs-on: windows-latest
+
+    permissions:
+      contents: write # To push docs to the gh-pages branch
 
     steps:
       - uses: actions/checkout@v7
