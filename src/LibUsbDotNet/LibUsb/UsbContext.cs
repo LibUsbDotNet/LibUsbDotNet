@@ -339,7 +339,13 @@ public class UsbContext : IUsbContext
     {
         while (this.stopHandlingEvents == 0)
         {
-            NativeMethods.HandleEventsCompleted(this.context, ref stopHandlingEvents).ThrowOnError();
+            var error = NativeMethods.HandleEventsCompleted(this.context, ref stopHandlingEvents);
+            if (error == Error.Interrupted)
+            {
+                continue;
+            }
+
+            error.ThrowOnError();
         }
     }
 }
