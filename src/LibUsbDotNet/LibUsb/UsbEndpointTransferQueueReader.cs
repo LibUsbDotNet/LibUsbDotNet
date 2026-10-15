@@ -2,10 +2,8 @@
 using System;
 using System.Collections.Generic;
 using System.IO;
-using System.Linq;
 using System.Threading;
 using System.Threading.Channels;
-using System.Threading.Tasks;
 
 namespace LibUsbDotNet.LibUsb
 {
@@ -14,37 +12,12 @@ namespace LibUsbDotNet.LibUsb
     /// </summary>
     public sealed class UsbEndpointTransferQueueReader : IDisposable
     {
-        private readonly List<TimedTask> _transferQueue;
-        private readonly Task _readTask;
         private readonly UsbEndpointReader _usbEndpointReader;
         private readonly CancellationTokenSource _cts;
         private readonly int _readBufferSize;
         private readonly Channel<byte[]> _dataChannel;
-
-        /// <summary>
-        /// Represents a task that has been timed, allowing us to track when it was completed.
-        /// </summary>
-        private sealed class TimedTask
-        {
-            /// <summary>
-            /// The task that represents the read operation.
-            /// </summary>
-            public Task Task { get; }
-
-            /// <summary>
-            /// The stopwatch that tracks when the task was completed.
-            /// </summary>
-            public DateTime CompletedAt { get; private set; }
-
-            /// <summary>
-            /// Initializes a new instance of the <see cref="TimedTask"/> class with the specified task.
-            /// </summary>
-            public TimedTask(Task task)
-            {
-                Task = task;
-                Task.ContinueWith(_ => CompletedAt = DateTime.UtcNow, TaskContinuationOptions.ExecuteSynchronously);
-            }
-        }
+        private readonly int _readTimeoutMilliseconds;
+        private readonly List<Thread> _rxThreads;
 
         /// <summary>
         /// Channel that provides the data received from the USB endpoint.
@@ -63,8 +36,11 @@ namespace LibUsbDotNet.LibUsb
         /// <param name="readBufferSize">Read buffer size for <see cref="UsbEndpointReader"/></param>
         /// <param name="readEndpointId">Endpoint ID for <see cref="UsbEndpointReader"/></param>
         /// <param name="transferQueueSize">Specifies how many read operations can be queued at once and is by default set to 1.</param>
-        public UsbEndpointTransferQueueReader(IUsbDevice usbDevice, int readBufferSize, ReadEndpointID readEndpointId, int transferQueueSize = 1)
-            : this(usbDevice, readBufferSize, readEndpointId, transferQueueSize, CancellationToken.None)
+        /// <param name="readTimeoutMilliseconds">Specifies the read timeout in milliseconds and is by default set to 100.</param>
+        /// <param name="threadPriority">Specifies the priority of the read threads and is by default set to <see cref="ThreadPriority.Normal"/>.</param>
+        public UsbEndpointTransferQueueReader(IUsbDevice usbDevice, int readBufferSize, ReadEndpointID readEndpointId, 
+            int transferQueueSize = 1, int readTimeoutMilliseconds = 100, ThreadPriority threadPriority = ThreadPriority.Normal)
+            : this(usbDevice, readBufferSize, readEndpointId, transferQueueSize, readTimeoutMilliseconds, threadPriority, CancellationToken.None)
         {
         }
 
@@ -76,80 +52,95 @@ namespace LibUsbDotNet.LibUsb
         /// <param name="readEndpointId">Endpoint ID for <see cref="UsbEndpointReader"/></param>
         /// <param name="transferQueueSize">Size of the transfer queue</param>
         /// <param name="token">Token</param>
-        public UsbEndpointTransferQueueReader(IUsbDevice usbDevice, int readBufferSize, ReadEndpointID readEndpointId, int transferQueueSize, CancellationToken token)
+        /// <param name="readTimeoutMilliseconds">Specifies the read timeout in milliseconds and is by default set to 100.</param>
+        /// <param name="threadPriority">Specifies the priority of the read threads and is by default set to <see cref="ThreadPriority.Normal"/>.</param>
+        public UsbEndpointTransferQueueReader(IUsbDevice usbDevice, int readBufferSize, ReadEndpointID readEndpointId, 
+            int transferQueueSize, int readTimeoutMilliseconds, ThreadPriority threadPriority, CancellationToken token)
         {
-            _usbEndpointReader = usbDevice.OpenEndpointReader(readEndpointId, readBufferSize);
-            _transferQueue = new List<TimedTask>(transferQueueSize);
-            _cts = CancellationTokenSource.CreateLinkedTokenSource(token);
-            _readBufferSize = readBufferSize;
-            _dataChannel = Channel.CreateUnbounded<byte[]>();
+            transferQueueSize = transferQueueSize < 1 ? 1 : transferQueueSize;
+            _readTimeoutMilliseconds = readTimeoutMilliseconds < 1 ? 100 : readTimeoutMilliseconds;
+            _readBufferSize = readBufferSize < 1 ? 1024 : readBufferSize;
 
-            // Pre-fill the queue with read tasks
+            _usbEndpointReader = usbDevice.OpenEndpointReader(readEndpointId, _readBufferSize);
+            _cts = CancellationTokenSource.CreateLinkedTokenSource(token);
+            _dataChannel = Channel.CreateBounded<byte[]>(
+                new BoundedChannelOptions(100)
+                {
+                    FullMode = BoundedChannelFullMode.DropOldest
+                });
+            _rxThreads = new List<Thread>(transferQueueSize);
+
             for (var i = 0; i < transferQueueSize; i++)
             {
-                _transferQueue.Add(new TimedTask(ReadAsync()));
+                var rxThread = new Thread(Read)
+                {
+                    IsBackground = true,
+                    Priority = threadPriority,
+                    Name = $"LibUsbTransferQueueReader-Rx-{i}"
+                };
+                _rxThreads.Add(rxThread);
+                rxThread.Start();
             }
-
-            _readTask = Task.Factory.StartNew(TransferQueueRead, _cts.Token, TaskCreationOptions.LongRunning, TaskScheduler.Default);
         }
 
-        private Task TransferQueueRead()
+        private void Read()
         {
+            var buffer = new byte[_readBufferSize];
+
             while (!_cts.Token.IsCancellationRequested)
             {
                 try
                 {
-                    // Wait for any task in the transfer queue to complete
-                    Task.WhenAny(_transferQueue.Select(queue => queue.Task)).Wait(_cts.Token);
+                    var error = _usbEndpointReader.Read(buffer, 0, buffer.Length, _readTimeoutMilliseconds,
+                        out var transferLength);
+                    if (error != Error.Success && error != Error.Timeout)
+                    {
+                        ErrorOccurred?.Invoke(this, new ErrorEventArgs(new UsbException(error)));
+                        return;
+                    }
 
-                    // Sort the transfer queue by the elapsed time since the task was completed
-                    _transferQueue.Sort((t1, t2) => t1.CompletedAt.CompareTo(t2.CompletedAt));
+                    if (transferLength == 0)
+                    {
+                        // No data received, possibly endpoint is idle or no data available
+                        continue;
+                    }
 
-                    // Remove the first completed task from the queue and enqueue a new read task
-                    var completedTask = _transferQueue.FirstOrDefault(t => t.Task.IsCompleted);
-                    _transferQueue.Remove(completedTask);
-                    _transferQueue.Add(new TimedTask(ReadAsync()));
+                    // Write the received data to the channel
+                    var data = new byte[transferLength];
+                    Array.Copy(buffer, data, transferLength);
+
+                    var writeResult = _dataChannel.Writer.TryWrite(data);
+                    if (!writeResult)
+                    {
+                        ErrorOccurred?.Invoke(this,
+                            new ErrorEventArgs(new InvalidOperationException("Failed to write data to the channel.")));
+                    }
+
+                    Array.Clear(buffer, 0, buffer.Length);
                 }
-                catch (Exception ex)
+                catch (Exception e)
                 {
-                    ErrorOccurred?.Invoke(this, new ErrorEventArgs(ex));
+                    ErrorOccurred?.Invoke(this, new ErrorEventArgs(e));
                 }
             }
-            return Task.CompletedTask;
-        }
-
-        private async Task ReadAsync()
-        {
-            var buffer = new byte[_readBufferSize];
-            var (error, transferLength) = await _usbEndpointReader.ReadAsync(buffer, 0, buffer.Length, 100).ConfigureAwait(false);
-            if (error != Error.Success && error != Error.Timeout)
-            {
-                ErrorOccurred?.Invoke(this, new ErrorEventArgs(new UsbException(error)));
-                return;
-            }
-
-            if (transferLength == 0)
-            {
-                // No data received, possibly endpoint is idle or no data available
-                return;
-            }
-
-            // Write the received data to the channel
-            var data = new byte[transferLength];
-            Array.Copy(buffer, data, transferLength);
-            await _dataChannel.Writer.WriteAsync(data, _cts.Token).ConfigureAwait(false);
         }
 
         /// <inheritdoc/>
         public void Dispose()
         {
             _cts.Cancel();
-            _readTask.Wait();
+
+            foreach (var rxThread in _rxThreads)
+            {
+                if (!rxThread.Join(TimeSpan.FromSeconds(5)))
+                {
+                    ErrorOccurred?.Invoke(this,
+                        new ErrorEventArgs(new TimeoutException("Data receive thread did not terminate within the expected time.")));
+                }
+            }
 
             _dataChannel.Writer.Complete();
             _dataChannel.Reader.Completion.Wait();
-
-            _usbEndpointReader.ReadFlush();
         }
     }
 }

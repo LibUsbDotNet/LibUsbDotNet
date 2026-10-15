@@ -218,10 +218,17 @@ public interface IUsbDevice : IDisposable
     /// Open a <see cref="UsbEndpointTransferQueueReader"/> for reading data from a <see cref="EndpointType.Bulk"/> endpoint.
     /// </summary>
     /// <param name="readEndpointId">Endpoint number for read operations.</param>
-    /// <param name="readBufferSize">TODO: Remove this parameter.</param>
+    /// <param name="readBufferSize">Size of the buffer</param>
     /// <param name="token">Cancellation token</param>
     /// <param name="transferQueueSize">Specifies how many read operations can be queued at once and is by default set to 1.</param>
-    UsbEndpointTransferQueueReader OpenEndpointTransferQueueReader(ReadEndpointID readEndpointId, int readBufferSize, CancellationToken token, int transferQueueSize = 1);
+    /// <param name="readTimeoutMilliseconds">Specifies the read timeout in milliseconds and is by default set to 100.</param>
+    /// <param name="threadPriority">Specifies the priority of the read threads and is by default set to <see cref="ThreadPriority.Normal"/>.</param>
+    UsbEndpointTransferQueueReader OpenEndpointTransferQueueReader(ReadEndpointID readEndpointId,
+        int readBufferSize, 
+        CancellationToken token, 
+        int transferQueueSize = 1,
+        int readTimeoutMilliseconds = 100,
+        ThreadPriority threadPriority = ThreadPriority.Normal);
 
     /// <summary>
     /// Opens a <see cref="EndpointType.Bulk"/> endpoint for writing
