@@ -84,6 +84,11 @@ public interface IUsbDevice : IDisposable
     ushort ProductId { get; }
 
     /// <summary>
+    /// Fires when an asynchronous transfer completes (this includes successful completion, failure, or cancellation).
+    /// </summary>
+    event EventHandler<UsbTransferEventArgs> TransferCompleted;
+
+    /// <summary>
     /// Closes and frees device resources.
     /// </summary>
     void Close();
@@ -340,6 +345,24 @@ public interface IUsbDevice : IDisposable
     /// <returns>The number of bytes sent or received (depends on the direction of the control transfer).
     /// </returns>
     Task<int> ControlTransferAsync(UsbSetupPacket setupPacket, byte[] buffer, int offset, int length);
+
+    /// <summary>
+    /// Start an asynchronous transfer.
+    /// </summary>
+    /// <param name="endpointId">The id of the endpoint to use.</param>
+    /// <param name="endpointType">The <see cref="EndpointType"/> of the endpoint.</param>
+    /// <param name="buffer">Data to be sent/received from the device.</param>
+    /// <param name="timeout">Maximum time to wait for the transfer to complete.</param>
+    /// <param name="isoPacketSize">The size of isochronous packets to allocate, if any.</param>
+    /// <returns>A <seealso cref="UsbTransferToken"/> that corresponds to the new transfer.</returns>
+    UsbTransferToken TransferAsync(byte endpointId, EndpointType endpointType, Memory<byte> buffer, int timeout, int isoPacketSize = 0);
+
+    /// <summary>
+    /// Cancel an asynchronous transfer that was previously submitted.
+    /// </summary>
+    /// <param name="token">The <seealso cref="UsbTransferToken"/> of the transfer to cancel.</param>
+    /// <returns>Returns an <see cref="Error"/> if cancellation was unsuccessful.</returns>
+    Error CancelTransfer(UsbTransferToken token);
 
     /// <summary>
     /// Creates a clone of this device.
