@@ -64,27 +64,4 @@ public static class ErrorExtensions
             return value;
         }
     }
-
-    public static Error ToError(TransferStatus transferStatus)
-    {
-        switch (transferStatus)
-        {
-            case TransferStatus.Completed:
-                return Error.Success;
-            case TransferStatus.Error:
-                return Error.Pipe;
-            case TransferStatus.TimedOut:
-                return Error.Timeout;
-            case TransferStatus.Cancelled:
-                return Error.Io;
-            case TransferStatus.Stall:
-                return Error.Pipe;
-            case TransferStatus.NoDevice:
-                return Error.NoDevice;
-            case TransferStatus.Overflow:
-                return Error.Overflow;
-            default:
-                return Error.Other;
-        }
-    }
 }
