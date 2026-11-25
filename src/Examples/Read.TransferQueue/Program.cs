@@ -42,6 +42,7 @@ cts.Cancel();
 dataReceivedTask.Wait();
 
 reader.ErrorOccurred -= OnErrorOccurred;
+reader.Dispose();
 
 if (usbDevice.IsOpen)
 {

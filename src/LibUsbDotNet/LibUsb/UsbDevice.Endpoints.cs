@@ -39,9 +39,12 @@ public partial class UsbDevice
     }
 
     /// <inheritdoc/>
-    public UsbEndpointTransferQueueReader OpenEndpointTransferQueueReader(ReadEndpointID readEndpointId, int readBufferSize, CancellationToken token, int transferQueueSize = 1)
+    public UsbEndpointTransferQueueReader OpenEndpointTransferQueueReader(ReadEndpointID readEndpointId, int readBufferSize,
+        CancellationToken token, int transferQueueSize = 1, int readTimeoutMilliseconds = 100,
+        ThreadPriority threadPriority = ThreadPriority.Normal)
     {
-        return new UsbEndpointTransferQueueReader(this, readBufferSize, readEndpointId, transferQueueSize, token);
+        return new UsbEndpointTransferQueueReader(this, readBufferSize, readEndpointId,
+            transferQueueSize, readTimeoutMilliseconds, threadPriority, token);
     }
 
     /// <summary>
