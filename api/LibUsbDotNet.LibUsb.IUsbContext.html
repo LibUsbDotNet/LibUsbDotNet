@@ -1,0 +1,443 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+      <title>Interface IUsbContext </title>
+      <meta name="viewport" content="width=device-width, initial-scale=1.0">
+      <meta name="title" content="Interface IUsbContext ">
+      
+      <meta name="description" content="Initializes a new libusb context. You can access most of libusb&#39;s functionality through context. Multiple contexts operate in isolation from each other.">
+      <link rel="icon" href="../favicon.ico">
+      <link rel="stylesheet" href="../public/docfx.min.css">
+      <link rel="stylesheet" href="../public/main.css">
+      <meta name="docfx:navrel" content="../toc.html">
+      <meta name="docfx:tocrel" content="toc.html">
+      
+      
+      
+      
+      <meta name="docfx:docurl" content="https://github.com/LibUsbDotNet/LibUsbDotNet/new/master/apiSpec/new?filename=LibUsbDotNet_LibUsb_IUsbContext.md&amp;value=---%0Auid%3A%20LibUsbDotNet.LibUsb.IUsbContext%0Asummary%3A%20&#39;*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax&#39;%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A">
+      <meta name="loc:inThisArticle" content="In this article">
+      <meta name="loc:searchResultsCount" content="{count} results for &quot;{query}&quot;">
+      <meta name="loc:searchNoResults" content="No results for &quot;{query}&quot;">
+      <meta name="loc:tocFilter" content="Filter by title">
+      <meta name="loc:nextArticle" content="Next">
+      <meta name="loc:prevArticle" content="Previous">
+      <meta name="loc:themeLight" content="Light">
+      <meta name="loc:themeDark" content="Dark">
+      <meta name="loc:themeAuto" content="Auto">
+      <meta name="loc:changeTheme" content="Change theme">
+      <meta name="loc:copy" content="Copy">
+      <meta name="loc:downloadPdf" content="Download PDF">
+
+      <script type="module" src="./../public/docfx.min.js"></script>
+
+      <script>
+        const theme = localStorage.getItem('theme') || 'auto'
+        document.documentElement.setAttribute('data-bs-theme', theme === 'auto' ? (window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light') : theme)
+      </script>
+
+  </head>
+
+  <body class="tex2jax_ignore" data-layout="" data-yaml-mime="ManagedReference">
+    <header class="bg-body border-bottom">
+      <nav id="autocollapse" class="navbar navbar-expand-md" role="navigation">
+        <div class="container-xxl flex-nowrap">
+          <a class="navbar-brand" href="../index.html">
+            <img id="logo" class="svg" src="../logo.svg" alt="">
+            
+          </a>
+          <button class="btn btn-lg d-md-none border-0" type="button" data-bs-toggle="collapse" data-bs-target="#navpanel" aria-controls="navpanel" aria-expanded="false" aria-label="Toggle navigation">
+            <i class="bi bi-three-dots"></i>
+          </button>
+          <div class="collapse navbar-collapse" id="navpanel">
+            <div id="navbar">
+            </div>
+          </div>
+        </div>
+      </nav>
+    </header>
+
+    <main class="container-xxl">
+      <div class="toc-offcanvas">
+        <div class="offcanvas-md offcanvas-start" tabindex="-1" id="tocOffcanvas" aria-labelledby="tocOffcanvasLabel">
+          <div class="offcanvas-header">
+            <h5 class="offcanvas-title" id="tocOffcanvasLabel">Table of Contents</h5>
+            <button type="button" class="btn-close" data-bs-dismiss="offcanvas" data-bs-target="#tocOffcanvas" aria-label="Close"></button>
+          </div>
+          <div class="offcanvas-body">
+            <nav class="toc" id="toc"></nav>
+          </div>
+        </div>
+      </div>
+
+      <div class="content">
+        <div class="actionbar">
+          <button class="btn btn-lg border-0 d-md-none" type="button" data-bs-toggle="offcanvas" data-bs-target="#tocOffcanvas" aria-controls="tocOffcanvas" aria-expanded="false" aria-label="Show table of contents">
+            <i class="bi bi-list"></i>
+          </button>
+
+          <nav id="breadcrumb"></nav>
+        </div>
+
+        <article data-uid="LibUsbDotNet.LibUsb.IUsbContext">
+
+
+
+  <h1 id="LibUsbDotNet_LibUsb_IUsbContext" data-uid="LibUsbDotNet.LibUsb.IUsbContext" class="text-break">
+Interface IUsbContext  <a class="header-action link-secondary" title="View source" href="https://github.com/LibUsbDotNet/LibUsbDotNet/blob/master/src/LibUsbDotNet/LibUsb/IUsbContext.cs/#L35"><i class="bi bi-code-slash"></i></a>
+  </h1>
+
+  <div class="facts text-secondary">
+    <dl><dt>Namespace</dt><dd><a class="xref" href="LibUsbDotNet.html">LibUsbDotNet</a>.<a class="xref" href="LibUsbDotNet.LibUsb.html">LibUsb</a></dd></dl>
+  <dl><dt>Assembly</dt><dd>LibUsbDotNet.dll</dd></dl>
+  </div>
+
+  <div class="markdown summary"><p>Initializes a new libusb context. You can access most of libusb's functionality through context. Multiple
+contexts operate in isolation from each other.</p>
+</div>
+  <div class="markdown conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public interface IUsbContext : IDisposable</code></pre>
+  </div>
+
+
+
+
+
+
+
+  <dl class="typelist inheritedMembers">
+    <dt>Inherited Members</dt>
+    <dd>
+    <div>
+      <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.idisposable.dispose">IDisposable.Dispose()</a>
+    </div>
+  </dd></dl>
+
+
+
+
+
+
+  <h2 class="section" id="methods">Methods
+</h2>
+
+
+  <a id="LibUsbDotNet_LibUsb_IUsbContext_Find_" data-uid="LibUsbDotNet.LibUsb.IUsbContext.Find*"></a>
+
+  <h3 id="LibUsbDotNet_LibUsb_IUsbContext_Find_LibUsbDotNet_Main_UsbDeviceFinder_" data-uid="LibUsbDotNet.LibUsb.IUsbContext.Find(LibUsbDotNet.Main.UsbDeviceFinder)">
+  Find(UsbDeviceFinder)
+  <a class="header-action link-secondary" title="View source" href="https://github.com/LibUsbDotNet/LibUsbDotNet/blob/master/src/LibUsbDotNet/LibUsb/IUsbContext.cs/#L72"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>Finds a specific device.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">IUsbDevice Find(UsbDeviceFinder finder)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>finder</code> <a class="xref" href="LibUsbDotNet.Main.UsbDeviceFinder.html">UsbDeviceFinder</a></dt>
+    <dd><p>A finder which contains the parameters of the device you want to find.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="LibUsbDotNet.LibUsb.IUsbDevice.html">IUsbDevice</a></dt>
+    <dd><p>If found, the requested device. Otherwise, <a href="https://learn.microsoft.com/dotnet/csharp/language-reference/keywords/null">null</a>.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+
+  <a id="LibUsbDotNet_LibUsb_IUsbContext_Find_" data-uid="LibUsbDotNet.LibUsb.IUsbContext.Find*"></a>
+
+  <h3 id="LibUsbDotNet_LibUsb_IUsbContext_Find_System_Func_LibUsbDotNet_LibUsb_IUsbDevice_System_Boolean__" data-uid="LibUsbDotNet.LibUsb.IUsbContext.Find(System.Func{LibUsbDotNet.LibUsb.IUsbDevice,System.Boolean})">
+  Find(Func&lt;IUsbDevice, bool&gt;)
+  <a class="header-action link-secondary" title="View source" href="https://github.com/LibUsbDotNet/LibUsbDotNet/blob/master/src/LibUsbDotNet/LibUsb/IUsbContext.cs/#L83"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>Finds a specific device.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">IUsbDevice Find(Func&lt;IUsbDevice, bool&gt; predicate)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>predicate</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.func-2">Func</a>&lt;<a class="xref" href="LibUsbDotNet.LibUsb.IUsbDevice.html">IUsbDevice</a>, <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.boolean">bool</a>&gt;</dt>
+    <dd><p>A predicate which specifies which device you want to find.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="LibUsbDotNet.LibUsb.IUsbDevice.html">IUsbDevice</a></dt>
+    <dd><p>If found, the requested device. Otherwise, <a href="https://learn.microsoft.com/dotnet/csharp/language-reference/keywords/null">null</a>.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+
+  <a id="LibUsbDotNet_LibUsb_IUsbContext_FindAll_" data-uid="LibUsbDotNet.LibUsb.IUsbContext.FindAll*"></a>
+
+  <h3 id="LibUsbDotNet_LibUsb_IUsbContext_FindAll_LibUsbDotNet_Main_UsbDeviceFinder_" data-uid="LibUsbDotNet.LibUsb.IUsbContext.FindAll(LibUsbDotNet.Main.UsbDeviceFinder)">
+  FindAll(UsbDeviceFinder)
+  <a class="header-action link-secondary" title="View source" href="https://github.com/LibUsbDotNet/LibUsbDotNet/blob/master/src/LibUsbDotNet/LibUsb/IUsbContext.cs/#L94"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>Finds all devices which match a given criterium.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">UsbDeviceCollection FindAll(UsbDeviceFinder finder)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>finder</code> <a class="xref" href="LibUsbDotNet.Main.UsbDeviceFinder.html">UsbDeviceFinder</a></dt>
+    <dd><p>A finder which contains the parameters of the device you want to find.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="LibUsbDotNet.LibUsb.UsbDeviceCollection.html">UsbDeviceCollection</a></dt>
+    <dd><p>A list of devices which match the criteria you've specified.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+
+  <a id="LibUsbDotNet_LibUsb_IUsbContext_FindAll_" data-uid="LibUsbDotNet.LibUsb.IUsbContext.FindAll*"></a>
+
+  <h3 id="LibUsbDotNet_LibUsb_IUsbContext_FindAll_System_Func_LibUsbDotNet_LibUsb_IUsbDevice_System_Boolean__" data-uid="LibUsbDotNet.LibUsb.IUsbContext.FindAll(System.Func{LibUsbDotNet.LibUsb.IUsbDevice,System.Boolean})">
+  FindAll(Func&lt;IUsbDevice, bool&gt;)
+  <a class="header-action link-secondary" title="View source" href="https://github.com/LibUsbDotNet/LibUsbDotNet/blob/master/src/LibUsbDotNet/LibUsb/IUsbContext.cs/#L105"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>Finds all devices which match a given criterium.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">UsbDeviceCollection FindAll(Func&lt;IUsbDevice, bool&gt; predicate)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>predicate</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.func-2">Func</a>&lt;<a class="xref" href="LibUsbDotNet.LibUsb.IUsbDevice.html">IUsbDevice</a>, <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.boolean">bool</a>&gt;</dt>
+    <dd><p>A finder which contains the parameters of the device you want to find.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="LibUsbDotNet.LibUsb.UsbDeviceCollection.html">UsbDeviceCollection</a></dt>
+    <dd><p>A list of devices which match the criteria you've specified.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+
+  <a id="LibUsbDotNet_LibUsb_IUsbContext_List_" data-uid="LibUsbDotNet.LibUsb.IUsbContext.List*"></a>
+
+  <h3 id="LibUsbDotNet_LibUsb_IUsbContext_List" data-uid="LibUsbDotNet.LibUsb.IUsbContext.List">
+  List()
+  <a class="header-action link-secondary" title="View source" href="https://github.com/LibUsbDotNet/LibUsbDotNet/blob/master/src/LibUsbDotNet/LibUsb/IUsbContext.cs/#L61"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>Returns a list of USB devices currently attached to the system.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">UsbDeviceCollection List()</code></pre>
+  </div>
+
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="LibUsbDotNet.LibUsb.UsbDeviceCollection.html">UsbDeviceCollection</a></dt>
+    <dd><p>A <a class="xref" href="LibUsbDotNet.LibUsb.UsbDeviceCollection.html">UsbDeviceCollection</a> which contains the devices currently
+attached to the system.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+  <h4 class="section" id="LibUsbDotNet_LibUsb_IUsbContext_List_remarks">Remarks</h4>
+  <div class="markdown level1 remarks"><p>
+This is your entry point into finding a USB device to operate.
+</p>
+<p>
+You are expected to dispose all the devices once you are done with them. Disposing the <a class="xref" href="LibUsbDotNet.LibUsb.UsbDeviceCollection.html">UsbDeviceCollection</a>
+will dispose all devices in that collection. You can <a class="xref" href="LibUsbDotNet.LibUsb.UsbDevice.html#LibUsbDotNet_LibUsb_UsbDevice_Clone">Clone()</a> a device to get a copy of the device
+which you can use after you've disposed the <a class="xref" href="LibUsbDotNet.LibUsb.UsbDeviceCollection.html">UsbDeviceCollection</a>.
+</p>
+</div>
+
+
+
+
+  <a id="LibUsbDotNet_LibUsb_IUsbContext_SetDebugLevel_" data-uid="LibUsbDotNet.LibUsb.IUsbContext.SetDebugLevel*"></a>
+
+  <h3 id="LibUsbDotNet_LibUsb_IUsbContext_SetDebugLevel_LibUsbDotNet_LogLevel_" data-uid="LibUsbDotNet.LibUsb.IUsbContext.SetDebugLevel(LibUsbDotNet.LogLevel)">
+  SetDebugLevel(LogLevel)
+  <a class="header-action link-secondary" title="View source" href="https://github.com/LibUsbDotNet/LibUsbDotNet/blob/master/src/LibUsbDotNet/LibUsb/IUsbContext.cs/#L43"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>Set log message verbosity.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">void SetDebugLevel(LogLevel level)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>level</code> <a class="xref" href="LibUsbDotNet.LogLevel.html">LogLevel</a></dt>
+    <dd><p>The requested debug level.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+
+
+  <a id="LibUsbDotNet_LibUsb_IUsbContext_StartHandlingEvents_" data-uid="LibUsbDotNet.LibUsb.IUsbContext.StartHandlingEvents*"></a>
+
+  <h3 id="LibUsbDotNet_LibUsb_IUsbContext_StartHandlingEvents" data-uid="LibUsbDotNet.LibUsb.IUsbContext.StartHandlingEvents">
+  StartHandlingEvents()
+  <a class="header-action link-secondary" title="View source" href="https://github.com/LibUsbDotNet/LibUsbDotNet/blob/master/src/LibUsbDotNet/LibUsb/IUsbContext.cs/#L110"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>Start the event handling thread.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">void StartHandlingEvents()</code></pre>
+  </div>
+
+
+
+
+
+
+
+
+
+
+
+
+
+  <a id="LibUsbDotNet_LibUsb_IUsbContext_StopHandlingEvents_" data-uid="LibUsbDotNet.LibUsb.IUsbContext.StopHandlingEvents*"></a>
+
+  <h3 id="LibUsbDotNet_LibUsb_IUsbContext_StopHandlingEvents" data-uid="LibUsbDotNet.LibUsb.IUsbContext.StopHandlingEvents">
+  StopHandlingEvents()
+  <a class="header-action link-secondary" title="View source" href="https://github.com/LibUsbDotNet/LibUsbDotNet/blob/master/src/LibUsbDotNet/LibUsb/IUsbContext.cs/#L115"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>Stop the event handling thread.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">void StopHandlingEvents()</code></pre>
+  </div>
+
+
+
+
+
+
+
+
+
+
+
+
+
+  <h2 id="seealso">See Also</h2>
+  <div class="seealso">
+      <div><span><a href="http://libusb.sourceforge.net/api-1.0/libusb_contexts.html">http://libusb.sourceforge.net/api-1.0/libusb_contexts.html</a></span></div>
+  </div>
+
+</article>
+
+        <div class="contribution d-print-none">
+          <a href="https://github.com/LibUsbDotNet/LibUsbDotNet/blob/master/src/LibUsbDotNet/LibUsb/IUsbContext.cs/#L35" class="edit-link">Edit this page</a>
+        </div>
+
+
+      </div>
+
+      <div class="affix">
+        <nav id="affix"></nav>
+      </div>
+    </main>
+
+
+    <footer class="border-top text-secondary">
+      <div class="container-xxl">
+        <div class="flex-fill">
+          <span>Made with <a href="https://dotnet.github.io/docfx">docfx</a></span>
+        </div>
+      </div>
+    </footer>
+  </body>
+</html>
