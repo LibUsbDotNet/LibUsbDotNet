@@ -21,6 +21,7 @@
 //
 
 using System;
+using System.Runtime.InteropServices;
 
 namespace LibUsbDotNet.LibUsb;
 
@@ -45,7 +46,7 @@ public partial class UsbDevice : IUsbDevice, IDisposable, ICloneable
     /// <see cref="UsbContext.List()"/> methods to list all devices.
     /// </param>
     /// <param name="originatingContext">The <see cref="UsbContext"/> the device originated from.</param>
-    public UsbDevice(Device device, UsbContext originatingContext)
+    public unsafe UsbDevice(Device device, UsbContext originatingContext)
     {
         if (device == null)
         {
@@ -59,6 +60,9 @@ public partial class UsbDevice : IUsbDevice, IDisposable, ICloneable
 
         this.device = device;
         this.originatingContext = originatingContext;
+
+        TransferCompletionDelegate = new(TransferCompletionCallback);
+        TransferDelegatePtr = Marshal.GetFunctionPointerForDelegate(TransferCompletionDelegate);
     }
 
     /// <summary>

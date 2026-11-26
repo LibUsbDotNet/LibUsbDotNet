@@ -342,6 +342,18 @@ public interface IUsbDevice : IDisposable
     Task<int> ControlTransferAsync(UsbSetupPacket setupPacket, byte[] buffer, int offset, int length);
 
     /// <summary>
+    /// Start an asynchronous transfer.
+    /// </summary>
+    /// <param name="endpointId">The id of the endpoint to use.</param>
+    /// <param name="endpointType">The <see cref="EndpointType"/> of the endpoint.</param>
+    /// <param name="buffer">Data to be sent/received from the device.</param>
+    /// <param name="timeout">Maximum time to wait for the transfer to complete.</param>
+    /// <param name="cancellationToken">A <seealso cref="CancellationToken"/> that can be used to cancel the transfer.</param>
+    /// <param name="isoPacketSize">The size of isochronous packets to allocate, if any.</param>
+    /// <returns>A <seealso cref="Task"/> that corresponds to the new transfer. Its result contains the libusb error for the transfer and the transfer length.</returns>
+    Task<(Error error, int transferLength)> TransferAsync(byte endpointId, EndpointType endpointType, Memory<byte> buffer, int timeout, CancellationToken cancellationToken, int isoPacketSize = 0);
+
+    /// <summary>
     /// Creates a clone of this device.
     /// </summary>
     /// <returns>
